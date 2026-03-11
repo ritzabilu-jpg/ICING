@@ -1,0 +1,124 @@
+@import url('https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    direction: rtl;
+    font-family: 'Heebo', Arial, sans-serif;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-white text-navy-900;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-ice-500 hover:bg-ice-600 text-white font-bold px-8 py-3 rounded-2xl
+           transition-all duration-200 hover:scale-105 shadow-lg shadow-ice-500/30
+           active:scale-100 focus:outline-none focus:ring-2 focus:ring-ice-400 focus:ring-offset-2;
+  }
+
+  .btn-outline {
+    @apply border-2 border-ice-400 text-ice-400 hover:bg-ice-400/10
+           font-bold px-8 py-3 rounded-2xl transition-all duration-200
+           focus:outline-none focus:ring-2 focus:ring-ice-400 focus:ring-offset-2;
+  }
+
+  .btn-secondary {
+    @apply bg-navy-800 hover:bg-navy-700 text-white font-bold px-8 py-3 rounded-2xl
+           transition-all duration-200
+           focus:outline-none focus:ring-2 focus:ring-navy-500 focus:ring-offset-2;
+  }
+
+  .card {
+    @apply bg-white rounded-3xl shadow-xl border border-ice-100 p-8
+           hover:shadow-2xl hover:border-ice-300 transition-all duration-300
+           hover:-translate-y-1;
+  }
+
+  .section-title {
+    @apply text-4xl font-black text-center text-navy-900 mb-4;
+  }
+
+  .section-subtitle {
+    @apply text-xl text-center text-slate-500 mb-16 max-w-2xl mx-auto;
+  }
+
+  .input-field {
+    @apply w-full border-2 border-navy-200 rounded-xl px-4 py-3
+           focus:outline-none focus:border-ice-500 focus:ring-2 focus:ring-ice-500/20
+           text-navy-900 bg-white placeholder:text-slate-400 transition-colors;
+  }
+
+  .form-label {
+    @apply block font-semibold text-navy-800 mb-2 text-sm;
+  }
+
+  .error-text {
+    @apply text-red-500 text-sm mt-1;
+  }
+}
+
+/* react-calendar RTL overrides */
+.react-calendar {
+  width: 100% !important;
+  border: 2px solid #bae6fd !important;
+  border-radius: 16px !important;
+  font-family: 'Heebo', Arial, sans-serif !important;
+  padding: 16px !important;
+  direction: rtl !important;
+}
+
+.react-calendar__navigation button {
+  font-family: 'Heebo', Arial, sans-serif !important;
+  font-size: 18px !important;
+  font-weight: 700 !important;
+  color: #0f172a !important;
+  border-radius: 8px !important;
+}
+
+.react-calendar__navigation button:hover {
+  background: #e0f2fe !important;
+}
+
+.react-calendar__tile {
+  border-radius: 8px !important;
+  font-family: 'Heebo', Arial, sans-serif !important;
+  padding: 10px !important;
+  position: relative;
+}
+
+.react-calendar__tile:hover {
+  background: #e0f2fe !important;
+}
+
+.react-calendar__tile--active {
+  background: #0ea5e9 !important;
+  color: white !important;
+}
+
+.react-calendar__tile--now {
+  background: #f0f9ff !important;
+  font-weight: bold !important;
+}
+
+.react-calendar__tile:disabled {
+  background-color: #f8fafc !important;
+  color: #cbd5e1 !important;
+}
+
+/* Signature canvas */
+.signature-canvas {
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  cursor: crosshair;
+}

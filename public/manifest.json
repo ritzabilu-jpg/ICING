@@ -1,0 +1,37 @@
+{
+  "name": "חוויות שוויץ המדע – אמבטיות קרח",
+  "short_name": "שוויץ המדע",
+  "description": "סדנאות אמבטיות קרח מקצועיות בחולון. נכנסים לקרח – יוצאים חדים וחסינים.",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0f172a",
+  "theme_color": "#0ea5e9",
+  "lang": "he",
+  "dir": "rtl",
+  "categories": ["health", "fitness", "lifestyle"],
+  "icons": [
+    {
+      "src": "/logo-havayot.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/logo-havayot.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [],
+  "shortcuts": [
+    {
+      "name": "הזמינו מקום",
+      "short_name": "הזמנה",
+      "description": "עברו ישירות לדף הזמנת הסדנה",
+      "url": "/booking",
+      "icons": [{"src": "/logo-ice.png", "sizes": "192x192"}]
+    }
+  ]
+}
