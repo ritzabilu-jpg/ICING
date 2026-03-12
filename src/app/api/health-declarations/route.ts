@@ -98,11 +98,11 @@ export async function POST(req: NextRequest) {
   }
 
   // Link health form to booking
-  await supabase
+  const { error: linkError } = await supabase
     .from('bookings')
     .update({ health_form_id: declaration.id })
-    .eq('id', data.booking_id)
-    .catch(err => console.error('Health form link error:', err));
+    .eq('id', data.booking_id);
+  if (linkError) console.error('Health form link error:', linkError);
 
   return NextResponse.json(
     {
