@@ -1,23 +1,10 @@
 'use client';
 
-import { useRef, useState, Suspense } from 'react';
+import { useState, Suspense } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useSearchParams, useRouter } from 'next/navigation';
-import dynamic from 'next/dynamic';
-import type { Metadata } from 'next';
-
-// Dynamically import SignatureCanvas to avoid SSR issues
-const SignatureCanvas = dynamic(() => import('react-signature-canvas'), {
-  ssr: false,
-  loading: () => (
-    <div className="h-36 border-2 border-slate-200 rounded-xl flex items-center justify-center
-                    text-slate-400 text-sm">
-      טוען אזור חתימה...
-    </div>
-  ),
-});
 
 const healthSchema = z.object({
   participant_name: z.string().min(2, 'שם חייב להכיל לפחות 2 תווים').max(100),
@@ -59,20 +46,11 @@ const contraindications = [
   },
 ];
 
-interface SigCanvas {
-  isEmpty: () => boolean;
-  clear: () => void;
-  getTrimmedCanvas: () => HTMLCanvasElement;
-}
-
 function HealthFormContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const bookingId = searchParams.get('bookingId');
-  const workshopId = searchParams.get('workshopId');
 
-  const sigRef = useRef<any>(null); // eslint-disable-line
-  const [signatureError, setSignatureError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
   const [doctorRequired, setDoctorRequired] = useState<string[] | null>(null);
@@ -94,14 +72,6 @@ function HealthFormContent() {
   });
 
   async function onSubmit(data: HealthFormData) {
-    // Validate signature
-    if (!sigRef.current || sigRef.current.isEmpty()) {
-      setSignatureError('נדרשת חתימה להשלמת הטופס');
-      return;
-    }
-    setSignatureError(null);
-
-    const signature = sigRef.current.getTrimmedCanvas().toDataURL('image/png');
     setSubmitting(true);
     setServerError(null);
     setDoctorRequired(null);
@@ -113,7 +83,7 @@ function HealthFormContent() {
         body: JSON.stringify({
           ...data,
           booking_id: bookingId,
-          signature,
+          signature: 'confirmed',
         }),
       });
 
@@ -128,7 +98,6 @@ function HealthFormContent() {
         return;
       }
 
-      // Success → redirect to success page
       router.push(`/booking/success?id=${bookingId}`);
     } catch {
       setServerError('שגיאת תקשורת. אנא בדקו את החיבור ונסו שנית.');
@@ -239,46 +208,20 @@ function HealthFormContent() {
           </div>
         )}
 
-        {/* Signature */}
-        <div>
-          <label className="form-label">חתימה דיגיטלית *</label>
-          <p className="text-xs text-slate-500 mb-2">
-            החתימה מאשרת שהמידע לעיל נכון ומדויק, ושאני מודע/ת לסיכונים
-            הכרוכים בטבילה במי קרח.
-          </p>
-          <div className="border-2 border-slate-200 rounded-xl overflow-hidden bg-white
-                          hover:border-ice-300 transition-colors">
-            <SignatureCanvas
-              {...{ ref: sigRef } as any}
-              canvasProps={{
-                className: 'signature-canvas w-full',
-                height: 150,
-                style: { touchAction: 'none' },
-              }}
-              penColor="#0f172a"
-              backgroundColor="white"
-            />
-          </div>
-          <div className="flex items-center justify-between mt-2">
-            {signatureError && <p className="error-text">{signatureError}</p>}
-            <button
-              type="button"
-              onClick={() => {
-                sigRef.current?.clear();
-                setSignatureError(null);
-              }}
-              className="text-xs text-slate-400 hover:text-slate-600 underline transition-colors ms-auto"
-            >
-              נקה חתימה
-            </button>
-          </div>
-        </div>
-
         {serverError && !doctorRequired && (
           <div className="bg-red-50 border border-red-200 text-red-700 rounded-xl p-4 text-sm">
             {serverError}
           </div>
         )}
+
+        {/* Declaration notice */}
+        <div className="bg-ice-50 border-2 border-ice-200 rounded-2xl p-5 text-sm text-slate-700">
+          <p className="font-semibold text-navy-900 mb-1">✍️ הצהרה</p>
+          <p>
+            בלחיצה על הכפתור אני מצהיר/ה כי המידע שמסרתי למעלה נכון ומדויק,
+            ושאני מודע/ת לסיכונים הכרוכים בטבילה במי קרח.
+          </p>
+        </div>
 
         <button
           type="submit"
@@ -294,7 +237,7 @@ function HealthFormContent() {
               שומר ומעביר לתשלום...
             </>
           ) : (
-            'אני מאשר/ת ועובר/ת לתשלום ←'
+            '✅ אני מאשר/ת שההצהרה נכונה ועובר/ת לתשלום'
           )}
         </button>
 
