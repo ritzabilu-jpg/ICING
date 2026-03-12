@@ -1,7 +1,10 @@
 import { Resend } from 'resend';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
 const FROM = process.env.EMAIL_FROM || 'noreply@havayot-science.co.il';
+
+function getResend() {
+  return new Resend(process.env.RESEND_API_KEY || 'placeholder');
+}
 
 export interface BookingConfirmationParams {
   to: string;
@@ -119,7 +122,8 @@ export async function sendBookingConfirmation(params: BookingConfirmationParams)
     </html>
   `;
 
-  return resend.emails.send({
+  if (!process.env.RESEND_API_KEY) return null;
+  return getResend().emails.send({
     from: FROM,
     to,
     subject: `✅ אישור הזמנה – ${workshopTitle} | קוד: ${confirmationCode}`,
