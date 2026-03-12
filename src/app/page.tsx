@@ -357,17 +357,31 @@ export default function HomePage() {
               </Link>
             </div>
 
-            {/* Google Maps */}
-            <div className="rounded-3xl overflow-hidden h-80 lg:h-96 shadow-2xl border border-navy-700">
-              <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3382.0!2d34.7765!3d32.0127!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzLCsDAwJzQ1LjciTiAzNMKwNDYnMzUuNCJF!5e0!3m2!1siw!2sil!4v1"
-                width="100%"
-                height="100%"
-                style={{ border: 0 }}
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                title="מיקום חוויות שוויץ המדע – רחוב סירני 52, רחובות"
-              />
+            {/* Google Maps + Waze */}
+            <div className="space-y-4">
+              <div className="rounded-3xl overflow-hidden h-72 lg:h-80 shadow-2xl border border-navy-700">
+                <iframe
+                  src="https://maps.google.com/maps?q=חיים+סירני+52+רחובות&output=embed&hl=he"
+                  width="100%"
+                  height="100%"
+                  style={{ border: 0 }}
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  title="מיקום חוויות שוויץ המדע – רחוב סירני 52, רחובות"
+                />
+              </div>
+              <a
+                href="https://www.waze.com/en/live-map/directions/%D7%97%D7%99%D7%99%D7%9D-%D7%A1%D7%99%D7%A8%D7%A0%D7%99-52-%D7%A8%D7%97%D7%95%D7%91%D7%95%D7%AA?place=w.22806847.228199542.169287"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center gap-3 w-full
+                           bg-[#05c8f7] hover:bg-[#04b0d9] text-white font-bold
+                           py-4 rounded-2xl text-lg transition-all hover:scale-105
+                           shadow-lg"
+              >
+                <span className="text-2xl">🗺️</span>
+                נווט עם Waze
+              </a>
             </div>
           </div>
         </div>
