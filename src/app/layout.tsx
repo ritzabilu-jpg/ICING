@@ -4,6 +4,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://icing-blond.vercel.app'),
   title: {
     default: 'חוויות שוויץ המדע | אמבטיות קרח רחובות',
     template: '%s | חוויות שוויץ המדע',
@@ -24,10 +25,23 @@ export const metadata: Metadata = {
   },
   openGraph: {
     type: 'website',
+    url: 'https://icing-blond.vercel.app',
     locale: 'he_IL',
     siteName: 'חוויות שוויץ המדע',
     title: 'חוויות שוויץ המדע | אמבטיות קרח רחובות',
     description: 'סדנאות אמבטיות קרח מקצועיות. נכנסים לקרח – יוצאים חדים וחסינים.',
+    images: [
+      {
+        url: '/logo-havayot.png',
+        alt: 'חוויות שוויץ המדע – אמבטיות קרח רחובות',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'חוויות שוויץ המדע | אמבטיות קרח רחובות',
+    description: 'סדנאות אמבטיות קרח מקצועיות. נכנסים לקרח – יוצאים חדים וחסינים.',
+    images: ['/logo-havayot.png'],
   },
 };
 
