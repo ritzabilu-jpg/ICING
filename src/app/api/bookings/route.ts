@@ -73,10 +73,11 @@ export async function POST(req: NextRequest) {
 
   if (bookingError || !booking) {
     // Rollback seat count
-    await supabase.rpc('release_seat', {
+    const { error: rollbackError } = await supabase.rpc('release_seat', {
       p_workshop_id: data.workshop_id,
       p_participants: data.participants,
-    }).catch(console.error);
+    });
+    if (rollbackError) console.error('Rollback error:', rollbackError);
 
     console.error('Booking insert error:', bookingError);
     return NextResponse.json(

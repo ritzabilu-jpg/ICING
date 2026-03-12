@@ -71,8 +71,7 @@ function HealthFormContent() {
   const bookingId = searchParams.get('bookingId');
   const workshopId = searchParams.get('workshopId');
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const sigRef = useRef<any>(null);
+  const sigRef = useRef<any>(null); // eslint-disable-line
   const [signatureError, setSignatureError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
@@ -250,7 +249,7 @@ function HealthFormContent() {
           <div className="border-2 border-slate-200 rounded-xl overflow-hidden bg-white
                           hover:border-ice-300 transition-colors">
             <SignatureCanvas
-              ref={sigRef}
+              {...{ ref: sigRef } as any}
               canvasProps={{
                 className: 'signature-canvas w-full',
                 height: 150,
