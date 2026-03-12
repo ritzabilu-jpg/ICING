@@ -37,6 +37,16 @@ const types = [
     duration: 'לפי הזמנה',
     highlight: false,
   },
+  {
+    type: 'one-on-one' as WorkshopType,
+    icon: '⭐',
+    title: 'סדנה אישית אחד על אחד',
+    description: 'מדריך אישי צמוד, תוכנית מותאמת, זמן גמיש',
+    price: '₪550',
+    capacity: 'משתתף אחד',
+    duration: '~90 דקות',
+    highlight: false,
+  },
 ];
 
 export default function WorkshopTypeSelector({ onSelect }: WorkshopTypeSelectorProps) {
@@ -45,7 +55,7 @@ export default function WorkshopTypeSelector({ onSelect }: WorkshopTypeSelectorP
       <h2 className="text-2xl font-black text-navy-900 mb-2">שלב 1: בחרו סוג סדנה</h2>
       <p className="text-slate-500 mb-8">לחצו על הסוג המתאים לכם כדי לעבור לבחירת תאריך</p>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {types.map(t => (
           <button
             key={t.type}
