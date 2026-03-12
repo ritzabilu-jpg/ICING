@@ -53,6 +53,27 @@ const workshopTypes = [
     ],
   },
   {
+    type: 'one-on-one' as const,
+    icon: '⭐',
+    title: 'סדנה אישית אחד על אחד',
+    subtitle: 'הדרכה פרטית ומותאמת אישית',
+    description:
+      'מדריך אישי צמוד לכל אורך הסדנה. תוכנית מותאמת בדיוק לצרכים ולמטרות שלך, ' +
+      'בגמישות מלאה בתיאום המועד. החוויה האינטנסיבית והיעילה ביותר.',
+    price: '₪550',
+    priceNote: 'לאדם',
+    duration: 'כ-90 דקות',
+    capacity: 'משתתף אחד בלבד',
+    highlight: false,
+    features: [
+      { icon: '🎯', text: 'מדריך אישי צמוד לכל הסדנה' },
+      { icon: '📋', text: 'תוכנית מותאמת אישית' },
+      { icon: '🕐', text: 'גמישות מלאה בתיאום מועד' },
+      { icon: '🫁', text: 'תרגול נשימה + טבילה מלאה' },
+      { icon: '📞', text: 'ליווי והמשך אחרי הסדנה' },
+    ],
+  },
+  {
     type: 'team' as const,
     icon: '🏔️',
     title: 'סדנת קבוצות',
@@ -178,7 +199,7 @@ export default function HomePage() {
           <p className="section-subtitle">
             בחרו את הפורמט המתאים לכם
           </p>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-start">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 items-start">
             {workshopTypes.map(w => (
               <WorkshopCard key={w.type} {...w} />
             ))}

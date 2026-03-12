@@ -1,4 +1,4 @@
-export type WorkshopType = 'individual' | 'couple' | 'team';
+export type WorkshopType = 'individual' | 'couple' | 'team' | 'one-on-one';
 export type BookingStatus = 'pending' | 'confirmed' | 'cancelled';
 export type PaymentStatus = 'unpaid' | 'paid' | 'refunded';
 
