@@ -32,7 +32,7 @@ export const metadata: Metadata = {
     description: 'סדנאות אמבטיות קרח מקצועיות. נכנסים לקרח – יוצאים חדים וחסינים.',
     images: [
       {
-        url: '/logo-havayot.png',
+        url: '/logo-ice.png',
         alt: 'חוויות שוויץ המדע – אמבטיות קרח רחובות',
       },
     ],
@@ -41,7 +41,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'חוויות שוויץ המדע | אמבטיות קרח רחובות',
     description: 'סדנאות אמבטיות קרח מקצועיות. נכנסים לקרח – יוצאים חדים וחסינים.',
-    images: ['/logo-havayot.png'],
+    images: ['/logo-ice.png'],
   },
 };
 
@@ -61,7 +61,7 @@ export default function RootLayout({
     <html lang="he" dir="rtl">
       <head>
         <link rel="icon" href="/favicon.ico" sizes="any" />
-        <link rel="apple-touch-icon" href="/logo-havayot.png" />
+        <link rel="apple-touch-icon" href="/logo-ice.png" />
       </head>
       <body className="min-h-screen flex flex-col bg-white text-navy-900 antialiased">
         <Header />
