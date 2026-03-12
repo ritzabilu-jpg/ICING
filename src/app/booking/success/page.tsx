@@ -151,7 +151,7 @@ function SuccessContent() {
           {/* Location */}
           <div className="bg-navy-900 text-white rounded-3xl p-6 mb-8">
             <h2 className="font-black mb-4 text-ice-400">📍 מיקום</h2>
-            <p className="text-slate-300 mb-1">רחוב סירני 52, חולון</p>
+            <p className="text-slate-300 mb-1">רחוב סירני 52, רחובות</p>
             <p className="text-slate-400 text-sm mb-4">מתחם הבריכה הטיפולית</p>
             <div className="flex flex-col sm:flex-row gap-3">
               <a
@@ -163,7 +163,7 @@ function SuccessContent() {
                 🗺️ נווט בWaze
               </a>
               <a
-                href="https://maps.google.com/?q=רחוב+סירני+52+חולון"
+                href="https://maps.google.com/?q=רחוב+סירני+52+רחובות"
                 target="_blank" rel="noopener noreferrer"
                 className="flex-1 text-center bg-navy-700 hover:bg-navy-600 text-white
                            py-2.5 rounded-xl font-semibold text-sm transition-colors"

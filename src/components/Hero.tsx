@@ -41,7 +41,7 @@ export default function Hero() {
         <div className="inline-flex items-center gap-2 bg-ice-500/20 border border-ice-500/40
                         text-ice-300 rounded-full px-5 py-2 text-sm font-semibold mb-8">
           <span className="w-2 h-2 bg-ice-400 rounded-full animate-pulse-slow" />
-          חולון | רחוב סירני 52 | מתחם הבריכה הטיפולית
+          רחובות | רחוב סירני 52 | מתחם הבריכה הטיפולית
         </div>
 
         {/* Main heading */}

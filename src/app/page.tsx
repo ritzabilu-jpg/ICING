@@ -6,7 +6,7 @@ import TestimonialsSection from '@/components/TestimonialsSection';
 import PersonalBookingModal from '@/components/PersonalBookingModal';
 
 export const metadata: Metadata = {
-  title: 'חוויות שוויץ המדע | אמבטיות קרח חולון',
+  title: 'חוויות שוויץ המדע | אמבטיות קרח רחובות',
 };
 
 const workshopTypes = [
@@ -289,7 +289,7 @@ export default function HomePage() {
             איך מגיעים אלינו?
           </h2>
           <p className="text-xl text-center text-slate-400 mb-16 max-w-xl mx-auto">
-            ממוקמים בלב חולון, נגישים בתחבורה ציבורית ובחניה פרטית
+            ממוקמים בלב רחובות, נגישים בתחבורה ציבורית ובחניה פרטית
           </p>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
@@ -301,7 +301,7 @@ export default function HomePage() {
                   <div className="flex items-start gap-4">
                     <span className="text-2xl flex-shrink-0 mt-0.5">📍</span>
                     <div>
-                      <p className="text-white font-semibold">רחוב סירני 52, חולון</p>
+                      <p className="text-white font-semibold">רחוב סירני 52, רחובות</p>
                       <p className="text-slate-400 text-sm">מתחם הבריכה הטיפולית</p>
                     </div>
                   </div>
@@ -345,7 +345,7 @@ export default function HomePage() {
                 style={{ border: 0 }}
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
-                title="מיקום חוויות שוויץ המדע – רחוב סירני 52, חולון"
+                title="מיקום חוויות שוויץ המדע – רחוב סירני 52, רחובות"
               />
             </div>
           </div>

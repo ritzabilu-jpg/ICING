@@ -107,7 +107,7 @@ export async function POST(req: NextRequest) {
     confirmationCode,
     participants: data.participants,
     totalPrice: workshop.price * data.participants,
-    location: 'רחוב סירני 52, חולון – מתחם הבריכה הטיפולית',
+    location: 'רחוב סירני 52, רחובות – מתחם הבריכה הטיפולית',
   }).catch(err => console.error('Email send failed (non-critical):', err));
 
   return NextResponse.json(

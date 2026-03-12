@@ -42,7 +42,7 @@ export default function Footer() {
                             justify-center transition-colors text-sm font-bold" aria-label="אינסטגרם">
                 IG
               </a>
-              <a href="https://wa.me/972893107150" target="_blank" rel="noopener noreferrer"
+              <a href="https://wa.me/972524500825" target="_blank" rel="noopener noreferrer"
                  className="w-10 h-10 bg-navy-700 hover:bg-green-600 rounded-full flex items-center
                             justify-center transition-colors text-xs font-bold" aria-label="וואטסאפ">
                 WA
@@ -79,7 +79,7 @@ export default function Footer() {
               <li className="flex items-start gap-3">
                 <span className="text-ice-400 mt-0.5">📍</span>
                 <div>
-                  <p className="text-slate-300">רחוב סירני 52, חולון</p>
+                  <p className="text-slate-300">רחוב סירני 52, רחובות</p>
                   <p className="text-slate-500 text-sm">מתחם הבריכה הטיפולית</p>
                 </div>
               </li>

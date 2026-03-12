@@ -65,7 +65,7 @@ export async function sendBookingConfirmation(params: BookingConfirmationParams)
       <div class="container">
         <div class="header">
           <h1>✅ ההזמנה אושרה!</h1>
-          <p>חוויות שוויץ המדע – אמבטיות קרח חולון</p>
+          <p>חוויות שוויץ המדע – אמבטיות קרח רחובות</p>
         </div>
         <div class="body">
           <p class="greeting">שלום ${userName},</p>
@@ -114,7 +114,7 @@ export async function sendBookingConfirmation(params: BookingConfirmationParams)
         </div>
         <div class="footer">
           <p><strong>חוויות שוויץ המדע</strong></p>
-          <p>רחוב סירני 52, חולון | מתחם הבריכה הטיפולית</p>
+          <p>רחוב סירני 52, רחובות | מתחם הבריכה הטיפולית</p>
           <p><a href="tel:089310715">08-9310715</a> | <a href="tel:089310716">08-9310716</a></p>
         </div>
       </div>
