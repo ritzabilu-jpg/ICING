@@ -32,7 +32,7 @@ export const metadata: Metadata = {
     description: 'סדנאות אמבטיות קרח מקצועיות. נכנסים לקרח – יוצאים חדים וחסינים.',
     images: [
       {
-        url: '/logo-ice.png',
+        url: 'https://icing-blond.vercel.app/logo-ice.png',
         alt: 'חוויות שוויץ המדע – אמבטיות קרח רחובות',
       },
     ],
@@ -41,7 +41,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'חוויות שוויץ המדע | אמבטיות קרח רחובות',
     description: 'סדנאות אמבטיות קרח מקצועיות. נכנסים לקרח – יוצאים חדים וחסינים.',
-    images: ['/logo-ice.png'],
+    images: ['https://icing-blond.vercel.app/logo-ice.png'],
   },
 };
 
