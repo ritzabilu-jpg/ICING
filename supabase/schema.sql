@@ -247,3 +247,22 @@ BEGIN
   )
   ON CONFLICT DO NOTHING;
 END $$;
+
+
+-- ============================================================
+-- Lior Katz personal session bookings
+-- ============================================================
+CREATE TABLE IF NOT EXISTS lior_bookings (
+  id         UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  time_slot  TEXT NOT NULL,   -- '08:00' | '09:30' | '11:00'
+  slot_date  TEXT NOT NULL DEFAULT '19.3.2026',
+  name       TEXT NOT NULL,
+  phone      TEXT NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Index for fast slot count queries
+CREATE INDEX IF NOT EXISTS lior_bookings_time_slot ON lior_bookings(time_slot);
+
+-- RLS: service role only (no public access)
+ALTER TABLE lior_bookings ENABLE ROW LEVEL SECURITY;
