@@ -1,18 +1,83 @@
+/**
+ * WelcomeGreeting – identifies returning vs new visitors via localStorage.
+ * Returning: shows a welcome-back banner with CTA buttons.
+ * New: shows a name-ask card after 2s delay.
+ */
+
 'use client';
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 
+// ─── Returning visitor banner ─────────────────────────────────────────────────
+
+function ReturnBanner({ name, onClose }: { name: string; onClose: () => void }) {
+  return (
+    <div className="bg-ice-50 border-b border-ice-200 py-3 px-4" dir="rtl">
+      <div className="max-w-5xl mx-auto flex flex-wrap items-center justify-between gap-3">
+        <p className="text-navy-900 font-semibold text-sm">
+          שלום <span className="text-ice-700 font-black">{name}</span>! ברוך שובך 👋
+        </p>
+        <div className="flex items-center gap-2">
+          <Link href="/booking"
+            className="bg-ice-600 hover:bg-ice-700 text-white text-xs font-bold px-4 py-1.5 rounded-lg transition-colors">
+            📅 קבע טבילה
+          </Link>
+          <Link href="/booking"
+            className="bg-navy-800 hover:bg-navy-700 text-white text-xs font-bold px-4 py-1.5 rounded-lg transition-colors">
+            🏔️ קבע סדנה
+          </Link>
+          <button onClick={onClose} className="text-slate-400 hover:text-slate-600 text-lg leading-none pr-1" aria-label="סגור">
+            ✕
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── New visitor name card ────────────────────────────────────────────────────
+
+function AskNameCard({ onSave }: { onSave: (name: string) => void }) {
+  const [input, setInput] = useState('');
+
+  function save(e: React.FormEvent) {
+    e.preventDefault();
+    if (input.trim()) onSave(input.trim());
+  }
+
+  return (
+    <div
+      className="fixed bottom-6 right-6 z-50 bg-white shadow-2xl rounded-2xl p-5 w-72 animate-slide-up"
+      dir="rtl"
+    >
+      <p className="text-navy-900 font-black text-sm mb-1">👋 שמחים להכיר!</p>
+      <p className="text-slate-500 text-xs mb-3">מה שמך? נציג לך ברכה אישית בביקורים הבאים.</p>
+      <form onSubmit={save} className="flex gap-2">
+        <input
+          autoFocus
+          value={input}
+          onChange={e => setInput(e.target.value)}
+          placeholder="שמך..."
+          className="flex-1 border border-slate-200 rounded-lg px-3 py-2 text-sm text-navy-900 focus:outline-none focus:ring-2 focus:ring-ice-400"
+        />
+        <button type="submit"
+          className="bg-ice-600 hover:bg-ice-700 text-white text-sm font-bold px-4 rounded-lg transition-colors">
+          שמור
+        </button>
+      </form>
+    </div>
+  );
+}
+
+// ─── Main component ───────────────────────────────────────────────────────────
+
 export default function WelcomeGreeting() {
-  const [name, setName] = useState<string | null>(null);
-  const [showAsk, setShowAsk] = useState(false);
+  const [name, setName]             = useState<string | null>(null);
+  const [showAsk, setShowAsk]       = useState(false);
   const [showBanner, setShowBanner] = useState(true);
-  const [showThanks, setShowThanks] = useState(false);
-  const [inputName, setInputName] = useState('');
-  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
     const saved = localStorage.getItem('visitor_name');
     if (saved) {
       setName(saved);
@@ -22,103 +87,13 @@ export default function WelcomeGreeting() {
     }
   }, []);
 
-  function saveName() {
-    const trimmed = inputName.trim();
-    if (!trimmed) return;
-    localStorage.setItem('visitor_name', trimmed);
-    setName(trimmed);
+  function handleSave(newName: string) {
+    localStorage.setItem('visitor_name', newName);
+    setName(newName);
     setShowAsk(false);
-    setShowThanks(true);
-    setTimeout(() => setShowThanks(false), 3000);
   }
 
-  function handleKeyDown(e: React.KeyboardEvent) {
-    if (e.key === 'Enter') saveName();
-  }
-
-  if (!mounted) return null;
-
-  // ברכת תודה קצרה לאחר שמירת השם
-  if (showThanks && name) {
-    return (
-      <div className="fixed bottom-6 right-6 z-50 bg-ice-600 text-white rounded-2xl px-5 py-4 shadow-xl animate-slide-up text-right">
-        <p className="font-bold text-lg">שלום {name}! 👋</p>
-        <p className="text-sm text-ice-100">שמחים להכיר אותך</p>
-      </div>
-    );
-  }
-
-  // בנר למבקר חוזר
-  if (name && showBanner) {
-    return (
-      <div className="w-full bg-gradient-to-l from-ice-50 to-sky-50 border-b border-ice-200 py-3 px-4">
-        <div className="max-w-5xl mx-auto flex items-center justify-between gap-4 flex-wrap" dir="rtl">
-          <div className="flex items-center gap-3">
-            <span className="text-2xl">👋</span>
-            <div>
-              <span className="font-bold text-navy-900 text-lg">שלום {name}!</span>
-              <span className="text-slate-600 mr-2 text-sm">ברוך שובך — נעים לראותך שוב</span>
-            </div>
-          </div>
-          <div className="flex items-center gap-2 mr-auto">
-            <Link
-              href="/booking"
-              className="bg-ice-600 hover:bg-ice-700 text-white text-sm font-semibold px-4 py-2 rounded-xl transition-colors"
-            >
-              📅 קבע טבילה
-            </Link>
-            <Link
-              href="/booking?type=workshop"
-              className="bg-navy-800 hover:bg-navy-900 text-white text-sm font-semibold px-4 py-2 rounded-xl transition-colors"
-            >
-              🏔️ קבע סדנה
-            </Link>
-            <button
-              onClick={() => setShowBanner(false)}
-              className="text-slate-400 hover:text-slate-600 transition-colors text-lg font-light mr-1"
-              aria-label="סגור"
-            >
-              ✕
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  // כרטיסיית שאלת שם למבקר חדש
-  if (showAsk) {
-    return (
-      <div className="fixed bottom-6 right-6 z-50 bg-white rounded-2xl shadow-2xl p-5 w-72 animate-slide-up border border-slate-100" dir="rtl">
-        <button
-          onClick={() => setShowAsk(false)}
-          className="absolute top-3 left-3 text-slate-300 hover:text-slate-500 text-lg"
-          aria-label="סגור"
-        >
-          ✕
-        </button>
-        <div className="text-3xl mb-3 text-center">👋</div>
-        <p className="font-bold text-navy-900 text-lg mb-1 text-center">שמחים להכיר!</p>
-        <p className="text-slate-500 text-sm mb-4 text-center">מה שמך? נוכל לפנות אליך אישית</p>
-        <input
-          type="text"
-          value={inputName}
-          onChange={e => setInputName(e.target.value)}
-          onKeyDown={handleKeyDown}
-          placeholder="הכנס שמך כאן..."
-          autoFocus
-          className="w-full border border-slate-200 rounded-xl px-4 py-2 text-right text-sm focus:outline-none focus:ring-2 focus:ring-ice-400 mb-3"
-        />
-        <button
-          onClick={saveName}
-          disabled={!inputName.trim()}
-          className="w-full bg-ice-600 hover:bg-ice-700 disabled:opacity-40 text-white font-bold py-2 rounded-xl transition-colors text-sm"
-        >
-          שמור
-        </button>
-      </div>
-    );
-  }
-
+  if (name && showBanner) return <ReturnBanner name={name} onClose={() => setShowBanner(false)} />;
+  if (showAsk) return <AskNameCard onSave={handleSave} />;
   return null;
 }
