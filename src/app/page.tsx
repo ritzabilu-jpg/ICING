@@ -3,7 +3,6 @@ import Link from 'next/link';
 import Hero from '@/components/Hero';
 import WorkshopCard from '@/components/WorkshopCard';
 import TestimonialsSection from '@/components/TestimonialsSection';
-import PersonalBookingModal from '@/components/PersonalBookingModal';
 import WelcomeGreeting from '@/components/WelcomeGreeting';
 
 export const metadata: Metadata = {
@@ -213,24 +212,6 @@ export default function HomePage() {
             ))}
           </div>
 
-          {/* Personal Workshop Card */}
-          <div className="mt-10 max-w-md mx-auto bg-white rounded-3xl border-2 border-ice-300
-                          shadow-xl p-8 text-center">
-            <div className="text-5xl mb-4">🌟</div>
-            <h3 className="text-2xl font-black text-navy-900 mb-1">סדנה אישית</h3>
-            <p className="text-slate-500 text-sm mb-4">הדרכה אחד על אחד – בזמן שמתאים לך</p>
-            <div className="text-4xl font-black text-ice-600 mb-1">₪500</div>
-            <p className="text-xs text-slate-400 mb-4">לאדם · זמן ומועד גמישים</p>
-            <ul className="text-sm text-slate-600 space-y-2 mb-6 text-right">
-              {['מדריך אישי צמוד לכל אורך הסדנה','תוכנית מותאמת לצרכים שלך','גמישות מלאה בתיאום',
-                'כולל תרגול נשימה + טבילה'].map(f => (
-                <li key={f} className="flex items-center gap-2 justify-end">
-                  <span>{f}</span><span className="text-ice-500">✓</span>
-                </li>
-              ))}
-            </ul>
-            <PersonalBookingModal />
-          </div>
         </div>
       </section>
 
