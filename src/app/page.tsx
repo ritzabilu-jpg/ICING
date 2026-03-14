@@ -126,7 +126,7 @@ const benefits = [
       'הגוף לומד להגיב לסטרס בצורה מבוקרת יותר.',
     stat: '↓ קורטיזול',
     statLabel: 'הסתגלות של ציר HPA',
-    link: '/noradrenaline',
+    link: '/cortisol',
   },
 ];
 
