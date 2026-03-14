@@ -4,6 +4,7 @@ import Hero from '@/components/Hero';
 import WorkshopCard from '@/components/WorkshopCard';
 import TestimonialsSection from '@/components/TestimonialsSection';
 import PersonalBookingModal from '@/components/PersonalBookingModal';
+import WelcomeGreeting from '@/components/WelcomeGreeting';
 
 export const metadata: Metadata = {
   title: 'חוויות שוויץ המדע | אמבטיות קרח רחובות',
@@ -164,6 +165,7 @@ const faqs = [
 export default function HomePage() {
   return (
     <>
+      <WelcomeGreeting />
       <Hero />
 
       {/* Benefits Section */}
