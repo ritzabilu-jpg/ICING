@@ -157,7 +157,7 @@ function AdminContent() {
             {count === 0 ? (
               <div className="text-center py-8 text-slate-400 text-sm">אין נרשמים עדיין</div>
             ) : (
-              <table className="w-full text-sm">
+              <table className="w-full text-sm" dir="rtl">
                 <thead>
                   <tr className="border-b border-slate-100 bg-slate-50">
                     <th className="text-right px-6 py-3 font-semibold text-slate-600 w-8">#</th>
@@ -170,14 +170,14 @@ function AdminContent() {
                 <tbody>
                   {slotBookings.map((b, i) => (
                     <tr key={b.id} className="border-b border-slate-50 hover:bg-slate-50 transition-colors">
-                      <td className="px-6 py-3 text-slate-400 font-mono">{i + 1}</td>
-                      <td className="px-4 py-3 font-semibold text-navy-900">{b.name}</td>
-                      <td className="px-4 py-3 text-slate-600 font-mono">
+                      <td className="px-6 py-3 text-slate-400 font-mono text-right">{i + 1}</td>
+                      <td className="px-4 py-3 font-semibold text-navy-900 text-right">{b.name}</td>
+                      <td className="px-4 py-3 text-slate-600 font-mono text-right">
                         <a href={`tel:${b.phone}`} className="hover:text-ice-600 transition-colors">
                           {b.phone}
                         </a>
                       </td>
-                      <td className="px-4 py-3 text-slate-400 text-xs">
+                      <td className="px-4 py-3 text-slate-400 text-xs text-right">
                         {new Date(b.created_at).toLocaleString('he-IL', {
                           day: '2-digit', month: '2-digit',
                           hour: '2-digit', minute: '2-digit',
