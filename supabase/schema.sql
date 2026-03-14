@@ -266,3 +266,40 @@ CREATE INDEX IF NOT EXISTS lior_bookings_time_slot ON lior_bookings(time_slot);
 
 -- RLS: service role only (no public access)
 ALTER TABLE lior_bookings ENABLE ROW LEVEL SECURITY;
+
+-- ============================================================
+-- מערכת משתמשים פשוטה (ללא Supabase Auth)
+-- ============================================================
+
+CREATE TABLE IF NOT EXISTS visitor_profiles (
+  id        UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  name      TEXT NOT NULL,
+  phone     TEXT UNIQUE NOT NULL,
+  role      TEXT NOT NULL DEFAULT 'user', -- 'user' | 'instructor' | 'admin'
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS immersion_sessions (
+  id                  UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  visitor_id          UUID NOT NULL REFERENCES visitor_profiles(id) ON DELETE CASCADE,
+  session_date        DATE NOT NULL,
+  session_time        TIME NOT NULL,
+  temperature_celsius DECIMAL(4,1),
+  duration_minutes    INTEGER NOT NULL DEFAULT 0,
+  instructor_name     TEXT DEFAULT '',
+  notes               TEXT DEFAULT '',
+  created_at          TIMESTAMPTZ DEFAULT NOW()
+);
+CREATE INDEX IF NOT EXISTS idx_imm_visitor ON immersion_sessions(visitor_id, session_date DESC);
+
+CREATE TABLE IF NOT EXISTS daily_health_checks (
+  id           UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  visitor_id   UUID NOT NULL REFERENCES visitor_profiles(id) ON DELETE CASCADE,
+  check_date   DATE NOT NULL DEFAULT CURRENT_DATE,
+  feels_healthy BOOLEAN NOT NULL DEFAULT false,
+  no_fever     BOOLEAN NOT NULL DEFAULT false,
+  feeling_good BOOLEAN NOT NULL DEFAULT false,
+  submitted_at TIMESTAMPTZ DEFAULT NOW(),
+  UNIQUE(visitor_id, check_date)
+);
+CREATE INDEX IF NOT EXISTS idx_hc_date ON daily_health_checks(check_date, visitor_id);
