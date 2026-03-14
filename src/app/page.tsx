@@ -106,6 +106,7 @@ const benefits = [
       'פחד ואי-ודאות. המוח לומד "אני יכול" ברמה מולקולרית.',
     stat: '+127%',
     statLabel: 'עלייה בנוראדרנלין',
+    link: '/noradrenaline',
   },
   {
     icon: '🎯',
@@ -115,6 +116,7 @@ const benefits = [
       'קוגניטיבי. אפקט נמשך שעות לאחר הסדנה.',
     stat: '↑ 40%',
     statLabel: 'שיפור בריכוז',
+    link: '/noradrenaline',
   },
   {
     icon: '💆',
@@ -124,6 +126,7 @@ const benefits = [
       'הגוף לומד להגיב לסטרס בצורה מבוקרת יותר.',
     stat: '↓ קורטיזול',
     statLabel: 'הסתגלות של ציר HPA',
+    link: '/noradrenaline',
   },
 ];
 
@@ -177,18 +180,21 @@ export default function HomePage() {
           </p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {benefits.map(b => (
-              <div key={b.title}
+              <Link key={b.title} href={b.link || '#'}
                    className="rounded-3xl bg-gradient-to-b from-ice-50 to-white
                               border-2 border-ice-100 p-8 hover:border-ice-300
-                              hover:shadow-lg transition-all duration-300">
+                              hover:shadow-lg transition-all duration-300 group block">
                 <div className="text-5xl mb-5">{b.icon}</div>
-                <h3 className="text-xl font-black text-navy-900 mb-3">{b.title}</h3>
+                <h3 className="text-xl font-black text-navy-900 mb-3 group-hover:text-ice-700 transition-colors">{b.title}</h3>
                 <p className="text-slate-600 text-sm leading-relaxed mb-5">{b.description}</p>
                 <div className="border-t border-ice-100 pt-4">
                   <div className="text-2xl font-black text-ice-600">{b.stat}</div>
-                  <div className="text-xs text-slate-500">{b.statLabel}</div>
+                  <div className="text-xs text-slate-500 flex items-center gap-1">
+                    {b.statLabel}
+                    <span className="text-ice-400 group-hover:translate-x-[-3px] transition-transform">← קרא עוד</span>
+                  </div>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         </div>
