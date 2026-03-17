@@ -92,12 +92,18 @@ export default function Header() {
                 </button>
               )}
 
-              {/* Book CTA */}
-              <Link href="/booking"
-                className="hidden md:inline-flex items-center bg-ice-500 hover:bg-ice-600
-                           text-white font-bold px-5 py-2 rounded-xl text-sm transition-all
+              {/* Book CTAs – two separate buttons */}
+              <Link href="/immersion"
+                className="hidden md:inline-flex items-center gap-1 bg-ice-500 hover:bg-ice-600
+                           text-white font-bold px-4 py-2 rounded-xl text-sm transition-all
                            hover:scale-105 shadow-lg shadow-ice-500/30">
-                הזמינו עכשיו
+                🧊 קבע טבילה
+              </Link>
+              <Link href="/booking"
+                className="hidden md:inline-flex items-center gap-1 bg-navy-700 hover:bg-navy-600
+                           text-white font-bold px-4 py-2 rounded-xl text-sm transition-all
+                           hover:scale-105 border border-navy-500">
+                🏔️ קבע סדנה
               </Link>
 
               {/* Ice logo */}
@@ -148,9 +154,13 @@ export default function Header() {
                   🔑 כניסה למערכת
                 </button>
               )}
-              <Link href="/booking" onClick={() => setMenuOpen(false)}
+              <Link href="/immersion" onClick={() => setMenuOpen(false)}
                 className="mt-3 w-full text-center bg-ice-500 hover:bg-ice-600 text-white font-bold py-3 rounded-xl transition-all">
-                הזמינו מקום עכשיו
+                🧊 קבע טבילה
+              </Link>
+              <Link href="/booking" onClick={() => setMenuOpen(false)}
+                className="w-full text-center bg-navy-700 hover:bg-navy-600 text-white font-bold py-3 rounded-xl transition-all border border-navy-500">
+                🏔️ קבע סדנה
               </Link>
             </div>
           </nav>
