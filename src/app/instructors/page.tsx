@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import { createAdminClient } from '@/lib/supabase';
 import InstructorCard from '@/components/InstructorCard';
 import type { Instructor } from '@/types';
 import Link from 'next/link';
@@ -54,25 +53,7 @@ const DEMO_INSTRUCTORS: Instructor[] = [
 ];
 
 export default async function InstructorsPage() {
-  let instructors: Instructor[] = DEMO_INSTRUCTORS;
-
-  // Try to load from Supabase if configured
-  try {
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    if (supabaseUrl && !supabaseUrl.includes('YOUR_PROJECT')) {
-      const supabase = createAdminClient();
-      const { data, error } = await supabase
-        .from('instructors')
-        .select('*')
-        .order('name', { ascending: true });
-
-      if (!error && data && data.length > 0) {
-        instructors = data as Instructor[];
-      }
-    }
-  } catch {
-    // Fall back to demo data silently
-  }
+  const instructors: Instructor[] = DEMO_INSTRUCTORS;
 
   return (
     <div className="py-16">
