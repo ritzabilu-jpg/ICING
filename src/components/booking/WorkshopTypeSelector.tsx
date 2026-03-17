@@ -47,16 +47,6 @@ const types = [
     duration: '~90 דקות',
     highlight: false,
   },
-  {
-    type: 'lior-slots' as WorkshopType,
-    icon: '🧊',
-    title: 'סדנה עם ליאור כ"ץ',
-    description: 'קבעו מועד ישירות עם ליאור — בחרו שעה פנויה',
-    price: 'לפי בחירה',
-    capacity: 'עד 10 משתתפים',
-    duration: '19.3.2026',
-    highlight: false,
-  },
 ];
 
 export default function WorkshopTypeSelector({ onSelect }: WorkshopTypeSelectorProps) {
