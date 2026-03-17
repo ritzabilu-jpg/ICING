@@ -303,3 +303,24 @@ CREATE TABLE IF NOT EXISTS daily_health_checks (
   UNIQUE(visitor_id, check_date)
 );
 CREATE INDEX IF NOT EXISTS idx_hc_date ON daily_health_checks(check_date, visitor_id);
+
+-- ============================================================
+-- Immersion Slots & Bookings (managed by admin)
+-- ============================================================
+CREATE TABLE IF NOT EXISTS immersion_slots (
+  id               UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  slot_date        DATE NOT NULL,
+  slot_time        TIME NOT NULL,
+  max_participants INTEGER NOT NULL DEFAULT 10,
+  notes            TEXT DEFAULT '',
+  created_at       TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS immersion_bookings (
+  id             UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  slot_id        UUID NOT NULL REFERENCES immersion_slots(id) ON DELETE CASCADE,
+  visitor_name   TEXT NOT NULL,
+  visitor_phone  TEXT NOT NULL,
+  package_type   TEXT NOT NULL CHECK (package_type IN ('single','5pack','10pack')),
+  created_at     TIMESTAMPTZ DEFAULT NOW()
+);
