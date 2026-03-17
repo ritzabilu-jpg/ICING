@@ -1,4 +1,4 @@
-export type WorkshopType = 'individual' | 'couple' | 'team' | 'one-on-one' | 'lior-slots';
+export type WorkshopType = 'individual' | 'couple' | 'team' | 'one-on-one';
 export type BookingStatus = 'pending' | 'confirmed' | 'cancelled';
 export type PaymentStatus = 'unpaid' | 'paid' | 'refunded';
 
@@ -10,6 +10,8 @@ export interface Instructor {
   specialties: string[];
   certifications: string[];
   quote?: string;
+  facebook_url?: string;
+  phone?: string;
   created_at?: string;
 }
 

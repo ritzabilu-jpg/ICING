@@ -74,8 +74,23 @@ export default function InstructorCard({ instructor }: InstructorCardProps) {
         </div>
       </div>
 
-      {/* Book with this instructor */}
-      <div className="px-6 py-4 bg-ice-50 border-t border-ice-100">
+      {/* Footer: contact + book */}
+      <div className="px-6 py-4 bg-ice-50 border-t border-ice-100 flex flex-col gap-2">
+        {/* Phone / Facebook */}
+        <div className="flex gap-3 flex-wrap">
+          {instructor.phone && (
+            <a href={`tel:${instructor.phone}`}
+              className="flex items-center gap-1.5 text-xs text-slate-600 hover:text-ice-700 font-semibold">
+              📞 {instructor.phone}
+            </a>
+          )}
+          {instructor.facebook_url && (
+            <a href={instructor.facebook_url} target="_blank" rel="noopener noreferrer"
+              className="flex items-center gap-1.5 text-xs text-blue-600 hover:text-blue-800 font-semibold">
+              📘 פייסבוק
+            </a>
+          )}
+        </div>
         <Link
           href={`/booking?instructorId=${instructor.id}`}
           className="w-full text-center block bg-navy-900 hover:bg-navy-800
