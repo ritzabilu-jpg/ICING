@@ -27,23 +27,33 @@ export default function Header() {
     setVisitorRole(localStorage.getItem('visitor_role') || 'user');
   }, []);
 
+  function getDashboardHref(role: string) {
+    if (['admin', 'instructor'].includes(role)) {
+      const key = localStorage.getItem('admin_key') || '';
+      return `/admin/lior?key=${encodeURIComponent(key)}`;
+    }
+    return '/journal';
+  }
+
   function handleLogin(id: string, name: string, role: string) {
     setVisitorName(name);
     setVisitorRole(role);
     setShowLogin(false);
-    router.push('/dashboard');
+    router.push(getDashboardHref(role));
   }
 
   function handleLogout() {
     localStorage.removeItem('visitor_id');
     localStorage.removeItem('visitor_name');
     localStorage.removeItem('visitor_role');
+    localStorage.removeItem('admin_key');
     setVisitorName(null);
     setVisitorRole('user');
     router.push('/');
   }
 
   const isStaff = ['instructor', 'admin'].includes(visitorRole);
+  const dashboardHref = getDashboardHref(visitorRole);
 
   return (
     <>
@@ -74,7 +84,7 @@ export default function Header() {
               {/* Login / User area */}
               {visitorName ? (
                 <div className="hidden md:flex items-center gap-2">
-                  <Link href="/dashboard"
+                  <Link href={dashboardHref}
                     className="flex items-center gap-1.5 bg-navy-700 hover:bg-navy-600 text-slate-200 hover:text-ice-400 text-sm font-semibold px-3 py-1.5 rounded-xl transition-colors">
                     <span className="text-ice-400">👤</span>
                     <span className="max-w-[100px] truncate">{visitorName}</span>
@@ -139,7 +149,7 @@ export default function Header() {
               ))}
               {visitorName ? (
                 <>
-                  <Link href="/dashboard" onClick={() => setMenuOpen(false)}
+                  <Link href={dashboardHref} onClick={() => setMenuOpen(false)}
                     className="py-3 px-4 rounded-xl font-semibold text-ice-400 hover:bg-navy-700 transition-colors">
                     👤 האזור האישי שלי
                   </Link>

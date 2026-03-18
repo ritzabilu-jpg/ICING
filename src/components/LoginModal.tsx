@@ -31,6 +31,10 @@ export default function LoginModal({ initialName = '', onClose, onLogin }: Props
     localStorage.setItem('visitor_id', data.id);
     localStorage.setItem('visitor_name', data.name);
     localStorage.setItem('visitor_role', data.role);
+    // Save the access code so staff can auto-navigate to admin panel
+    if (data.role === 'admin' || data.role === 'instructor') {
+      localStorage.setItem('admin_key', code.trim());
+    }
     onLogin(data.id, data.name, data.role);
   }
 
