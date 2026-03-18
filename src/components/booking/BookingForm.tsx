@@ -1,11 +1,20 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useRouter } from 'next/navigation';
 import type { Workshop } from '@/types';
+
+const PROFILE_KEY = 'client_profile_v1';
+interface ClientProfile { user_name: string; email: string; phone: string; city: string; }
+function loadProfile(): Partial<ClientProfile> {
+  if (typeof window === 'undefined') return {};
+  const raw = localStorage.getItem(PROFILE_KEY);
+  return raw ? JSON.parse(raw) : {};
+}
+function saveProfile(p: ClientProfile) { localStorage.setItem(PROFILE_KEY, JSON.stringify(p)); }
 
 interface BookingFormProps {
   workshop: Workshop;
@@ -20,6 +29,7 @@ const bookingSchema = z.object({
     .min(9, 'מספר טלפון לא תקין')
     .max(15)
     .regex(/^[\d+\-\s]+$/, 'מספר טלפון לא תקין'),
+  city: z.string().min(2, 'יש להזין ישוב מגורים').max(60),
   participants: z.number().int().min(1, 'לפחות משתתף אחד'),
 });
 
@@ -39,6 +49,9 @@ export default function BookingForm({ workshop, onBack }: BookingFormProps) {
 
   const maxParticipants = workshop.capacity - workshop.seats_taken;
 
+  const savedProfile = typeof window !== 'undefined' ? loadProfile() : {};
+  const isFirstTime = !savedProfile.city;
+
   const {
     register,
     handleSubmit,
@@ -48,8 +61,15 @@ export default function BookingForm({ workshop, onBack }: BookingFormProps) {
     resolver: zodResolver(bookingSchema),
     defaultValues: {
       participants: workshop.type === 'couple' ? 2 : 1,
+      user_name: savedProfile.user_name ?? '',
+      email: savedProfile.email ?? '',
+      phone: savedProfile.phone ?? '',
+      city: savedProfile.city ?? '',
     },
   });
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => {}, []);
 
   const participants = watch('participants');
   const totalPrice = workshop.price * (participants || 1);
@@ -73,6 +93,9 @@ export default function BookingForm({ workshop, onBack }: BookingFormProps) {
     setServerError(null);
 
     try {
+      // Save registration profile for future visits
+      saveProfile({ user_name: formData.user_name, email: formData.email, phone: formData.phone, city: formData.city });
+
       const res = await fetch('/api/bookings', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -159,6 +182,22 @@ export default function BookingForm({ workshop, onBack }: BookingFormProps) {
                 dir="ltr"
               />
               {errors.phone && <p className="error-text">{errors.phone.message}</p>}
+            </div>
+
+            {/* City */}
+            <div>
+              <label className="form-label">
+                ישוב מגורים *
+                {isFirstTime && <span className="text-xs text-ice-600 mr-2">📋 הרשמה ראשונה</span>}
+              </label>
+              <input
+                {...register('city')}
+                type="text"
+                placeholder="תל אביב, חולון..."
+                className="input-field"
+                autoComplete="address-level2"
+              />
+              {errors.city && <p className="error-text">{errors.city.message}</p>}
             </div>
 
             {/* Participants */}

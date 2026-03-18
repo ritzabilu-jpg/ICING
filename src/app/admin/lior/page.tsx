@@ -3,6 +3,9 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Suspense } from 'react';
+import type { ClientEntry } from '@/app/api/admin/clients/route';
+
+// ─── Types ────────────────────────────────────────────────────────────────────
 
 interface Booking {
   id: string; time_slot: string; slot_date: string;
@@ -22,11 +25,33 @@ const PKG_LABELS: Record<string, string> = {
   single: 'בודדת', '5pack': 'חבילת 5', '10pack': 'חבילת 10',
 };
 
+const DEMO_INSTRUCTORS = [
+  { name: 'ליאור כ"ץ',   phone: null,          facebook: null,                                       email: 'lior@example.com' },
+  { name: 'גיא רייבנבך', phone: '052-8761110', facebook: 'https://www.facebook.com/share/1KpjfpeyKV/', email: null },
+  { name: 'יוסי כהן',    phone: null,          facebook: null,                                       email: null },
+  { name: 'מירה לוי',    phone: null,          facebook: null,                                       email: null },
+];
+
+const HEALTH_KEY = 'admin_health_checks_v1';
+
+function loadHealthChecks(): Record<string, { daily: boolean; general: boolean }> {
+  if (typeof window === 'undefined') return {};
+  const raw = localStorage.getItem(HEALTH_KEY);
+  return raw ? JSON.parse(raw) : {};
+}
+function saveHealthChecks(data: Record<string, { daily: boolean; general: boolean }>) {
+  localStorage.setItem(HEALTH_KEY, JSON.stringify(data));
+}
+
+// ─── Admin Content ────────────────────────────────────────────────────────────
+
+type TabType = 'lior' | 'immersion' | 'clients' | 'instructors';
+
 function AdminContent() {
   const searchParams = useSearchParams();
   const key = searchParams.get('key') ?? '';
 
-  const [tab, setTab] = useState<'lior' | 'immersion'>('lior');
+  const [tab, setTab] = useState<TabType>('lior');
 
   // ── Lior workshop bookings ──
   const [bookings, setBookings]   = useState<Booking[]>([]);
@@ -44,6 +69,18 @@ function AdminContent() {
   const [newNotes, setNewNotes]   = useState('');
   const [addingSlot, setAddingSlot] = useState(false);
   const [expandedSlot, setExpandedSlot] = useState<string | null>(null);
+
+  // ── Clients ──
+  const [clients, setClients]     = useState<ClientEntry[]>([]);
+  const [loadingC, setLoadingC]   = useState(false);
+  const [errorC, setErrorC]       = useState('');
+  const [healthChecks, setHealthChecks] = useState<Record<string, { daily: boolean; general: boolean }>>({});
+  const [clientSearch, setClientSearch] = useState('');
+
+  // ── Instructors ──
+  const [inviteEmail, setInviteEmail] = useState<string | null>(null);
+
+  // ── Load functions ──────────────────────────────────────────────────────────
 
   const loadLior = useCallback(async () => {
     setLoadingL(true); setErrorL('');
@@ -67,8 +104,22 @@ function AdminContent() {
     finally { setLoadingS(false); }
   }, [key]);
 
-  useEffect(() => { loadLior(); }, [loadLior]);
+  const loadClients = useCallback(async () => {
+    setLoadingC(true); setErrorC('');
+    try {
+      const res = await fetch(`/api/admin/clients?key=${encodeURIComponent(key)}`);
+      const data = await res.json() as { clients?: ClientEntry[]; error?: string };
+      if (!res.ok) setErrorC(data.error ?? 'שגיאה');
+      else setClients(data.clients ?? []);
+    } catch { setErrorC('שגיאת רשת'); }
+    finally { setLoadingC(false); }
+  }, [key]);
+
+  useEffect(() => { loadLior(); setHealthChecks(loadHealthChecks()); }, [loadLior]);
   useEffect(() => { if (tab === 'immersion') loadSlots(); }, [tab, loadSlots]);
+  useEffect(() => { if (tab === 'clients') loadClients(); }, [tab, loadClients]);
+
+  // ── Actions ─────────────────────────────────────────────────────────────────
 
   async function deleteBooking(id: string) {
     if (!confirm('למחוק רישום זה?')) return;
@@ -97,21 +148,30 @@ function AdminContent() {
     setSlots(prev => prev.filter(s => s.id !== id));
   }
 
+  function toggleHealth(clientId: string, field: 'daily' | 'general') {
+    const updated = { ...healthChecks, [clientId]: { ...(healthChecks[clientId] ?? { daily: false, general: false }), [field]: !healthChecks[clientId]?.[field] } };
+    setHealthChecks(updated);
+    saveHealthChecks(updated);
+  }
+
   function exportCSV() {
     const rows = [['שעה', 'תאריך', 'שם', 'טלפון', 'זמן הרשמה']];
-    for (const b of bookings) {
-      rows.push([b.time_slot, b.slot_date, b.name, b.phone,
-        new Date(b.created_at).toLocaleString('he-IL')]);
-    }
+    for (const b of bookings)
+      rows.push([b.time_slot, b.slot_date, b.name, b.phone, new Date(b.created_at).toLocaleString('he-IL')]);
     const csv = rows.map(r => r.map(c => `"${c}"`).join(',')).join('\n');
     const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a'); a.href = url;
-    a.download = `ליאור-הרשמות-19.3.2026.csv`; a.click();
+    a.download = `לקוחות.csv`; a.click();
     URL.revokeObjectURL(url);
   }
 
-  // ── Auth check ──────────────────────────────────────────────
+  function getInviteMessage(instructor: typeof DEMO_INSTRUCTORS[0]) {
+    const url = `${typeof window !== 'undefined' ? window.location.origin : 'https://icing-blond.vercel.app'}/admin/lior?key=${key}`;
+    return `שלום ${instructor.name},\n\nמוזמן/ת לצפות בלוח ניהול הסדנאות והלקוחות שלך:\n${url}\n\nבברכה,\nצוות חוויות שוויץ המדע`;
+  }
+
+  // ── Auth check ───────────────────────────────────────────────────────────────
   if (!loadingL && errorL === 'קוד גישה שגוי') {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
@@ -124,30 +184,32 @@ function AdminContent() {
     );
   }
 
+  const filteredClients = clients.filter(c =>
+    !clientSearch || c.name.includes(clientSearch) || c.phone.includes(clientSearch)
+  );
+
   return (
     <div className="max-w-5xl mx-auto px-4 py-10" dir="rtl">
 
-      {/* Page title */}
       <h1 className="text-3xl font-black text-navy-900 mb-6">לוח אדמין</h1>
 
       {/* Tabs */}
-      <div className="flex gap-2 mb-8 border-b border-slate-200">
-        <button
-          onClick={() => setTab('lior')}
-          className={`px-5 py-2.5 font-bold text-sm rounded-t-xl transition-colors ${
-            tab === 'lior' ? 'bg-white border-2 border-b-white border-slate-200 -mb-px text-navy-900' : 'text-slate-500 hover:text-navy-900'
-          }`}
-        >
-          📋 סדנת ליאור כ&quot;ץ
-        </button>
-        <button
-          onClick={() => setTab('immersion')}
-          className={`px-5 py-2.5 font-bold text-sm rounded-t-xl transition-colors ${
-            tab === 'immersion' ? 'bg-white border-2 border-b-white border-slate-200 -mb-px text-navy-900' : 'text-slate-500 hover:text-navy-900'
-          }`}
-        >
-          🧊 מועדי טבילה
-        </button>
+      <div className="flex gap-2 mb-8 border-b border-slate-200 flex-wrap">
+        {([
+          ['lior',        '📋 סדנת ליאור כ"ץ'],
+          ['immersion',   '🧊 מועדי טבילה'],
+          ['clients',     '👥 לקוחות'],
+          ['instructors', '📧 מדריכים'],
+        ] as [TabType, string][]).map(([t, label]) => (
+          <button key={t} onClick={() => setTab(t)}
+            className={`px-5 py-2.5 font-bold text-sm rounded-t-xl transition-colors ${
+              tab === t
+                ? 'bg-white border-2 border-b-white border-slate-200 -mb-px text-navy-900'
+                : 'text-slate-500 hover:text-navy-900'
+            }`}>
+            {label}
+          </button>
+        ))}
       </div>
 
       {/* ── TAB: Lior workshop ── */}
@@ -196,27 +258,42 @@ function AdminContent() {
                           <th className="text-right px-6 py-3 font-semibold text-slate-600 w-8">#</th>
                           <th className="text-right px-4 py-3 font-semibold text-slate-600">שם</th>
                           <th className="text-right px-4 py-3 font-semibold text-slate-600">טלפון</th>
+                          <th className="text-right px-4 py-3 font-semibold text-slate-600">בריאות יומית</th>
+                          <th className="text-right px-4 py-3 font-semibold text-slate-600">הצהרה כללית</th>
                           <th className="text-right px-4 py-3 font-semibold text-slate-600">נרשם ב</th>
                           <th className="px-4 py-3 w-12"></th>
                         </tr>
                       </thead>
                       <tbody>
-                        {slotBookings.map((b, i) => (
-                          <tr key={b.id} className="border-b border-slate-50 hover:bg-slate-50 transition-colors">
-                            <td className="px-6 py-3 text-slate-400 font-mono text-right">{i + 1}</td>
-                            <td className="px-4 py-3 font-semibold text-navy-900 text-right">{b.name}</td>
-                            <td className="px-4 py-3 text-slate-600 font-mono text-right">
-                              <a href={`tel:${b.phone}`} className="hover:text-ice-600">{b.phone}</a>
-                            </td>
-                            <td className="px-4 py-3 text-slate-400 text-xs text-right">
-                              {new Date(b.created_at).toLocaleString('he-IL', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })}
-                            </td>
-                            <td className="px-4 py-3 text-center">
-                              <button onClick={() => deleteBooking(b.id)} disabled={deleting === b.id}
-                                className="text-red-400 hover:text-red-600 disabled:opacity-30" title="מחק">✕</button>
-                            </td>
-                          </tr>
-                        ))}
+                        {slotBookings.map((b, i) => {
+                          const hc = healthChecks[b.id] ?? { daily: false, general: false };
+                          return (
+                            <tr key={b.id} className="border-b border-slate-50 hover:bg-slate-50 transition-colors">
+                              <td className="px-6 py-3 text-slate-400 font-mono text-right">{i + 1}</td>
+                              <td className="px-4 py-3 font-semibold text-navy-900 text-right">{b.name}</td>
+                              <td className="px-4 py-3 text-slate-600 font-mono text-right">
+                                <a href={`tel:${b.phone}`} className="hover:text-ice-600">{b.phone}</a>
+                              </td>
+                              <td className="px-4 py-3 text-center">
+                                <input type="checkbox" checked={hc.daily}
+                                  onChange={() => toggleHealth(b.id, 'daily')}
+                                  className="w-4 h-4 accent-ice-500 cursor-pointer" title="הצהרת בריאות יומית" />
+                              </td>
+                              <td className="px-4 py-3 text-center">
+                                <input type="checkbox" checked={hc.general}
+                                  onChange={() => toggleHealth(b.id, 'general')}
+                                  className="w-4 h-4 accent-green-500 cursor-pointer" title="הצהרת בריאות כללית" />
+                              </td>
+                              <td className="px-4 py-3 text-slate-400 text-xs text-right">
+                                {new Date(b.created_at).toLocaleString('he-IL', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })}
+                              </td>
+                              <td className="px-4 py-3 text-center">
+                                <button onClick={() => deleteBooking(b.id)} disabled={deleting === b.id}
+                                  className="text-red-400 hover:text-red-600 disabled:opacity-30" title="מחק">✕</button>
+                              </td>
+                            </tr>
+                          );
+                        })}
                       </tbody>
                     </table>
                   )}
@@ -230,8 +307,6 @@ function AdminContent() {
       {/* ── TAB: Immersion slots ── */}
       {tab === 'immersion' && (
         <div className="space-y-6">
-
-          {/* Add slot form */}
           <div className="bg-white rounded-3xl border-2 border-ice-100 shadow-sm p-6">
             <h2 className="text-lg font-black text-navy-900 mb-4">➕ הוסף מועד טבילה</h2>
             <form onSubmit={addSlot} className="grid sm:grid-cols-4 gap-3 items-end">
@@ -262,7 +337,6 @@ function AdminContent() {
             </form>
           </div>
 
-          {/* Slots list */}
           {loadingS ? (
             <div className="flex justify-center py-10">
               <div className="w-8 h-8 border-2 border-ice-500 border-t-transparent rounded-full animate-spin" />
@@ -277,13 +351,10 @@ function AdminContent() {
           ) : (
             slots.map(s => (
               <div key={s.id} className="bg-white rounded-3xl border-2 border-ice-100 shadow-sm overflow-hidden">
-                {/* Slot header */}
                 <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-ice-50">
                   <div>
                     <span className="text-xl font-black text-navy-900">
-                      {new Date(s.slot_date + 'T00:00:00').toLocaleDateString('he-IL', {
-                        weekday: 'long', day: 'numeric', month: 'long',
-                      })}
+                      {new Date(s.slot_date + 'T00:00:00').toLocaleDateString('he-IL', { weekday: 'long', day: 'numeric', month: 'long' })}
                     </span>
                     <span className="text-slate-500 text-sm mr-3">· {s.slot_time.slice(0, 5)}</span>
                     {s.notes && <span className="text-slate-400 text-xs">· {s.notes}</span>}
@@ -304,8 +375,6 @@ function AdminContent() {
                     </button>
                   </div>
                 </div>
-
-                {/* Participants */}
                 {expandedSlot === s.id && (
                   s.bookings.length === 0 ? (
                     <div className="text-center py-6 text-slate-400 text-sm">אין נרשמים עדיין</div>
@@ -316,28 +385,42 @@ function AdminContent() {
                           <th className="text-right px-6 py-3 font-semibold text-slate-600 w-8">#</th>
                           <th className="text-right px-4 py-3 font-semibold text-slate-600">שם</th>
                           <th className="text-right px-4 py-3 font-semibold text-slate-600">טלפון</th>
+                          <th className="text-right px-4 py-3 font-semibold text-slate-600">בריאות יומית</th>
+                          <th className="text-right px-4 py-3 font-semibold text-slate-600">הצהרה כללית</th>
                           <th className="text-right px-4 py-3 font-semibold text-slate-600">חבילה</th>
                           <th className="text-right px-4 py-3 font-semibold text-slate-600">נרשם ב</th>
                         </tr>
                       </thead>
                       <tbody>
-                        {s.bookings.map((b, i) => (
-                          <tr key={i} className="border-b border-slate-50 hover:bg-slate-50">
-                            <td className="px-6 py-3 text-slate-400 font-mono text-right">{i + 1}</td>
-                            <td className="px-4 py-3 font-semibold text-navy-900 text-right">{b.visitor_name}</td>
-                            <td className="px-4 py-3 font-mono text-right">
-                              <a href={`tel:${b.visitor_phone}`} className="hover:text-ice-600 text-slate-600">{b.visitor_phone}</a>
-                            </td>
-                            <td className="px-4 py-3 text-right">
-                              <span className="bg-ice-100 text-ice-700 text-xs font-bold px-2 py-0.5 rounded-full">
-                                {PKG_LABELS[b.package_type] ?? b.package_type}
-                              </span>
-                            </td>
-                            <td className="px-4 py-3 text-slate-400 text-xs text-right">
-                              {new Date(b.created_at).toLocaleString('he-IL', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })}
-                            </td>
-                          </tr>
-                        ))}
+                        {s.bookings.map((b, i) => {
+                          const bid = `imm-${s.id}-${i}`;
+                          const hc = healthChecks[bid] ?? { daily: false, general: false };
+                          return (
+                            <tr key={i} className="border-b border-slate-50 hover:bg-slate-50">
+                              <td className="px-6 py-3 text-slate-400 font-mono text-right">{i + 1}</td>
+                              <td className="px-4 py-3 font-semibold text-navy-900 text-right">{b.visitor_name}</td>
+                              <td className="px-4 py-3 font-mono text-right">
+                                <a href={`tel:${b.visitor_phone}`} className="hover:text-ice-600 text-slate-600">{b.visitor_phone}</a>
+                              </td>
+                              <td className="px-4 py-3 text-center">
+                                <input type="checkbox" checked={hc.daily} onChange={() => toggleHealth(bid, 'daily')}
+                                  className="w-4 h-4 accent-ice-500 cursor-pointer" />
+                              </td>
+                              <td className="px-4 py-3 text-center">
+                                <input type="checkbox" checked={hc.general} onChange={() => toggleHealth(bid, 'general')}
+                                  className="w-4 h-4 accent-green-500 cursor-pointer" />
+                              </td>
+                              <td className="px-4 py-3 text-right">
+                                <span className="bg-ice-100 text-ice-700 text-xs font-bold px-2 py-0.5 rounded-full">
+                                  {PKG_LABELS[b.package_type] ?? b.package_type}
+                                </span>
+                              </td>
+                              <td className="px-4 py-3 text-slate-400 text-xs text-right">
+                                {new Date(b.created_at).toLocaleString('he-IL', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })}
+                              </td>
+                            </tr>
+                          );
+                        })}
                       </tbody>
                     </table>
                   )
@@ -347,6 +430,149 @@ function AdminContent() {
           )}
         </div>
       )}
+
+      {/* ── TAB: Clients ── */}
+      {tab === 'clients' && (
+        <div>
+          <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
+            <h2 className="text-xl font-black text-navy-900">רשימת לקוחות מלאה</h2>
+            <div className="flex gap-3 items-center">
+              <input
+                value={clientSearch}
+                onChange={e => setClientSearch(e.target.value)}
+                placeholder="🔍 חיפוש שם / טלפון"
+                className="border-2 border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-ice-400 w-48"
+                dir="rtl"
+              />
+              <button onClick={loadClients}
+                className="px-4 py-2 rounded-xl border-2 border-slate-200 text-slate-600 hover:border-slate-300 font-semibold text-sm">
+                ↻ רענן
+              </button>
+              <a href={`/admin/clients?key=${encodeURIComponent(key)}`}
+                className="px-4 py-2 rounded-xl bg-navy-900 text-white font-semibold text-sm hover:bg-navy-700"
+                target="_blank" rel="noopener noreferrer">
+                🔗 עמוד מלא
+              </a>
+            </div>
+          </div>
+
+          {loadingC ? (
+            <div className="flex justify-center py-16">
+              <div className="w-10 h-10 border-2 border-ice-500 border-t-transparent rounded-full animate-spin" />
+            </div>
+          ) : errorC ? (
+            <div className="text-center py-10 text-red-500">{errorC}</div>
+          ) : filteredClients.length === 0 ? (
+            <div className="text-center py-16 text-slate-400">
+              <div className="text-4xl mb-2">👥</div>
+              <p>{clientSearch ? 'לא נמצאו לקוחות' : 'אין לקוחות עדיין'}</p>
+            </div>
+          ) : (
+            <div className="bg-white rounded-3xl border-2 border-ice-100 shadow-sm overflow-hidden">
+              <div className="px-6 py-3 bg-ice-50 border-b border-slate-100 text-xs text-slate-500">
+                {filteredClients.length} לקוחות | ✓ בריאות יומית · ✓ הצהרה כללית — סמן ידנית לאחר אימות
+              </div>
+              <table className="w-full text-sm" dir="rtl">
+                <thead>
+                  <tr className="border-b border-slate-100 bg-slate-50">
+                    <th className="text-right px-4 py-3 font-semibold text-slate-600 w-8">#</th>
+                    <th className="text-right px-4 py-3 font-semibold text-slate-600">שם</th>
+                    <th className="text-right px-4 py-3 font-semibold text-slate-600">טלפון</th>
+                    <th className="text-right px-4 py-3 font-semibold text-slate-600">סוג</th>
+                    <th className="text-right px-4 py-3 font-semibold text-slate-600">תאריך</th>
+                    <th className="text-center px-4 py-3 font-semibold text-slate-600">🧊 יומית</th>
+                    <th className="text-center px-4 py-3 font-semibold text-slate-600">📋 כללית</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredClients.map((c, i) => {
+                    const hc = healthChecks[c.id] ?? { daily: false, general: false };
+                    return (
+                      <tr key={c.id} className={`border-b border-slate-50 hover:bg-slate-50 transition-colors`}>
+                        <td className="px-4 py-3 text-slate-400 font-mono text-right">{i + 1}</td>
+                        <td className="px-4 py-3 font-semibold text-navy-900 text-right">{c.name}</td>
+                        <td className="px-4 py-3 text-slate-600 font-mono text-right">
+                          <a href={`tel:${c.phone}`} className="hover:text-ice-600">{c.phone}</a>
+                        </td>
+                        <td className="px-4 py-3 text-right">
+                          <span className="text-xs bg-navy-100 text-navy-700 px-2 py-0.5 rounded-full font-semibold">{c.type}</span>
+                        </td>
+                        <td className="px-4 py-3 text-slate-500 text-right text-xs">{c.date} {c.time && `· ${c.time}`}</td>
+                        <td className="px-4 py-3 text-center">
+                          <input type="checkbox" checked={hc.daily}
+                            onChange={() => toggleHealth(c.id, 'daily')}
+                            className="w-4 h-4 accent-ice-500 cursor-pointer" />
+                        </td>
+                        <td className="px-4 py-3 text-center">
+                          <input type="checkbox" checked={hc.general}
+                            onChange={() => toggleHealth(c.id, 'general')}
+                            className="w-4 h-4 accent-green-500 cursor-pointer" />
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* ── TAB: Instructors ── */}
+      {tab === 'instructors' && (
+        <div className="space-y-5">
+          <p className="text-slate-500 text-sm">שלח למדריכים קישור כניסה לניהול הסדנאות ולצפייה ברשימת לקוחות.</p>
+
+          {DEMO_INSTRUCTORS.map(inst => (
+            <div key={inst.name} className="bg-white rounded-3xl border-2 border-ice-100 shadow-sm p-6">
+              <div className="flex items-start justify-between gap-4 flex-wrap">
+                <div>
+                  <h3 className="text-xl font-black text-navy-900 mb-1">{inst.name}</h3>
+                  <div className="flex gap-4 flex-wrap text-sm">
+                    {inst.phone && (
+                      <a href={`tel:${inst.phone}`} className="text-slate-600 hover:text-ice-600 font-semibold">
+                        📞 {inst.phone}
+                      </a>
+                    )}
+                    {inst.facebook && (
+                      <a href={inst.facebook} target="_blank" rel="noopener noreferrer"
+                        className="text-blue-600 hover:text-blue-800 font-semibold">
+                        📘 פייסבוק
+                      </a>
+                    )}
+                  </div>
+                </div>
+                <button
+                  onClick={() => setInviteEmail(inviteEmail === inst.name ? null : inst.name)}
+                  className="bg-navy-900 hover:bg-navy-700 text-white font-bold px-4 py-2 rounded-xl text-sm transition-colors">
+                  📧 שלח הזמנה
+                </button>
+              </div>
+
+              {inviteEmail === inst.name && (
+                <div className="mt-4 bg-ice-50 border border-ice-200 rounded-2xl p-4">
+                  <p className="text-xs font-semibold text-slate-500 mb-2">העתק והעבר למדריך:</p>
+                  {inst.email && (
+                    <a href={`mailto:${inst.email}?subject=${encodeURIComponent('הזמנה לניהול לוח הסדנאות')}&body=${encodeURIComponent(getInviteMessage(inst))}`}
+                      className="inline-block mb-3 text-xs bg-blue-600 text-white font-bold px-3 py-1.5 rounded-lg hover:bg-blue-700">
+                      פתח ב-Gmail ↗
+                    </a>
+                  )}
+                  <pre className="text-xs text-slate-700 whitespace-pre-wrap bg-white border border-slate-200 rounded-xl p-3 font-sans leading-relaxed">
+                    {getInviteMessage(inst)}
+                  </pre>
+                  <button
+                    onClick={() => navigator.clipboard.writeText(getInviteMessage(inst))}
+                    className="mt-2 text-xs text-slate-500 hover:text-navy-900 font-semibold">
+                    📋 העתק ללוח
+                  </button>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+
     </div>
   );
 }
