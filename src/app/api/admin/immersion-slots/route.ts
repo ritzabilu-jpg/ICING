@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase';
 
 function checkKey(key: string | null) {
-  const valid = process.env.ADMIN_KEY || process.env.INSTRUCTOR_CODE || 'admin123';
+  const valid = process.env.ADMIN_KEY || process.env.INSTRUCTOR_CODE || 'lior2026';
   return key === valid;
 }
 
