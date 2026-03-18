@@ -23,7 +23,7 @@ export interface ClientEntry {
 
 export async function GET(req: NextRequest) {
   const key = req.nextUrl.searchParams.get('key') ?? '';
-  const validKey = process.env.ADMIN_KEY || process.env.INSTRUCTOR_CODE || 'lior2026';
+  const validKey = process.env.ADMIN_KEY ?? 'lior2026';
   if (key !== validKey) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
   const supabase = createAdminClient();
