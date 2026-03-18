@@ -60,14 +60,17 @@ function AdminContent() {
   const [deleting, setDeleting]   = useState<string | null>(null);
 
   // ── Immersion slots ──
-  const [slots, setSlots]         = useState<ImmersionSlot[]>([]);
-  const [loadingS, setLoadingS]   = useState(false);
-  const [errorS, setErrorS]       = useState('');
-  const [newDate, setNewDate]     = useState('');
-  const [newTime, setNewTime]     = useState('');
-  const [newMax, setNewMax]       = useState(10);
-  const [newNotes, setNewNotes]   = useState('');
+  const [slots, setSlots]           = useState<ImmersionSlot[]>([]);
+  const [loadingS, setLoadingS]     = useState(false);
+  const [errorS, setErrorS]         = useState('');
+  const [fromDate, setFromDate]     = useState('');
+  const [toDate, setToDate]         = useState('');
+  const [fromTime, setFromTime]     = useState('');
+  const [toTime, setToTime]         = useState('');
+  const [newMax, setNewMax]         = useState(10);
+  const [newNotes, setNewNotes]     = useState('');
   const [addingSlot, setAddingSlot] = useState(false);
+  const [addSlotMsg, setAddSlotMsg] = useState('');
   const [expandedSlot, setExpandedSlot] = useState<string | null>(null);
 
   // ── Clients ──
@@ -129,16 +132,38 @@ function AdminContent() {
     setDeleting(null);
   }
 
+  // Compute preview slot count for range form
+  function previewSlotCount(): number {
+    if (!fromDate || !toDate || !fromTime || !toTime) return 0;
+    const [fh, fm] = fromTime.split(':').map(Number);
+    const [th, tm] = toTime.split(':').map(Number);
+    const fromMin = fh * 60 + fm;
+    const toMin   = th * 60 + tm;
+    if (toMin < fromMin) return 0;
+    const stepsPerDay = Math.floor((toMin - fromMin) / 10) + 1;
+    const d1 = new Date(fromDate + 'T00:00:00');
+    const d2 = new Date(toDate   + 'T00:00:00');
+    const days = Math.max(0, Math.round((d2.getTime() - d1.getTime()) / 86400000)) + 1;
+    return stepsPerDay * days;
+  }
+
   async function addSlot(e: React.FormEvent) {
     e.preventDefault();
-    if (!newDate || !newTime) return;
-    setAddingSlot(true);
+    if (!fromDate || !toDate || !fromTime || !toTime) return;
+    setAddingSlot(true); setAddSlotMsg('');
     const res = await fetch(`/api/admin/immersion-slots?key=${encodeURIComponent(key)}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ slot_date: newDate, slot_time: newTime, max_participants: newMax, notes: newNotes }),
+      body: JSON.stringify({ from_date: fromDate, to_date: toDate, from_time: fromTime, to_time: toTime, max_participants: newMax, notes: newNotes }),
     });
-    if (res.ok) { setNewDate(''); setNewTime(''); setNewNotes(''); await loadSlots(); }
+    const data = await res.json() as { success?: boolean; count?: number; error?: string };
+    if (res.ok) {
+      setAddSlotMsg(`✅ נוצרו ${data.count} מועדים בהצלחה`);
+      setFromDate(''); setToDate(''); setFromTime(''); setToTime(''); setNewNotes('');
+      await loadSlots();
+    } else {
+      setAddSlotMsg(`❌ ${data.error ?? 'שגיאה'}`);
+    }
     setAddingSlot(false);
   }
 
@@ -308,32 +333,63 @@ function AdminContent() {
       {tab === 'immersion' && (
         <div className="space-y-6">
           <div className="bg-white rounded-3xl border-2 border-ice-100 shadow-sm p-6">
-            <h2 className="text-lg font-black text-navy-900 mb-4">➕ הוסף מועד טבילה</h2>
-            <form onSubmit={addSlot} className="grid sm:grid-cols-4 gap-3 items-end">
-              <div>
-                <label className="block text-xs font-semibold text-slate-600 mb-1">תאריך</label>
-                <input type="date" required value={newDate} onChange={e => setNewDate(e.target.value)}
-                  className="w-full border-2 border-slate-200 focus:border-ice-400 rounded-xl px-3 py-2 text-sm focus:outline-none" />
+            <h2 className="text-lg font-black text-navy-900 mb-1">➕ הוסף מועדי טבילה</h2>
+            <p className="text-xs text-slate-400 mb-4">המערכת תיצור מועדים בהפרשים של 10 דקות בין השעות שתזין</p>
+            <form onSubmit={addSlot} className="space-y-3">
+              {/* Row 1: date range */}
+              <div className="grid sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-semibold text-slate-600 mb-1">מתאריך</label>
+                  <input type="date" required value={fromDate} onChange={e => setFromDate(e.target.value)}
+                    className="w-full border-2 border-slate-200 focus:border-ice-400 rounded-xl px-3 py-2 text-sm focus:outline-none" />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-slate-600 mb-1">עד תאריך</label>
+                  <input type="date" required value={toDate} onChange={e => setToDate(e.target.value)}
+                    className="w-full border-2 border-slate-200 focus:border-ice-400 rounded-xl px-3 py-2 text-sm focus:outline-none" />
+                </div>
               </div>
-              <div>
-                <label className="block text-xs font-semibold text-slate-600 mb-1">שעה</label>
-                <input type="time" required value={newTime} onChange={e => setNewTime(e.target.value)}
-                  className="w-full border-2 border-slate-200 focus:border-ice-400 rounded-xl px-3 py-2 text-sm focus:outline-none" />
+              {/* Row 2: time range */}
+              <div className="grid sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-semibold text-slate-600 mb-1">משעה</label>
+                  <input type="time" required value={fromTime} onChange={e => setFromTime(e.target.value)}
+                    className="w-full border-2 border-slate-200 focus:border-ice-400 rounded-xl px-3 py-2 text-sm focus:outline-none" />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-slate-600 mb-1">עד שעה</label>
+                  <input type="time" required value={toTime} onChange={e => setToTime(e.target.value)}
+                    className="w-full border-2 border-slate-200 focus:border-ice-400 rounded-xl px-3 py-2 text-sm focus:outline-none" />
+                </div>
               </div>
-              <div>
-                <label className="block text-xs font-semibold text-slate-600 mb-1">מקס׳ משתתפים</label>
-                <input type="number" min={1} max={20} value={newMax} onChange={e => setNewMax(Number(e.target.value))}
-                  className="w-full border-2 border-slate-200 focus:border-ice-400 rounded-xl px-3 py-2 text-sm focus:outline-none" />
+              {/* Row 3: max + notes */}
+              <div className="grid sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-semibold text-slate-600 mb-1">מקס׳ משתתפים לכל מועד</label>
+                  <input type="number" min={1} max={20} value={newMax} onChange={e => setNewMax(Number(e.target.value))}
+                    className="w-full border-2 border-slate-200 focus:border-ice-400 rounded-xl px-3 py-2 text-sm focus:outline-none" />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-slate-600 mb-1">הערה (אופציונלי)</label>
+                  <input value={newNotes} onChange={e => setNewNotes(e.target.value)} placeholder="למשל: קבוצת בוקר"
+                    className="w-full border-2 border-slate-200 focus:border-ice-400 rounded-xl px-3 py-2 text-sm focus:outline-none" />
+                </div>
               </div>
-              <div>
-                <label className="block text-xs font-semibold text-slate-600 mb-1">הערה (אופציונלי)</label>
-                <input value={newNotes} onChange={e => setNewNotes(e.target.value)} placeholder="למשל: קבוצת בוקר"
-                  className="w-full border-2 border-slate-200 focus:border-ice-400 rounded-xl px-3 py-2 text-sm focus:outline-none" />
-              </div>
-              <button type="submit" disabled={addingSlot}
-                className="sm:col-span-4 bg-ice-600 hover:bg-ice-700 text-white font-bold py-2.5 rounded-xl transition-colors disabled:opacity-50 text-sm">
-                {addingSlot ? 'מוסיף...' : '+ הוסף מועד'}
+              {/* Preview */}
+              {previewSlotCount() > 0 && (
+                <div className="bg-ice-50 border border-ice-200 rounded-xl px-4 py-2 text-sm text-ice-700 font-semibold">
+                  יוצרו <strong>{previewSlotCount()}</strong> מועדים (כל 10 דקות, {fromTime}–{toTime}, {fromDate} עד {toDate})
+                </div>
+              )}
+              <button type="submit" disabled={addingSlot || previewSlotCount() === 0}
+                className="w-full bg-ice-600 hover:bg-ice-700 text-white font-bold py-2.5 rounded-xl transition-colors disabled:opacity-50 text-sm">
+                {addingSlot ? 'יוצר מועדים...' : `+ צור ${previewSlotCount() > 0 ? previewSlotCount() + ' ' : ''}מועדים`}
               </button>
+              {addSlotMsg && (
+                <p className={`text-sm font-semibold text-center ${addSlotMsg.startsWith('✅') ? 'text-green-600' : 'text-red-500'}`}>
+                  {addSlotMsg}
+                </p>
+              )}
             </form>
           </div>
 
