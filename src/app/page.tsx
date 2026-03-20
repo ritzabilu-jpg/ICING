@@ -302,10 +302,10 @@ export default function HomePage() {
             ממוקמים בלב רחובות, נגישים בתחבורה ציבורית ובחניה פרטית
           </p>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-stretch">
             {/* Contact info */}
-            <div className="space-y-8">
-              <div className="bg-navy-800 rounded-3xl p-8 border border-navy-700">
+            <div className="flex flex-col gap-6">
+              <div className="bg-navy-800 rounded-3xl p-8 border border-navy-700 flex-1">
                 <h3 className="text-xl font-bold text-white mb-6">פרטי התקשרות</h3>
                 <div className="space-y-5">
                   <div className="flex items-start gap-4">
@@ -325,12 +325,11 @@ export default function HomePage() {
                     <span className="text-2xl">📞</span>
                     <span className="font-semibold text-lg">08-9310716</span>
                   </a>
-                  <a href="https://docs.google.com/forms/d/e/1FAIpQLScIsDk-_iYWYKqmiOSuXrfUqlFQcwL158lJzK5j88wKfcHnzg/viewform"
-                     target="_blank" rel="noopener noreferrer"
+                  <Link href="/contact"
                      className="flex items-center gap-4 text-slate-300 hover:text-ice-400 transition-colors">
-                    <span className="text-2xl">📋</span>
-                    <span className="text-sm underline">טופס הרשמה מהיר</span>
-                  </a>
+                    <span className="text-2xl">✉️</span>
+                    <span className="text-sm underline">שלח לנו הודעה</span>
+                  </Link>
                 </div>
               </div>
 
@@ -347,12 +346,12 @@ export default function HomePage() {
             </div>
 
             {/* Google Maps + Waze */}
-            <div className="space-y-4">
-              <div className="rounded-3xl overflow-hidden h-72 lg:h-80 shadow-2xl border border-navy-700">
+            <div className="flex flex-col gap-4">
+              <div className="rounded-3xl overflow-hidden flex-1 min-h-72 shadow-2xl border border-navy-700">
                 <iframe
                   src="https://maps.google.com/maps?q=חיים+סירני+52+רחובות&output=embed&hl=he"
                   width="100%"
-                  height="100%"
+                  height="320"
                   style={{ border: 0 }}
                   loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade"
