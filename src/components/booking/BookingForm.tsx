@@ -193,7 +193,7 @@ export default function BookingForm({ workshop, onBack }: BookingFormProps) {
               <input
                 {...register('city')}
                 type="text"
-                placeholder="תל אביב, חולון..."
+                placeholder="תל אביב, רחובות..."
                 className="input-field"
                 autoComplete="address-level2"
               />
