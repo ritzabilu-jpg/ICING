@@ -312,7 +312,7 @@ export default function ImmersionPage() {
       <div className="text-center py-14 px-4">
         <div className="text-5xl mb-4">🧊</div>
         <h1 className="text-4xl font-black text-white mb-2">קבע מועד לטבילה</h1>
-        <p className="text-ice-300 text-lg">בהדרכת מדריך מוסמך · חולון</p>
+        <p className="text-ice-300 text-lg">בהדרכת מדריך מוסמך · רחובות</p>
       </div>
 
       <div className="max-w-3xl mx-auto px-4 pb-16 space-y-8">
