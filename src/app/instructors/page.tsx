@@ -60,13 +60,9 @@ export default async function InstructorsPage() {
       {/* Hero */}
       <div className="bg-navy-900 py-16 mb-16">
         <div className="max-w-4xl mx-auto px-6 text-center">
-          <h1 className="text-4xl md:text-5xl font-black text-white mb-4">
-            המדריכים שלנו
+          <h1 className="text-4xl md:text-5xl font-black text-white">
+            הצוות שלנו
           </h1>
-          <p className="text-xl text-slate-400 max-w-2xl mx-auto">
-            מדריכים מוסמכים שעברו קורס הכשרה מקצועי בן יום מלא, כולל תיאוריה, תרגול מעשי,
-            ונבחנו על בטיחות, הדרכה והחומר המדעי בנושא הטבילה במים קרים ונשימות ב־CWI
-          </p>
         </div>
       </div>
 
