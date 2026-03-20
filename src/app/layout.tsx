@@ -64,8 +64,12 @@ export default function RootLayout({
         <link rel="apple-touch-icon" href="/logo-ice.png" />
       </head>
       <body className="min-h-screen flex flex-col bg-white text-navy-900 antialiased">
+        <a href="#main-content"
+           className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:right-4 focus:z-[100] focus:bg-ice-600 focus:text-white focus:px-4 focus:py-2 focus:rounded-xl focus:font-bold focus:shadow-lg">
+          דלג לתוכן הראשי
+        </a>
         <Header />
-        <main className="flex-1">
+        <main id="main-content" className="flex-1">
           {children}
         </main>
         <Footer />
