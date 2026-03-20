@@ -14,12 +14,12 @@ export const metadata: Metadata = {
 const DEMO_INSTRUCTORS: Instructor[] = [
   {
     id: '1',
-    name: 'יוסי כהן',
-    photo_url: null,
-    bio: 'מדריך אימון קר מוסמך עם 5 שנות ניסיון בשיטת Cold Water Immersion. מתמחה בליווי ספורטאים ואנשי עסקים לשיפור ביצועים.',
-    specialties: ['אימון קר', 'טכניקות נשימה', 'ביצועי שיא'],
-    certifications: ['CWI Instructor Level 2', 'מאמן כושר מוסמך'],
-    quote: 'הקור הוא המאמן הכנה ביותר שתמצא. הוא לא משקר.',
+    name: 'גילה גרוס קורנט',
+    photo_url: '/gila-gross.jpg',
+    bio: 'סדנה בדגש חוסן רגשי — לקחת את הניצחון של אתגר הקור לחיי היום יום לבניית חוסן מנטלי. מעבירה את הסדנאות בעברית ואנגלית.',
+    specialties: ['חוסן רגשי', 'חוסן מנטלי', 'מיינדפולנס'],
+    certifications: ['CWI Instructor Certified'],
+    quote: 'בין השקט של הקרח לעוצמה של הגוף, לבנות חוסן מנטלי, שקט פנימי ואנרגיה חדשה.',
   },
   {
     id: '2',
