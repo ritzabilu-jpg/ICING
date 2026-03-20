@@ -103,7 +103,7 @@ export default async function InstructorsPage() {
                 {
                   icon: '✅',
                   title: 'מבחן מסכם',
-                  description: 'תיאורטי + צ\'ק-ליסט מעשי עם דגש על בטיחות',
+                  description: 'מבחנים מסכמים וסטאז׳ כדרישה להסמכה',
                 },
               ].map(item => (
                 <div key={item.title} className="text-center p-5 bg-white rounded-2xl shadow-sm">
