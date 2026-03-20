@@ -9,11 +9,12 @@ interface InstructorCardProps {
 export default function InstructorCard({ instructor }: InstructorCardProps) {
   return (
     <div className="bg-white rounded-3xl shadow-xl border border-ice-100 overflow-hidden
-                    hover:shadow-2xl hover:border-ice-300 transition-all duration-300 hover:-translate-y-1">
-      <div className="flex gap-0">
+                    hover:shadow-2xl hover:border-ice-300 transition-all duration-300 hover:-translate-y-1
+                    flex flex-col h-full">
+      <div className="flex gap-0 flex-1">
         {/* Photo */}
         <div className="w-36 sm:w-44 flex-shrink-0 bg-gradient-to-b from-navy-900 to-ice-800
-                        relative overflow-hidden">
+                        relative overflow-hidden min-h-[220px]">
           {instructor.photo_url ? (
             <Image
               src={instructor.photo_url}
