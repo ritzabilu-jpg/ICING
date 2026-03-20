@@ -12,6 +12,7 @@ export interface Instructor {
   quote?: string;
   facebook_url?: string;
   phone?: string;
+  female?: boolean;
   created_at?: string;
 }
 
