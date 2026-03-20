@@ -1,11 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import type { Metadata } from 'next';
-
-export const metadata: Metadata = {
-  title: 'צור קשר – חוויות שוויץ המדע',
-};
 
 interface FormState {
   name: string;
