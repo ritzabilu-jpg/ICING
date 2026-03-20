@@ -64,8 +64,8 @@ export default async function InstructorsPage() {
             הצוות שלנו
           </h1>
           <p className="text-xl text-slate-400 max-w-2xl mx-auto">
-            מדריכים מוסמכים שעברו קורס הכשרה מקצועי בן יום מלא, כולל תיאוריה,
-            מעשי ומבחן מסכם בנושאי בטיחות קריטיים
+            מדריכים מוסמכים שעברו קורס הכשרה מקצועי בן יום מלא, כולל תיאוריה, תרגול מעשי,
+            ונבחנו על בטיחות, הדרכה והחומר המדעי בנושא הטבילה במים קרים ונשימות ב־CWI
           </p>
         </div>
       </div>
@@ -86,7 +86,7 @@ export default async function InstructorsPage() {
             </h2>
             <p className="text-slate-600 text-center mb-8 leading-relaxed">
               כל המדריכים שלנו עברו קורס הכשרה ייעודי הכולל תיאוריה רפואית,
-              תרגול מעשי, ומבחן מסכם עם צ&apos;ק-ליסט בטיחות קריטי.
+              תרגול מעשי, ונבחנו על בטיחות, הדרכה והחומר המדעי בנושא הטבילה במים קרים ונשימות ב־CWI.
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
               {[
