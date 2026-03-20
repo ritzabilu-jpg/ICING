@@ -28,10 +28,11 @@ export default function Header() {
   }, []);
 
   function getDashboardHref(role: string) {
-    if (['admin', 'instructor'].includes(role)) {
+    if (role === 'admin') {
       const key = localStorage.getItem('admin_key') || '';
       return `/admin/lior?key=${encodeURIComponent(key)}`;
     }
+    if (role === 'instructor') return '/instructor';
     return '/journal';
   }
 

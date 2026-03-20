@@ -45,7 +45,17 @@ function saveHealthChecks(data: Record<string, { daily: boolean; general: boolea
 
 // ─── Admin Content ────────────────────────────────────────────────────────────
 
-type TabType = 'lior' | 'immersion' | 'clients' | 'instructors';
+type TabType = 'lior' | 'immersion' | 'clients' | 'instructors' | 'workshops';
+
+interface InstructorWorkshop {
+  id: string;
+  workshop_date: string;
+  workshop_time: string;
+  instructor_name: string;
+  notes: string | null;
+  status: 'pending' | 'accepted' | 'declined';
+  max_participants: number;
+}
 
 function AdminContent() {
   const searchParams = useSearchParams();
@@ -83,6 +93,17 @@ function AdminContent() {
   // ── Instructors ──
   const [inviteEmail, setInviteEmail] = useState<string | null>(null);
 
+  // ── Instructor workshops ──
+  const [iworkshops, setIworkshops]     = useState<InstructorWorkshop[]>([]);
+  const [loadingW, setLoadingW]         = useState(false);
+  const [wDate, setWDate]               = useState('');
+  const [wTime, setWTime]               = useState('09:00');
+  const [wInstructor, setWInstructor]   = useState(DEMO_INSTRUCTORS[0].name);
+  const [wNotes, setWNotes]             = useState('');
+  const [wMax, setWMax]                 = useState(10);
+  const [addingW, setAddingW]           = useState(false);
+  const [wMsg, setWMsg]                 = useState('');
+
   // ── Load functions ──────────────────────────────────────────────────────────
 
   const loadLior = useCallback(async () => {
@@ -118,9 +139,20 @@ function AdminContent() {
     finally { setLoadingC(false); }
   }, [key]);
 
+  const loadWorkshops = useCallback(async () => {
+    setLoadingW(true);
+    try {
+      const res = await fetch(`/api/admin/instructor-workshops?key=${encodeURIComponent(key)}`);
+      const data = await res.json();
+      setIworkshops(Array.isArray(data) ? data : []);
+    } catch { /* ignore */ }
+    setLoadingW(false);
+  }, [key]);
+
   useEffect(() => { loadLior(); setHealthChecks(loadHealthChecks()); }, [loadLior]);
   useEffect(() => { if (tab === 'immersion') loadSlots(); }, [tab, loadSlots]);
   useEffect(() => { if (tab === 'clients') loadClients(); }, [tab, loadClients]);
+  useEffect(() => { if (tab === 'workshops') loadWorkshops(); }, [tab, loadWorkshops]);
 
   // ── Actions ─────────────────────────────────────────────────────────────────
 
@@ -191,6 +223,32 @@ function AdminContent() {
     URL.revokeObjectURL(url);
   }
 
+  async function addWorkshop(e: React.FormEvent) {
+    e.preventDefault();
+    if (!wDate || !wTime || !wInstructor) return;
+    setAddingW(true); setWMsg('');
+    const res = await fetch(`/api/admin/instructor-workshops?key=${encodeURIComponent(key)}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ workshop_date: wDate, workshop_time: wTime, instructor_name: wInstructor, notes: wNotes, max_participants: wMax }),
+    });
+    const data = await res.json();
+    if (res.ok) {
+      setWMsg('✅ הזמנה נשלחה בהצלחה');
+      setWDate(''); setWNotes('');
+      await loadWorkshops();
+    } else {
+      setWMsg(`❌ ${data.error ?? 'שגיאה'}`);
+    }
+    setAddingW(false);
+  }
+
+  async function deleteWorkshop(id: string) {
+    if (!confirm('למחוק סדנה זו?')) return;
+    await fetch(`/api/admin/instructor-workshops?key=${encodeURIComponent(key)}&id=${id}`, { method: 'DELETE' });
+    setIworkshops(prev => prev.filter(w => w.id !== id));
+  }
+
   function getInviteMessage(instructor: typeof DEMO_INSTRUCTORS[0]) {
     const url = `${typeof window !== 'undefined' ? window.location.origin : 'https://icing-blond.vercel.app'}/admin/lior?key=${key}`;
     return `שלום ${instructor.name},\n\nמוזמן/ת לצפות בלוח ניהול הסדנאות והלקוחות שלך:\n${url}\n\nבברכה,\nצוות חוויות שוויץ המדע`;
@@ -223,6 +281,7 @@ function AdminContent() {
         {([
           ['lior',        '📋 סדנת ליאור כ"ץ'],
           ['immersion',   '🧊 מועדי טבילה'],
+          ['workshops',   '🏊 סדנאות מדריכים'],
           ['clients',     '👥 לקוחות'],
           ['instructors', '📧 מדריכים'],
         ] as [TabType, string][]).map(([t, label]) => (
@@ -571,6 +630,110 @@ function AdminContent() {
               </table>
             </div>
           )}
+        </div>
+      )}
+
+      {/* ── TAB: Instructor Workshops ── */}
+      {tab === 'workshops' && (
+        <div className="space-y-8">
+          {/* Add form */}
+          <div className="bg-white rounded-3xl border-2 border-ice-100 shadow-sm p-6">
+            <h2 className="text-xl font-black text-navy-900 mb-1 text-right">+ שלח הזמנת סדנה למדריך</h2>
+            <p className="text-slate-500 text-sm mb-5 text-right">בחר תאריך, שעה ומדריך — ההזמנה תופיע בדשבורד המדריך</p>
+            <form onSubmit={addWorkshop} className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-semibold text-slate-700 mb-1 text-right">תאריך *</label>
+                <input type="date" value={wDate} onChange={e => setWDate(e.target.value)} required
+                  className="w-full border-2 border-slate-200 rounded-xl px-3 py-2 focus:outline-none focus:border-ice-400" />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-slate-700 mb-1 text-right">שעה *</label>
+                <input type="time" value={wTime} onChange={e => setWTime(e.target.value)} required
+                  className="w-full border-2 border-slate-200 rounded-xl px-3 py-2 focus:outline-none focus:border-ice-400" />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-slate-700 mb-1 text-right">מדריך *</label>
+                <select value={wInstructor} onChange={e => setWInstructor(e.target.value)} required
+                  className="w-full border-2 border-slate-200 rounded-xl px-3 py-2 focus:outline-none focus:border-ice-400 bg-white">
+                  {DEMO_INSTRUCTORS.map(i => <option key={i.name} value={i.name}>{i.name}</option>)}
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-slate-700 mb-1 text-right">מקס&apos; משתתפים</label>
+                <input type="number" value={wMax} onChange={e => setWMax(Number(e.target.value))} min={1} max={100}
+                  className="w-full border-2 border-slate-200 rounded-xl px-3 py-2 focus:outline-none focus:border-ice-400" />
+              </div>
+              <div className="col-span-2">
+                <label className="block text-sm font-semibold text-slate-700 mb-1 text-right">הערות (אופציונלי)</label>
+                <input type="text" value={wNotes} onChange={e => setWNotes(e.target.value)} placeholder="למשל: בריכה חיצונית, תל אביב"
+                  className="w-full border-2 border-slate-200 rounded-xl px-3 py-2 focus:outline-none focus:border-ice-400" />
+              </div>
+              <div className="col-span-2">
+                <button type="submit" disabled={addingW || !wDate || !wTime}
+                  className="w-full bg-navy-900 hover:bg-navy-700 disabled:opacity-40 text-white font-black py-3 rounded-xl text-sm transition-colors">
+                  {addingW ? 'שולח...' : '📨 שלח הזמנה למדריך'}
+                </button>
+                {wMsg && <p className={`mt-2 text-sm text-center font-semibold ${wMsg.startsWith('✅') ? 'text-green-600' : 'text-red-500'}`}>{wMsg}</p>}
+              </div>
+            </form>
+          </div>
+
+          {/* Workshops table */}
+          <div className="bg-white rounded-3xl border-2 border-ice-100 shadow-sm overflow-hidden">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
+              <h2 className="text-lg font-black text-navy-900">כל הסדנאות</h2>
+              <button onClick={loadWorkshops} className="text-sm text-ice-600 hover:text-ice-800 font-semibold">↻ רענן</button>
+            </div>
+            {loadingW ? (
+              <div className="flex justify-center py-12">
+                <div className="w-8 h-8 border-2 border-ice-500 border-t-transparent rounded-full animate-spin" />
+              </div>
+            ) : iworkshops.length === 0 ? (
+              <div className="text-center py-12 text-slate-400">אין סדנאות עדיין</div>
+            ) : (
+              <table className="w-full text-sm" dir="rtl">
+                <thead className="bg-slate-50 border-b border-slate-100">
+                  <tr>
+                    <th className="text-right px-4 py-3 font-semibold text-slate-600">תאריך</th>
+                    <th className="text-right px-4 py-3 font-semibold text-slate-600">שעה</th>
+                    <th className="text-right px-4 py-3 font-semibold text-slate-600">שם מדריך</th>
+                    <th className="text-right px-4 py-3 font-semibold text-slate-600">הערות</th>
+                    <th className="text-right px-4 py-3 font-semibold text-slate-600">מס&apos; נרשמים</th>
+                    <th className="text-right px-4 py-3 font-semibold text-slate-600">תשובת מדריך</th>
+                    <th className="px-4 py-3"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {iworkshops.map(w => (
+                    <tr key={w.id} className="border-b border-slate-50 hover:bg-slate-50">
+                      <td className="px-4 py-3 font-semibold">
+                        {new Date(w.workshop_date).toLocaleDateString('he-IL', { day: '2-digit', month: '2-digit', year: '2-digit' })}
+                      </td>
+                      <td className="px-4 py-3 font-mono">{w.workshop_time?.slice(0, 5)}</td>
+                      <td className="px-4 py-3">{w.instructor_name}</td>
+                      <td className="px-4 py-3 text-slate-400">{w.notes || '—'}</td>
+                      <td className="px-4 py-3 text-center">{w.max_participants}</td>
+                      <td className="px-4 py-3">
+                        <span className={`text-xs px-2 py-1 rounded-full font-semibold ${
+                          w.status === 'accepted' ? 'bg-green-100 text-green-700' :
+                          w.status === 'declined' ? 'bg-red-100 text-red-700' :
+                          'bg-yellow-100 text-yellow-700'
+                        }`}>
+                          {w.status === 'accepted' ? '✅ אישר' : w.status === 'declined' ? '❌ דחה' : '⏳ ממתין'}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3">
+                        <button onClick={() => deleteWorkshop(w.id)}
+                          className="text-red-400 hover:text-red-600 text-xs font-semibold transition-colors">
+                          מחק
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </div>
         </div>
       )}
 
