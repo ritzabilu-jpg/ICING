@@ -34,7 +34,7 @@ export default function InstructorCard({ instructor }: InstructorCardProps) {
         <div className="p-6 flex flex-col flex-1">
           <div className="mb-3">
             <h3 className="text-xl font-black text-navy-900 mb-0.5">{instructor.name}</h3>
-            <p className="text-ice-600 text-sm font-semibold">מדריך מוסמך CWI</p>
+            <p className="text-ice-600 text-sm font-semibold">{instructor.female ? 'מדריכה מוסמכת CWI' : 'מדריך מוסמך CWI'}</p>
           </div>
 
           {instructor.bio && (
