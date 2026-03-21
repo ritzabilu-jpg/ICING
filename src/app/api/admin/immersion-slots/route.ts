@@ -1,5 +1,4 @@
-// admin/immersion-slots – manage immersion time slots (add range / delete)
-// admin/immersion-slots – manage immersion time slots (add range / delete)
+import { NextRequest, NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase';
 
 export const dynamic = 'force-dynamic';

@@ -1,3 +1,4 @@
+import { NextRequest, NextResponse } from 'next/server';
 // immersion-slots – returns available immersion time slots with booking counts
 // immersion-slots – returns available immersion time slots with booking counts
 import { createAdminClient } from '@/lib/supabase';
