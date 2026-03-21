@@ -138,7 +138,7 @@ export default function ReviewForm() {
 
         {error && <p className="text-red-400 text-sm bg-red-900/20 rounded-lg px-4 py-2">{error}</p>}
 
-        <p className="text-slate-500 text-xs">חוות דעתך תועבר לאישור הנהלה לפני פרסום.</p>
+        <p className="text-slate-500 text-xs">חוות דעתך תועבר לאישור לפני פרסום.</p>
 
         <button
           onClick={handleSubmit}
