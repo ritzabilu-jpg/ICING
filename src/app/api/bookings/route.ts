@@ -1,8 +1,9 @@
-import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { createAdminClient } from '@/lib/supabase';
 import { sendBookingConfirmation } from '@/lib/email';
 import { randomBytes } from 'crypto';
+
+export const dynamic = 'force-dynamic';
 
 const bookingSchema = z.object({
   workshop_id: z.string().uuid('מזהה סדנה לא תקין'),

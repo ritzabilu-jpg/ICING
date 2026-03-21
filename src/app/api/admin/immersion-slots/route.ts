@@ -1,6 +1,8 @@
 // admin/immersion-slots – manage immersion time slots (add range / delete)
-import { NextRequest, NextResponse } from 'next/server';
+// admin/immersion-slots – manage immersion time slots (add range / delete)
 import { createAdminClient } from '@/lib/supabase';
+
+export const dynamic = 'force-dynamic';
 
 function checkKey(key: string | null) {
   const valid = process.env.ADMIN_KEY ?? 'lior2026';

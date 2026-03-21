@@ -1,5 +1,6 @@
-import { NextResponse, NextRequest } from 'next/server';
 import { createAdminClient } from '@/lib/supabase';
+
+export const dynamic = 'force-dynamic';
 
 const PKG_LABELS: Record<string, string> = {
   single: 'טבילה בודדת', '5pack': 'חבילת 5', '10pack': 'חבילת 10',

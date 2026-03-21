@@ -1,5 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase';
+
+export const dynamic = 'force-dynamic';
 
 // GET – check if visitor filled health check today
 export async function GET(req: NextRequest) {

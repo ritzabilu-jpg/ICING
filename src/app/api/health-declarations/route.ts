@@ -1,6 +1,7 @@
-import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { createAdminClient } from '@/lib/supabase';
+
+export const dynamic = 'force-dynamic';
 
 const healthSchema = z.object({
   booking_id: z.string().uuid('מזהה הזמנה לא תקין'),
