@@ -122,10 +122,21 @@ export default function TermsPage() {
             המחיר התקף הוא המחיר שאושר בשיחת הטלפון ולפני ביצוע החיוב בפועל.
           </p>
 
-          <h3 className="font-bold text-navy-900 mb-2">4.3 אמצעי תשלום</h3>
-          <p className="text-slate-600 leading-relaxed">
-            התשלום מתבצע בטלפון באמצעות כרטיס אשראי. פרטי כרטיס האשראי אינם נשמרים על ידי העסק לאחר השלמת העסקה.
-          </p>
+          <h3 className="font-bold text-navy-900 mb-3">4.3 אמצעי תשלום</h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="bg-ice-50 border border-ice-200 rounded-xl p-4">
+              <p className="font-bold text-navy-900 mb-1">💳 תשלום אונליין</p>
+              <p className="text-slate-600 text-sm leading-relaxed">
+                תשלום מאובטח בכרטיס אשראי ישירות דרך האתר. פרטי הכרטיס אינם נשמרים על ידי העסק לאחר השלמת העסקה.
+              </p>
+            </div>
+            <div className="bg-slate-50 border border-slate-200 rounded-xl p-4">
+              <p className="font-bold text-navy-900 mb-1">📞 תשלום טלפוני</p>
+              <p className="text-slate-600 text-sm leading-relaxed">
+                תשלום בכרטיס אשראי בשיחת טלפון עם נציג. פרטי הכרטיס אינם נשמרים על ידי העסק לאחר השלמת העסקה.
+              </p>
+            </div>
+          </div>
         </section>
 
         {/* 5 */}
