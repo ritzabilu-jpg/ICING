@@ -65,12 +65,26 @@ export default function TermsPage() {
         <section className="mb-10">
           <h2 className="text-xl font-bold text-navy-900 mb-4">4. הזמנה ותשלום</h2>
 
-          <h3 className="font-bold text-navy-900 mb-2">4.1 תהליך ההזמנה</h3>
-          <p className="text-slate-600 leading-relaxed mb-3">
-            הזמנת מקום בסדנה מתחילה בהגשת פרטי ההזמנה דרך האתר. לאחר קבלת הפרטים, נציג מטעם חוויות שוויץ המדע
-            יצור קשר טלפוני לאישור ההזמנה ולהשלמת פרטי התשלום.
-            <strong> ההזמנה תחשב מאושרת רק לאחר השלמת התשלום</strong> וקבלת אישור בכתב (SMS / דוא&quot;ל / WhatsApp).
+          <h3 className="font-bold text-navy-900 mb-3">4.1 תהליך ההזמנה</h3>
+          <p className="text-slate-600 leading-relaxed mb-4">
+            הזמנת מקום בסדנה מתחילה בהגשת פרטי ההזמנה דרך האתר. קיימות שתי אפשרויות לביצוע התשלום:
           </p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-5">
+            <div className="bg-ice-50 border border-ice-200 rounded-xl p-4">
+              <p className="font-bold text-navy-900 mb-1">💳 תשלום אונליין</p>
+              <p className="text-slate-600 text-sm leading-relaxed">
+                השלמת התשלום ישירות דרך האתר באמצעות כרטיס אשראי.
+                <strong> ההזמנה תאושר מיידית</strong> עם קבלת אישור תשלום בכתב (SMS / דוא&quot;ל / WhatsApp).
+              </p>
+            </div>
+            <div className="bg-slate-50 border border-slate-200 rounded-xl p-4">
+              <p className="font-bold text-navy-900 mb-1">📞 תשלום טלפוני</p>
+              <p className="text-slate-600 text-sm leading-relaxed">
+                לאחר קבלת פרטי ההזמנה, נציג מטעם חוויות שוויץ המדע יצור קשר טלפוני לאישור ההזמנה ולהשלמת פרטי התשלום.
+                <strong> ההזמנה תחשב מאושרת רק לאחר השלמת התשלום.</strong>
+              </p>
+            </div>
+          </div>
           <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-5">
             <p className="text-amber-800 text-sm">
               ⚠️ <strong>לתשומת לבך:</strong> הגשת הבקשה באתר <strong>אינה</strong> שומרת מקום באופן מיידי.
