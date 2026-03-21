@@ -1,3 +1,4 @@
+import { NextRequest, NextResponse } from 'next/server';
 // check-today-booking – checks if a visitor (by name) has a booking for today,
 // check-today-booking – checks if a visitor (by name) has a booking for today,
 // and whether they already submitted a health check.
