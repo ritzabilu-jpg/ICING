@@ -3,6 +3,8 @@ import Link from 'next/link';
 import Hero from '@/components/Hero';
 import WorkshopCard from '@/components/WorkshopCard';
 import TestimonialsSection from '@/components/TestimonialsSection';
+
+export const revalidate = 60; // re-fetch reviews every 60 seconds
 import WelcomeGreeting from '@/components/WelcomeGreeting';
 
 export const metadata: Metadata = {
