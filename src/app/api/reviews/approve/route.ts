@@ -42,10 +42,13 @@ export async function GET(req: NextRequest) {
 }
 
 function html(icon: string, title: string, body: string) {
-  return `<html dir="rtl"><body style="font-family:Arial;text-align:center;padding:60px;background:#0f172a;color:white;">
-    <div style="font-size:64px;margin-bottom:16px;">${icon}</div>
-    <h1 style="color:#38bdf8;">${title}</h1>
-    <p style="color:#94a3b8;">${body}</p>
-    <a href="https://icing-blond.vercel.app/#testimonials" style="color:#38bdf8;">← חזרה לאתר</a>
+  return `<!DOCTYPE html><html dir="rtl" lang="he"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/></head>
+  <body style="font-family:Arial,sans-serif;direction:rtl;text-align:right;padding:60px 24px;background:#0f172a;color:white;margin:0;">
+    <div style="max-width:480px;margin:0 auto;text-align:center;">
+      <div style="font-size:64px;margin-bottom:16px;">${icon}</div>
+      <h1 style="color:#38bdf8;margin-bottom:12px;">${title}</h1>
+      <p style="color:#94a3b8;margin-bottom:32px;direction:rtl;">${body}</p>
+      <a href="https://icing-blond.vercel.app/#testimonials" style="color:#38bdf8;text-decoration:none;">חזרה לאתר →</a>
+    </div>
   </body></html>`;
 }
