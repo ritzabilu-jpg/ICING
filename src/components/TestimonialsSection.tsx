@@ -1,4 +1,7 @@
-const testimonials = [
+import { createAdminClient } from '@/lib/supabase';
+import ReviewForm from './ReviewForm';
+
+const hardcoded = [
   {
     name: 'מיכאל ל.',
     role: 'מנהל מכירות',
@@ -57,11 +60,41 @@ const typeLabel: Record<string, string> = {
   individual: 'סדנת יחידים',
   couple: 'סדנת זוגות',
   team: 'סדנת קבוצות',
+  immersion: 'טבילה אישית',
 };
 
-export default function TestimonialsSection() {
+type Review = {
+  id: string;
+  name: string;
+  role: string | null;
+  text: string;
+  rating: number;
+  type: string;
+};
+
+async function getApprovedReviews(): Promise<Review[]> {
+  try {
+    const supabase = createAdminClient();
+    const { data } = await supabase
+      .from('reviews')
+      .select('id, name, role, text, rating, type')
+      .eq('status', 'approved')
+      .order('created_at', { ascending: false });
+    return data ?? [];
+  } catch {
+    return [];
+  }
+}
+
+export default async function TestimonialsSection() {
+  const approved = await getApprovedReviews();
+  const all = [
+    ...approved.map(r => ({ ...r, role: r.role ?? '' })),
+    ...hardcoded,
+  ];
+
   return (
-    <section className="py-24 bg-navy-900">
+    <section id="testimonials" className="py-24 bg-navy-900">
       <div className="max-w-7xl mx-auto px-6">
         <h2 className="text-4xl font-black text-center text-white mb-4">
           מה אומרים המשתתפים?
@@ -70,9 +103,9 @@ export default function TestimonialsSection() {
           מאות משתתפים שינו את הדרך שבה הם מתמודדים עם אתגרים
         </p>
 
-        {/* Scrollable grid */}
+        {/* Reviews grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {testimonials.map((t, i) => (
+          {all.map((t, i) => (
             <div
               key={i}
               className="bg-navy-800 rounded-2xl p-6 border border-navy-700
@@ -81,7 +114,7 @@ export default function TestimonialsSection() {
               <div className="flex items-center justify-between mb-4">
                 <StarRating count={t.rating} />
                 <span className="text-xs bg-ice-500/20 text-ice-400 px-3 py-1 rounded-full font-medium">
-                  {typeLabel[t.type]}
+                  {typeLabel[t.type] ?? t.type}
                 </span>
               </div>
 
@@ -96,7 +129,7 @@ export default function TestimonialsSection() {
                 </div>
                 <div>
                   <p className="text-white font-semibold text-sm">{t.name}</p>
-                  <p className="text-slate-500 text-xs">{t.role}</p>
+                  {t.role && <p className="text-slate-500 text-xs">{t.role}</p>}
                 </div>
               </div>
             </div>
@@ -117,6 +150,9 @@ export default function TestimonialsSection() {
             </div>
           ))}
         </div>
+
+        {/* Review submission form */}
+        <ReviewForm />
       </div>
     </section>
   );
