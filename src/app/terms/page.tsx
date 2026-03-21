@@ -18,7 +18,7 @@ export default function TermsPage() {
         <section className="mb-10">
           <h2 className="text-xl font-bold text-navy-900 mb-3">1. ברוכים הבאים</h2>
           <p className="text-slate-600 leading-relaxed">
-            ברוך הבא לאתר האינטרנט של <strong>חוויות שוויץ המדע</strong> (להלן: &quot;האתר&quot;, &quot;אנחנו&quot;, &quot;העסק&quot;),
+            ברוך הבא לאתר האינטרנט של <strong>חוויות בקרח</strong> שבתוך <strong>חוויות שוויץ המדע</strong> (להלן: &quot;האתר&quot;, &quot;אנחנו&quot;, &quot;העסק&quot;),
             הממוקמת ברחוב סירני 52, רחובות, מתחם הבריכה הטיפולית.
           </p>
           <p className="text-slate-600 leading-relaxed mt-3">
@@ -36,7 +36,7 @@ export default function TermsPage() {
           </p>
           <ul className="space-y-2 text-slate-600">
             {[
-              'סדנת יחידים – חוויה בקבוצה קטנה, עד 10 משתתפים',
+              'סדנת יחידים – חוויה אישית בסדנה קבוצתית',
               'סדנת זוגות – חוויה זוגית אינטימית',
               'סדנה אישית – הדרכה פרטית אחד על אחד',
               'סדנת קבוצות – לצוותי עבודה ואירגונים',
