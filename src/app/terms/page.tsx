@@ -205,7 +205,7 @@ export default function TermsPage() {
               </li>
             ))}
           </ul>
-          <p className="text-slate-600 font-semibold">חובה לדווח למדריך על כל מצב רפואי לפני תחילת הסדנה.</p>
+          <p className="text-slate-600 font-semibold">חובה לדווח למדריך על כל מצב רפואי חריג לפני תחילת הסדנה, כרוני או חדש.</p>
 
           <h3 className="font-bold text-navy-900 mt-5 mb-2">6.2 טופס הצהרת בריאות דיגיטלי</h3>
           <p className="text-slate-600 leading-relaxed mb-2">
