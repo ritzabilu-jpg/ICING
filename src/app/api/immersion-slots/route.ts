@@ -1,6 +1,5 @@
-import { NextRequest, NextResponse } from 'next/server';
 // immersion-slots – returns available immersion time slots with booking counts
-// immersion-slots – returns available immersion time slots with booking counts
+import { NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase';
 
 export const dynamic = 'force-dynamic';

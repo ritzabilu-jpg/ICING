@@ -1,26 +1,15 @@
+/**
+ * /api/journal
+ * REST API for the ice bath journal module.
+ * GET  – fetch all entries (optionally scoped to visitor_id header)
+ * POST – create a new entry
+ * DELETE – remove an entry by ?id=
+ *
+ * Uses Supabase (immersion_sessions table) via the service-role admin client.
+ * No auth required for demo mode; pass x-visitor-id header to scope per user.
+ */
+
 import { NextRequest, NextResponse } from 'next/server';
-/**
-/**
- * /api/journal
- * /api/journal
- * REST API for the ice bath journal module.
- * REST API for the ice bath journal module.
- * GET  – fetch all entries (optionally scoped to visitor_id header)
- * GET  – fetch all entries (optionally scoped to visitor_id header)
- * POST – create a new entry
- * POST – create a new entry
- * DELETE – remove an entry by ?id=
- * DELETE – remove an entry by ?id=
- *
- *
- * Uses Supabase (immersion_sessions table) via the service-role admin client.
- * Uses Supabase (immersion_sessions table) via the service-role admin client.
- * No auth required for demo mode; pass x-visitor-id header to scope per user.
- * No auth required for demo mode; pass x-visitor-id header to scope per user.
- */
- */
-
-
 import { createAdminClient } from '@/lib/supabase';
 
 export const dynamic = 'force-dynamic';
