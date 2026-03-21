@@ -67,7 +67,7 @@ export default function NoradrenalinePage() {
           </p>
           <div className="mt-8 inline-flex items-center gap-3 bg-ice-600/30 border border-ice-500/40 rounded-2xl px-6 py-3">
             <span className="text-3xl font-black text-ice-400">+127%</span>
-            <span className="text-slate-300 text-sm">עלייה ממוצעת בנוראדרנלין בטבילה ב-10°C</span>
+            <span className="text-slate-300 text-sm">עלייה ממוצעת בנוראדרנלין בטבילה ב-5°C</span>
           </div>
         </div>
       </section>
@@ -102,7 +102,7 @@ export default function NoradrenalinePage() {
               של נוראדרנלין לדם, כבר בדקות הראשונות של החשיפה.
             </p>
             <p>
-              במחקרי טבילה במים בסביבות 10°C נמצא כי רמת הנוראדרנלין בפלזמה כמעט מוכפלת לאחר
+              במחקרי טבילה במים בסביבות 5°C נמצא כי רמת הנוראדרנלין בפלזמה כמעט מוכפלת לאחר
               כ-2 דקות טבילה, וממשיכה לעלות עד פי 3–4 מרמת הבסיס במהלך חשיפה ממושכת, יחד עם
               עלייה ניכרת בקצב חילוף החומרים. גם חשיפה קרה קצרה יותר (כמה דקות) מספיקה כדי
               לגרום לעלייה חדה בנוראדרנלין ובשאר קטכולאמינים בדם ובשתן. לאחר סיום הטבילה
