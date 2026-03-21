@@ -97,7 +97,7 @@ export default function Hero() {
         <div className="mt-16 grid grid-cols-3 gap-6 max-w-2xl mx-auto">
           {[
             { value: '+127%', label: 'עלייה בנוראדרנלין' },
-            { value: '10°C', label: 'טמפרטורת מים' },
+            { value: '5°C', label: 'טמפרטורת מים' },
             { value: '90 דק\'', label: 'משך הסדנה' },
           ].map(stat => (
             <div key={stat.label} className="text-center">
