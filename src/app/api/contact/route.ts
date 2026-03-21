@@ -1,4 +1,5 @@
-import { NextRequest, NextResponse } from 'next/server';
+
+export const dynamic = 'force-dynamic';
 
 function validateIsraeliPhone(phone: string): boolean {
   const cleaned = phone.replace(/[\s\-().]/g, '');

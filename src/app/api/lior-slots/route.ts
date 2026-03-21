@@ -1,6 +1,7 @@
-import { NextRequest, NextResponse } from 'next/server';
 import { getSlotOccupancy, addBookingToSheet, LIOR_TIME_SLOTS } from '@/lib/googleSheets';
 import { createAdminClient } from '@/lib/supabase';
+
+export const dynamic = 'force-dynamic';
 
 const MAX_PARTICIPANTS = 10;
 

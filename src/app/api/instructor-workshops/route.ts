@@ -1,5 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase';
+
+export const dynamic = 'force-dynamic';
 
 export async function GET(req: NextRequest) {
   const instructor = req.nextUrl.searchParams.get('instructor');

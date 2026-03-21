@@ -1,5 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase';
+
+export const dynamic = 'force-dynamic';
 
 // GET – sessions for a visitor
 export async function GET(req: NextRequest) {

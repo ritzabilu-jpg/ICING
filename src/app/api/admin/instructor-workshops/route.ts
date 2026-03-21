@@ -1,5 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase';
+
+export const dynamic = 'force-dynamic';
 
 function checkKey(key: string | null) {
   const valid = process.env.ADMIN_KEY ?? 'lior2026';

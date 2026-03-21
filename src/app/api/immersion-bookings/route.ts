@@ -1,6 +1,8 @@
 // immersion-bookings – POST to book an immersion slot
-import { NextRequest, NextResponse } from 'next/server';
+// immersion-bookings – POST to book an immersion slot
 import { createAdminClient } from '@/lib/supabase';
+
+export const dynamic = 'force-dynamic';
 
 export async function POST(req: NextRequest) {
   try {

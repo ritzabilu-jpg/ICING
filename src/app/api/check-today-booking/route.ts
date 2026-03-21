@@ -1,7 +1,10 @@
 // check-today-booking – checks if a visitor (by name) has a booking for today,
+// check-today-booking – checks if a visitor (by name) has a booking for today,
 // and whether they already submitted a health check.
-import { NextRequest, NextResponse } from 'next/server';
+// and whether they already submitted a health check.
 import { createAdminClient } from '@/lib/supabase';
+
+export const dynamic = 'force-dynamic';
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);

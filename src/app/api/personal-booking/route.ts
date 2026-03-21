@@ -1,5 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server';
 import { Resend } from 'resend';
+
+export const dynamic = 'force-dynamic';
 
 export async function POST(req: NextRequest) {
   const { name, phone } = await req.json();

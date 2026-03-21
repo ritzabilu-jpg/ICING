@@ -1,5 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase';
+
+export const dynamic = 'force-dynamic';
 
 // POST – login or create visitor
 export async function POST(req: NextRequest) {
