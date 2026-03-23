@@ -16,10 +16,13 @@ export async function GET(req: NextRequest) {
       });
     }
 
+    const action = req.nextUrl.searchParams.get('action') ?? 'approve';
+    const newStatus = action === 'reject' ? 'rejected' : 'approved';
+
     const supabase = createAdminClient();
     const { error } = await supabase
       .from('reviews')
-      .update({ status: 'approved' })
+      .update({ status: newStatus })
       .eq('id', id);
 
     if (error) {
@@ -29,9 +32,10 @@ export async function GET(req: NextRequest) {
       });
     }
 
-    return new NextResponse(html('✅', 'חוות הדעת אושרה ופורסמה!', 'חוות הדעת תופיע באתר בביקור הבא של המשתמשים.'), {
-      headers: { 'Content-Type': 'text/html; charset=utf-8' },
-    });
+    if (action === 'reject') {
+      return NextResponse.json({ ok: true, status: 'rejected' });
+    }
+    return NextResponse.json({ ok: true, status: 'approved' });
   } catch (e: unknown) {
     const msg = e instanceof Error ? e.message : 'שגיאה לא ידועה';
     return new NextResponse(html('⚠️', 'שגיאה בשרת', msg), {
