@@ -381,7 +381,7 @@ export default function HomePage() {
                              rounded-2xl transition-all hover:scale-105
                              shadow-lg border border-gray-200"
                 >
-                  <img src="/logo-waze.jpg" alt="Waze" className="w-full h-full object-cover" />
+                  <img src="/logo-waze.png" alt="Waze" className="w-full h-full object-cover" />
                 </a>
               </div>
             </div>
