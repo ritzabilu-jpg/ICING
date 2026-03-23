@@ -39,16 +39,17 @@ export default function InstructorPage({ params }: Props) {
 
           {/* Photo + name header */}
           <div className="flex flex-col sm:flex-row">
-            <div className="w-full sm:w-64 flex-shrink-0 bg-gradient-to-b from-navy-900 to-ice-900 relative min-h-[280px]">
+            <div className="w-full sm:w-72 flex-shrink-0 bg-navy-900 flex items-center justify-center">
               {instructor.photo_url ? (
                 <Image
                   src={instructor.photo_url}
                   alt={instructor.name}
-                  fill
-                  className="object-cover object-top"
+                  width={400}
+                  height={500}
+                  className="w-full h-auto object-contain"
                 />
               ) : (
-                <div className="w-full h-full flex items-center justify-center text-8xl text-white/20">👤</div>
+                <div className="w-full h-64 flex items-center justify-center text-8xl text-white/20">👤</div>
               )}
             </div>
 
