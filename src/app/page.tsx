@@ -365,23 +365,23 @@ export default function HomePage() {
                   href="https://www.google.com/maps/place/%D7%9E%D7%AA%D7%A0%22%D7%A1+%D7%97%D7%95%D7%95%D7%99%D7%95%D7%AA+%D7%A9%D7%95%D7%95%D7%99%D7%A5+%D7%94%D7%9E%D7%93%D7%A2%E2%80%AD/@31.900446,34.8231278,17.5z/data=!4m6!3m5!1s0x1502b65515e7aaab:0xb26bcc81189c0b68!8m2!3d31.9006165!4d34.8199625!16s%2Fg%2F1ydkhrmny?entry=ttu&g_ep=EgoyMDI2MDMxOC4xIPD2ASoASAFQAw%3D%3D"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center justify-center flex-1
-                             bg-navy-700 hover:bg-navy-600
-                             p-3 rounded-2xl transition-all hover:scale-105
-                             shadow-lg border border-navy-600"
+                  className="flex items-center justify-center flex-1 overflow-hidden
+                             bg-white hover:bg-gray-100
+                             rounded-2xl transition-all hover:scale-105
+                             shadow-lg border border-gray-200"
                 >
-                  <img src="/logo-google-maps.png" alt="Google Maps" width={70} height={70} className="object-contain" />
+                  <img src="/logo-google-maps.png" alt="Google Maps" className="w-full h-full object-cover" />
                 </a>
                 <a
                   href="https://waze.com/ul?ll=31.9006165,34.8199625&navigate=yes"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center justify-center flex-1
-                             bg-navy-700 hover:bg-navy-600
-                             p-3 rounded-2xl transition-all hover:scale-105
-                             shadow-lg border border-navy-600"
+                  className="flex items-center justify-center flex-1 overflow-hidden
+                             bg-white hover:bg-gray-100
+                             rounded-2xl transition-all hover:scale-105
+                             shadow-lg border border-gray-200"
                 >
-                  <img src="/logo-waze.jpg" alt="Waze" width={70} height={70} className="object-contain rounded-sm" />
+                  <img src="/logo-waze.jpg" alt="Waze" className="w-full h-full object-cover" />
                 </a>
               </div>
             </div>
