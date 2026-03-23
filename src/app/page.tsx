@@ -366,9 +366,9 @@ export default function HomePage() {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center justify-center gap-2 flex-1
-                             bg-white hover:bg-slate-100 text-slate-800 font-bold
+                             bg-navy-700 hover:bg-navy-600 text-white font-bold
                              py-4 rounded-2xl text-lg transition-all hover:scale-105
-                             shadow-lg border border-slate-200"
+                             shadow-lg border border-navy-600"
                 >
                   <svg width="22" height="22" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
                     <path fill="#4285F4" d="M24 9.5c3.1 0 5.8 1.1 8 2.9l6-6C34.5 3.1 29.5 1 24 1 15.2 1 7.7 6.1 4.1 13.5l7 5.4C12.9 13.1 18 9.5 24 9.5z"/>
@@ -383,9 +383,9 @@ export default function HomePage() {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center justify-center gap-2 flex-1
-                             bg-[#05c8f7] hover:bg-[#04b0d9] text-white font-bold
+                             bg-navy-700 hover:bg-navy-600 text-white font-bold
                              py-4 rounded-2xl text-lg transition-all hover:scale-105
-                             shadow-lg"
+                             shadow-lg border border-navy-600"
                 >
                   <svg width="22" height="22" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <circle cx="32" cy="32" r="30" fill="#33CCFF"/>
