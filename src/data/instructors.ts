@@ -22,6 +22,17 @@ export const INSTRUCTORS: Instructor[] = [
     female: true,
   },
   {
+    id: 'vered-factor',
+    name: 'ורד פקטור',
+    photo_url: '/vered-factor.jpg',
+    bio: 'מדריכת שחייה והידרותרפיסטית.\nמעבירה סדנאות עם דגשים ליתרונות התרגול וההשפעה החיובית בגילאי 40-55 לגברים ולנשים.',
+    specialties: ['הידרותרפיה', 'מדריכת שחייה', 'גילאי 40-55'],
+    certifications: ['הידרותרפיסטית מוסמכת', 'CWI Instructor Certified'],
+    quote: 'היכולת להישאר בתוך אי נוחות, היא שריר שאפשר לאמן וזה משפיע באופן מפתיע לטובה, על איזורים לא צפויים בחיים.',
+    female: true,
+    email: 'vered79@gmail.com',
+  },
+  {
     id: 'lior-katz',
     name: 'ליאור כ"ץ',
     photo_url: '/lior-katz.jpg',
