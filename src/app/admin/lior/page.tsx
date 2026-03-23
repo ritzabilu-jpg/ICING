@@ -45,7 +45,7 @@ function saveHealthChecks(data: Record<string, { daily: boolean; general: boolea
 
 // ─── Admin Content ────────────────────────────────────────────────────────────
 
-type TabType = 'lior' | 'immersion' | 'clients' | 'instructors' | 'workshops';
+type TabType = 'lior' | 'immersion' | 'clients' | 'instructors' | 'workshops' | 'reviews';
 
 interface InstructorWorkshop {
   id: string;
@@ -284,6 +284,7 @@ function AdminContent() {
           ['workshops',   '🏊 סדנאות מדריכים'],
           ['clients',     '👥 לקוחות'],
           ['instructors', '📧 מדריכים'],
+          ['reviews',     '✍️ חוות דעת'],
         ] as [TabType, string][]).map(([t, label]) => (
           <button key={t} onClick={() => setTab(t)}
             className={`px-5 py-2.5 font-bold text-sm rounded-t-xl transition-colors ${
@@ -734,6 +735,20 @@ function AdminContent() {
               </table>
             )}
           </div>
+        </div>
+      )}
+
+      {/* ── TAB: Reviews ── */}
+      {tab === 'reviews' && (
+        <div className="text-center py-10">
+          <p className="text-slate-500 mb-6">ניהול חוות דעת — אישור ודחייה לפרסום באתר</p>
+          <a
+            href={`/admin/reviews?key=${encodeURIComponent(
+              typeof window !== 'undefined' ? (localStorage.getItem('admin_key') || 'lior2026') : 'lior2026'
+            )}`}
+            className="inline-flex items-center gap-2 bg-navy-900 hover:bg-navy-700 text-white font-black px-8 py-4 rounded-2xl text-lg transition-colors shadow-lg">
+            ✍️ פתח דשבורד חוות דעת
+          </a>
         </div>
       )}
 
