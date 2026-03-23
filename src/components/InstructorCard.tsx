@@ -7,36 +7,35 @@ interface InstructorCardProps {
 }
 
 export default function InstructorCard({ instructor }: InstructorCardProps) {
+  const href = `/instructors/${instructor.id}`;
+
   return (
     <div className="bg-white rounded-3xl shadow-xl border border-ice-100 overflow-hidden
                     hover:shadow-2xl hover:border-ice-300 transition-all duration-300 hover:-translate-y-1
                     flex flex-col h-full">
-      <div className="flex gap-0 flex-1">
+      <Link href={href} className="flex gap-0 flex-1 group">
         {/* Photo */}
-        <Link href={`/instructors/${instructor.id}`}
-              className="w-36 sm:w-44 flex-shrink-0 bg-gradient-to-b from-navy-900 to-ice-800
-                         relative overflow-hidden min-h-[220px] block">
+        <div className="w-36 sm:w-44 flex-shrink-0 bg-gradient-to-b from-navy-900 to-ice-800
+                        relative overflow-hidden min-h-[220px]">
           {instructor.photo_url ? (
             <Image
               src={instructor.photo_url}
               alt={instructor.name}
               width={176}
               height={220}
-              className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center text-6xl text-white/30">
               👤
             </div>
           )}
-        </Link>
+        </div>
 
         {/* Content */}
         <div className="p-6 flex flex-col flex-1">
           <div className="mb-3">
-            <Link href={`/instructors/${instructor.id}`}>
-              <h3 className="text-xl font-black text-navy-900 mb-0.5 hover:text-ice-600 transition-colors">{instructor.name}</h3>
-            </Link>
+            <h3 className="text-xl font-black text-navy-900 mb-0.5 group-hover:text-ice-600 transition-colors">{instructor.name}</h3>
             <p className="text-ice-600 text-sm font-semibold">{instructor.female ? 'מדריכה מוסמכת CWI' : 'מדריך מוסמך CWI'}</p>
           </div>
 
@@ -76,11 +75,10 @@ export default function InstructorCard({ instructor }: InstructorCardProps) {
             </blockquote>
           )}
         </div>
-      </div>
+      </Link>
 
       {/* Footer: contact + book */}
       <div className="px-6 py-4 bg-ice-50 border-t border-ice-100 flex flex-col gap-2">
-        {/* Phone / Facebook */}
         <div className="flex gap-3 flex-wrap">
           {instructor.phone && (
             <a href={`tel:${instructor.phone}`}
