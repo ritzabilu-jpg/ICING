@@ -4,6 +4,22 @@ import { Resend } from 'resend';
 
 export const dynamic = 'force-dynamic';
 
+// GET – admin: fetch all reviews (pending + approved)
+export async function GET(req: NextRequest) {
+  const key = req.nextUrl.searchParams.get('key');
+  const validKey = process.env.ADMIN_KEY ?? 'lior2026';
+  if (key !== validKey) return NextResponse.json({ error: 'לא מורשה' }, { status: 401 });
+
+  const supabase = createAdminClient();
+  const { data, error } = await supabase
+    .from('reviews')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  return NextResponse.json({ reviews: data ?? [] });
+}
+
 export async function POST(req: NextRequest) {
   const body = await req.json();
   const { name, role, type, rating, text } = body;
