@@ -360,18 +360,32 @@ export default function HomePage() {
                   title="מיקום חוויות שוויץ המדע – רחוב סירני 52, רחובות"
                 />
               </div>
-              <a
-                href="https://www.waze.com/en/live-map/directions/%D7%97%D7%99%D7%99%D7%9D-%D7%A1%D7%99%D7%A8%D7%A0%D7%99-52-%D7%A8%D7%97%D7%95%D7%91%D7%95%D7%AA?place=w.22806847.228199542.169287"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center justify-center gap-3 w-full
-                           bg-[#05c8f7] hover:bg-[#04b0d9] text-white font-bold
-                           py-4 rounded-2xl text-lg transition-all hover:scale-105
-                           shadow-lg"
-              >
-                <span className="text-2xl">🗺️</span>
-                נווט עם Waze
-              </a>
+              <div className="flex gap-3">
+                <a
+                  href="https://www.google.com/maps/place/%D7%9E%D7%AA%D7%A0%22%D7%A1+%D7%97%D7%95%D7%95%D7%99%D7%95%D7%AA+%D7%A9%D7%95%D7%95%D7%99%D7%A5+%D7%94%D7%9E%D7%93%D7%A2%E2%80%AD/@31.900446,34.8231278,17.5z/data=!4m6!3m5!1s0x1502b65515e7aaab:0xb26bcc81189c0b68!8m2!3d31.9006165!4d34.8199625!16s%2Fg%2F1ydkhrmny?entry=ttu&g_ep=EgoyMDI2MDMxOC4xIPD2ASoASAFQAw%3D%3D"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center gap-2 flex-1
+                             bg-white hover:bg-slate-100 text-slate-800 font-bold
+                             py-4 rounded-2xl text-lg transition-all hover:scale-105
+                             shadow-lg border border-slate-200"
+                >
+                  <span className="text-2xl">📍</span>
+                  Google Maps
+                </a>
+                <a
+                  href="https://www.waze.com/en/live-map/directions/%D7%97%D7%99%D7%99%D7%9D-%D7%A1%D7%99%D7%A8%D7%A0%D7%99-52-%D7%A8%D7%97%D7%95%D7%91%D7%95%D7%AA?place=w.22806847.228199542.169287"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center gap-2 flex-1
+                             bg-[#05c8f7] hover:bg-[#04b0d9] text-white font-bold
+                             py-4 rounded-2xl text-lg transition-all hover:scale-105
+                             shadow-lg"
+                >
+                  <span className="text-2xl">🗺️</span>
+                  Waze
+                </a>
+              </div>
             </div>
           </div>
         </div>
