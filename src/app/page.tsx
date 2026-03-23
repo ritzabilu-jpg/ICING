@@ -374,7 +374,7 @@ export default function HomePage() {
                   Google Maps
                 </a>
                 <a
-                  href="https://www.waze.com/en/live-map/directions/%D7%97%D7%99%D7%99%D7%9D-%D7%A1%D7%99%D7%A8%D7%A0%D7%99-52-%D7%A8%D7%97%D7%95%D7%91%D7%95%D7%AA?place=w.22806847.228199542.169287"
+                  href="https://waze.com/ul?ll=31.9006165,34.8199625&navigate=yes"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center justify-center gap-2 flex-1
