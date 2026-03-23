@@ -58,7 +58,7 @@ function AddSessionForm({ targetId, onAdded }: { targetId: string; onAdded: () =
         <div><label className="block text-slate-600 mb-1">שעה</label>
           <input type="time" value={time} onChange={e => setTime(e.target.value)} className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ice-400" /></div>
         <div><label className="block text-slate-600 mb-1">טמפרטורה (°C)</label>
-          <input type="number" step="0.1" value={temp} onChange={e => setTemp(e.target.value)} placeholder="10.0" className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ice-400" /></div>
+          <input type="number" step="0.1" value={temp} onChange={e => setTemp(e.target.value)} placeholder="5.0" className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ice-400" /></div>
         <div><label className="block text-slate-600 mb-1">משך (דקות) *</label>
           <input type="number" value={duration} onChange={e => setDuration(e.target.value)} placeholder="15" className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ice-400" /></div>
         <div className="col-span-2"><label className="block text-slate-600 mb-1">שם מדריך</label>

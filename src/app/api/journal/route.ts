@@ -17,11 +17,11 @@ export const dynamic = 'force-dynamic';
 // Demo seed data – inserted once if the table is empty for the demo visitor
 const DEMO_VISITOR_ID = '00000000-0000-0000-0000-000000000001';
 const DEMO_SEEDS = [
-  { session_date: '2026-03-08', session_time: '07:30', duration_minutes: 12, temperature_celsius: 10.5, instructor_name: 'demo', notes: 'First time – felt the cold shock strongly' },
-  { session_date: '2026-03-10', session_time: '08:00', duration_minutes: 15, temperature_celsius: 9.8,  instructor_name: 'demo', notes: 'Much calmer entry – breathing helped' },
-  { session_date: '2026-03-11', session_time: '07:45', duration_minutes: 18, temperature_celsius: 10.0, instructor_name: 'demo', notes: 'Felt energetic all morning after' },
-  { session_date: '2026-03-13', session_time: '09:00', duration_minutes: 20, temperature_celsius: 9.2,  instructor_name: 'demo', notes: '' },
-  { session_date: '2026-03-14', session_time: '07:30', duration_minutes: 14, temperature_celsius: 10.1, instructor_name: 'demo', notes: 'Slight dizziness at the end – stayed shorter' },
+  { session_date: '2026-03-08', session_time: '07:30', duration_minutes: 12, temperature_celsius: 5.2, instructor_name: 'demo', notes: 'First time – felt the cold shock strongly' },
+  { session_date: '2026-03-10', session_time: '08:00', duration_minutes: 15, temperature_celsius: 4.9,  instructor_name: 'demo', notes: 'Much calmer entry – breathing helped' },
+  { session_date: '2026-03-11', session_time: '07:45', duration_minutes: 18, temperature_celsius: 5.0, instructor_name: 'demo', notes: 'Felt energetic all morning after' },
+  { session_date: '2026-03-13', session_time: '09:00', duration_minutes: 20, temperature_celsius: 4.8,  instructor_name: 'demo', notes: '' },
+  { session_date: '2026-03-14', session_time: '07:30', duration_minutes: 14, temperature_celsius: 5.1, instructor_name: 'demo', notes: 'Slight dizziness at the end – stayed shorter' },
 ];
 
 // GET – return all entries for the given visitor (or demo visitor)

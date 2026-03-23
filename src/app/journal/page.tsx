@@ -27,11 +27,11 @@ function dMinus(d: number) { const dt = new Date(); dt.setDate(dt.getDate() - d)
 function dPlus(d: number)  { const dt = new Date(); dt.setDate(dt.getDate() + d); return dt.toISOString().split('T')[0]; }
 
 const DEMO: Session[] = [
-  { id:'1', session_date:dMinus(0),  session_time:'07:30', duration_minutes:14,   temperature_celsius:10.1, notes:'מעט סחרחורת בסוף – נשארתי פחות',   instructor:'ליאור כ"ץ' },
-  { id:'2', session_date:dMinus(2),  session_time:'09:00', duration_minutes:20,   temperature_celsius:9.2,  notes:'',                                   instructor:'גיא רייבנבך' },
-  { id:'3', session_date:dMinus(4),  session_time:'07:45', duration_minutes:18,   temperature_celsius:10.0, notes:'הרגשתי אנרגטי כל הבוקר אחרי',        instructor:'ליאור כ"ץ' },
-  { id:'4', session_date:dMinus(9),  session_time:'08:00', duration_minutes:15,   temperature_celsius:9.8,  notes:'נשימה עזרה מאוד',                     instructor:'עצמאי' },
-  { id:'5', session_date:dMinus(11), session_time:'07:30', duration_minutes:12,   temperature_celsius:10.5, notes:'פעם ראשונה – הקור היה חזק',            instructor:'יוסי כהן' },
+  { id:'1', session_date:dMinus(0),  session_time:'07:30', duration_minutes:14,   temperature_celsius:5.1, notes:'מעט סחרחורת בסוף – נשארתי פחות',   instructor:'ליאור כ"ץ' },
+  { id:'2', session_date:dMinus(2),  session_time:'09:00', duration_minutes:20,   temperature_celsius:4.8,  notes:'',                                   instructor:'גיא רייבנבך' },
+  { id:'3', session_date:dMinus(4),  session_time:'07:45', duration_minutes:18,   temperature_celsius:5.0, notes:'הרגשתי אנרגטי כל הבוקר אחרי',        instructor:'ליאור כ"ץ' },
+  { id:'4', session_date:dMinus(9),  session_time:'08:00', duration_minutes:15,   temperature_celsius:4.9,  notes:'נשימה עזרה מאוד',                     instructor:'עצמאי' },
+  { id:'5', session_date:dMinus(11), session_time:'07:30', duration_minutes:12,   temperature_celsius:5.2, notes:'פעם ראשונה – הקור היה חזק',            instructor:'יוסי כהן' },
   { id:'6', session_date:dPlus(3),   session_time:'08:00', duration_minutes:null, temperature_celsius:null, notes:'',                                   instructor:'גיא רייבנבך' },
   { id:'7', session_date:dPlus(7),   session_time:'09:30', duration_minutes:null, temperature_celsius:null, notes:'',                                   instructor:'ליאור כ"ץ' },
 ];
@@ -165,7 +165,7 @@ function AddForm({ onAdd }: { onAdd: (s: Session) => void }) {
         <div>
           <label className="block text-slate-400 text-xs font-semibold mb-1.5">טמפרטורה ממוצעת (°C)</label>
           <input type="number" step="0.1" min="-5" max="25" value={form.temperature_celsius}
-            onChange={set('temperature_celsius')} placeholder="10.0" className={inp} />
+            onChange={set('temperature_celsius')} placeholder="5.0" className={inp} />
         </div>
         <div className="sm:col-span-2">
           <label className="block text-slate-400 text-xs font-semibold mb-1.5">מדריך אחראי</label>
