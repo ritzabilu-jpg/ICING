@@ -370,7 +370,12 @@ export default function HomePage() {
                              py-4 rounded-2xl text-lg transition-all hover:scale-105
                              shadow-lg border border-slate-200"
                 >
-                  <span className="text-2xl">📍</span>
+                  <svg width="22" height="22" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+                    <path fill="#4285F4" d="M24 9.5c3.1 0 5.8 1.1 8 2.9l6-6C34.5 3.1 29.5 1 24 1 15.2 1 7.7 6.1 4.1 13.5l7 5.4C12.9 13.1 18 9.5 24 9.5z"/>
+                    <path fill="#34A853" d="M46.1 24.5c0-1.6-.1-3.1-.4-4.5H24v8.5h12.5c-.5 2.8-2.1 5.2-4.5 6.8l7 5.4c4.1-3.8 6.5-9.4 6.5-16.2z"/>
+                    <path fill="#FBBC05" d="M11.1 28.6A14.6 14.6 0 0 1 9.5 24c0-1.6.3-3.1.7-4.6l-7-5.4A23 23 0 0 0 1 24c0 3.7.9 7.2 2.4 10.3l7.7-5.7z"/>
+                    <path fill="#EA4335" d="M24 47c5.4 0 10-1.8 13.3-4.8l-7-5.4c-1.8 1.2-4 1.9-6.3 1.9-5.9 0-10.9-4-12.7-9.4l-7.7 5.7C7.5 42 15.1 47 24 47z"/>
+                  </svg>
                   Google Maps
                 </a>
                 <a
@@ -382,7 +387,14 @@ export default function HomePage() {
                              py-4 rounded-2xl text-lg transition-all hover:scale-105
                              shadow-lg"
                 >
-                  <span className="text-2xl">🗺️</span>
+                  <svg width="22" height="22" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="32" cy="32" r="30" fill="#33CCFF"/>
+                    <ellipse cx="32" cy="28" rx="16" ry="18" fill="white"/>
+                    <circle cx="25" cy="30" r="3" fill="#33CCFF"/>
+                    <circle cx="39" cy="30" r="3" fill="#33CCFF"/>
+                    <path d="M26 38c1.5 2 4 3.5 6 3.5s4.5-1.5 6-3.5" stroke="#33CCFF" strokeWidth="2.5" strokeLinecap="round" fill="none"/>
+                    <circle cx="44" cy="14" r="5" fill="#FF6B6B"/>
+                  </svg>
                   Waze
                 </a>
               </div>

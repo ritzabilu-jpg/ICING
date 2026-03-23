@@ -98,7 +98,7 @@ export default function Footer() {
                 </a>
               </li>
               <li>
-                <a href="https://maps.app.goo.gl/holon-sireni-52" target="_blank"
+                <a href="https://maps.app.goo.gl/c5DjBoYrSFTZnYwF8" target="_blank"
                    rel="noopener noreferrer"
                    className="text-ice-400 hover:text-ice-300 text-sm underline transition-colors">
                   פתח ב-Google Maps
