@@ -13,27 +13,30 @@ export default function InstructorCard({ instructor }: InstructorCardProps) {
                     flex flex-col h-full">
       <div className="flex gap-0 flex-1">
         {/* Photo */}
-        <div className="w-36 sm:w-44 flex-shrink-0 bg-gradient-to-b from-navy-900 to-ice-800
-                        relative overflow-hidden min-h-[220px]">
+        <Link href={`/instructors/${instructor.id}`}
+              className="w-36 sm:w-44 flex-shrink-0 bg-gradient-to-b from-navy-900 to-ice-800
+                         relative overflow-hidden min-h-[220px] block">
           {instructor.photo_url ? (
             <Image
               src={instructor.photo_url}
               alt={instructor.name}
               width={176}
               height={220}
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center text-6xl text-white/30">
               👤
             </div>
           )}
-        </div>
+        </Link>
 
         {/* Content */}
         <div className="p-6 flex flex-col flex-1">
           <div className="mb-3">
-            <h3 className="text-xl font-black text-navy-900 mb-0.5">{instructor.name}</h3>
+            <Link href={`/instructors/${instructor.id}`}>
+              <h3 className="text-xl font-black text-navy-900 mb-0.5 hover:text-ice-600 transition-colors">{instructor.name}</h3>
+            </Link>
             <p className="text-ice-600 text-sm font-semibold">{instructor.female ? 'מדריכה מוסמכת CWI' : 'מדריך מוסמך CWI'}</p>
           </div>
 
