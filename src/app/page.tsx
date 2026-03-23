@@ -370,7 +370,7 @@ export default function HomePage() {
                              p-3 rounded-2xl transition-all hover:scale-105
                              shadow-lg border border-navy-600"
                 >
-                  <img src="/logo-google-maps.png" alt="Google Maps" width={52} height={52} className="object-contain" />
+                  <img src="/logo-google-maps.png" alt="Google Maps" width={70} height={70} className="object-contain" />
                 </a>
                 <a
                   href="https://waze.com/ul?ll=31.9006165,34.8199625&navigate=yes"
@@ -381,7 +381,7 @@ export default function HomePage() {
                              p-3 rounded-2xl transition-all hover:scale-105
                              shadow-lg border border-navy-600"
                 >
-                  <img src="/logo-waze.jpg" alt="Waze" width={52} height={52} className="object-contain rounded-sm" />
+                  <img src="/logo-waze.jpg" alt="Waze" width={70} height={70} className="object-contain rounded-sm" />
                 </a>
               </div>
             </div>
