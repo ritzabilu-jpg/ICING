@@ -185,7 +185,7 @@ export default function ContactPage() {
                   08-9310715
                 </a>
               </p>
-              <p>סירני 52, חולון</p>
+              <p>סירני 52, רחובות</p>
             </div>
           </form>
         )}
