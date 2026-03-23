@@ -107,10 +107,15 @@ export default function InstructorPage({ params }: Props) {
 
           {/* Footer */}
           <div className="px-8 py-5 bg-navy-900 border-t border-navy-700 flex flex-col sm:flex-row gap-3 items-center justify-between">
-            <div className="flex gap-4">
+            <div className="flex gap-4 flex-wrap">
               {instructor.phone && (
                 <a href={`tel:${instructor.phone}`} className="text-slate-300 hover:text-ice-400 text-sm font-semibold transition-colors">
                   📞 {instructor.phone}
+                </a>
+              )}
+              {instructor.email && (
+                <a href={`mailto:${instructor.email}`} className="text-slate-300 hover:text-ice-400 text-sm font-semibold transition-colors">
+                  ✉️ {instructor.email}
                 </a>
               )}
               {instructor.facebook_url && (
