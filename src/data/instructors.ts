@@ -17,7 +17,7 @@ export const INSTRUCTORS: Instructor[] = [
     photo_url: '/yasmin-hamoud.jpg',
     bio: 'מטפלת ומנחה סדנאות טבילה בבריכת קרח, מורה ליוגה, מאמנת ומדריכת שחייה.\nמלווה יחידים וקבוצות בתהליכים של חיזוק חוסן מנטלי דרך נשימה, תנועה וחשיפה מבוקרת לקור.\nמעבירה סדנת יוגה דינמית בשילוב תרגילי נשימה ומיינדפולנס.',
     specialties: ['מיינדפולנס', 'יוגה', 'Rebirthing'],
-    certifications: ['CWI Instructor Certified'],
+    certifications: ['CWI Instructor Certified', 'הידרותרפיסטית מוסמכת'],
     quote: 'להרפות בתוך הקור – ולמצוא בו כוח.',
     female: true,
   },
