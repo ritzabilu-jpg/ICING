@@ -32,20 +32,17 @@ export default function Footer() {
               שיפור פוקוס והורדת סטרס. בליווי מדריכים מוסמכים CWI.
             </p>
             <div className="flex items-center gap-4">
-              <a href="https://facebook.com" target="_blank" rel="noopener noreferrer"
-                 className="w-10 h-10 bg-navy-700 hover:bg-ice-500 rounded-full flex items-center
-                            justify-center transition-colors" aria-label="פייסבוק">
-                <span className="text-lg">f</span>
+              <a href="https://www.facebook.com/groups/1581316102106335" target="_blank" rel="noopener noreferrer"
+                 className="w-10 h-10 overflow-hidden rounded-full hover:scale-110 transition-transform" aria-label="פייסבוק">
+                <img src="/logo-facebook.png" alt="Facebook" className="w-full h-full object-cover" />
               </a>
-              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer"
-                 className="w-10 h-10 bg-navy-700 hover:bg-ice-500 rounded-full flex items-center
-                            justify-center transition-colors text-sm font-bold" aria-label="אינסטגרם">
-                IG
+              <a href="https://www.instagram.com/cwirehovot/" target="_blank" rel="noopener noreferrer"
+                 className="w-10 h-10 overflow-hidden rounded-full hover:scale-110 transition-transform" aria-label="אינסטגרם">
+                <img src="/logo-instagram.jpg" alt="Instagram" className="w-full h-full object-cover" />
               </a>
               <a href="https://wa.me/972524500825" target="_blank" rel="noopener noreferrer"
-                 className="w-10 h-10 bg-navy-700 hover:bg-green-600 rounded-full flex items-center
-                            justify-center transition-colors text-xs font-bold" aria-label="וואטסאפ">
-                WA
+                 className="w-10 h-10 overflow-hidden rounded-full hover:scale-110 transition-transform" aria-label="וואטסאפ">
+                <img src="/logo-whatsapp.jpg" alt="WhatsApp" className="w-full h-full object-cover" />
               </a>
             </div>
           </div>
