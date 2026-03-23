@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import InstructorCard from '@/components/InstructorCard';
-import type { Instructor } from '@/types';
 import Link from 'next/link';
+import { INSTRUCTORS } from '@/data/instructors';
 
 export const metadata: Metadata = {
   title: 'הצוות שלנו – מדריכים מוסמכים',
@@ -10,52 +10,8 @@ export const metadata: Metadata = {
     'כולם בעלי הסמכת CWI ועברו קורס הכשרה מקצועי.',
 };
 
-// Static fallback instructors when Supabase is not configured
-const DEMO_INSTRUCTORS: Instructor[] = [
-  {
-    id: '1',
-    name: 'גילה גרוס קורנט',
-    photo_url: '/gila-gross.jpg',
-    bio: 'סדנה בדגש חוסן רגשי, לקחת את הניצחון האתגר, לחיי היום יום לבניית חוסן מנטלי. מעבירה את הסדנאות בעברית ואנגלית.',
-    specialties: ['חוסן רגשי', 'חוסן מנטלי', 'טכניקות נשימה', 'הידרותרפיסטית', 'מוסמכת וואטסו', 'מדריכת שחיה', 'מדריכת אקווה ג\'ים'],
-    certifications: ['הידרותרפיסטית מוסמכת', 'CWI Instructor Certified'],
-    quote: 'בין השקט של הקרח לעוצמה של הגוף, לבנות חוסן מנטלי, שקט פנימי ואנרגיה חדשה.',
-    female: true,
-  },
-  {
-    id: '2',
-    name: 'יסמין חמוד',
-    photo_url: '/yasmin-hamoud.jpg',
-    bio: 'מטפלת ומנחה סדנאות טבילה בבריכת קרח, מורה ליוגה, מאמנת ומדריכת שחייה.\nמלווה יחידים וקבוצות בתהליכים של חיזוק חוסן מנטלי דרך נשימה, תנועה וחשיפה מבוקרת לקור.\nמעבירה סדנת יוגה דינמית בשילוב תרגילי נשימה ומיינדפולנס.',
-    specialties: ['מיינדפולנס', 'יוגה', 'Rebirthing'],
-    certifications: ['CWI Instructor Certified'],
-    quote: 'להרפות בתוך הקור – ולמצוא בו כוח.',
-    female: true,
-  },
-  {
-    id: '3',
-    name: 'ליאור כ"ץ',
-    photo_url: '/lior-katz.jpg',
-    bio: 'פיזיותרפיסט מ-2001, גיטריסט ומדריך קורס מדריכי טבילה במי קרח. מנחה תהליכי התפתחות יכולת אישית דרך הטבילה.',
-    specialties: ['גיבוש צוותים', 'הדרכת חוסן מנטלי', 'קורס מדריכים'],
-    certifications: ['פיזיותרפיסט מוסמך משרד הבריאות', 'CWI Group Instructor', 'מנחה קורס מדריכים'],
-    quote: 'אנחנו נבנים מחוץ לאיזור הנוחות. כאן במי הקרח, זה המקום האידיאלי בשביל זה.',
-  },
-  {
-    id: '4',
-    name: 'גיא רייבנבך',
-    photo_url: '/guy-ravnbach.jpg',
-    bio: 'בעל תואר ראשון בחינוך גופני, מדריך קארטה בעל ניסיון עם טכניקות נשימה, הרפיה, מדיטציה וצ׳י קונג.',
-    specialties: ['טכניקות נשימה', 'מדיטציה', 'צ׳י קונג'],
-    certifications: ['תואר ראשון חינוך גופני', 'CWI Instructor Certified'],
-    quote: 'במפגש עם הקור אנו לומדים לא להילחם, אלא להרפות — ומתוך ההרפיה נוצר כוח שקט שעוזר לנו להתמודד עם אתגרי החיים.',
-    facebook_url: 'https://www.facebook.com/share/1KpjfpeyKV/',
-    phone: '052-8761110',
-  },
-];
-
 export default async function InstructorsPage() {
-  const instructors: Instructor[] = DEMO_INSTRUCTORS;
+  const instructors = INSTRUCTORS;
 
   return (
     <div className="py-16">
