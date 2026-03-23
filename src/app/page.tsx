@@ -322,10 +322,11 @@ export default function HomePage() {
                     <span className="text-2xl">📞</span>
                     <span className="font-semibold text-lg">08-9310715</span>
                   </a>
-                  <a href="tel:089310716"
-                     className="flex items-center gap-4 text-slate-300 hover:text-ice-400 transition-colors">
-                    <span className="text-2xl">📞</span>
-                    <span className="font-semibold text-lg">08-9310716</span>
+                  <a href="https://wa.me/972524500825"
+                     target="_blank" rel="noopener noreferrer"
+                     className="flex items-center gap-4 text-slate-300 hover:text-green-400 transition-colors">
+                    <img src="/logo-whatsapp.jpg" alt="WhatsApp" width={32} height={32} className="rounded-full object-cover" />
+                    <span className="font-semibold text-lg">וואטסאפ</span>
                   </a>
                   <Link href="/contact"
                      className="flex items-center gap-4 text-slate-300 hover:text-ice-400 transition-colors">
