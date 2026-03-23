@@ -38,7 +38,7 @@ export default function InstructorCard({ instructor }: InstructorCardProps) {
           </div>
 
           {instructor.bio && (
-            <p className="text-slate-600 text-sm leading-relaxed mb-4 line-clamp-3">
+            <p className="text-slate-600 text-sm leading-relaxed mb-4 line-clamp-5 whitespace-pre-line">
               {instructor.bio}
             </p>
           )}
