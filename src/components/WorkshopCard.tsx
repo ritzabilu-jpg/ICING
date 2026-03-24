@@ -6,7 +6,7 @@ interface Feature {
 }
 
 interface WorkshopCardProps {
-  type: 'individual' | 'couple' | 'team';
+  type: 'individual' | 'couple' | 'team' | 'one-on-one';
   title: string;
   subtitle: string;
   description: string;
@@ -17,11 +17,12 @@ interface WorkshopCardProps {
   icon: string;
   features: Feature[];
   highlight?: boolean;
+  popular?: boolean;
 }
 
 export default function WorkshopCard({
   type, title, subtitle, description, price, priceNote,
-  duration, capacity, icon, features, highlight = false,
+  duration, capacity, icon, features, highlight = false, popular = false,
 }: WorkshopCardProps) {
   return (
     <div className={`relative flex flex-col rounded-3xl border-2 transition-all duration-300
@@ -30,7 +31,7 @@ export default function WorkshopCard({
                        ? 'bg-navy-900 border-ice-500 shadow-xl shadow-ice-500/20'
                        : 'bg-white border-ice-100 hover:border-ice-400 shadow-lg'
                      }`}>
-      {highlight && (
+      {popular && (
         <div className="absolute -top-4 right-1/2 translate-x-1/2">
           <span className="bg-ice-500 text-white text-xs font-bold px-4 py-1.5 rounded-full shadow-lg">
             הכי פופולרי
