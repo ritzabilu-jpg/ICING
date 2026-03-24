@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import AccessibilityWidget from '@/components/AccessibilityWidget';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://icing-blond.vercel.app'),
@@ -73,6 +74,7 @@ export default function RootLayout({
           {children}
         </main>
         <Footer />
+        <AccessibilityWidget />
       </body>
     </html>
   );
