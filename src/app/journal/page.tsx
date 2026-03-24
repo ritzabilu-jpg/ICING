@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
-const INSTRUCTORS = ['ליאור כ"ץ', 'גיא רייבנבך', 'יוסי כהן', 'מירה לוי', 'עצמאי'];
+const INSTRUCTORS = ['גילה גרוס קורנט', 'יסמין חמוד', 'ורד פקטור', 'ליאור כ"ץ', 'גיא רייבנבך', 'עצמאי'];
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -31,7 +31,7 @@ const DEMO: Session[] = [
   { id:'2', session_date:dMinus(2),  session_time:'09:00', duration_minutes:20,   temperature_celsius:4.8,  notes:'',                                   instructor:'גיא רייבנבך' },
   { id:'3', session_date:dMinus(4),  session_time:'07:45', duration_minutes:18,   temperature_celsius:5.0, notes:'הרגשתי אנרגטי כל הבוקר אחרי',        instructor:'ליאור כ"ץ' },
   { id:'4', session_date:dMinus(9),  session_time:'08:00', duration_minutes:15,   temperature_celsius:4.9,  notes:'נשימה עזרה מאוד',                     instructor:'עצמאי' },
-  { id:'5', session_date:dMinus(11), session_time:'07:30', duration_minutes:12,   temperature_celsius:5.2, notes:'פעם ראשונה – הקור היה חזק',            instructor:'יוסי כהן' },
+  { id:'5', session_date:dMinus(11), session_time:'07:30', duration_minutes:12,   temperature_celsius:5.2, notes:'פעם ראשונה – הקור היה חזק',            instructor:'גילה גרוס קורנט' },
   { id:'6', session_date:dPlus(3),   session_time:'08:00', duration_minutes:null, temperature_celsius:null, notes:'',                                   instructor:'גיא רייבנבך' },
   { id:'7', session_date:dPlus(7),   session_time:'09:30', duration_minutes:null, temperature_celsius:null, notes:'',                                   instructor:'ליאור כ"ץ' },
 ];
