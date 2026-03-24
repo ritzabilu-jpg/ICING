@@ -87,7 +87,7 @@ const workshopTypes = [
     price: 'מחיר מיוחד',
     priceNote: 'לפי גודל הקבוצה',
     duration: 'לפי הזמנה',
-    capacity: 'מ-5 עד 20+ משתתפים',
+    capacity: 'מדריך לכל קבוצה, החל מ-5 משתתפים',
     highlight: false,
     features: [
       { icon: '🤝', text: 'Team Building אמיתי' },
