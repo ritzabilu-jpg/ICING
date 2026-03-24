@@ -26,10 +26,11 @@ const PKG_LABELS: Record<string, string> = {
 };
 
 const DEMO_INSTRUCTORS = [
-  { name: 'ליאור כ"ץ',   phone: null,          facebook: null,                                       email: 'lior@example.com' },
-  { name: 'גיא רייבנבך', phone: '052-8761110', facebook: 'https://www.facebook.com/share/1KpjfpeyKV/', email: null },
-  { name: 'גילה גרוס קורנט', phone: null,       facebook: null,                                       email: null },
-  { name: 'מירה לוי',    phone: null,          facebook: null,                                       email: null },
+  { name: 'גילה גרוס קורנט', phone: null,          facebook: null,                                         email: null },
+  { name: 'יסמין חמוד',      phone: null,          facebook: null,                                         email: null },
+  { name: 'ורד פקטור',       phone: null,          facebook: null,                                         email: 'vered79@gmail.com' },
+  { name: 'ליאור כ"ץ',       phone: null,          facebook: null,                                         email: null },
+  { name: 'גיא רייבנבך',     phone: '052-8761110', facebook: 'https://www.facebook.com/share/1KpjfpeyKV/', email: null },
 ];
 
 const HEALTH_KEY = 'admin_health_checks_v1';
