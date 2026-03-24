@@ -92,7 +92,8 @@ const workshopTypes = [
     features: [
       { icon: '🤝', text: 'Team Building אמיתי' },
       { icon: '🛡️', text: 'חוסן מנטלי קבוצתי' },
-      { icon: '📊', text: 'סיכום ובריפינג לאחר' },
+      { icon: '✨', text: 'Tailor made workshop' },
+      { icon: '🌍', text: 'אפשרות לסדנאות בשפות שונות' },
     ],
   },
 ];
