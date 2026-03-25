@@ -89,7 +89,7 @@ export default async function InstructorPage({ params }: Props) {
           {instructor.quote && (
             <div className="px-8 py-6 border-t border-navy-700">
               <blockquote className="text-ice-300 text-lg italic border-r-4 border-ice-500 pr-5 leading-relaxed">
-                &ldquo;{instructor.quote}&rdquo;
+                {instructor.quote}
               </blockquote>
             </div>
           )}
