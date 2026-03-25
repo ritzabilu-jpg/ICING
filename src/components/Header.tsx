@@ -63,9 +63,9 @@ export default function Header() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="flex items-center justify-between h-16 md:h-20">
 
-            {/* RIGHT – Havayot logo */}
+            {/* RIGHT – CWI Ice logo */}
             <Link href="/" className="flex items-center gap-2 flex-shrink-0">
-              <Image src="/logo-havayot.png" alt="חוויות שוויץ המדע" width={130} height={52}
+              <Image src="/logo-ice.png" alt="Cold Water Immersion – CWI" width={80} height={52}
                 className="object-contain h-10 md:h-12 w-auto" priority />
             </Link>
 
@@ -117,12 +117,6 @@ export default function Header() {
                            hover:scale-105 border border-navy-500">
                 🏔️ קבע סדנה
               </Link>
-
-              {/* Ice logo */}
-              <div className="flex-shrink-0">
-                <Image src="/logo-ice.png" alt="Cold Water Immersion – CWI" width={70} height={52}
-                  className="object-contain h-10 md:h-12 w-auto" priority />
-              </div>
 
               {/* Mobile hamburger */}
               <button className="lg:hidden text-white p-2 rounded-lg hover:bg-navy-700 transition-colors"
