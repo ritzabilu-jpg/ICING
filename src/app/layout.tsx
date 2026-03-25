@@ -7,7 +7,7 @@ import AccessibilityWidget from '@/components/AccessibilityWidget';
 export const metadata: Metadata = {
   metadataBase: new URL('https://icing-blond.vercel.app'),
   title: {
-    default: 'ICING | אמבטיות קרח חולון',
+    default: 'ICING | אמבטיות קרח',
     template: '%s | ICING',
   },
   description:
@@ -29,7 +29,7 @@ export const metadata: Metadata = {
     url: 'https://icing-blond.vercel.app',
     locale: 'he_IL',
     siteName: 'ICING',
-    title: 'ICING | אמבטיות קרח חולון',
+    title: 'ICING | אמבטיות קרח',
     description: 'סדנאות אמבטיות קרח מקצועיות. נכנסים לקרח – יוצאים חדים וחסינים.',
     images: [
       {
@@ -40,7 +40,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'ICING | אמבטיות קרח חולון',
+    title: 'ICING | אמבטיות קרח',
     description: 'סדנאות אמבטיות קרח מקצועיות. נכנסים לקרח – יוצאים חדים וחסינים.',
     images: ['https://icing-blond.vercel.app/logo-ice.png'],
   },
