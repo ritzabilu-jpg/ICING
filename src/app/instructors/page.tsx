@@ -58,7 +58,7 @@ export default async function InstructorsPage() {
             </div>
 
             <div className="mt-6 pt-5 border-t border-ice-200 text-center flex flex-wrap items-center justify-center gap-3">
-              <span className="text-slate-700 text-base font-semibold">רוצה לשמוע פרטים על קורס מדריכי טבילה במי קרח ונשימה? צור קשר כאן</span>
+              <span className="text-slate-700 text-base font-semibold">רוצה לשמוע פרטים על קורס מדריכי CWI - טבילה במי קרח ונשימה? צור קשר כאן</span>
               <a href="https://wa.me/972524500825" target="_blank" rel="noopener noreferrer"
                 className="inline-flex items-center bg-green-500 hover:bg-green-600 text-white p-2 rounded-xl transition-all"
                 aria-label="WhatsApp">
