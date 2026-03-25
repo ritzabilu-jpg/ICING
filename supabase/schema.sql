@@ -280,29 +280,53 @@ CREATE TABLE IF NOT EXISTS visitor_profiles (
 );
 
 CREATE TABLE IF NOT EXISTS immersion_sessions (
-  id                  UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  visitor_id          UUID NOT NULL REFERENCES visitor_profiles(id) ON DELETE CASCADE,
-  session_date        DATE NOT NULL,
-  session_time        TIME NOT NULL,
-  temperature_celsius DECIMAL(4,1),
-  duration_minutes    INTEGER NOT NULL DEFAULT 0,
-  instructor_name     TEXT DEFAULT '',
-  notes               TEXT DEFAULT '',
-  created_at          TIMESTAMPTZ DEFAULT NOW()
+  id                      UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  visitor_id              UUID NOT NULL REFERENCES visitor_profiles(id) ON DELETE CASCADE,
+  session_date            DATE NOT NULL,
+  session_time            TIME NOT NULL,
+  temperature_celsius     DECIMAL(4,1),
+  duration_minutes        INTEGER NOT NULL DEFAULT 0,
+  instructor_name         TEXT DEFAULT '',
+  instructor_notes        TEXT DEFAULT '',
+  visitor_notes           TEXT DEFAULT '',
+  photo_url               TEXT,
+  status                  TEXT CHECK(status IN ('planned','done','cancelled')) DEFAULT 'planned',
+  logged_by               UUID REFERENCES visitor_profiles(id) ON DELETE SET NULL,
+  logged_at               TIMESTAMPTZ DEFAULT NOW(),
+  created_at              TIMESTAMPTZ DEFAULT NOW()
 );
 CREATE INDEX IF NOT EXISTS idx_imm_visitor ON immersion_sessions(visitor_id, session_date DESC);
 
 CREATE TABLE IF NOT EXISTS daily_health_checks (
-  id           UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  visitor_id   UUID NOT NULL REFERENCES visitor_profiles(id) ON DELETE CASCADE,
-  check_date   DATE NOT NULL DEFAULT CURRENT_DATE,
-  feels_healthy BOOLEAN NOT NULL DEFAULT false,
-  no_fever     BOOLEAN NOT NULL DEFAULT false,
-  feeling_good BOOLEAN NOT NULL DEFAULT false,
-  submitted_at TIMESTAMPTZ DEFAULT NOW(),
-  UNIQUE(visitor_id, check_date)
+  id                        UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  visitor_id                UUID NOT NULL REFERENCES visitor_profiles(id) ON DELETE CASCADE,
+  check_date                DATE NOT NULL DEFAULT CURRENT_DATE,
+  check_type                TEXT CHECK(check_type IN ('daily','yearly')) NOT NULL DEFAULT 'daily',
+  feels_healthy             BOOLEAN NOT NULL DEFAULT false,
+  no_fever                  BOOLEAN NOT NULL DEFAULT false,
+  feeling_good              BOOLEAN NOT NULL DEFAULT false,
+  submitted_by              UUID REFERENCES visitor_profiles(id) ON DELETE SET NULL,
+  submitted_at              TIMESTAMPTZ DEFAULT NOW(),
+  yearly_expires_at         DATE,
+  UNIQUE(visitor_id, check_date, check_type)
 );
 CREATE INDEX IF NOT EXISTS idx_hc_date ON daily_health_checks(check_date, visitor_id);
+CREATE INDEX IF NOT EXISTS idx_hc_yearly_expiry ON daily_health_checks(yearly_expires_at);
+
+-- Immersion event participants (checklist per event for instructors/admin)
+CREATE TABLE IF NOT EXISTS immersion_event_participants (
+  id                             UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  event_type                     TEXT CHECK(event_type IN ('workshop','immersion_slot')) NOT NULL,
+  event_id                       UUID NOT NULL,
+  visitor_id                     UUID NOT NULL REFERENCES visitor_profiles(id) ON DELETE CASCADE,
+  daily_check_completed          BOOLEAN DEFAULT FALSE,
+  yearly_declaration_completed   BOOLEAN DEFAULT FALSE,
+  daily_checked_at               TIMESTAMPTZ,
+  yearly_checked_at              TIMESTAMPTZ,
+  created_at                     TIMESTAMPTZ DEFAULT NOW(),
+  UNIQUE(event_type, event_id, visitor_id)
+);
+CREATE INDEX IF NOT EXISTS idx_event_participants_event ON immersion_event_participants(event_type, event_id);
 
 -- ============================================================
 -- Immersion Slots & Bookings (managed by admin)
@@ -324,3 +348,88 @@ CREATE TABLE IF NOT EXISTS immersion_bookings (
   package_type   TEXT NOT NULL CHECK (package_type IN ('single','5pack','10pack')),
   created_at     TIMESTAMPTZ DEFAULT NOW()
 );
+
+-- ============================================================
+-- Phase 2: Email OTP Auth + Role Management + Instructor CRUD
+-- Run these in Supabase SQL Editor (idempotent)
+-- ============================================================
+
+-- Make phone nullable (allow email-only registration)
+ALTER TABLE visitor_profiles ALTER COLUMN phone DROP NOT NULL;
+
+-- Add email + OTP fields
+ALTER TABLE visitor_profiles ADD COLUMN IF NOT EXISTS email TEXT;
+ALTER TABLE visitor_profiles ADD COLUMN IF NOT EXISTS otp_code TEXT;
+ALTER TABLE visitor_profiles ADD COLUMN IF NOT EXISTS otp_expires_at TIMESTAMPTZ;
+
+-- Unique index on email (nulls are not considered duplicates)
+CREATE UNIQUE INDEX IF NOT EXISTS visitor_profiles_email_unique
+  ON visitor_profiles(email) WHERE email IS NOT NULL;
+
+-- Instructors: add missing fields for full management
+ALTER TABLE instructors ADD COLUMN IF NOT EXISTS slug         TEXT;
+ALTER TABLE instructors ADD COLUMN IF NOT EXISTS facebook_url TEXT;
+ALTER TABLE instructors ADD COLUMN IF NOT EXISTS phone        TEXT;
+ALTER TABLE instructors ADD COLUMN IF NOT EXISTS email_contact TEXT;
+ALTER TABLE instructors ADD COLUMN IF NOT EXISTS female        BOOLEAN DEFAULT FALSE;
+ALTER TABLE instructors ADD COLUMN IF NOT EXISTS sort_order    INTEGER DEFAULT 0;
+
+CREATE UNIQUE INDEX IF NOT EXISTS instructors_slug_unique
+  ON instructors(slug) WHERE slug IS NOT NULL;
+
+-- Seed the real instructors (safe upsert by slug)
+INSERT INTO instructors (name, slug, bio, specialties, certifications, quote, photo_url, female, sort_order, is_active) VALUES
+(
+  'גילה גרוס קורנט', 'gila-gross',
+  'סדנה בדגש חוסן רגשי, לקחת את הניצחון האתגר, לחיי היום יום לבניית חוסן מנטלי. מעבירה את הסדנאות בעברית ואנגלית.',
+  ARRAY['חוסן רגשי','חוסן מנטלי','טכניקות נשימה','הידרותרפיסטית','מוסמכת וואטסו','מדריכת שחיה','מדריכת אקווה ג''ים'],
+  ARRAY['הידרותרפיסטית מוסמכת','CWI Instructor Certified'],
+  'בין השקט של הקרח לעוצמה של הגוף, לבנות חוסן מנטלי, שקט פנימי ואנרגיה חדשה.',
+  '/gila-gross.jpg', TRUE, 1, TRUE
+),
+(
+  'יסמין חמוד', 'yasmin-hamoud',
+  'מטפלת ומנחה סדנאות טבילה בבריכת קרח, מורה ליוגה, מאמנת ומדריכת שחייה.' || chr(10) ||
+  'מלווה יחידים וקבוצות בתהליכים של חיזוק חוסן מנטלי דרך נשימה, תנועה וחשיפה מבוקרת לקור.' || chr(10) ||
+  'מעבירה סדנת יוגה דינמית בשילוב תרגילי נשימה ומיינדפולנס.',
+  ARRAY['מיינדפולנס','יוגה','Rebirthing'],
+  ARRAY['CWI Instructor Certified','הידרותרפיסטית מוסמכת'],
+  'להרפות בתוך הקור – ולמצוא בו כוח.',
+  '/yasmin-hamoud.jpg', TRUE, 2, TRUE
+),
+(
+  'ורד פקטור', 'vered-factor',
+  'מדריכת שחייה והידרותרפיסטית.' || chr(10) ||
+  'מעבירה סדנאות עם דגשים ליתרונות התרגול וההשפעה החיובית בגילאי 40-55 לגברים ולנשים.',
+  ARRAY['הידרותרפיה','מדריכת שחייה','גילאי 40-55'],
+  ARRAY['הידרותרפיסטית מוסמכת','CWI Instructor Certified'],
+  'היכולת להישאר בתוך אי נוחות, היא שריר שאפשר לאמן וזה משפיע באופן מפתיע לטובה, על איזורים לא צפויים בחיים.',
+  '/vered-factor.jpg', TRUE, 3, TRUE
+),
+(
+  'ליאור כ"ץ', 'lior-katz',
+  'פיזיותרפיסט מ-2001, גיטריסט ומדריך קורס מדריכי טבילה במי קרח. מנחה תהליכי התפתחות יכולת אישית דרך הטבילה.',
+  ARRAY['גיבוש צוותים','הדרכת חוסן מנטלי','קורס מדריכים'],
+  ARRAY['פיזיותרפיסט מוסמך משרד הבריאות','CWI Group Instructor','מנחה קורס מדריכים'],
+  'אנחנו נבנים מחוץ לאיזור הנוחות. כאן במי הקרח, זה המקום האידיאלי בשביל זה.',
+  '/lior-katz.jpg', FALSE, 4, TRUE
+),
+(
+  'גיא רייבנבך', 'guy-ravnbach',
+  'בעל תואר ראשון בחינוך גופני, מדריך קארטה בעל ניסיון עם טכניקות נשימה, הרפיה, מדיטציה וצ''י קונג.',
+  ARRAY['טכניקות נשימה','מדיטציה','צ''י קונג'],
+  ARRAY['תואר ראשון חינוך גופני','CWI Instructor Certified'],
+  'במפגש עם הקור אנו לומדים לא להילחם, אלא להרפות — ומתוך ההרפיה נוצר כוח שקט שעוזר לנו להתמודד עם אתגרי החיים.',
+  '/guy-ravnbach.jpg', FALSE, 5, TRUE
+)
+ON CONFLICT (slug) DO UPDATE SET
+  name = EXCLUDED.name, bio = EXCLUDED.bio, specialties = EXCLUDED.specialties,
+  certifications = EXCLUDED.certifications, quote = EXCLUDED.quote,
+  photo_url = EXCLUDED.photo_url, female = EXCLUDED.female,
+  sort_order = EXCLUDED.sort_order, is_active = EXCLUDED.is_active;
+
+-- Update Guy's facebook_url and phone
+UPDATE instructors SET facebook_url = 'https://www.facebook.com/share/1KpjfpeyKV/', phone = '052-8761110'
+WHERE slug = 'guy-ravnbach';
+
+UPDATE instructors SET email_contact = 'vered79@gmail.com' WHERE slug = 'vered-factor';
