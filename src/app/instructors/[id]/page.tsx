@@ -3,48 +3,13 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import { INSTRUCTORS } from '@/data/instructors';
-import type { Instructor } from '@/types';
-
-export const dynamic = 'force-dynamic';
 
 interface Props {
   params: { id: string };
 }
 
-async function fetchInstructor(slug: string): Promise<Instructor | null> {
-  try {
-    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://icing-blond.vercel.app';
-    const res = await fetch(`${baseUrl}/api/instructors`, { cache: 'no-store' });
-    if (res.ok) {
-      const data = await res.json();
-      if (Array.isArray(data) && data.length > 0) {
-        const match = data.find((d: Record<string, unknown>) => d.slug === slug || d.id === slug);
-        if (match) {
-          return {
-            id: (match.slug as string) || (match.id as string),
-            name: match.name as string,
-            photo_url: (match.photo_url as string) || null,
-            bio: (match.bio as string) || '',
-            specialties: (match.specialties as string[]) || [],
-            certifications: (match.certifications as string[]) || [],
-            quote: match.quote as string | undefined,
-            facebook_url: match.facebook_url as string | undefined,
-            phone: match.phone as string | undefined,
-            email: match.email_contact as string | undefined,
-            female: (match.female as boolean) || false,
-          };
-        }
-      }
-    }
-  } catch {
-    // fall through
-  }
-  // Fallback to static data
-  return INSTRUCTORS.find(i => i.id === slug) || null;
-}
-
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const instructor = await fetchInstructor(params.id);
+  const instructor = INSTRUCTORS.find(i => i.id === params.id);
   if (!instructor) return {};
   return {
     title: `${instructor.name} | ICING`,
@@ -53,7 +18,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function InstructorPage({ params }: Props) {
-  const instructor = await fetchInstructor(params.id);
+  const instructor = INSTRUCTORS.find(i => i.id === params.id) || null;
   if (!instructor) notFound();
 
   return (
