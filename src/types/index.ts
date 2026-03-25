@@ -11,6 +11,7 @@ export interface Instructor {
   certifications: string[];
   quote?: string;
   facebook_url?: string;
+  instagram_url?: string;
   phone?: string;
   email?: string;
   female?: boolean;
