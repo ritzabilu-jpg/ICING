@@ -19,7 +19,7 @@ type CalendarValue = ValuePiece | [ValuePiece, ValuePiece];
 const typeLabels: Record<WorkshopType, string> = {
   individual: 'יחידים',
   couple: 'זוגות',
-  team: 'קבוצות',
+  team: 'קבוצות מאורגנות',
 };
 
 export default function CalendarView({ type, instructorId, onSelect, onBack }: CalendarViewProps) {

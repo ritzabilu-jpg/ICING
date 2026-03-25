@@ -40,10 +40,10 @@ const types = [
   {
     type: 'team' as WorkshopType,
     icon: '🏔️',
-    title: 'סדנת קבוצות',
+    title: 'סדנאות לקבוצות מאורגנות',
     description: 'גיבוש וחוסן לצוותי עבודה',
     price: 'לפי הצעה',
-    capacity: '5–20+ משתתפים',
+    capacity: 'מ-5 משתתפים ומעלה',
     duration: 'לפי הזמנה',
     highlight: false,
   },
