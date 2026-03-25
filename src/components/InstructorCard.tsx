@@ -71,7 +71,7 @@ export default function InstructorCard({ instructor }: InstructorCardProps) {
 
           {instructor.quote && (
             <blockquote className="mt-3 text-slate-400 text-xs italic border-r-2 border-ice-300 pr-3">
-              &ldquo;{instructor.quote}&rdquo;
+              {instructor.quote}
             </blockquote>
           )}
         </div>
