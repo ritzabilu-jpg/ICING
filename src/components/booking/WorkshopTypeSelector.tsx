@@ -46,6 +46,7 @@ const types = [
     capacity: 'מ-5 משתתפים ומעלה',
     duration: 'לפי הזמנה',
     highlight: false,
+    whatsapp: true,
   },
 ];
 
@@ -59,7 +60,10 @@ export default function WorkshopTypeSelector({ onSelect }: WorkshopTypeSelectorP
         {types.map(t => (
           <button
             key={t.type}
-            onClick={() => onSelect(t.type)}
+            onClick={() => t.whatsapp
+              ? window.open('https://wa.me/972524500825', '_blank')
+              : onSelect(t.type)
+            }
             className={`group relative flex flex-col rounded-3xl border-2 p-7 text-right transition-all duration-300
                          hover:shadow-xl hover:-translate-y-1 focus:outline-none focus:ring-4
                          focus:ring-ice-400 active:scale-95
@@ -102,8 +106,8 @@ export default function WorkshopTypeSelector({ onSelect }: WorkshopTypeSelectorP
                                ? 'bg-ice-500 text-white group-hover:bg-ice-400'
                                : 'bg-navy-900 text-white group-hover:bg-navy-700'
                              }`}>
-              בחרו ועברו לתאריך
-              <span>→</span>
+              {t.whatsapp ? 'צור קשר כדי לתפור לכם סדנה מתאימה' : 'בחרו ועברו לתאריך'}
+              <span>{t.whatsapp ? '💬' : '→'}</span>
             </div>
           </button>
         ))}
