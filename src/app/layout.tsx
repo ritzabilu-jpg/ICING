@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   metadataBase: new URL('https://icing-blond.vercel.app'),
   title: {
     default: 'ICING - CWI - טבילה במי קרח',
-    template: '%s | ICING',
+    template: 'ICING | %s',
   },
   description:
     'סדנאות אמבטיות קרח מקצועיות ומדעיות בחולון. יחידים, זוגות וצוותים. ' +
