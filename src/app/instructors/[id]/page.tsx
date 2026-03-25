@@ -3,17 +3,48 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import { INSTRUCTORS } from '@/data/instructors';
+import type { Instructor } from '@/types';
+
+export const dynamic = 'force-dynamic';
 
 interface Props {
   params: { id: string };
 }
 
-export function generateStaticParams() {
-  return INSTRUCTORS.map(i => ({ id: i.id }));
+async function fetchInstructor(slug: string): Promise<Instructor | null> {
+  try {
+    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://icing-blond.vercel.app';
+    const res = await fetch(`${baseUrl}/api/instructors`, { cache: 'no-store' });
+    if (res.ok) {
+      const data = await res.json();
+      if (Array.isArray(data) && data.length > 0) {
+        const match = data.find((d: Record<string, unknown>) => d.slug === slug || d.id === slug);
+        if (match) {
+          return {
+            id: (match.slug as string) || (match.id as string),
+            name: match.name as string,
+            photo_url: (match.photo_url as string) || null,
+            bio: (match.bio as string) || '',
+            specialties: (match.specialties as string[]) || [],
+            certifications: (match.certifications as string[]) || [],
+            quote: match.quote as string | undefined,
+            facebook_url: match.facebook_url as string | undefined,
+            phone: match.phone as string | undefined,
+            email: match.email_contact as string | undefined,
+            female: (match.female as boolean) || false,
+          };
+        }
+      }
+    }
+  } catch {
+    // fall through
+  }
+  // Fallback to static data
+  return INSTRUCTORS.find(i => i.id === slug) || null;
 }
 
-export function generateMetadata({ params }: Props): Metadata {
-  const instructor = INSTRUCTORS.find(i => i.id === params.id);
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const instructor = await fetchInstructor(params.id);
   if (!instructor) return {};
   return {
     title: `${instructor.name} | חוויות שוויץ המדע`,
@@ -21,8 +52,8 @@ export function generateMetadata({ params }: Props): Metadata {
   };
 }
 
-export default function InstructorPage({ params }: Props) {
-  const instructor = INSTRUCTORS.find(i => i.id === params.id);
+export default async function InstructorPage({ params }: Props) {
+  const instructor = await fetchInstructor(params.id);
   if (!instructor) notFound();
 
   return (
@@ -59,7 +90,6 @@ export default function InstructorPage({ params }: Props) {
                 {instructor.female ? 'מדריכה מוסמכת CWI' : 'מדריך מוסמך CWI'}
               </p>
 
-              {/* Specialties */}
               {instructor.specialties?.length > 0 && (
                 <div className="flex flex-wrap gap-2 mb-6">
                   {instructor.specialties.map(s => (
@@ -70,7 +100,6 @@ export default function InstructorPage({ params }: Props) {
                 </div>
               )}
 
-              {/* Certifications */}
               {instructor.certifications?.length > 0 && (
                 <div className="flex flex-col gap-1">
                   {instructor.certifications.map(c => (
@@ -99,11 +128,6 @@ export default function InstructorPage({ params }: Props) {
               </blockquote>
             </div>
           )}
-
-          {/* Extra content placeholder */}
-          <div className="px-8 py-6 border-t border-navy-700 min-h-[80px]">
-            {/* מקום לתוכן נוסף בעתיד */}
-          </div>
 
           {/* Footer */}
           <div className="px-8 py-5 bg-navy-900 border-t border-navy-700 flex flex-col sm:flex-row gap-3 items-center justify-between">

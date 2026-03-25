@@ -46,7 +46,7 @@ function saveHealthChecks(data: Record<string, { daily: boolean; general: boolea
 
 // ─── Admin Content ────────────────────────────────────────────────────────────
 
-type TabType = 'lior' | 'immersion' | 'clients' | 'instructors' | 'workshops' | 'reviews';
+type TabType = 'lior' | 'immersion' | 'clients' | 'instructors' | 'workshops' | 'reviews' | 'manage-instructors' | 'users';
 
 interface InstructorWorkshop {
   id: string;
@@ -105,6 +105,23 @@ function AdminContent() {
   const [addingW, setAddingW]           = useState(false);
   const [wMsg, setWMsg]                 = useState('');
 
+  // ── Instructor CRUD ──
+  interface DbInstructor { id: string; name: string; slug: string | null; bio: string; photo_url: string | null; specialties: string[]; certifications: string[]; quote: string | null; facebook_url: string | null; phone: string | null; email_contact: string | null; female: boolean; sort_order: number; is_active: boolean; }
+  const [dbInstructors, setDbInstructors] = useState<DbInstructor[]>([]);
+  const [loadingDbI, setLoadingDbI] = useState(false);
+  const [editingInstructor, setEditingInstructor] = useState<DbInstructor | null>(null);
+  const [showAddInstructor, setShowAddInstructor] = useState(false);
+  const [instrForm, setInstrForm] = useState({ name: '', slug: '', bio: '', photo_url: '', specialties: '', certifications: '', quote: '', facebook_url: '', phone: '', email_contact: '', female: false, sort_order: 99 });
+  const [instrMsg, setInstrMsg] = useState('');
+  // ── Users ──
+  interface UserEntry { id: string; name: string; email: string | null; phone: string | null; role: string; created_at: string; }
+  const [users, setUsers] = useState<UserEntry[]>([]);
+  const [loadingU, setLoadingU] = useState(false);
+  const [userSearch, setUserSearch] = useState('');
+  const [roleEmail, setRoleEmail] = useState('');
+  const [roleValue, setRoleValue] = useState('instructor');
+  const [roleMsg, setRoleMsg] = useState('');
+
   // ── Load functions ──────────────────────────────────────────────────────────
 
   const loadLior = useCallback(async () => {
@@ -150,10 +167,32 @@ function AdminContent() {
     setLoadingW(false);
   }, [key]);
 
+  const loadDbInstructors = useCallback(async () => {
+    setLoadingDbI(true);
+    try {
+      const res = await fetch('/api/admin/instructors', { headers: { 'x-admin-key': key } });
+      const data = await res.json();
+      setDbInstructors(Array.isArray(data) ? data : []);
+    } catch { /* ignore */ }
+    setLoadingDbI(false);
+  }, [key]);
+
+  const loadUsers = useCallback(async () => {
+    setLoadingU(true);
+    try {
+      const res = await fetch('/api/admin/users', { headers: { 'x-admin-key': key } });
+      const data = await res.json();
+      setUsers(Array.isArray(data) ? data : []);
+    } catch { /* ignore */ }
+    setLoadingU(false);
+  }, [key]);
+
   useEffect(() => { loadLior(); setHealthChecks(loadHealthChecks()); }, [loadLior]);
   useEffect(() => { if (tab === 'immersion') loadSlots(); }, [tab, loadSlots]);
   useEffect(() => { if (tab === 'clients') loadClients(); }, [tab, loadClients]);
   useEffect(() => { if (tab === 'workshops') loadWorkshops(); }, [tab, loadWorkshops]);
+  useEffect(() => { if (tab === 'manage-instructors') loadDbInstructors(); }, [tab, loadDbInstructors]);
+  useEffect(() => { if (tab === 'users') loadUsers(); }, [tab, loadUsers]);
 
   // ── Actions ─────────────────────────────────────────────────────────────────
 
@@ -284,7 +323,9 @@ function AdminContent() {
           ['immersion',   '🧊 מועדי טבילה'],
           ['workshops',   '🏊 סדנאות מדריכים'],
           ['clients',     '👥 לקוחות'],
-          ['instructors', '📧 מדריכים'],
+          ['manage-instructors', '🏊 ניהול מדריכים'],
+          ['users',       '👤 משתמשים'],
+          ['instructors', '📧 הזמנות מדריכים'],
           ['reviews',     '✍️ חוות דעת'],
         ] as [TabType, string][]).map(([t, label]) => (
           <button key={t} onClick={() => setTab(t)}
@@ -750,6 +791,319 @@ function AdminContent() {
             className="inline-flex items-center gap-2 bg-navy-900 hover:bg-navy-700 text-white font-black px-8 py-4 rounded-2xl text-lg transition-colors shadow-lg">
             ✍️ פתח דשבורד חוות דעת
           </a>
+        </div>
+      )}
+
+      {/* ── TAB: Manage Instructors ── */}
+      {tab === 'manage-instructors' && (
+        <div className="space-y-5">
+          <div className="flex items-center justify-between">
+            <h2 className="text-xl font-black text-navy-900">ניהול מדריכים</h2>
+            <button onClick={() => { setShowAddInstructor(v => !v); setInstrMsg(''); setEditingInstructor(null); }}
+              className="bg-ice-600 hover:bg-ice-700 text-white font-bold px-4 py-2 rounded-xl text-sm transition-colors">
+              {showAddInstructor ? 'סגור' : '+ הוסף מדריך'}
+            </button>
+          </div>
+
+          {showAddInstructor && (
+            <div className="bg-ice-50 border border-ice-200 rounded-2xl p-5">
+              <h3 className="font-bold text-navy-900 mb-4">מדריך חדש</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+                {(['name', 'slug', 'photo_url', 'phone', 'email_contact', 'facebook_url', 'quote'] as (keyof typeof instrForm)[]).map(field => (
+                  <div key={field}>
+                    <label className="block text-slate-600 mb-1">{field}</label>
+                    <input type="text" value={instrForm[field] as string}
+                      onChange={e => setInstrForm(prev => ({ ...prev, [field]: e.target.value }))}
+                      className="w-full border rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ice-400" />
+                  </div>
+                ))}
+                <div>
+                  <label className="block text-slate-600 mb-1">סדר תצוגה</label>
+                  <input type="number" value={instrForm.sort_order}
+                    onChange={e => setInstrForm(prev => ({ ...prev, sort_order: parseInt(e.target.value)||99 }))}
+                    className="w-full border rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ice-400" />
+                </div>
+                <div className="flex items-center gap-2 pt-5">
+                  <input type="checkbox" id="female-new" checked={instrForm.female}
+                    onChange={e => setInstrForm(prev => ({ ...prev, female: e.target.checked }))} className="w-4 h-4" />
+                  <label htmlFor="female-new" className="text-slate-600">מדריכה (נקבה)</label>
+                </div>
+                <div className="col-span-2">
+                  <label className="block text-slate-600 mb-1">ביוגרפיה</label>
+                  <textarea value={instrForm.bio} rows={3}
+                    onChange={e => setInstrForm(prev => ({ ...prev, bio: e.target.value }))}
+                    className="w-full border rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ice-400" />
+                </div>
+                <div>
+                  <label className="block text-slate-600 mb-1">התמחויות (פסיק)</label>
+                  <input type="text" value={instrForm.specialties} placeholder="יוגה, נשימה"
+                    onChange={e => setInstrForm(prev => ({ ...prev, specialties: e.target.value }))}
+                    className="w-full border rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ice-400" />
+                </div>
+                <div>
+                  <label className="block text-slate-600 mb-1">הסמכות (פסיק)</label>
+                  <input type="text" value={instrForm.certifications} placeholder="CWI Instructor Certified"
+                    onChange={e => setInstrForm(prev => ({ ...prev, certifications: e.target.value }))}
+                    className="w-full border rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ice-400" />
+                </div>
+              </div>
+              {instrMsg && <p className={`mt-3 text-sm font-semibold ${instrMsg.startsWith('X') ? 'text-red-600' : 'text-green-700'}`}>{instrMsg}</p>}
+              <button onClick={async () => {
+                if (!instrForm.name.trim()) return;
+                setInstrMsg('');
+                const res = await fetch('/api/admin/instructors', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json', 'x-admin-key': key },
+                  body: JSON.stringify(instrForm),
+                });
+                const data = await res.json();
+                if (!res.ok) { setInstrMsg('X ' + (data.error || 'שגיאה')); return; }
+                setInstrMsg('V נוסף בהצלחה: ' + data.name);
+                setInstrForm({ name: '', slug: '', bio: '', photo_url: '', specialties: '', certifications: '', quote: '', facebook_url: '', phone: '', email_contact: '', female: false, sort_order: 99 });
+                await loadDbInstructors();
+              }} className="mt-4 bg-navy-900 hover:bg-navy-700 text-white font-bold px-5 py-2 rounded-xl text-sm transition-colors">
+                הוסף
+              </button>
+            </div>
+          )}
+
+          {loadingDbI ? (
+            <div className="flex justify-center py-10">
+              <div className="w-8 h-8 border-2 border-ice-500 border-t-transparent rounded-full animate-spin" />
+            </div>
+          ) : dbInstructors.length === 0 ? (
+            <p className="text-slate-400 text-center py-8">אין מדריכים בבסיס הנתונים. הרץ את ה-SQL בלוח Supabase.</p>
+          ) : (
+            <div className="space-y-3">
+              {dbInstructors.map(inst => (
+                <div key={inst.id} className="bg-white rounded-2xl border border-slate-100 shadow-sm p-5">
+                  {editingInstructor?.id === inst.id ? (
+                    <div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm mb-3">
+                        <div>
+                          <label className="block text-slate-500 mb-1">שם</label>
+                          <input type="text" value={editingInstructor.name}
+                            onChange={e => setEditingInstructor(prev => prev ? { ...prev, name: e.target.value } : null)}
+                            className="w-full border rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-ice-400" />
+                        </div>
+                        <div>
+                          <label className="block text-slate-500 mb-1">slug (URL)</label>
+                          <input type="text" value={editingInstructor.slug || ''}
+                            onChange={e => setEditingInstructor(prev => prev ? { ...prev, slug: e.target.value } : null)}
+                            className="w-full border rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-ice-400" />
+                        </div>
+                        <div>
+                          <label className="block text-slate-500 mb-1">תמונה URL</label>
+                          <input type="text" value={editingInstructor.photo_url || ''}
+                            onChange={e => setEditingInstructor(prev => prev ? { ...prev, photo_url: e.target.value } : null)}
+                            className="w-full border rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-ice-400" />
+                        </div>
+                        <div>
+                          <label className="block text-slate-500 mb-1">טלפון</label>
+                          <input type="text" value={editingInstructor.phone || ''}
+                            onChange={e => setEditingInstructor(prev => prev ? { ...prev, phone: e.target.value } : null)}
+                            className="w-full border rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-ice-400" />
+                        </div>
+                        <div>
+                          <label className="block text-slate-500 mb-1">אימייל</label>
+                          <input type="text" value={editingInstructor.email_contact || ''}
+                            onChange={e => setEditingInstructor(prev => prev ? { ...prev, email_contact: e.target.value } : null)}
+                            className="w-full border rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-ice-400" />
+                        </div>
+                        <div>
+                          <label className="block text-slate-500 mb-1">Facebook</label>
+                          <input type="text" value={editingInstructor.facebook_url || ''}
+                            onChange={e => setEditingInstructor(prev => prev ? { ...prev, facebook_url: e.target.value } : null)}
+                            className="w-full border rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-ice-400" />
+                        </div>
+                        <div className="col-span-2">
+                          <label className="block text-slate-500 mb-1">ביוגרפיה</label>
+                          <textarea value={editingInstructor.bio || ''} rows={3}
+                            onChange={e => setEditingInstructor(prev => prev ? { ...prev, bio: e.target.value } : null)}
+                            className="w-full border rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-ice-400" />
+                        </div>
+                        <div>
+                          <label className="block text-slate-500 mb-1">התמחויות (פסיק)</label>
+                          <input type="text" value={(editingInstructor.specialties || []).join(', ')}
+                            onChange={e => setEditingInstructor(prev => prev ? { ...prev, specialties: e.target.value.split(',').map((s: string) => s.trim()).filter(Boolean) } : null)}
+                            className="w-full border rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-ice-400" />
+                        </div>
+                        <div>
+                          <label className="block text-slate-500 mb-1">הסמכות (פסיק)</label>
+                          <input type="text" value={(editingInstructor.certifications || []).join(', ')}
+                            onChange={e => setEditingInstructor(prev => prev ? { ...prev, certifications: e.target.value.split(',').map((s: string) => s.trim()).filter(Boolean) } : null)}
+                            className="w-full border rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-ice-400" />
+                        </div>
+                        <div className="col-span-2">
+                          <label className="block text-slate-500 mb-1">ציטוט</label>
+                          <input type="text" value={editingInstructor.quote || ''}
+                            onChange={e => setEditingInstructor(prev => prev ? { ...prev, quote: e.target.value } : null)}
+                            className="w-full border rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-ice-400" />
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <label className="flex items-center gap-2 text-sm text-slate-600">
+                            <input type="checkbox" checked={editingInstructor.female}
+                              onChange={e => setEditingInstructor(prev => prev ? { ...prev, female: e.target.checked } : null)} className="w-4 h-4" />
+                            מדריכה (נקבה)
+                          </label>
+                          <label className="flex items-center gap-2 text-sm text-slate-600">
+                            <input type="checkbox" checked={editingInstructor.is_active}
+                              onChange={e => setEditingInstructor(prev => prev ? { ...prev, is_active: e.target.checked } : null)} className="w-4 h-4" />
+                            פעיל
+                          </label>
+                        </div>
+                        <div>
+                          <label className="block text-slate-500 mb-1">סדר</label>
+                          <input type="number" value={editingInstructor.sort_order}
+                            onChange={e => setEditingInstructor(prev => prev ? { ...prev, sort_order: parseInt(e.target.value) || 0 } : null)}
+                            className="w-full border rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-ice-400" />
+                        </div>
+                      </div>
+                      <div className="flex gap-2">
+                        <button onClick={async () => {
+                          const res = await fetch('/api/admin/instructors', {
+                            method: 'PATCH',
+                            headers: { 'Content-Type': 'application/json', 'x-admin-key': key },
+                            body: JSON.stringify(editingInstructor),
+                          });
+                          if (res.ok) { setEditingInstructor(null); await loadDbInstructors(); }
+                        }} className="bg-ice-600 hover:bg-ice-700 text-white font-bold px-4 py-1.5 rounded-lg text-sm transition-colors">
+                          שמור
+                        </button>
+                        <button onClick={() => setEditingInstructor(null)}
+                          className="text-slate-400 hover:text-slate-600 text-sm px-3">
+                          ביטול
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="flex items-center justify-between gap-4 flex-wrap">
+                      <div className="flex items-center gap-4">
+                        {inst.photo_url && (
+                          <img src={inst.photo_url} alt={inst.name}
+                            className="w-12 h-12 rounded-full object-cover" />
+                        )}
+                        <div>
+                          <h3 className="font-bold text-navy-900">{inst.name}</h3>
+                          <p className="text-xs text-slate-400">
+                            {inst.slug || 'ללא slug'} · {inst.is_active ? 'פעיל' : 'לא פעיל'} · סדר: {inst.sort_order}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex gap-2">
+                        <button onClick={() => setEditingInstructor(inst)}
+                          className="bg-navy-100 hover:bg-navy-200 text-navy-900 font-semibold px-3 py-1.5 rounded-lg text-sm transition-colors">
+                          עריכה
+                        </button>
+                        <button onClick={async () => {
+                          if (!confirm('למחוק מדריך זה?')) return;
+                          await fetch(`/api/admin/instructors?id=${inst.id}`, {
+                            method: 'DELETE',
+                            headers: { 'x-admin-key': key },
+                          });
+                          await loadDbInstructors();
+                        }} className="bg-red-50 hover:bg-red-100 text-red-600 font-semibold px-3 py-1.5 rounded-lg text-sm transition-colors">
+                          מחק
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* ── TAB: Users ── */}
+      {tab === 'users' && (
+        <div className="space-y-6">
+          <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-6">
+            <h2 className="text-xl font-black text-navy-900 mb-4">הגדרת תפקיד למשתמש</h2>
+            <div className="flex gap-3 flex-wrap items-end">
+              <div className="flex-1 min-w-48">
+                <label className="block text-sm font-semibold text-slate-700 mb-1">אימייל משתמש</label>
+                <input type="email" value={roleEmail} onChange={e => setRoleEmail(e.target.value)}
+                  placeholder="user@example.com"
+                  className="w-full border border-slate-200 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-ice-400 text-right" />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-slate-700 mb-1">תפקיד</label>
+                <select value={roleValue} onChange={e => setRoleValue(e.target.value)}
+                  className="border border-slate-200 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-ice-400">
+                  <option value="user">משתמש רגיל</option>
+                  <option value="instructor">מדריך</option>
+                  <option value="admin">אדמין</option>
+                </select>
+              </div>
+              <button onClick={async () => {
+                if (!roleEmail.trim()) return;
+                setRoleMsg('');
+                const res = await fetch('/api/admin/users', {
+                  method: 'PATCH',
+                  headers: { 'Content-Type': 'application/json', 'x-admin-key': key },
+                  body: JSON.stringify({ email: roleEmail.trim(), role: roleValue }),
+                });
+                const data = await res.json();
+                if (!res.ok) { setRoleMsg('שגיאה: ' + (data.error || 'לא נמצא')); return; }
+                setRoleMsg('עודכן: ' + (data.name || data.email));
+                setRoleEmail('');
+                await loadUsers();
+              }} className="bg-navy-900 hover:bg-navy-700 text-white font-bold px-5 py-2.5 rounded-xl text-sm transition-colors">
+                עדכן תפקיד
+              </button>
+            </div>
+            {roleMsg && <p className={`mt-2 text-sm font-semibold ${roleMsg.startsWith('ש') ? 'text-red-600' : 'text-green-700'}`}>{roleMsg}</p>}
+          </div>
+
+          <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg font-bold text-navy-900">משתמשים רשומים ({users.length})</h2>
+              <button onClick={loadUsers} className="text-sm text-slate-400 hover:text-navy-900 font-semibold">רענן</button>
+            </div>
+            <input type="text" value={userSearch} onChange={e => setUserSearch(e.target.value)}
+              placeholder="חיפוש לפי שם / אימייל..."
+              className="w-full border border-slate-200 rounded-xl px-4 py-2 mb-4 focus:outline-none focus:ring-2 focus:ring-ice-400 text-right text-sm" />
+            {loadingU ? (
+              <div className="flex justify-center py-8">
+                <div className="w-8 h-8 border-2 border-ice-500 border-t-transparent rounded-full animate-spin" />
+              </div>
+            ) : (
+              <div className="divide-y divide-slate-50">
+                {users
+                  .filter(u => !userSearch || (u.name || '').includes(userSearch) || (u.email || '').includes(userSearch))
+                  .map(u => (
+                    <div key={u.id} className="flex items-center justify-between py-3 gap-2 flex-wrap">
+                      <div>
+                        <p className="font-semibold text-navy-900 text-sm">{u.name}</p>
+                        <p className="text-xs text-slate-400">{u.email || u.phone || '—'}</p>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className={`text-xs px-2 py-1 rounded-full font-semibold ${
+                          u.role === 'admin' ? 'bg-purple-100 text-purple-700' :
+                          u.role === 'instructor' ? 'bg-ice-100 text-ice-700' : 'bg-slate-100 text-slate-600'
+                        }`}>
+                          {u.role === 'admin' ? 'אדמין' : u.role === 'instructor' ? 'מדריך' : 'משתמש'}
+                        </span>
+                        <select defaultValue={u.role} onChange={async e => {
+                          const res = await fetch('/api/admin/users', {
+                            method: 'PATCH',
+                            headers: { 'Content-Type': 'application/json', 'x-admin-key': key },
+                            body: JSON.stringify({ id: u.id, role: e.target.value }),
+                          });
+                          if (res.ok) await loadUsers();
+                        }} className="text-xs border border-slate-200 rounded-lg px-2 py-1 focus:outline-none">
+                          <option value="user">משתמש</option>
+                          <option value="instructor">מדריך</option>
+                          <option value="admin">אדמין</option>
+                        </select>
+                      </div>
+                    </div>
+                  ))
+                }
+              </div>
+            )}
+          </div>
         </div>
       )}
 
