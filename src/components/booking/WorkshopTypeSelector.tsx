@@ -28,16 +28,6 @@ const types = [
     highlight: false,
   },
   {
-    type: 'team' as WorkshopType,
-    icon: '🏔️',
-    title: 'סדנת קבוצות',
-    description: 'גיבוש וחוסן לצוותי עבודה',
-    price: 'לפי הצעה',
-    capacity: '5–20+ משתתפים',
-    duration: 'לפי הזמנה',
-    highlight: false,
-  },
-  {
     type: 'one-on-one' as WorkshopType,
     icon: '⭐',
     title: 'סדנה אישית אחד על אחד',
@@ -45,6 +35,16 @@ const types = [
     price: '₪550',
     capacity: 'משתתף אחד',
     duration: '~90 דקות',
+    highlight: true,
+  },
+  {
+    type: 'team' as WorkshopType,
+    icon: '🏔️',
+    title: 'סדנת קבוצות',
+    description: 'גיבוש וחוסן לצוותי עבודה',
+    price: 'לפי הצעה',
+    capacity: '5–20+ משתתפים',
+    duration: 'לפי הזמנה',
     highlight: false,
   },
 ];
@@ -55,12 +55,12 @@ export default function WorkshopTypeSelector({ onSelect }: WorkshopTypeSelectorP
       <h2 className="text-2xl font-black text-navy-900 mb-2">שלב 1: בחרו סוג סדנה</h2>
       <p className="text-slate-500 mb-8">לחצו על הסוג המתאים לכם כדי לעבור לבחירת תאריך</p>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch">
         {types.map(t => (
           <button
             key={t.type}
             onClick={() => onSelect(t.type)}
-            className={`group relative rounded-3xl border-2 p-7 text-right transition-all duration-300
+            className={`group relative flex flex-col rounded-3xl border-2 p-7 text-right transition-all duration-300
                          hover:shadow-xl hover:-translate-y-1 focus:outline-none focus:ring-4
                          focus:ring-ice-400 active:scale-95
                          ${t.highlight
@@ -81,7 +81,7 @@ export default function WorkshopTypeSelector({ onSelect }: WorkshopTypeSelectorP
             <h3 className={`text-lg font-black mb-2 ${t.highlight ? 'text-white' : 'text-navy-900'}`}>
               {t.title}
             </h3>
-            <p className={`text-sm mb-5 ${t.highlight ? 'text-slate-300' : 'text-slate-500'}`}>
+            <p className={`text-sm mb-5 flex-1 ${t.highlight ? 'text-slate-300' : 'text-slate-500'}`}>
               {t.description}
             </p>
 
@@ -96,7 +96,7 @@ export default function WorkshopTypeSelector({ onSelect }: WorkshopTypeSelectorP
               </div>
             </div>
 
-            <div className={`mt-5 flex items-center justify-center gap-2 py-2.5 rounded-xl
+            <div className={`mt-auto pt-5 flex items-center justify-center gap-2 py-2.5 rounded-xl
                              font-bold text-sm transition-all
                              ${t.highlight
                                ? 'bg-ice-500 text-white group-hover:bg-ice-400'
