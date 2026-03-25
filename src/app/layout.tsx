@@ -7,40 +7,40 @@ import AccessibilityWidget from '@/components/AccessibilityWidget';
 export const metadata: Metadata = {
   metadataBase: new URL('https://icing-blond.vercel.app'),
   title: {
-    default: 'חוויות שוויץ המדע | אמבטיות קרח רחובות',
-    template: '%s | חוויות שוויץ המדע',
+    default: 'ICING | אמבטיות קרח חולון',
+    template: '%s | ICING',
   },
   description:
-    'סדנאות אמבטיות קרח מקצועיות ומדעיות ברחובות. יחידים, זוגות וצוותים. ' +
+    'סדנאות אמבטיות קרח מקצועיות ומדעיות בחולון. יחידים, זוגות וצוותים. ' +
     'בליווי מדריכים מוסמכים CWI. חיזוק חוסן מנטלי, שיפור פוקוס, הורדת סטרס.',
   keywords: [
-    'אמבטיות קרח', 'טבילה במי קרח', 'cold water immersion', 'רחובות',
-    'חוסן מנטלי', 'סדנאות קרח', 'שוויץ המדע', 'CWI',
+    'אמבטיות קרח', 'טבילה במי קרח', 'cold water immersion', 'חולון',
+    'חוסן מנטלי', 'סדנאות קרח', 'ICING', 'CWI',
   ],
-  authors: [{ name: 'חוויות שוויץ המדע' }],
+  authors: [{ name: 'ICING' }],
   manifest: '/manifest.json',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'black-translucent',
-    title: 'שוויץ המדע',
+    title: 'ICING',
   },
   openGraph: {
     type: 'website',
     url: 'https://icing-blond.vercel.app',
     locale: 'he_IL',
-    siteName: 'חוויות שוויץ המדע',
-    title: 'חוויות שוויץ המדע | אמבטיות קרח רחובות',
+    siteName: 'ICING',
+    title: 'ICING | אמבטיות קרח חולון',
     description: 'סדנאות אמבטיות קרח מקצועיות. נכנסים לקרח – יוצאים חדים וחסינים.',
     images: [
       {
         url: 'https://icing-blond.vercel.app/logo-ice.png',
-        alt: 'חוויות שוויץ המדע – אמבטיות קרח רחובות',
+        alt: 'ICING – אמבטיות קרח חולון',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'חוויות שוויץ המדע | אמבטיות קרח רחובות',
+    title: 'ICING | אמבטיות קרח חולון',
     description: 'סדנאות אמבטיות קרח מקצועיות. נכנסים לקרח – יוצאים חדים וחסינים.',
     images: ['https://icing-blond.vercel.app/logo-ice.png'],
   },
