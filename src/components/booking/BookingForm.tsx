@@ -38,7 +38,7 @@ type BookingFormData = z.infer<typeof bookingSchema>;
 const typeLabels: Record<string, string> = {
   individual: 'סדנת יחידים',
   couple: 'סדנת זוגות',
-  team: 'סדנת קבוצות',
+  team: 'סדנאות לקבוצות מאורגנות',
 };
 
 export default function BookingForm({ workshop, onBack }: BookingFormProps) {
