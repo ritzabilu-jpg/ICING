@@ -1,6 +1,6 @@
 {
-  "name": "חוויות שוויץ המדע – אמבטיות קרח",
-  "short_name": "שוויץ המדע",
+  "name": "ICING – אמבטיות קרח",
+  "short_name": "ICING",
   "description": "סדנאות אמבטיות קרח מקצועיות בחולון. נכנסים לקרח – יוצאים חדים וחסינים.",
   "start_url": "/",
   "display": "standalone",
@@ -12,13 +12,13 @@
   "categories": ["health", "fitness", "lifestyle"],
   "icons": [
     {
-      "src": "/logo-havayot.png",
+      "src": "/logo-ice.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "/logo-havayot.png",
+      "src": "/logo-ice.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
