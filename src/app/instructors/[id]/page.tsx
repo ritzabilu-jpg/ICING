@@ -47,7 +47,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const instructor = await fetchInstructor(params.id);
   if (!instructor) return {};
   return {
-    title: `${instructor.name} | חוויות שוויץ המדע`,
+    title: `${instructor.name} | ICING`,
     description: instructor.bio.split('\n')[0],
   };
 }
@@ -146,6 +146,12 @@ export default async function InstructorPage({ params }: Props) {
                 <a href={instructor.facebook_url} target="_blank" rel="noopener noreferrer"
                   className="text-blue-400 hover:text-blue-300 text-sm font-semibold transition-colors">
                   📘 פייסבוק
+                </a>
+              )}
+              {instructor.instagram_url && (
+                <a href={instructor.instagram_url} target="_blank" rel="noopener noreferrer"
+                  className="text-pink-400 hover:text-pink-300 text-sm font-semibold transition-colors">
+                  📸 אינסטגרם
                 </a>
               )}
             </div>
