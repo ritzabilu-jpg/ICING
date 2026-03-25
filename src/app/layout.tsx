@@ -7,7 +7,7 @@ import AccessibilityWidget from '@/components/AccessibilityWidget';
 export const metadata: Metadata = {
   metadataBase: new URL('https://icing-blond.vercel.app'),
   title: {
-    default: 'ICING | אמבטיות קרח',
+    default: 'ICING - CWI - טבילה במי קרח',
     template: '%s | ICING',
   },
   description:
