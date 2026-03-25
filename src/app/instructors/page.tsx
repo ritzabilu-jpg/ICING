@@ -4,44 +4,15 @@ import Link from 'next/link';
 import { INSTRUCTORS } from '@/data/instructors';
 import type { Instructor } from '@/types';
 
-export const dynamic = 'force-dynamic';
-
 export const metadata: Metadata = {
   title: 'הצוות שלנו – מדריכים מוסמכים',
   description:
-    'הכירו את צוות המדריכים המוסמכים של חוויות שוויץ המדע. ' +
+    'הכירו את צוות המדריכים המוסמכים של ICING. ' +
     'כולם בעלי הסמכת CWI ועברו קורס הכשרה מקצועי.',
 };
 
-async function fetchInstructors(): Promise<Instructor[]> {
-  try {
-    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://icing-blond.vercel.app';
-    const res = await fetch(`${baseUrl}/api/instructors`, { cache: 'no-store' });
-    if (!res.ok) throw new Error('DB fetch failed');
-    const data = await res.json();
-    if (Array.isArray(data) && data.length > 0) {
-      return data.map((d: Record<string, unknown>) => ({
-        id: (d.slug as string) || (d.id as string),
-        name: d.name as string,
-        photo_url: (d.photo_url as string) || null,
-        bio: (d.bio as string) || '',
-        specialties: (d.specialties as string[]) || [],
-        certifications: (d.certifications as string[]) || [],
-        quote: d.quote as string | undefined,
-        facebook_url: d.facebook_url as string | undefined,
-        phone: d.phone as string | undefined,
-        email: d.email_contact as string | undefined,
-        female: (d.female as boolean) || false,
-      }));
-    }
-  } catch {
-    // fall through to static data
-  }
-  return INSTRUCTORS;
-}
-
 export default async function InstructorsPage() {
-  const instructors = await fetchInstructors();
+  const instructors: Instructor[] = INSTRUCTORS;
 
   return (
     <div className="py-16">
