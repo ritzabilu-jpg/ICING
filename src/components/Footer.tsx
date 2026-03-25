@@ -13,17 +13,10 @@ export default function Footer() {
           <div className="lg:col-span-2">
             <div className="flex items-center gap-4 mb-6">
               <Image
-                src="/logo-havayot.png"
-                alt="חוויות שוויץ המדע"
-                width={120}
-                height={48}
-                className="object-contain"
-              />
-              <Image
                 src="/logo-ice.png"
-                alt="CWI"
-                width={60}
-                height={48}
+                alt="Cold Water Immersion – CWI"
+                width={80}
+                height={64}
                 className="object-contain"
               />
             </div>
