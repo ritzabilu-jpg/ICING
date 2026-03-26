@@ -802,7 +802,8 @@ function AdminContent() {
             <div className="flex gap-2">
               <button onClick={async () => {
                 if (!confirm('לסנכרן את כל המדריכים מהקוד לבסיס הנתונים? פעולה זו תעדכן מדריכים קיימים ותוסיף חסרים.')) return;
-                const res = await fetch('/api/admin/instructors/sync', { method: 'POST', headers: { 'x-admin-key': key } });
+                const visitorId = typeof window !== 'undefined' ? localStorage.getItem('visitor_id') ?? '' : '';
+                const res = await fetch('/api/admin/instructors/sync', { method: 'POST', headers: { 'x-admin-key': key, 'x-visitor-id': visitorId } });
                 const data = await res.json();
                 if (res.ok) { alert(`סונכרנו ${data.synced} מדריכים בהצלחה`); await loadDbInstructors(); }
                 else alert('שגיאה: ' + data.error);

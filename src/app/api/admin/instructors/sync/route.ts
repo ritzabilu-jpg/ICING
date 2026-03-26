@@ -5,8 +5,8 @@ import { INSTRUCTORS } from '@/data/instructors';
 export const dynamic = 'force-dynamic';
 
 async function verifyAdmin(req: NextRequest) {
-  const key = req.headers.get('x-admin-key') ?? '';
-  if (key && key === process.env.ADMIN_KEY) return true;
+  const key = req.headers.get('x-admin-key') ?? new URL(req.url).searchParams.get('key') ?? '';
+  if (key && (key === process.env.ADMIN_KEY || key === process.env.ADMIN_CODE)) return true;
   const visitorId = req.headers.get('x-visitor-id');
   if (!visitorId) return false;
   const supabase = createAdminClient();
