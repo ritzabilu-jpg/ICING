@@ -83,6 +83,15 @@ export const INSTRUCTORS: Instructor[] = [
     phone: '052-8761110',
   },
   {
+    id: 'itamar-meyers',
+    name: 'איתמר מאיירס',
+    photo_url: '/itamar-meyers.jpg',
+    bio: '',
+    specialties: [],
+    certifications: ['CWI Instructor Certified'],
+    quote: '',
+  },
+  {
     id: 'golan-bar-noy',
     name: 'גולן בר נוי',
     photo_url: '/golan-bar-noy.png',
