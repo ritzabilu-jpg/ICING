@@ -4,6 +4,7 @@ export type PaymentStatus = 'unpaid' | 'paid' | 'refunded';
 
 export interface Instructor {
   id: string;
+  slug?: string;
   name: string;
   photo_url: string | null;
   bio: string;
@@ -14,7 +15,10 @@ export interface Instructor {
   instagram_url?: string;
   phone?: string;
   email?: string;
+  email_contact?: string;
   female?: boolean;
+  sort_order?: number;
+  is_active?: boolean;
   created_at?: string;
 }
 

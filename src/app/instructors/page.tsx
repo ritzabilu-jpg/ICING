@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import InstructorCard from '@/components/InstructorCard';
 import Link from 'next/link';
 import { INSTRUCTORS } from '@/data/instructors';
+import { createAdminClient } from '@/lib/supabase';
 import type { Instructor } from '@/types';
 
 export const metadata: Metadata = {
@@ -11,8 +12,28 @@ export const metadata: Metadata = {
     'כולם בעלי הסמכת CWI ועברו קורס הכשרה מקצועי.',
 };
 
+async function fetchInstructors(): Promise<Instructor[]> {
+  try {
+    const supabase = createAdminClient();
+    const { data, error } = await supabase
+      .from('instructors')
+      .select('*')
+      .eq('is_active', true)
+      .order('sort_order', { ascending: true })
+      .order('created_at', { ascending: true });
+    if (error || !data?.length) return INSTRUCTORS;
+    return data.map((r: any) => ({
+      ...r,
+      id: r.slug || r.id,
+      email: r.email_contact,
+    }));
+  } catch {
+    return INSTRUCTORS;
+  }
+}
+
 export default async function InstructorsPage() {
-  const instructors: Instructor[] = INSTRUCTORS;
+  const instructors: Instructor[] = await fetchInstructors();
 
   return (
     <div className="py-16">

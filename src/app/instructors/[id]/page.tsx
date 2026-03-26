@@ -3,13 +3,32 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import { INSTRUCTORS } from '@/data/instructors';
+import { createAdminClient } from '@/lib/supabase';
+import type { Instructor } from '@/types';
 
 interface Props {
   params: { id: string };
 }
 
+async function fetchInstructor(slug: string): Promise<Instructor | null> {
+  const staticMatch = INSTRUCTORS.find(i => i.id === slug);
+  try {
+    const supabase = createAdminClient();
+    const { data } = await supabase
+      .from('instructors')
+      .select('*')
+      .eq('slug', slug)
+      .eq('is_active', true)
+      .single();
+    if (!data) return staticMatch || null;
+    return { ...data, id: data.slug || data.id, email: data.email_contact };
+  } catch {
+    return staticMatch || null;
+  }
+}
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const instructor = INSTRUCTORS.find(i => i.id === params.id);
+  const instructor = await fetchInstructor(params.id);
   if (!instructor) return {};
   return {
     title: `${instructor.name} | ICING`,
@@ -18,7 +37,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function InstructorPage({ params }: Props) {
-  const instructor = INSTRUCTORS.find(i => i.id === params.id) || null;
+  const instructor = await fetchInstructor(params.id);
   if (!instructor) notFound();
 
   return (
