@@ -45,6 +45,17 @@ export default function LoginModal({ initialName = '', onClose, onLogin }: Props
     localStorage.setItem('visitor_name', data.name);
     localStorage.setItem('visitor_role', data.role);
     localStorage.setItem('visitor_email', data.email || '');
+    if (data.role === 'admin') {
+      try {
+        const kr = await fetch('/api/auth/admin-key', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ visitor_id: data.id }),
+        });
+        const kd = await kr.json();
+        if (kd.key) localStorage.setItem('admin_key', kd.key);
+      } catch {}
+    }
     onLogin(data.id, data.name, data.role);
   }
 
