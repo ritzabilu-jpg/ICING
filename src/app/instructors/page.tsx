@@ -25,7 +25,14 @@ async function fetchInstructors(): Promise<Instructor[]> {
     const dbIds = new Set(dbList.map((i: Instructor) => i.id));
     const dbNames = new Set(dbList.map((i: Instructor) => i.name));
     const staticOnly = INSTRUCTORS.filter(i => !dbIds.has(i.id) && !dbNames.has(i.name));
-    return [...dbList, ...staticOnly];
+    const merged = [...dbList, ...staticOnly];
+    const LIOR = 'ליאור כ"ץ';
+    merged.sort((a, b) => {
+      if (a.name === LIOR) return -1;
+      if (b.name === LIOR) return 1;
+      return a.name.localeCompare(b.name, 'he');
+    });
+    return merged;
   } catch {
     return INSTRUCTORS;
   }

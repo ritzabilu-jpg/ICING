@@ -26,16 +26,16 @@ const PKG_LABELS: Record<string, string> = {
 };
 
 const DEMO_INSTRUCTORS = [
-  { name: 'גילה גרוס קורנט',  phone: null,          facebook: null,                                         email: null },
-  { name: 'יסמין חמוד',       phone: null,          facebook: null,                                         email: null },
-  { name: 'ורד פקטור',        phone: null,          facebook: null,                                         email: 'vered79@gmail.com' },
   { name: 'ליאור כ"ץ',        phone: null,          facebook: null,                                         email: null },
+  { name: 'אורן אלון',        phone: null,          facebook: null,                                         email: null },
+  { name: 'איתמר מאיירס',     phone: null,          facebook: null,                                         email: null },
+  { name: 'גולן בר נוי',      phone: null,          facebook: null,                                         email: null },
+  { name: 'גיא רייבנבך',      phone: '052-8761110', facebook: 'https://www.facebook.com/share/1KpjfpeyKV/', email: null },
+  { name: 'גילה גרוס קורנט',  phone: null,          facebook: null,                                         email: null },
+  { name: 'ורד פקטור',        phone: null,          facebook: null,                                         email: 'vered79@gmail.com' },
+  { name: 'יסמין חמוד',       phone: null,          facebook: null,                                         email: null },
   { name: 'ראם נביס',         phone: null,          facebook: null,                                         email: 'reemne1@gmail.com' },
   { name: 'שיר ממן שמואלי',   phone: null,          facebook: null,                                         email: null },
-  { name: 'אורן אלון',        phone: null,          facebook: null,                                         email: null },
-  { name: 'גיא רייבנבך',      phone: '052-8761110', facebook: 'https://www.facebook.com/share/1KpjfpeyKV/', email: null },
-  { name: 'גולן בר נוי',      phone: null,          facebook: null,                                         email: null },
-  { name: 'איתמר מאיירס',     phone: null,          facebook: null,                                         email: null },
 ];
 
 const HEALTH_KEY = 'admin_health_checks_v1';
