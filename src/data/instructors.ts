@@ -82,4 +82,13 @@ export const INSTRUCTORS: Instructor[] = [
     facebook_url: 'https://www.facebook.com/share/1KpjfpeyKV/',
     phone: '052-8761110',
   },
+  {
+    id: 'golan-bar-noy',
+    name: 'גולן בר נוי',
+    photo_url: '/golan-bar-noy.png',
+    bio: 'הידרותרפיסט, מדריך חדר כושר, מדריך שחיית תינוקות, בעלים של כלבה שהיא כמו ילדה.',
+    specialties: ['אימוני כח', 'ליווי טבילה'],
+    certifications: ['CWI certified instructor', 'הידרותרפיסט', 'מדריך חדר כושר'],
+    quote: '"הדרך ארוכה ומפותלת, אני נופל וקם, נופל וקם, נופל וקם."',
+  },
 ];
