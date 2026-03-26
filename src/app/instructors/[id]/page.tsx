@@ -20,8 +20,8 @@ async function fetchInstructor(slug: string): Promise<Instructor | null> {
       .eq('slug', slug)
       .eq('is_active', true)
       .single();
-    if (!data) return staticMatch || null;
-    return { ...data, id: data.slug || data.id, email: data.email_contact };
+    if (!data) return staticMatch ?? null;
+    return { ...(staticMatch ?? {}), ...data, id: data.slug || data.id, email: data.email_contact };
   } catch {
     return staticMatch || null;
   }

@@ -21,12 +21,10 @@ async function fetchInstructors(): Promise<Instructor[]> {
       .eq('is_active', true)
       .order('sort_order', { ascending: true })
       .order('created_at', { ascending: true });
-    if (error || !data?.length) return INSTRUCTORS;
-    return data.map((r: any) => ({
-      ...r,
-      id: r.slug || r.id,
-      email: r.email_contact,
-    }));
+    const dbList = (data ?? []).map((r: any) => ({ ...r, id: r.slug || r.id, email: r.email_contact }));
+    const dbIds = new Set(dbList.map((i: Instructor) => i.id));
+    const staticOnly = INSTRUCTORS.filter(i => !dbIds.has(i.id));
+    return [...dbList, ...staticOnly];
   } catch {
     return INSTRUCTORS;
   }
