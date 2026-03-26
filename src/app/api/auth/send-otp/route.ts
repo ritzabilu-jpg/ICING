@@ -43,7 +43,7 @@ export async function POST(req: NextRequest) {
       const { Resend } = await import('resend');
       const resend = new Resend(process.env.RESEND_API_KEY);
       await resend.emails.send({
-        from: 'noreply@icing-blond.vercel.app',
+        from: 'onboarding@resend.dev',
         to: normalizedEmail,
         subject: `קוד האימות שלך: ${otp}`,
         html: `<div dir="rtl" style="font-family:Arial,sans-serif;max-width:400px;margin:auto;padding:20px">
@@ -64,5 +64,7 @@ export async function POST(req: NextRequest) {
     console.log(`[send-otp] OTP for ${normalizedEmail}: ${otp}`);
   }
 
+  // Log OTP to server console (visible in Vercel Functions logs) until email domain is verified
+  console.log(`[send-otp] OTP for ${normalizedEmail}: ${otp}`);
   return NextResponse.json({ ok: true });
 }

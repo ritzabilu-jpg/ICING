@@ -80,8 +80,14 @@ export default function Header() {
               ))}
             </nav>
 
-            {/* LEFT – Login + Book CTA + Ice logo + Hamburger */}
+            {/* LEFT – ICING logo + Login + Book CTA + Hamburger */}
             <div className="flex items-center gap-2 md:gap-3">
+
+              {/* ICING logo – opposite side */}
+              <Link href="/" className="flex items-center flex-shrink-0">
+                <Image src="/ICINGLOGO.png" alt="ICING" width={80} height={52}
+                  className="object-contain h-10 md:h-12 w-auto" priority />
+              </Link>
 
               {/* Login / User area */}
               {visitorName ? (
