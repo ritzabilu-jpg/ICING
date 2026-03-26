@@ -36,8 +36,8 @@ export async function PATCH(req: NextRequest) {
   const supabase = createAdminClient();
   const query = supabase.from('visitor_profiles').update({ role });
   const { data, error } = id
-    ? await query.eq('id', id).select('id, name, email, role').single()
-    : await query.eq('email', email.trim().toLowerCase()).select('id, name, email, role').single();
+    ? await query.eq('id', id).select('id, name, email, role').maybeSingle()
+    : await query.eq('email', email.trim().toLowerCase()).select('id, name, email, role').limit(1).maybeSingle();
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   if (!data) return NextResponse.json({ error: 'משתמש לא נמצא' }, { status: 404 });
