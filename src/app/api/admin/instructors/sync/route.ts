@@ -14,32 +14,52 @@ async function verifyAdmin(req: NextRequest) {
   return data?.role === 'admin';
 }
 
-// POST – upsert all static instructors into DB
+// POST – sync all static instructors into DB (update existing by slug, insert new)
 export async function POST(req: NextRequest) {
   if (!await verifyAdmin(req)) return NextResponse.json({ error: 'לא מורשה' }, { status: 403 });
 
   const supabase = createAdminClient();
 
-  const rows = INSTRUCTORS.map((inst, i) => ({
-    slug: inst.id,
-    name: inst.name,
-    bio: inst.bio,
-    photo_url: inst.photo_url || null,
-    specialties: inst.specialties || [],
-    certifications: inst.certifications || [],
-    quote: inst.quote || null,
-    phone: inst.phone || null,
-    email_contact: inst.email || null,
-    facebook_url: inst.facebook_url || null,
-    female: inst.female ?? false,
-    sort_order: i + 1,
-    is_active: true,
-  }));
+  // Fetch existing slugs
+  const { data: existing } = await supabase.from('instructors').select('id, slug');
+  const slugToId: Record<string, string> = {};
+  for (const row of existing ?? []) {
+    if (row.slug) slugToId[row.slug] = row.id;
+  }
 
-  const { error } = await supabase
-    .from('instructors')
-    .upsert(rows, { onConflict: 'slug' });
+  let synced = 0;
+  const errors: string[] = [];
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-  return NextResponse.json({ ok: true, synced: rows.length });
+  for (let i = 0; i < INSTRUCTORS.length; i++) {
+    const inst = INSTRUCTORS[i];
+    const row = {
+      slug: inst.id,
+      name: inst.name,
+      bio: inst.bio || '',
+      photo_url: inst.photo_url || null,
+      specialties: inst.specialties || [],
+      certifications: inst.certifications || [],
+      quote: inst.quote || null,
+      phone: inst.phone || null,
+      email_contact: inst.email || null,
+      facebook_url: inst.facebook_url || null,
+      female: inst.female ?? false,
+      sort_order: i + 1,
+      is_active: true,
+    };
+
+    const existingId = slugToId[inst.id];
+    if (existingId) {
+      const { error } = await supabase.from('instructors').update(row).eq('id', existingId);
+      if (error) errors.push(`${inst.name}: ${error.message}`);
+      else synced++;
+    } else {
+      const { error } = await supabase.from('instructors').insert(row);
+      if (error) errors.push(`${inst.name}: ${error.message}`);
+      else synced++;
+    }
+  }
+
+  if (errors.length > 0) return NextResponse.json({ ok: false, synced, errors }, { status: 207 });
+  return NextResponse.json({ ok: true, synced });
 }

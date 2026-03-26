@@ -814,8 +814,8 @@ function AdminContent() {
                 if (!confirm('לסנכרן את כל המדריכים מהקוד לבסיס הנתונים? פעולה זו תעדכן מדריכים קיימים ותוסיף חסרים.')) return;
                 const res = await fetch('/api/admin/instructors/sync', { method: 'POST', headers: adminHeaders() });
                 const data = await res.json();
-                if (res.ok) { alert(`סונכרנו ${data.synced} מדריכים בהצלחה`); await loadDbInstructors(); }
-                else alert('שגיאה: ' + data.error);
+                if (data.synced > 0) { alert(`סונכרנו ${data.synced} מדריכים בהצלחה${data.errors?.length ? '\n\nשגיאות:\n' + data.errors.join('\n') : ''}`); await loadDbInstructors(); }
+                else alert('שגיאה: ' + (data.error || data.errors?.join('\n') || 'לא ידוע'));
               }} className="bg-amber-500 hover:bg-amber-600 text-white font-bold px-4 py-2 rounded-xl text-sm transition-colors">
                 🔄 סנכרן מדריכים
               </button>
