@@ -10,8 +10,8 @@ const navLinks = [
   { href: '/', label: 'בית' },
   { href: '/booking', label: 'הזמנת מקום' },
   { href: '/instructors', label: 'המדריכים שלנו' },
+  { href: '/science', label: 'המדע' },
   { href: '/reviews', label: 'חוות דעת' },
-  { href: '/#agenda', label: 'מה מחכה לכם' },
   { href: '/#contact', label: 'צור קשר' },
 ];
 
