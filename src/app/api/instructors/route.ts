@@ -19,7 +19,14 @@ export async function GET() {
     const dbIds = new Set(dbList.map((i: any) => i.id));
     const dbNames = new Set(dbList.map((i: any) => i.name));
     const staticOnly = INSTRUCTORS.filter(i => !dbIds.has(i.id) && !dbNames.has(i.name));
-    return NextResponse.json([...dbList, ...staticOnly]);
+    const merged = [...dbList, ...staticOnly];
+    const LIOR = 'ליאור כ"ץ';
+    merged.sort((a, b) => {
+      if (a.name === LIOR) return -1;
+      if (b.name === LIOR) return 1;
+      return a.name.localeCompare(b.name, 'he');
+    });
+    return NextResponse.json(merged);
   } catch {
     return NextResponse.json(INSTRUCTORS);
   }
