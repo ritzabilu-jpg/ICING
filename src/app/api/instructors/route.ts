@@ -17,7 +17,8 @@ export async function GET() {
 
     const dbList = (data ?? []).map((r: any) => ({ ...r, id: r.slug || r.id, email: r.email_contact }));
     const dbIds = new Set(dbList.map((i: any) => i.id));
-    const staticOnly = INSTRUCTORS.filter(i => !dbIds.has(i.id));
+    const dbNames = new Set(dbList.map((i: any) => i.name));
+    const staticOnly = INSTRUCTORS.filter(i => !dbIds.has(i.id) && !dbNames.has(i.name));
     return NextResponse.json([...dbList, ...staticOnly]);
   } catch {
     return NextResponse.json(INSTRUCTORS);
