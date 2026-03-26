@@ -120,6 +120,8 @@ function AdminContent() {
   const [dbInstructors, setDbInstructors] = useState<DbInstructor[]>([]);
   const [loadingDbI, setLoadingDbI] = useState(false);
   const [editingInstructor, setEditingInstructor] = useState<DbInstructor | null>(null);
+  const [editSpecialtiesStr, setEditSpecialtiesStr] = useState('');
+  const [editCertificationsStr, setEditCertificationsStr] = useState('');
   const [showAddInstructor, setShowAddInstructor] = useState(false);
   const [instrForm, setInstrForm] = useState({ name: '', slug: '', bio: '', photo_url: '', specialties: '', certifications: '', quote: '', facebook_url: '', phone: '', email_contact: '', female: false, sort_order: 99 });
   const [instrMsg, setInstrMsg] = useState('');
@@ -945,14 +947,14 @@ function AdminContent() {
                         </div>
                         <div>
                           <label className="block text-slate-500 mb-1">התמחויות (פסיק)</label>
-                          <input type="text" value={(editingInstructor.specialties || []).join(', ')}
-                            onChange={e => setEditingInstructor(prev => prev ? { ...prev, specialties: e.target.value.split(',').map((s: string) => s.trim()).filter(Boolean) } : null)}
+                          <input type="text" value={editSpecialtiesStr}
+                            onChange={e => setEditSpecialtiesStr(e.target.value)}
                             className="w-full border rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-ice-400" />
                         </div>
                         <div>
                           <label className="block text-slate-500 mb-1">הסמכות (פסיק)</label>
-                          <input type="text" value={(editingInstructor.certifications || []).join(', ')}
-                            onChange={e => setEditingInstructor(prev => prev ? { ...prev, certifications: e.target.value.split(',').map((s: string) => s.trim()).filter(Boolean) } : null)}
+                          <input type="text" value={editCertificationsStr}
+                            onChange={e => setEditCertificationsStr(e.target.value)}
                             className="w-full border rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-ice-400" />
                         </div>
                         <div className="col-span-2">
@@ -982,10 +984,15 @@ function AdminContent() {
                       </div>
                       <div className="flex gap-2">
                         <button onClick={async () => {
+                          const payload = {
+                            ...editingInstructor,
+                            specialties: editSpecialtiesStr.split(',').map((s: string) => s.trim()).filter(Boolean),
+                            certifications: editCertificationsStr.split(',').map((s: string) => s.trim()).filter(Boolean),
+                          };
                           const res = await fetch('/api/admin/instructors', {
                             method: 'PATCH',
                             headers: adminHeaders({ 'Content-Type': 'application/json' }),
-                            body: JSON.stringify(editingInstructor),
+                            body: JSON.stringify(payload),
                           });
                           if (res.ok) { setEditingInstructor(null); await loadDbInstructors(); }
                         }} className="bg-ice-600 hover:bg-ice-700 text-white font-bold px-4 py-1.5 rounded-lg text-sm transition-colors">
@@ -1012,7 +1019,7 @@ function AdminContent() {
                         </div>
                       </div>
                       <div className="flex gap-2">
-                        <button onClick={() => setEditingInstructor(inst)}
+                        <button onClick={() => { setEditingInstructor(inst); setEditSpecialtiesStr((inst.specialties || []).join(', ')); setEditCertificationsStr((inst.certifications || []).join(', ')); }}
                           className="bg-navy-100 hover:bg-navy-200 text-navy-900 font-semibold px-3 py-1.5 rounded-lg text-sm transition-colors">
                           עריכה
                         </button>
