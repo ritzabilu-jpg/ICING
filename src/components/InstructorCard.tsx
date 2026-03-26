@@ -13,20 +13,19 @@ export default function InstructorCard({ instructor }: InstructorCardProps) {
     <div className="bg-white rounded-3xl shadow-xl border border-ice-100 overflow-hidden
                     hover:shadow-2xl hover:border-ice-300 transition-all duration-300 hover:-translate-y-1
                     flex flex-col h-full">
-      <Link href={href} className="flex gap-0 flex-1 group">
-        {/* Photo */}
-        <div className="w-36 sm:w-44 flex-shrink-0 bg-gradient-to-b from-navy-900 to-ice-800
-                        relative overflow-hidden min-h-[220px]">
+      <Link href={href} className="flex flex-col flex-1 group">
+        {/* Photo – full width, full image visible */}
+        <div className="w-full bg-navy-900 overflow-hidden max-h-[50vh]">
           {instructor.photo_url ? (
             <Image
               src={instructor.photo_url}
               alt={instructor.name}
-              width={176}
-              height={220}
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+              width={400}
+              height={500}
+              className="w-full h-full object-contain object-top group-hover:scale-105 transition-transform duration-300 max-h-[50vh]"
             />
           ) : (
-            <div className="w-full h-full flex items-center justify-center text-6xl text-white/30">
+            <div className="w-full aspect-[4/3] flex items-center justify-center text-6xl text-white/30">
               👤
             </div>
           )}
