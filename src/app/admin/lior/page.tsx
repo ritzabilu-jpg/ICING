@@ -797,12 +797,23 @@ function AdminContent() {
       {/* ── TAB: Manage Instructors ── */}
       {tab === 'manage-instructors' && (
         <div className="space-y-5">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between flex-wrap gap-2">
             <h2 className="text-xl font-black text-navy-900">ניהול מדריכים</h2>
-            <button onClick={() => { setShowAddInstructor(v => !v); setInstrMsg(''); setEditingInstructor(null); }}
-              className="bg-ice-600 hover:bg-ice-700 text-white font-bold px-4 py-2 rounded-xl text-sm transition-colors">
-              {showAddInstructor ? 'סגור' : '+ הוסף מדריך'}
-            </button>
+            <div className="flex gap-2">
+              <button onClick={async () => {
+                if (!confirm('לסנכרן את כל המדריכים מהקוד לבסיס הנתונים? פעולה זו תעדכן מדריכים קיימים ותוסיף חסרים.')) return;
+                const res = await fetch('/api/admin/instructors/sync', { method: 'POST', headers: { 'x-admin-key': key } });
+                const data = await res.json();
+                if (res.ok) { alert(`סונכרנו ${data.synced} מדריכים בהצלחה`); await loadDbInstructors(); }
+                else alert('שגיאה: ' + data.error);
+              }} className="bg-amber-500 hover:bg-amber-600 text-white font-bold px-4 py-2 rounded-xl text-sm transition-colors">
+                🔄 סנכרן מדריכים
+              </button>
+              <button onClick={() => { setShowAddInstructor(v => !v); setInstrMsg(''); setEditingInstructor(null); }}
+                className="bg-ice-600 hover:bg-ice-700 text-white font-bold px-4 py-2 rounded-xl text-sm transition-colors">
+                {showAddInstructor ? 'סגור' : '+ הוסף מדריך'}
+              </button>
+            </div>
           </div>
 
           {showAddInstructor && (
@@ -872,7 +883,7 @@ function AdminContent() {
               <div className="w-8 h-8 border-2 border-ice-500 border-t-transparent rounded-full animate-spin" />
             </div>
           ) : dbInstructors.length === 0 ? (
-            <p className="text-slate-400 text-center py-8">אין מדריכים בבסיס הנתונים. הרץ את ה-SQL בלוח Supabase.</p>
+            <p className="text-slate-400 text-center py-8">אין מדריכים בבסיס הנתונים. לחץ על "🔄 סנכרן מדריכים" להוספתם.</p>
           ) : (
             <div className="space-y-3">
               {dbInstructors.map(inst => (
