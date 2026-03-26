@@ -23,7 +23,8 @@ async function fetchInstructors(): Promise<Instructor[]> {
       .order('created_at', { ascending: true });
     const dbList = (data ?? []).map((r: any) => ({ ...r, id: r.slug || r.id, email: r.email_contact }));
     const dbIds = new Set(dbList.map((i: Instructor) => i.id));
-    const staticOnly = INSTRUCTORS.filter(i => !dbIds.has(i.id));
+    const dbNames = new Set(dbList.map((i: Instructor) => i.name));
+    const staticOnly = INSTRUCTORS.filter(i => !dbIds.has(i.id) && !dbNames.has(i.name));
     return [...dbList, ...staticOnly];
   } catch {
     return INSTRUCTORS;

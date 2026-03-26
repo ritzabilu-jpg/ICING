@@ -20,11 +20,13 @@ export async function POST(req: NextRequest) {
 
   const supabase = createAdminClient();
 
-  // Fetch existing slugs
-  const { data: existing } = await supabase.from('instructors').select('id, slug');
+  // Fetch existing records (match by slug OR name)
+  const { data: existing } = await supabase.from('instructors').select('id, slug, name');
   const slugToId: Record<string, string> = {};
+  const nameToId: Record<string, string> = {};
   for (const row of existing ?? []) {
     if (row.slug) slugToId[row.slug] = row.id;
+    if (row.name) nameToId[row.name] = row.id;
   }
 
   let synced = 0;
@@ -48,7 +50,7 @@ export async function POST(req: NextRequest) {
       is_active: true,
     };
 
-    const existingId = slugToId[inst.id];
+    const existingId = slugToId[inst.id] ?? nameToId[inst.name];
     if (existingId) {
       const { error } = await supabase.from('instructors').update(row).eq('id', existingId);
       if (error) errors.push(`${inst.name}: ${error.message}`);
