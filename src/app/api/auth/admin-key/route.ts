@@ -17,5 +17,6 @@ export async function POST(req: NextRequest) {
 
   if (data?.role !== 'admin') return NextResponse.json({ error: 'לא מורשה' }, { status: 403 });
 
-  return NextResponse.json({ key: process.env.ADMIN_CODE ?? '' });
+  // ADMIN_KEY is used by lior-bookings (default: lior2026)
+  return NextResponse.json({ key: process.env.ADMIN_KEY ?? 'lior2026' });
 }
