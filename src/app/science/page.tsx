@@ -37,7 +37,7 @@ const topics = [
     title: 'דופמין ומוטיבציה',
     description: 'עלייה של 250% בדופמין — השפעה על מצב רוח, מוטיבציה ותחושת סיפוק.',
     href: '/dopamine',
-    available: false,
+    available: true,
     color: 'bg-purple-50 border-purple-200',
     titleColor: 'text-purple-900',
   },
