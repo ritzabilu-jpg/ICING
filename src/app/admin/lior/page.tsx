@@ -62,6 +62,11 @@ function AdminContent() {
   const searchParams = useSearchParams();
   const key = searchParams.get('key') ?? '';
 
+  function adminHeaders(extra?: Record<string, string>): Record<string, string> {
+    const visitorId = typeof window !== 'undefined' ? (localStorage.getItem('visitor_id') ?? '') : '';
+    return { 'x-admin-key': key, 'x-visitor-id': visitorId, ...extra };
+  }
+
   const [tab, setTab] = useState<TabType>('lior');
 
   // ── Lior workshop bookings ──
@@ -170,7 +175,7 @@ function AdminContent() {
   const loadDbInstructors = useCallback(async () => {
     setLoadingDbI(true);
     try {
-      const res = await fetch('/api/admin/instructors', { headers: { 'x-admin-key': key } });
+      const res = await fetch('/api/admin/instructors', { headers: adminHeaders() });
       const data = await res.json();
       setDbInstructors(Array.isArray(data) ? data : []);
     } catch { /* ignore */ }
@@ -180,7 +185,7 @@ function AdminContent() {
   const loadUsers = useCallback(async () => {
     setLoadingU(true);
     try {
-      const res = await fetch('/api/admin/users', { headers: { 'x-admin-key': key } });
+      const res = await fetch('/api/admin/users', { headers: adminHeaders() });
       const data = await res.json();
       setUsers(Array.isArray(data) ? data : []);
     } catch { /* ignore */ }
@@ -802,8 +807,7 @@ function AdminContent() {
             <div className="flex gap-2">
               <button onClick={async () => {
                 if (!confirm('לסנכרן את כל המדריכים מהקוד לבסיס הנתונים? פעולה זו תעדכן מדריכים קיימים ותוסיף חסרים.')) return;
-                const visitorId = typeof window !== 'undefined' ? localStorage.getItem('visitor_id') ?? '' : '';
-                const res = await fetch('/api/admin/instructors/sync', { method: 'POST', headers: { 'x-admin-key': key, 'x-visitor-id': visitorId } });
+                const res = await fetch('/api/admin/instructors/sync', { method: 'POST', headers: adminHeaders() });
                 const data = await res.json();
                 if (res.ok) { alert(`סונכרנו ${data.synced} מדריכים בהצלחה`); await loadDbInstructors(); }
                 else alert('שגיאה: ' + data.error);
@@ -865,7 +869,7 @@ function AdminContent() {
                 setInstrMsg('');
                 const res = await fetch('/api/admin/instructors', {
                   method: 'POST',
-                  headers: { 'Content-Type': 'application/json', 'x-admin-key': key },
+                  headers: adminHeaders({ 'Content-Type': 'application/json' }),
                   body: JSON.stringify(instrForm),
                 });
                 const data = await res.json();
@@ -975,7 +979,7 @@ function AdminContent() {
                         <button onClick={async () => {
                           const res = await fetch('/api/admin/instructors', {
                             method: 'PATCH',
-                            headers: { 'Content-Type': 'application/json', 'x-admin-key': key },
+                            headers: adminHeaders({ 'Content-Type': 'application/json' }),
                             body: JSON.stringify(editingInstructor),
                           });
                           if (res.ok) { setEditingInstructor(null); await loadDbInstructors(); }
@@ -1011,7 +1015,7 @@ function AdminContent() {
                           if (!confirm('למחוק מדריך זה?')) return;
                           await fetch(`/api/admin/instructors?id=${inst.id}`, {
                             method: 'DELETE',
-                            headers: { 'x-admin-key': key },
+                            headers: adminHeaders(),
                           });
                           await loadDbInstructors();
                         }} className="bg-red-50 hover:bg-red-100 text-red-600 font-semibold px-3 py-1.5 rounded-lg text-sm transition-colors">
@@ -1053,7 +1057,7 @@ function AdminContent() {
                 setRoleMsg('');
                 const res = await fetch('/api/admin/users', {
                   method: 'PATCH',
-                  headers: { 'Content-Type': 'application/json', 'x-admin-key': key },
+                  headers: adminHeaders({ 'Content-Type': 'application/json' }),
                   body: JSON.stringify({ email: roleEmail.trim(), role: roleValue }),
                 });
                 const data = await res.json();
@@ -1100,7 +1104,7 @@ function AdminContent() {
                         <select defaultValue={u.role} onChange={async e => {
                           const res = await fetch('/api/admin/users', {
                             method: 'PATCH',
-                            headers: { 'Content-Type': 'application/json', 'x-admin-key': key },
+                            headers: adminHeaders({ 'Content-Type': 'application/json' }),
                             body: JSON.stringify({ id: u.id, role: e.target.value }),
                           });
                           if (res.ok) await loadUsers();
