@@ -33,7 +33,7 @@ export default function Header() {
       const key = localStorage.getItem('admin_key') || '';
       return `/admin/lior?key=${encodeURIComponent(key)}`;
     }
-    if (role === 'instructor') return '/instructor';
+    if (role === 'instructor') return '/instructor/dashboard';
     return '/journal';
   }
 
