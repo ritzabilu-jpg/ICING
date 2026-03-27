@@ -19,7 +19,9 @@ async function fetchInstructor(slug: string): Promise<Instructor | null> {
       .select('*')
       .eq('slug', slug)
       .eq('is_active', true)
-      .single();
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .maybeSingle();
     if (!data) return staticMatch ?? null;
     return { ...(staticMatch ?? {}), ...data, id: data.slug || data.id, email: data.email_contact };
   } catch {

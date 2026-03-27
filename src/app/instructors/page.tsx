@@ -15,13 +15,21 @@ export const metadata: Metadata = {
 async function fetchInstructors(): Promise<Instructor[]> {
   try {
     const supabase = createAdminClient();
-    const { data, error } = await supabase
+    const { data } = await supabase
       .from('instructors')
       .select('*')
       .eq('is_active', true)
       .order('sort_order', { ascending: true })
       .order('created_at', { ascending: true });
-    const dbList = (data ?? []).map((r: any) => ({ ...r, id: r.slug || r.id, email: r.email_contact }));
+    // Deduplicate by slug (keep latest if duplicates exist)
+    const seen = new Set<string>();
+    const deduped = (data ?? []).filter((r: any) => {
+      const key = r.slug || r.id;
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+    const dbList = deduped.map((r: any) => ({ ...r, id: r.slug || r.id, email: r.email_contact }));
     const dbIds = new Set(dbList.map((i: Instructor) => i.id));
     const dbNames = new Set(dbList.map((i: Instructor) => i.name));
     const staticOnly = INSTRUCTORS.filter(i => !dbIds.has(i.id) && !dbNames.has(i.name));
