@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Suspense } from 'react';
 import type { ClientEntry } from '@/app/api/admin/clients/route';
+import AvailabilityTable, { AvailabilitySlot } from '@/components/AvailabilityTable';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -51,7 +52,7 @@ function saveHealthChecks(data: Record<string, { daily: boolean; general: boolea
 
 // ─── Admin Content ────────────────────────────────────────────────────────────
 
-type TabType = 'lior' | 'immersion' | 'clients' | 'instructors' | 'workshops' | 'reviews' | 'manage-instructors' | 'users';
+type TabType = 'lior' | 'immersion' | 'clients' | 'instructors' | 'workshops' | 'reviews' | 'manage-instructors' | 'users' | 'availability';
 
 interface InstructorWorkshop {
   id: string;
@@ -135,6 +136,12 @@ function AdminContent() {
   const [roleEmail, setRoleEmail] = useState('');
   const [roleValue, setRoleValue] = useState('instructor');
   const [roleMsg, setRoleMsg] = useState('');
+  // ── Availability ──
+  const [availInstructorId, setAvailInstructorId] = useState('');
+  const [availSlots, setAvailSlots] = useState<AvailabilitySlot[]>([]);
+  const [availBlocked, setAvailBlocked] = useState<{ id: string; from_date: string; to_date: string; reason: string }[]>([]);
+  const [availSaving, setAvailSaving] = useState(false);
+  const [availMsg, setAvailMsg] = useState('');
 
   // ── Load functions ──────────────────────────────────────────────────────────
 
@@ -207,6 +214,7 @@ function AdminContent() {
   useEffect(() => { if (tab === 'workshops') loadWorkshops(); }, [tab, loadWorkshops]);
   useEffect(() => { if (tab === 'manage-instructors') loadDbInstructors(); }, [tab, loadDbInstructors]);
   useEffect(() => { if (tab === 'users') loadUsers(); }, [tab, loadUsers]);
+  useEffect(() => { if (tab === 'availability') loadDbInstructors(); }, [tab, loadDbInstructors]);
 
   // ── Actions ─────────────────────────────────────────────────────────────────
 
@@ -338,9 +346,10 @@ function AdminContent() {
           ['workshops',   '🏊 סדנאות מדריכים'],
           ['clients',     '👥 לקוחות'],
           ['manage-instructors', '🏊 ניהול מדריכים'],
-          ['users',       '👤 משתמשים'],
-          ['instructors', '📧 הזמנות מדריכים'],
-          ['reviews',     '✍️ חוות דעת'],
+          ['users',        '👤 משתמשים'],
+          ['availability', '📅 זמינות מדריכים'],
+          ['instructors',  '📧 הזמנות מדריכים'],
+          ['reviews',      '✍️ חוות דעת'],
         ] as [TabType, string][]).map(([t, label]) => (
           <button key={t} onClick={() => setTab(t)}
             className={`px-5 py-2.5 font-bold text-sm rounded-t-xl transition-colors ${
@@ -1162,6 +1171,77 @@ function AdminContent() {
                     </div>
                   ))
                 }
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* ── TAB: Availability ── */}
+      {tab === 'availability' && (
+        <div className="space-y-6">
+          <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-5">
+            <h2 className="text-lg font-bold text-navy-900 mb-4">זמינות שבועית — לפי מדריך</h2>
+            <div className="mb-4">
+              <label className="block text-sm font-semibold text-slate-600 mb-1">בחר מדריך</label>
+              <select value={availInstructorId} onChange={async e => {
+                const id = e.target.value;
+                setAvailInstructorId(id);
+                setAvailSlots([]); setAvailBlocked([]); setAvailMsg('');
+                if (!id) return;
+                const res = await fetch(`/api/admin/instructor-availability?instructor_id=${id}&key=${encodeURIComponent(key)}`);
+                const d = await res.json();
+                setAvailSlots(d.slots ?? []);
+                setAvailBlocked(d.blocked ?? []);
+              }} className="border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ice-400 bg-white min-w-56">
+                <option value="">— בחר מדריך —</option>
+                {dbInstructors.map(i => <option key={i.id} value={i.id}>{i.name}</option>)}
+              </select>
+            </div>
+
+            {availInstructorId && (
+              <div className="space-y-6">
+                <AvailabilityTable type="workshop" title="סדנאות — שעות פוטנציאליות" data={availSlots} onChange={setAvailSlots} />
+                <AvailabilityTable type="immersion" title="הטבלות — שעות פוטנציאליות" data={availSlots} onChange={setAvailSlots} />
+
+                <div className="flex items-center gap-4">
+                  <button onClick={async () => {
+                    setAvailSaving(true); setAvailMsg('');
+                    const res = await fetch(`/api/admin/instructor-availability?instructor_id=${availInstructorId}&key=${encodeURIComponent(key)}`, {
+                      method: 'PUT',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({ slots: availSlots }),
+                    });
+                    const d = await res.json();
+                    setAvailMsg(res.ok ? `✅ נשמר (${d.saved} שורות)` : `❌ ${d.error}`);
+                    setAvailSaving(false);
+                    setTimeout(() => setAvailMsg(''), 3000);
+                  }} disabled={availSaving}
+                    className="bg-navy-900 hover:bg-navy-700 disabled:opacity-50 text-white font-bold px-6 py-2.5 rounded-xl text-sm transition-colors">
+                    {availSaving ? 'שומר...' : 'שמור זמינות'}
+                  </button>
+                  {availMsg && <span className={`text-sm font-semibold ${availMsg.startsWith('✅') ? 'text-green-600' : 'text-red-500'}`}>{availMsg}</span>}
+                </div>
+
+                {availBlocked.length > 0 && (
+                  <div>
+                    <h3 className="text-sm font-bold text-slate-700 mb-2">תאריכים חסומים</h3>
+                    <div className="space-y-2">
+                      {availBlocked.map(b => (
+                        <div key={b.id} className="flex items-center justify-between bg-orange-50 border border-orange-200 rounded-xl px-4 py-2 text-sm">
+                          <span className="font-mono font-semibold text-orange-800">
+                            {b.from_date} — {b.to_date}
+                            {b.reason && <span className="text-orange-600 font-normal mr-2">({b.reason})</span>}
+                          </span>
+                          <button onClick={async () => {
+                            await fetch(`/api/admin/instructor-availability?id=${b.id}&key=${encodeURIComponent(key)}`, { method: 'DELETE' });
+                            setAvailBlocked(prev => prev.filter(x => x.id !== b.id));
+                          }} className="text-xs text-red-400 hover:text-red-600 font-semibold">מחק</button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             )}
           </div>

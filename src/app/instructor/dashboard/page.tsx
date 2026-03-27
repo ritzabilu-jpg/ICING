@@ -96,11 +96,12 @@ export default function InstructorDashboard() {
   const monthSessions = sessions.filter(s => s.date.startsWith(thisMonth));
   const totalParticipantsMonth = monthSessions.reduce((sum, s) => sum + (s.participant_count || 0), 0);
 
-  const tabs: { key: Tab; label: string }[] = [
+  const tabs: { key: Tab; label: string; href?: string }[] = [
     { key: 'future', label: `סדנאות עתיד (${future.length})` },
     { key: 'past', label: `סדנאות עבר (${past.length})` },
     { key: 'schedule', label: 'שעות סדנאות' },
     { key: 'clients', label: 'רשימת לקוחות' },
+    { key: 'future', label: 'זמינות שבועית', href: '/instructor/availability' },
   ];
 
   function sessionHref(s: Session) {
@@ -158,14 +159,21 @@ export default function InstructorDashboard() {
       {/* Tabs */}
       <div className="bg-white border-b border-slate-200 sticky top-0 z-10">
         <div className="max-w-4xl mx-auto flex overflow-x-auto">
-          {tabs.map(t => (
-            <button key={t.key} onClick={() => setTab(t.key)}
-              className={`px-5 py-3 text-sm font-semibold whitespace-nowrap border-b-2 transition-colors ${
-                tab === t.key ? 'border-[#7dd8f8] text-[#0f2942]' : 'border-transparent text-slate-500 hover:text-slate-700'
-              }`}>
-              {t.label}
-            </button>
-          ))}
+          {tabs.map((t, i) =>
+            t.href ? (
+              <Link key={i} href={t.href}
+                className="px-5 py-3 text-sm font-semibold whitespace-nowrap border-b-2 border-transparent text-slate-500 hover:text-[#0f2942] transition-colors">
+                {t.label}
+              </Link>
+            ) : (
+              <button key={t.key + i} onClick={() => setTab(t.key)}
+                className={`px-5 py-3 text-sm font-semibold whitespace-nowrap border-b-2 transition-colors ${
+                  tab === t.key ? 'border-[#7dd8f8] text-[#0f2942]' : 'border-transparent text-slate-500 hover:text-slate-700'
+                }`}>
+                {t.label}
+              </button>
+            )
+          )}
         </div>
       </div>
 
