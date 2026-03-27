@@ -52,12 +52,8 @@ export async function POST(req: NextRequest) {
 
     const existingId = slugToId[inst.id] ?? nameToId[inst.name];
     if (existingId) {
-      // Only update photo_url and sort_order — preserve admin edits to content
-      const { error } = await supabase.from('instructors')
-        .update({ photo_url: row.photo_url, sort_order: row.sort_order, slug: row.slug })
-        .eq('id', existingId);
-      if (error) errors.push(`${inst.name}: ${error.message}`);
-      else synced++;
+      // DB is source of truth — do not overwrite existing records
+      synced++;
     } else {
       const { error } = await supabase.from('instructors').insert(row);
       if (error) errors.push(`${inst.name}: ${error.message}`);
