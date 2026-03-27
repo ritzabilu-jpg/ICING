@@ -1146,6 +1146,18 @@ function AdminContent() {
                           <option value="instructor">מדריך</option>
                           <option value="admin">אדמין</option>
                         </select>
+                        {['instructor', 'admin'].includes(u.role) && (
+                          <button onClick={async () => {
+                            if (!confirm(`למחוק את ${u.name}?`)) return;
+                            const res = await fetch(`/api/admin/users?id=${u.id}`, {
+                              method: 'DELETE', headers: adminHeaders(),
+                            });
+                            if (res.ok) await loadUsers();
+                            else { const d = await res.json(); alert('שגיאה: ' + (d.error || res.status)); }
+                          }} className="text-xs bg-red-50 hover:bg-red-100 text-red-600 font-semibold px-2 py-1 rounded-lg transition-colors">
+                            מחק
+                          </button>
+                        )}
                       </div>
                     </div>
                   ))
