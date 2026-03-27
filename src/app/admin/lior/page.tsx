@@ -358,7 +358,13 @@ function AdminContent() {
   return (
     <div className="max-w-5xl mx-auto px-4 py-10" dir="rtl">
 
-      <h1 className="text-3xl font-black text-navy-900 mb-6">לוח אדמין</h1>
+      <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
+        <h1 className="text-3xl font-black text-navy-900">לוח אדמין</h1>
+        <a href="/instructor/dashboard"
+          className="inline-flex items-center gap-2 bg-[#0f2942] hover:bg-[#1a3a5c] text-white font-bold px-5 py-2.5 rounded-xl text-sm transition-colors">
+          🏊 דשבורד מדריך שלי
+        </a>
+      </div>
 
       {/* Tabs */}
       <div className="flex gap-2 mb-8 border-b border-slate-200 flex-wrap">
