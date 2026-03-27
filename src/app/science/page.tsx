@@ -44,9 +44,9 @@ const topics = [
   {
     icon: '🛡️',
     title: 'מערכת חיסון ודלקת',
-    description: 'הפחתת מדדי דלקת, שיפור ריקוברי ותגובת מערכת החיסון.',
+    description: 'הפחתת מדדי דלקת, שיפור התאוששות ותגובת מערכת החיסון.',
     href: '/inflammation',
-    available: false,
+    available: true,
     color: 'bg-orange-50 border-orange-200',
     titleColor: 'text-orange-900',
   },
