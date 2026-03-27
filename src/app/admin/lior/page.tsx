@@ -90,6 +90,8 @@ function AdminContent() {
   const [toTime, setToTime]         = useState('');
   const [newMax, setNewMax]         = useState(10);
   const [newNotes, setNewNotes]     = useState('');
+  const [newLocation, setNewLocation] = useState('');
+  const [newInstructorId, setNewInstructorId] = useState('');
   const [addingSlot, setAddingSlot] = useState(false);
   const [addSlotMsg, setAddSlotMsg] = useState('');
   const [expandedSlot, setExpandedSlot] = useState<string | null>(null);
@@ -238,12 +240,12 @@ function AdminContent() {
     const res = await fetch(`/api/admin/immersion-slots?key=${encodeURIComponent(key)}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ from_date: fromDate, to_date: toDate, from_time: fromTime, to_time: toTime, max_participants: newMax, notes: newNotes }),
+      body: JSON.stringify({ from_date: fromDate, to_date: toDate, from_time: fromTime, to_time: toTime, max_participants: newMax, notes: newNotes, location: newLocation, instructor_id: newInstructorId || undefined }),
     });
     const data = await res.json() as { success?: boolean; count?: number; error?: string };
     if (res.ok) {
       setAddSlotMsg(`✅ נוצרו ${data.count} מועדים בהצלחה`);
-      setFromDate(''); setToDate(''); setFromTime(''); setToTime(''); setNewNotes('');
+      setFromDate(''); setToDate(''); setFromTime(''); setToTime(''); setNewNotes(''); setNewLocation(''); setNewInstructorId('');
       await loadSlots();
     } else {
       setAddSlotMsg(`❌ ${data.error ?? 'שגיאה'}`);
@@ -487,6 +489,24 @@ function AdminContent() {
                   <label className="block text-xs font-semibold text-slate-600 mb-1">הערה (אופציונלי)</label>
                   <input value={newNotes} onChange={e => setNewNotes(e.target.value)} placeholder="למשל: קבוצת בוקר"
                     className="w-full border-2 border-slate-200 focus:border-ice-400 rounded-xl px-3 py-2 text-sm focus:outline-none" />
+                </div>
+              </div>
+              {/* Row 4: location + instructor */}
+              <div className="grid sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-semibold text-slate-600 mb-1">מיקום</label>
+                  <input value={newLocation} onChange={e => setNewLocation(e.target.value)} placeholder="למשל: חולון סירני 52"
+                    className="w-full border-2 border-slate-200 focus:border-ice-400 rounded-xl px-3 py-2 text-sm focus:outline-none" />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-slate-600 mb-1">מדריך אחראי</label>
+                  <select value={newInstructorId} onChange={e => setNewInstructorId(e.target.value)}
+                    className="w-full border-2 border-slate-200 focus:border-ice-400 rounded-xl px-3 py-2 text-sm focus:outline-none bg-white">
+                    <option value="">— ללא מדריך ספציפי —</option>
+                    {dbInstructors.map(i => (
+                      <option key={i.id} value={i.id}>{i.name}</option>
+                    ))}
+                  </select>
                 </div>
               </div>
               {/* Preview */}

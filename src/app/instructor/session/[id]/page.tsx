@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useRouter, useParams } from 'next/navigation';
+import { useRouter, useParams, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 
 interface Slot {
@@ -45,7 +45,9 @@ function Check({ checked, onClick, label }: { checked: boolean; onClick: () => v
 export default function SessionDetailPage() {
   const router = useRouter();
   const params = useParams();
+  const searchParams = useSearchParams();
   const id = params?.id as string;
+  const kind = searchParams?.get('kind') ?? 'slot';
 
   const [visitorId, setVisitorId] = useState('');
   const [slot, setSlot] = useState<Slot | null>(null);
@@ -66,7 +68,7 @@ export default function SessionDetailPage() {
   useEffect(() => {
     if (!visitorId || !id) return;
     setLoading(true);
-    fetch(`/api/instructor/session/${id}`, { headers: { 'x-visitor-id': visitorId } })
+    fetch(`/api/instructor/session/${id}?kind=${kind}`, { headers: { 'x-visitor-id': visitorId } })
       .then(r => r.json())
       .then(d => {
         setSlot(d.slot);
@@ -81,7 +83,7 @@ export default function SessionDetailPage() {
     const res = await fetch(`/api/instructor/session/${id}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json', 'x-visitor-id': visitorId },
-      body: JSON.stringify({ booking_id: bookingId, field, value: !current }),
+      body: JSON.stringify({ booking_id: bookingId, field, value: !current, kind }),
     });
     if (res.ok) {
       setParticipants(prev =>

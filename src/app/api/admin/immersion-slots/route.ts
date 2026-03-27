@@ -46,9 +46,10 @@ export async function POST(req: NextRequest) {
     from_date?: string; to_date?: string;
     from_time?: string; to_time?: string;
     max_participants?: number; notes?: string;
+    location?: string; instructor_id?: string;
   };
 
-  const { from_date, to_date, from_time, to_time, notes } = body;
+  const { from_date, to_date, from_time, to_time, notes, location, instructor_id } = body;
   const max = body.max_participants ?? 10;
 
   if (!from_date || !to_date || !from_time || !to_time) {
@@ -80,7 +81,9 @@ export async function POST(req: NextRequest) {
         slot_time: `${h}:${min}`,
         max_participants: max,
         notes: notes ?? '',
-      });
+        location: location ?? '',
+        ...(instructor_id ? { instructor_id } : {}),
+      } as any);
     }
 
     cursor.setDate(cursor.getDate() + 1);

@@ -3,36 +3,85 @@ import { createAdminClient } from '@/lib/supabase';
 
 export const dynamic = 'force-dynamic';
 
-async function verifyInstructor(req: NextRequest) {
-  const visitorId = req.headers.get('x-visitor-id');
-  if (!visitorId) return null;
+async function getInstructor(visitorId: string) {
   const supabase = createAdminClient();
-  const { data } = await supabase
+  const { data: profile } = await supabase
     .from('visitor_profiles')
-    .select('id, name, role')
+    .select('id, email, role')
     .eq('id', visitorId)
     .maybeSingle();
-  if (!data || !['instructor', 'admin'].includes(data.role)) return null;
-  return data;
+  if (!profile || !['instructor', 'admin'].includes(profile.role)) return null;
+
+  // Link visitor login to instructor profile via email_contact
+  const { data: instructor } = await supabase
+    .from('instructors')
+    .select('id, name, slug')
+    .eq('email_contact', profile.email)
+    .maybeSingle();
+
+  return { profile, instructor };
 }
 
 export async function GET(req: NextRequest) {
-  const user = await verifyInstructor(req);
-  if (!user) return NextResponse.json({ error: 'לא מורשה' }, { status: 401 });
+  const visitorId = req.headers.get('x-visitor-id') ?? '';
+  if (!visitorId) return NextResponse.json({ error: 'לא מורשה' }, { status: 401 });
+
+  const linked = await getInstructor(visitorId);
+  if (!linked) return NextResponse.json({ error: 'לא מורשה' }, { status: 401 });
+
+  const { instructor } = linked;
+  if (!instructor) {
+    return NextResponse.json({ error: 'הפרופיל שלך לא מקושר למדריך. פנה לאדמין.' }, { status: 403 });
+  }
 
   const supabase = createAdminClient();
-  const { data: slots, error } = await supabase
+
+  // Fetch immersion slots for this instructor
+  const { data: slots } = await supabase
     .from('immersion_slots')
     .select('*')
+    .eq('instructor_id', instructor.id)
     .order('slot_date', { ascending: false })
     .order('slot_time', { ascending: true });
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  // Fetch workshops for this instructor
+  const { data: workshops } = await supabase
+    .from('workshops')
+    .select('*')
+    .eq('instructor_id', instructor.id)
+    .order('date_time', { ascending: false });
 
-  const { data: bookings } = await supabase.from('immersion_bookings').select('slot_id');
-  const countMap: Record<string, number> = {};
-  bookings?.forEach(b => { countMap[b.slot_id] = (countMap[b.slot_id] || 0) + 1; });
+  // Count immersion bookings per slot
+  const { data: slotBookings } = await supabase.from('immersion_bookings').select('slot_id');
+  const slotCount: Record<string, number> = {};
+  slotBookings?.forEach(b => { slotCount[b.slot_id] = (slotCount[b.slot_id] || 0) + 1; });
 
-  const result = (slots || []).map(s => ({ ...s, participant_count: countMap[s.id] || 0 }));
-  return NextResponse.json(result);
+  const slotItems = (slots || []).map(s => ({
+    id: s.id,
+    kind: 'slot' as const,
+    date: s.slot_date,
+    time: s.slot_time?.slice(0, 5),
+    location: s.location || '',
+    notes: s.notes || '',
+    max_participants: s.max_participants,
+    participant_count: slotCount[s.id] || 0,
+  }));
+
+  const workshopItems = (workshops || []).map(w => {
+    const dt = new Date(w.date_time);
+    return {
+      id: w.id,
+      kind: 'workshop' as const,
+      date: dt.toISOString().split('T')[0],
+      time: dt.toTimeString().slice(0, 5),
+      location: '',
+      notes: w.description || '',
+      title: w.title,
+      max_participants: w.capacity,
+      participant_count: w.seats_taken || 0,
+    };
+  });
+
+  const all = [...slotItems, ...workshopItems].sort((a, b) => b.date.localeCompare(a.date));
+  return NextResponse.json({ sessions: all, instructor });
 }
