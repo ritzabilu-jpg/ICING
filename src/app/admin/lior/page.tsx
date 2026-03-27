@@ -995,6 +995,7 @@ function AdminContent() {
                             body: JSON.stringify(payload),
                           });
                           if (res.ok) { setEditingInstructor(null); await loadDbInstructors(); }
+                          else { const d = await res.json(); alert('שגיאה בשמירה: ' + (d.error || res.status)); }
                         }} className="bg-ice-600 hover:bg-ice-700 text-white font-bold px-4 py-1.5 rounded-lg text-sm transition-colors">
                           שמור
                         </button>
@@ -1019,7 +1020,7 @@ function AdminContent() {
                         </div>
                       </div>
                       <div className="flex gap-2">
-                        <button onClick={() => { setEditingInstructor(inst); setEditSpecialtiesStr((inst.specialties || []).join(', ')); setEditCertificationsStr((inst.certifications || []).join(', ')); }}
+                        <button onClick={() => { setEditingInstructor(inst); setEditSpecialtiesStr((inst.specialties || []).join(', ').replace(/\|/g, ', ')); setEditCertificationsStr((inst.certifications || []).join(', ').replace(/\|/g, ', ')); }}
                           className="bg-navy-100 hover:bg-navy-200 text-navy-900 font-semibold px-3 py-1.5 rounded-lg text-sm transition-colors">
                           עריכה
                         </button>
