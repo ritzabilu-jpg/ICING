@@ -59,12 +59,15 @@ export default function InstructorCard({ instructor }: InstructorCardProps) {
           {/* Certifications */}
           {instructor.certifications?.length > 0 && (
             <div className="mt-auto">
-              {instructor.certifications.slice(0, 2).map(c => (
-                <div key={c} className="flex items-center gap-1.5 text-xs text-slate-500">
-                  <span className="text-green-500">✓</span>
-                  {c}
-                </div>
-              ))}
+              {instructor.certifications
+                .flatMap(c => c.split('|').map(s => s.trim()).filter(Boolean))
+                .slice(0, 2)
+                .map(c => (
+                  <div key={c} className="flex items-center gap-1.5 text-xs text-slate-500">
+                    <span className="text-green-500">✓</span>
+                    {c}
+                  </div>
+                ))}
             </div>
           )}
 

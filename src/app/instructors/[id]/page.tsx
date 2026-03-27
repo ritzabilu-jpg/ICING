@@ -88,12 +88,14 @@ export default async function InstructorPage({ params }: Props) {
 
               {instructor.certifications?.length > 0 && (
                 <div className="flex flex-col gap-1">
-                  {instructor.certifications.map(c => (
-                    <div key={c} className="flex items-center gap-2 text-sm text-slate-400">
-                      <span className="text-green-400">✓</span>
-                      {c}
-                    </div>
-                  ))}
+                  {instructor.certifications
+                    .flatMap(c => c.split('|').map(s => s.trim()).filter(Boolean))
+                    .map(c => (
+                      <div key={c} className="flex items-center gap-2 text-sm text-slate-400">
+                        <span className="text-green-400">✓</span>
+                        {c}
+                      </div>
+                    ))}
                 </div>
               )}
             </div>

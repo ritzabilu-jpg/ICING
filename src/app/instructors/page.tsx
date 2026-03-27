@@ -5,6 +5,8 @@ import { INSTRUCTORS } from '@/data/instructors';
 import { createAdminClient } from '@/lib/supabase';
 import type { Instructor } from '@/types';
 
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = {
   title: 'הצוות שלנו – מדריכים מוסמכים',
   description:
@@ -28,28 +30,25 @@ async function fetchInstructors(): Promise<Instructor[]> {
       seen.add(key);
       return true;
     });
-    // Sort: Lior first, then alphabetical
-    deduped.sort((a: any, b: any) => {
-      const LIOR = 'ליאור כ"ץ';
-      if (a.name === LIOR) return -1;
-      if (b.name === LIOR) return 1;
-      return (a.name as string).localeCompare(b.name, 'he');
-    });
     const dbList = deduped.map((r: any) => ({ ...r, id: r.slug || r.id, email: r.email_contact }));
     const dbIds = new Set(dbList.map((i: Instructor) => i.id));
     const dbNames = new Set(dbList.map((i: Instructor) => i.name));
     const staticOnly = INSTRUCTORS.filter(i => !dbIds.has(i.id) && !dbNames.has(i.name));
     const merged = [...dbList, ...staticOnly];
-    const LIOR = 'ליאור כ"ץ';
-    merged.sort((a, b) => {
-      if (a.name === LIOR) return -1;
-      if (b.name === LIOR) return 1;
-      return a.name.localeCompare(b.name, 'he');
-    });
+    // Shuffle randomly
+    for (let i = merged.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [merged[i], merged[j]] = [merged[j], merged[i]];
+    }
     return merged;
 
   } catch {
-    return INSTRUCTORS;
+    const fallback = [...INSTRUCTORS];
+    for (let i = fallback.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [fallback[i], fallback[j]] = [fallback[j], fallback[i]];
+    }
+    return fallback;
   }
 }
 

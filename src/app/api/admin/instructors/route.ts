@@ -5,11 +5,11 @@ export const dynamic = 'force-dynamic';
 
 async function verifyAdmin(req: NextRequest) {
   const key = req.headers.get('x-admin-key') ?? new URL(req.url).searchParams.get('key') ?? '';
-  if (key && key === process.env.ADMIN_CODE) return true;
+  if (key && (key === process.env.ADMIN_CODE || key === process.env.ADMIN_KEY)) return true;
   const visitorId = req.headers.get('x-visitor-id');
   if (!visitorId) return false;
   const supabase = createAdminClient();
-  const { data } = await supabase.from('visitor_profiles').select('role').eq('id', visitorId).single();
+  const { data } = await supabase.from('visitor_profiles').select('role').eq('id', visitorId).maybeSingle();
   return data?.role === 'admin';
 }
 
