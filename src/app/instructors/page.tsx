@@ -19,15 +19,21 @@ async function fetchInstructors(): Promise<Instructor[]> {
       .from('instructors')
       .select('*')
       .eq('is_active', true)
-      .order('sort_order', { ascending: true })
-      .order('created_at', { ascending: true });
-    // Deduplicate by slug (keep latest if duplicates exist)
+      .order('created_at', { ascending: false });
+    // Deduplicate by slug — keep newest record per slug
     const seen = new Set<string>();
     const deduped = (data ?? []).filter((r: any) => {
       const key = r.slug || r.id;
       if (seen.has(key)) return false;
       seen.add(key);
       return true;
+    });
+    // Sort: Lior first, then alphabetical
+    deduped.sort((a: any, b: any) => {
+      const LIOR = 'ליאור כ"ץ';
+      if (a.name === LIOR) return -1;
+      if (b.name === LIOR) return 1;
+      return (a.name as string).localeCompare(b.name, 'he');
     });
     const dbList = deduped.map((r: any) => ({ ...r, id: r.slug || r.id, email: r.email_contact }));
     const dbIds = new Set(dbList.map((i: Instructor) => i.id));
@@ -41,6 +47,7 @@ async function fetchInstructors(): Promise<Instructor[]> {
       return a.name.localeCompare(b.name, 'he');
     });
     return merged;
+
   } catch {
     return INSTRUCTORS;
   }
