@@ -54,7 +54,7 @@ export default function Hero() {
 
         {/* Subheading */}
         <p className="text-xl md:text-2xl text-slate-300 font-light mb-4 max-w-3xl mx-auto">
-          סדנאות אמבטיות קרח מדעיות ומקצועיות – בליווי מדריכים מוסמכים CWI
+          סדנאות אמבטיות קרח מקצועיות ומבוססות מחקר, בליווי מדריכים מוסמכים CWI
         </p>
 
         {/* Benefits row */}
