@@ -5,6 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import { Suspense } from 'react';
 import type { ClientEntry } from '@/app/api/admin/clients/route';
 import AvailabilityTable, { AvailabilitySlot } from '@/components/AvailabilityTable';
+import AvailabilitySummaryGrid, { SummaryInstructor } from '@/components/AvailabilitySummaryGrid';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -140,6 +141,19 @@ function AdminContent() {
   const [availInstructorId, setAvailInstructorId] = useState('');
   const [availSlots, setAvailSlots] = useState<AvailabilitySlot[]>([]);
   const [availBlocked, setAvailBlocked] = useState<{ id: string; from_date: string; to_date: string; reason: string }[]>([]);
+  // ── Availability Summary + Slot Generator ──
+  const [summaryData, setSummaryData] = useState<SummaryInstructor[]>([]);
+  const [loadingSummary, setLoadingSummary] = useState(false);
+  const [genInstructorId, setGenInstructorId] = useState('');
+  const [genType, setGenType] = useState<'immersion' | 'workshop'>('immersion');
+  const [genFrom, setGenFrom] = useState('');
+  const [genTo, setGenTo] = useState('');
+  const [proposed, setProposed] = useState<{ key: string; date: string; time: string; from_time: string; to_time: string }[]>([]);
+  const [selectedProposed, setSelectedProposed] = useState<Set<string>>(new Set());
+  const [generatingProposed, setGeneratingProposed] = useState(false);
+  const [creatingSlots, setCreatingSlots] = useState(false);
+  const [createSlotsMsg, setCreateSlotsMsg] = useState('');
+  const [showGenerator, setShowGenerator] = useState(false);
   const [availSaving, setAvailSaving] = useState(false);
   const [availMsg, setAvailMsg] = useState('');
 
@@ -215,6 +229,14 @@ function AdminContent() {
   useEffect(() => { if (tab === 'manage-instructors') loadDbInstructors(); }, [tab, loadDbInstructors]);
   useEffect(() => { if (tab === 'users') loadUsers(); }, [tab, loadUsers]);
   useEffect(() => { if (tab === 'availability') loadDbInstructors(); }, [tab, loadDbInstructors]);
+  useEffect(() => {
+    if (tab !== 'availability') return;
+    setLoadingSummary(true);
+    fetch(`/api/admin/availability-summary?key=${encodeURIComponent(key)}`)
+      .then(r => r.json())
+      .then(d => { setSummaryData(d.instructors ?? []); setLoadingSummary(false); })
+      .catch(() => setLoadingSummary(false));
+  }, [tab, key]);
 
   // ── Actions ─────────────────────────────────────────────────────────────────
 
@@ -1180,71 +1202,242 @@ function AdminContent() {
       {/* ── TAB: Availability ── */}
       {tab === 'availability' && (
         <div className="space-y-6">
+
+          {/* Combined Summary Grid */}
           <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-5">
-            <h2 className="text-lg font-bold text-navy-900 mb-4">זמינות שבועית — לפי מדריך</h2>
-            <div className="mb-4">
-              <label className="block text-sm font-semibold text-slate-600 mb-1">בחר מדריך</label>
-              <select value={availInstructorId} onChange={async e => {
-                const id = e.target.value;
-                setAvailInstructorId(id);
-                setAvailSlots([]); setAvailBlocked([]); setAvailMsg('');
-                if (!id) return;
-                const res = await fetch(`/api/admin/instructor-availability?instructor_id=${id}&key=${encodeURIComponent(key)}`);
-                const d = await res.json();
-                setAvailSlots(d.slots ?? []);
-                setAvailBlocked(d.blocked ?? []);
-              }} className="border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ice-400 bg-white min-w-56">
-                <option value="">— בחר מדריך —</option>
-                {dbInstructors.map(i => <option key={i.id} value={i.id}>{i.name}</option>)}
-              </select>
+            <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
+              <h2 className="text-lg font-bold text-navy-900">סיכום זמינות — כל המדריכים</h2>
+              <button onClick={() => {
+                setLoadingSummary(true);
+                fetch(`/api/admin/availability-summary?key=${encodeURIComponent(key)}`)
+                  .then(r => r.json())
+                  .then(d => { setSummaryData(d.instructors ?? []); setLoadingSummary(false); })
+                  .catch(() => setLoadingSummary(false));
+              }} className="text-xs text-slate-500 hover:text-slate-700 border border-slate-200 px-3 py-1 rounded-lg transition-colors">
+                🔄 רענן
+              </button>
             </div>
+            {loadingSummary
+              ? <p className="text-slate-400 text-sm py-4 text-center">טוען...</p>
+              : summaryData.length === 0
+                ? <p className="text-slate-400 text-sm">אין נתוני זמינות — המדריכים עדיין לא הגדירו שעות.</p>
+                : <AvailabilitySummaryGrid instructors={summaryData} />
+            }
+          </div>
 
-            {availInstructorId && (
-              <div className="space-y-6">
-                <AvailabilityTable type="workshop" title="סדנאות — שעות פוטנציאליות" data={availSlots} onChange={setAvailSlots} />
-                <AvailabilityTable type="immersion" title="הטבלות — שעות פוטנציאליות" data={availSlots} onChange={setAvailSlots} />
-
-                <div className="flex items-center gap-4">
-                  <button onClick={async () => {
-                    setAvailSaving(true); setAvailMsg('');
-                    const res = await fetch(`/api/admin/instructor-availability?instructor_id=${availInstructorId}&key=${encodeURIComponent(key)}`, {
-                      method: 'PUT',
-                      headers: { 'Content-Type': 'application/json' },
-                      body: JSON.stringify({ slots: availSlots }),
-                    });
-                    const d = await res.json();
-                    setAvailMsg(res.ok ? `✅ נשמר (${d.saved} שורות)` : `❌ ${d.error}`);
-                    setAvailSaving(false);
-                    setTimeout(() => setAvailMsg(''), 3000);
-                  }} disabled={availSaving}
-                    className="bg-navy-900 hover:bg-navy-700 disabled:opacity-50 text-white font-bold px-6 py-2.5 rounded-xl text-sm transition-colors">
-                    {availSaving ? 'שומר...' : 'שמור זמינות'}
-                  </button>
-                  {availMsg && <span className={`text-sm font-semibold ${availMsg.startsWith('✅') ? 'text-green-600' : 'text-red-500'}`}>{availMsg}</span>}
+          {/* Slot Generator */}
+          <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-5">
+            <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
+              <h2 className="text-lg font-bold text-navy-900">הצע סלוטים לפי זמינות</h2>
+              <button onClick={() => { setShowGenerator(s => !s); setProposed([]); setSelectedProposed(new Set()); }}
+                className="text-sm font-semibold text-[#0f2942] border-2 border-[#0f2942] px-4 py-1.5 rounded-xl hover:bg-[#0f2942] hover:text-white transition-colors">
+                {showGenerator ? 'סגור' : '+ פתח'}
+              </button>
+            </div>
+            {showGenerator && (
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-600 mb-1">מדריך</label>
+                    <select value={genInstructorId} onChange={e => { setGenInstructorId(e.target.value); setProposed([]); }}
+                      className="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-[#7dd8f8] bg-white">
+                      <option value="">— בחר —</option>
+                      {dbInstructors.map(i => <option key={i.id} value={i.id}>{i.name}</option>)}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-600 mb-1">סוג</label>
+                    <select value={genType} onChange={e => { setGenType(e.target.value as 'immersion' | 'workshop'); setProposed([]); }}
+                      className="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-[#7dd8f8] bg-white">
+                      <option value="immersion">טבילות</option>
+                      <option value="workshop">סדנאות</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-600 mb-1">מתאריך</label>
+                    <input type="date" value={genFrom} onChange={e => { setGenFrom(e.target.value); setProposed([]); }}
+                      className="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-[#7dd8f8]" />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-600 mb-1">עד תאריך</label>
+                    <input type="date" value={genTo} onChange={e => { setGenTo(e.target.value); setProposed([]); }}
+                      className="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-[#7dd8f8]" />
+                  </div>
                 </div>
 
-                {availBlocked.length > 0 && (
-                  <div>
-                    <h3 className="text-sm font-bold text-slate-700 mb-2">תאריכים חסומים</h3>
-                    <div className="space-y-2">
-                      {availBlocked.map(b => (
-                        <div key={b.id} className="flex items-center justify-between bg-orange-50 border border-orange-200 rounded-xl px-4 py-2 text-sm">
-                          <span className="font-mono font-semibold text-orange-800">
-                            {b.from_date} — {b.to_date}
-                            {b.reason && <span className="text-orange-600 font-normal mr-2">({b.reason})</span>}
-                          </span>
-                          <button onClick={async () => {
-                            await fetch(`/api/admin/instructor-availability?id=${b.id}&key=${encodeURIComponent(key)}`, { method: 'DELETE' });
-                            setAvailBlocked(prev => prev.filter(x => x.id !== b.id));
-                          }} className="text-xs text-red-400 hover:text-red-600 font-semibold">מחק</button>
-                        </div>
+                <button
+                  disabled={!genInstructorId || !genFrom || !genTo || generatingProposed}
+                  onClick={async () => {
+                    setGeneratingProposed(true); setProposed([]); setSelectedProposed(new Set()); setCreateSlotsMsg('');
+                    const res = await fetch(`/api/admin/generate-slots-from-availability?key=${encodeURIComponent(key)}`, {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({ instructor_id: genInstructorId, from_date: genFrom, to_date: genTo, type: genType }),
+                    });
+                    const d = await res.json();
+                    if (res.ok) {
+                      setProposed(d.proposed ?? []);
+                      setSelectedProposed(new Set((d.proposed ?? []).map((p: { key: string }) => p.key)));
+                    } else {
+                      setCreateSlotsMsg(`❌ ${d.error}`);
+                    }
+                    setGeneratingProposed(false);
+                  }}
+                  className="bg-[#0f2942] hover:bg-[#1a3a5c] disabled:opacity-40 text-white font-bold px-6 py-2 rounded-xl text-sm transition-colors">
+                  {generatingProposed ? 'מחשב...' : 'הצג הצעה'}
+                </button>
+
+                {proposed.length > 0 && (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <p className="text-sm font-semibold text-slate-700">
+                        {proposed.length} סלוטים מוצעים · {selectedProposed.size} נבחרו
+                      </p>
+                      <div className="flex gap-2">
+                        <button onClick={() => setSelectedProposed(new Set(proposed.map(p => p.key)))}
+                          className="text-xs text-[#0f2942] font-semibold underline">בחר הכל</button>
+                        <button onClick={() => setSelectedProposed(new Set())}
+                          className="text-xs text-slate-400 font-semibold underline">נקה</button>
+                      </div>
+                    </div>
+
+                    <div className="max-h-72 overflow-y-auto border border-slate-200 rounded-xl divide-y divide-slate-100">
+                      {proposed.map(p => (
+                        <label key={p.key} className="flex items-center gap-3 px-4 py-2 hover:bg-slate-50 cursor-pointer">
+                          <input type="checkbox"
+                            checked={selectedProposed.has(p.key)}
+                            onChange={e => {
+                              const next = new Set(selectedProposed);
+                              e.target.checked ? next.add(p.key) : next.delete(p.key);
+                              setSelectedProposed(next);
+                            }}
+                            className="w-4 h-4 accent-[#0f2942]" />
+                          <span className="text-sm font-mono font-semibold text-slate-700">{p.date}</span>
+                          <span className="text-sm font-mono text-[#0f2942]">{p.time}</span>
+                          <span className="text-xs text-slate-400">{p.from_time}–{p.to_time}</span>
+                        </label>
                       ))}
                     </div>
+
+                    <div className="flex items-center gap-4">
+                      <button
+                        disabled={selectedProposed.size === 0 || creatingSlots}
+                        onClick={async () => {
+                          setCreatingSlots(true); setCreateSlotsMsg('');
+                          const selected = proposed.filter(p => selectedProposed.has(p.key));
+                          // Group by date and send one request per date range (simplest: one per slot)
+                          let count = 0;
+                          for (const p of selected) {
+                            const res = await fetch(`/api/admin/immersion-slots?key=${encodeURIComponent(key)}`, {
+                              method: 'POST',
+                              headers: { 'Content-Type': 'application/json' },
+                              body: JSON.stringify({
+                                from_date: p.date, to_date: p.date,
+                                from_time: p.time, to_time: p.time,
+                                max_participants: 10,
+                                instructor_id: genInstructorId,
+                              }),
+                            });
+                            if (res.ok) count++;
+                          }
+                          setCreateSlotsMsg(`✅ נוצרו ${count} סלוטים`);
+                          setProposed([]); setSelectedProposed(new Set());
+                          setCreatingSlots(false);
+                          setTimeout(() => setCreateSlotsMsg(''), 4000);
+                        }}
+                        className="bg-green-600 hover:bg-green-700 disabled:opacity-40 text-white font-bold px-6 py-2 rounded-xl text-sm transition-colors">
+                        {creatingSlots ? 'יוצר...' : `צור ${selectedProposed.size} סלוטים נבחרים`}
+                      </button>
+                      {createSlotsMsg && (
+                        <span className={`text-sm font-semibold ${createSlotsMsg.startsWith('✅') ? 'text-green-600' : 'text-red-500'}`}>
+                          {createSlotsMsg}
+                        </span>
+                      )}
+                    </div>
                   </div>
+                )}
+
+                {proposed.length === 0 && !generatingProposed && genInstructorId && genFrom && genTo && createSlotsMsg === '' && (
+                  <p className="text-slate-400 text-sm">לא נמצאו סלוטים מוצעים — ודא שהמדריך הגדיר זמינות לימים ולסוג שנבחרו.</p>
                 )}
               </div>
             )}
           </div>
+
+          {/* Edit individual instructor availability */}
+          <details className="bg-white rounded-2xl border border-slate-100 shadow-sm">
+            <summary className="px-5 py-4 cursor-pointer text-base font-bold text-navy-900 list-none flex items-center justify-between">
+              <span>עריכת זמינות מדריך בודד</span>
+              <span className="text-slate-400 text-sm font-normal">לחץ לפתיחה ▾</span>
+            </summary>
+            <div className="px-5 pb-5 space-y-5 border-t border-slate-100 pt-4">
+              <div>
+                <label className="block text-sm font-semibold text-slate-600 mb-1">בחר מדריך</label>
+                <select value={availInstructorId} onChange={async e => {
+                  const id = e.target.value;
+                  setAvailInstructorId(id);
+                  setAvailSlots([]); setAvailBlocked([]); setAvailMsg('');
+                  if (!id) return;
+                  const res = await fetch(`/api/admin/instructor-availability?instructor_id=${id}&key=${encodeURIComponent(key)}`);
+                  const d = await res.json();
+                  setAvailSlots(d.slots ?? []);
+                  setAvailBlocked(d.blocked ?? []);
+                }} className="border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ice-400 bg-white min-w-56">
+                  <option value="">— בחר מדריך —</option>
+                  {dbInstructors.map(i => <option key={i.id} value={i.id}>{i.name}</option>)}
+                </select>
+              </div>
+
+              {availInstructorId && (
+                <div className="space-y-6">
+                  <AvailabilityTable type="workshop" title="סדנאות — שעות פוטנציאליות" data={availSlots} onChange={setAvailSlots} />
+                  <AvailabilityTable type="immersion" title="הטבלות — שעות פוטנציאליות" data={availSlots} onChange={setAvailSlots} />
+
+                  <div className="flex items-center gap-4">
+                    <button onClick={async () => {
+                      setAvailSaving(true); setAvailMsg('');
+                      const res = await fetch(`/api/admin/instructor-availability?instructor_id=${availInstructorId}&key=${encodeURIComponent(key)}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ slots: availSlots }),
+                      });
+                      const d = await res.json();
+                      setAvailMsg(res.ok ? `✅ נשמר (${d.saved} שורות)` : `❌ ${d.error}`);
+                      setAvailSaving(false);
+                      setTimeout(() => setAvailMsg(''), 3000);
+                      // Refresh summary
+                      fetch(`/api/admin/availability-summary?key=${encodeURIComponent(key)}`)
+                        .then(r => r.json()).then(d => setSummaryData(d.instructors ?? []));
+                    }} disabled={availSaving}
+                      className="bg-navy-900 hover:bg-navy-700 disabled:opacity-50 text-white font-bold px-6 py-2.5 rounded-xl text-sm transition-colors">
+                      {availSaving ? 'שומר...' : 'שמור זמינות'}
+                    </button>
+                    {availMsg && <span className={`text-sm font-semibold ${availMsg.startsWith('✅') ? 'text-green-600' : 'text-red-500'}`}>{availMsg}</span>}
+                  </div>
+
+                  {availBlocked.length > 0 && (
+                    <div>
+                      <h3 className="text-sm font-bold text-slate-700 mb-2">תאריכים חסומים</h3>
+                      <div className="space-y-2">
+                        {availBlocked.map(b => (
+                          <div key={b.id} className="flex items-center justify-between bg-orange-50 border border-orange-200 rounded-xl px-4 py-2 text-sm">
+                            <span className="font-mono font-semibold text-orange-800">
+                              {b.from_date} — {b.to_date}
+                              {b.reason && <span className="text-orange-600 font-normal mr-2">({b.reason})</span>}
+                            </span>
+                            <button onClick={async () => {
+                              await fetch(`/api/admin/instructor-availability?id=${b.id}&key=${encodeURIComponent(key)}`, { method: 'DELETE' });
+                              setAvailBlocked(prev => prev.filter(x => x.id !== b.id));
+                            }} className="text-xs text-red-400 hover:text-red-600 font-semibold">מחק</button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          </details>
         </div>
       )}
 
