@@ -21,9 +21,17 @@ export async function GET(req: NextRequest) {
     .from('instructors')
     .select('*')
     .order('sort_order', { ascending: true })
-    .order('created_at', { ascending: true });
+    .order('created_at', { ascending: false }); // newest first for correct dedup
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-  return NextResponse.json(data ?? []);
+  // Deduplicate: keep newest record per slug (same logic as public page)
+  const seen = new Set<string>();
+  const deduped = (data ?? []).filter((r: any) => {
+    const key = r.slug || r.id;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+  return NextResponse.json(deduped);
 }
 
 // POST – create instructor
