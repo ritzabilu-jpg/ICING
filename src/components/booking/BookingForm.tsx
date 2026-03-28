@@ -110,10 +110,20 @@ export default function BookingForm({ workshop, onBack }: BookingFormProps) {
         return;
       }
 
-      // Redirect to health declaration form
-      router.push(
-        `/health-check?bookingId=${result.booking.id}&workshopId=${workshop.id}`
-      );
+      // Redirect to payment page
+      const dateStr = new Date(workshop.date_time).toLocaleDateString('he-IL', {
+        day: '2-digit', month: '2-digit', year: 'numeric',
+      });
+      const params = new URLSearchParams({
+        bookingId: result.booking.id,
+        total: String(totalPrice),
+        name: formData.user_name,
+        email: formData.email,
+        phone: formData.phone,
+        type: typeLabels[workshop.type] ?? workshop.type,
+        date: dateStr,
+      });
+      router.push(`/payment?${params.toString()}`);
     } catch {
       setServerError('שגיאת תקשורת. אנא בדקו את החיבור ונסו שנית.');
     } finally {
