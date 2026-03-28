@@ -17,7 +17,8 @@ function checkAdmin(req: NextRequest) {
   return key === (process.env.ADMIN_KEY ?? 'lior2026') || key === (process.env.ADMIN_CODE ?? '');
 }
 
-export async function GET(req: NextRequest) {
+// POST is never CDN-cached — use this from the admin dashboard
+export async function POST(req: NextRequest) {
   if (!checkAdmin(req)) return NextResponse.json({ error: 'לא מורשה' }, { status: 401 });
 
   const supabase = createAdminClient();

@@ -231,7 +231,11 @@ function AdminContent() {
   useEffect(() => { if (tab === 'availability') loadDbInstructors(); }, [tab, loadDbInstructors]);
   function reloadSummary() {
     setLoadingSummary(true);
-    fetch(`/api/admin/availability-summary?key=${encodeURIComponent(key)}&t=${Date.now()}`, { cache: 'no-store' })
+    fetch(`/api/admin/availability-summary`, {
+      method: 'POST',
+      headers: { 'x-admin-key': key },
+      cache: 'no-store',
+    })
       .then(r => r.json())
       .then(d => { setSummaryData(d.instructors ?? []); setLoadingSummary(false); })
       .catch(() => setLoadingSummary(false));
