@@ -36,7 +36,7 @@ export async function GET() {
     }));
 
     return NextResponse.json({ slots: enriched }, { headers: { 'Cache-Control': 'no-store' } });
-  } catch {
-    return NextResponse.json({ slots: [] }, { headers: { 'Cache-Control': 'no-store' } });
+  } catch (e) {
+    return NextResponse.json({ slots: [], _catch: String(e) }, { headers: { 'Cache-Control': 'no-store' } });
   }
 }
