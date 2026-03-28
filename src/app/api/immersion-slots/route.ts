@@ -35,8 +35,8 @@ export async function GET() {
       available: (counts[s.id] ?? 0) < s.max_participants,
     }));
 
-    return NextResponse.json({ slots: enriched });
+    return NextResponse.json({ slots: enriched }, { headers: { 'Cache-Control': 'no-store' } });
   } catch {
-    return NextResponse.json({ slots: [] });
+    return NextResponse.json({ slots: [] }, { headers: { 'Cache-Control': 'no-store' } });
   }
 }
