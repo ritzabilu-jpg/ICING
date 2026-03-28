@@ -1,38 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase';
+import { resolveInstructor } from '@/lib/instructor';
 
 export const dynamic = 'force-dynamic';
-
-async function getInstructor(visitorId: string) {
-  const supabase = createAdminClient();
-  const { data: profile } = await supabase
-    .from('visitor_profiles')
-    .select('id, email, role')
-    .eq('id', visitorId)
-    .maybeSingle();
-  if (!profile || !['instructor', 'admin'].includes(profile.role)) return null;
-
-  // Link visitor login to instructor profile via email_contact
-  const { data: instructor } = await supabase
-    .from('instructors')
-    .select('id, name, slug')
-    .eq('email_contact', profile.email)
-    .maybeSingle();
-
-  return { profile, instructor };
-}
 
 export async function GET(req: NextRequest) {
   const visitorId = req.headers.get('x-visitor-id') ?? '';
   if (!visitorId) return NextResponse.json({ error: 'לא מורשה' }, { status: 401 });
 
-  const linked = await getInstructor(visitorId);
-  if (!linked) return NextResponse.json({ error: 'לא מורשה' }, { status: 401 });
+  const inst = await resolveInstructor(visitorId);
+  if (!inst) return NextResponse.json({ error: 'הפרופיל שלך לא מקושר למדריך. פנה לאדמין.' }, { status: 403 });
 
-  const { instructor } = linked;
-  if (!instructor) {
-    return NextResponse.json({ error: 'הפרופיל שלך לא מקושר למדריך. פנה לאדמין.' }, { status: 403 });
-  }
+  const instructor = { id: inst.instructorId, name: inst.instructorName, slug: inst.instructorSlug };
 
   const supabase = createAdminClient();
 

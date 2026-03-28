@@ -1,7 +1,7 @@
 {
   "name": "ICING – אמבטיות קרח",
   "short_name": "ICING",
-  "description": "סדנאות אמבטיות קרח מקצועיות בחולון. נכנסים לקרח – יוצאים חדים וחסינים.",
+  "description": "סדנאות אמבטיות קרח מקצועיות ברחובות. נכנסים לקרח – יוצאים חדים וחסינים.",
   "start_url": "/",
   "display": "standalone",
   "orientation": "portrait",

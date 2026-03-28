@@ -6,6 +6,8 @@ import { INSTRUCTORS } from '@/data/instructors';
 import { createAdminClient } from '@/lib/supabase';
 import type { Instructor } from '@/types';
 
+export const dynamic = 'force-dynamic';
+
 interface Props {
   params: { id: string };
 }

@@ -32,23 +32,30 @@ export async function POST(req: NextRequest) {
   if (!me) return NextResponse.json({ error: 'לא מורשה' }, { status: 403 });
 
   const body = await req.json();
-  const { feels_healthy, no_fever, feeling_good } = body;
+  const { feels_healthy, no_fever, feeling_good, check_type = 'daily' } = body;
 
   if (!feels_healthy || !no_fever || !feeling_good) {
     return NextResponse.json({ error: 'יש לאשר את כל ההצהרות' }, { status: 400 });
   }
 
   const today = new Date().toISOString().split('T')[0];
+  const expiresAt = check_type === 'yearly'
+    ? new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toISOString().split('T')[0]
+    : null;
+
   const { data, error } = await supabase
     .from('daily_health_checks')
     .upsert({
       visitor_id: requesterId,
       check_date: today,
+      check_type,
       feels_healthy,
       no_fever,
       feeling_good,
+      submitted_by: requesterId,
       submitted_at: new Date().toISOString(),
-    }, { onConflict: 'visitor_id,check_date' })
+      yearly_expires_at: expiresAt,
+    }, { onConflict: 'visitor_id,check_date,check_type' })
     .select('id')
     .single();
 

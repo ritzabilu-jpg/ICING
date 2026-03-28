@@ -17,12 +17,16 @@ export const metadata: Metadata = {
 async function fetchInstructors(): Promise<Instructor[]> {
   try {
     const supabase = createAdminClient();
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from('instructors')
       .select('*')
       .eq('is_active', true)
+      .order('sort_order', { ascending: true })
       .order('created_at', { ascending: false });
-    // Deduplicate by slug — keep newest record per slug
+
+    if (error) throw error;
+
+    // Deduplicate by slug — keep first (lowest sort_order) per slug
     const seen = new Set<string>();
     const deduped = (data ?? []).filter((r: any) => {
       const key = r.slug || r.id;
@@ -30,19 +34,19 @@ async function fetchInstructors(): Promise<Instructor[]> {
       seen.add(key);
       return true;
     });
-    const dbList = deduped.map((r: any) => ({ ...r, id: r.slug || r.id, email: r.email_contact }));
-    const dbIds = new Set(dbList.map((i: Instructor) => i.id));
-    const dbNames = new Set(dbList.map((i: Instructor) => i.name));
-    const staticOnly = INSTRUCTORS.filter(i => !dbIds.has(i.id) && !dbNames.has(i.name));
-    const merged = [...dbList, ...staticOnly];
-    // Shuffle randomly
-    for (let i = merged.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [merged[i], merged[j]] = [merged[j], merged[i]];
-    }
-    return merged;
 
-  } catch {
+    // DB is source of truth — no static merging
+    const list = deduped.map((r: any) => ({ ...r, id: r.slug || r.id, email: r.email_contact }));
+
+    // Shuffle
+    for (let i = list.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [list[i], list[j]] = [list[j], list[i]];
+    }
+    return list;
+
+  } catch (err) {
+    console.error('[instructors] DB fetch failed, falling back to static:', err);
     const fallback = [...INSTRUCTORS];
     for (let i = fallback.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));

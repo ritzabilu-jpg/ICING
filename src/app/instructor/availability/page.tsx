@@ -60,9 +60,25 @@ export default function InstructorAvailabilityPage() {
       body: JSON.stringify({ slots }),
     });
     const d = await res.json();
-    setSaveMsg(res.ok ? `✅ נשמר (${d.saved} שורות)` : `❌ ${d.error}`);
+    setSaveMsg(res.ok ? `✅ נשמר (${d.saved} שורות) — instructor_id: ${d.instructor_id?.slice(0,8) ?? '?'}…` : `❌ ${d.error}`);
     setSaving(false);
-    setTimeout(() => setSaveMsg(''), 3000);
+    setTimeout(() => setSaveMsg(''), 8000);
+  }
+
+  async function clearAll() {
+    if (!confirm('למחוק את כל שעות הזמינות שלך?')) return;
+    const res = await fetch('/api/instructor/availability', {
+      method: 'DELETE', headers: { 'x-visitor-id': visitorId },
+    });
+    if (res.ok) { setSlots([]); setSaveMsg('✅ כל הזמינות נמחקה'); setTimeout(() => setSaveMsg(''), 4000); }
+  }
+
+  async function clearDay(day: number) {
+    if (!confirm(`למחוק את כל השעות של ${['א׳','ב׳','ג׳','ד׳','ה׳','ו׳','מוצ"ש'][day]}?`)) return;
+    const res = await fetch(`/api/instructor/availability?day=${day}`, {
+      method: 'DELETE', headers: { 'x-visitor-id': visitorId },
+    });
+    if (res.ok) { setSlots(prev => prev.filter(s => s.day_of_week !== day)); }
   }
 
   async function addBlocked() {
@@ -132,12 +148,25 @@ export default function InstructorAvailabilityPage() {
           />
         </div>
 
-        {/* Save button */}
-        <div className="flex items-center gap-4">
+        {/* Save + Clear buttons */}
+        <div className="flex flex-wrap items-center gap-3">
           <button onClick={save} disabled={saving}
             className="bg-[#0f2942] hover:bg-[#1a3a5c] disabled:opacity-50 text-white font-bold px-8 py-3 rounded-xl transition-colors">
             {saving ? 'שומר...' : 'שמור שעות זמינות'}
           </button>
+          <button onClick={clearAll}
+            className="border-2 border-red-300 text-red-500 hover:bg-red-50 font-semibold px-5 py-3 rounded-xl text-sm transition-colors">
+            נקה הכל
+          </button>
+          <div className="flex flex-wrap gap-2 items-center">
+            <span className="text-xs text-slate-400 font-semibold">נקה יום:</span>
+            {['א׳','ב׳','ג׳','ד׳','ה׳','ו׳','ש׳'].map((d, i) => (
+              <button key={i} onClick={() => clearDay(i)}
+                className="text-xs border border-slate-300 text-slate-500 hover:bg-red-50 hover:border-red-300 hover:text-red-500 px-2 py-1 rounded-lg transition-colors">
+                {d}
+              </button>
+            ))}
+          </div>
           {saveMsg && <span className={`text-sm font-semibold ${saveMsg.startsWith('✅') ? 'text-green-600' : 'text-red-500'}`}>{saveMsg}</span>}
         </div>
 

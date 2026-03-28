@@ -11,10 +11,10 @@ export const metadata: Metadata = {
     template: 'ICING | %s',
   },
   description:
-    'סדנאות אמבטיות קרח מקצועיות ומדעיות בחולון. יחידים, זוגות וצוותים. ' +
+    'סדנאות אמבטיות קרח מקצועיות ומדעיות ברחובות. יחידים, זוגות וצוותים. ' +
     'בליווי מדריכים מוסמכים CWI. חיזוק חוסן מנטלי, שיפור פוקוס, הורדת סטרס.',
   keywords: [
-    'אמבטיות קרח', 'טבילה במי קרח', 'cold water immersion', 'חולון',
+    'אמבטיות קרח', 'טבילה במי קרח', 'cold water immersion', 'רחובות',
     'חוסן מנטלי', 'סדנאות קרח', 'ICING', 'CWI',
   ],
   authors: [{ name: 'ICING' }],
@@ -34,7 +34,7 @@ export const metadata: Metadata = {
     images: [
       {
         url: 'https://icing-blond.vercel.app/logo-ice.png',
-        alt: 'ICING – אמבטיות קרח חולון',
+        alt: 'ICING – אמבטיות קרח רחובות',
       },
     ],
   },

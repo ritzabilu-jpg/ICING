@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -68,9 +68,6 @@ export default function BookingForm({ workshop, onBack }: BookingFormProps) {
     },
   });
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(() => {}, []);
-
   const participants = watch('participants');
   const totalPrice = workshop.price * (participants || 1);
 
@@ -115,7 +112,7 @@ export default function BookingForm({ workshop, onBack }: BookingFormProps) {
 
       // Redirect to health declaration form
       router.push(
-        `/health-form?bookingId=${result.booking.id}&workshopId=${workshop.id}`
+        `/health-check?bookingId=${result.booking.id}&workshopId=${workshop.id}`
       );
     } catch {
       setServerError('שגיאת תקשורת. אנא בדקו את החיבור ונסו שנית.');
