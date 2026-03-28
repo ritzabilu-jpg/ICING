@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
@@ -77,6 +77,8 @@ export default function InstructorDashboard() {
   const [journalTargetId, setJournalTargetId] = useState('');
   const [journalTargetName, setJournalTargetName] = useState('');
   const [journalSearch, setJournalSearch] = useState('');
+  const [journalDropdownOpen, setJournalDropdownOpen] = useState(false);
+  const journalSearchRef = useRef<HTMLDivElement>(null);
 
   const today = new Date().toISOString().split('T')[0];
 
@@ -142,6 +144,7 @@ export default function InstructorDashboard() {
     setJournalTargetName(tname);
     setShowAddJournal(false);
     setJournalSearch('');
+    setJournalDropdownOpen(false);
     loadJournal(id);
   }
 
@@ -168,6 +171,16 @@ export default function InstructorDashboard() {
     setJTemp(''); setJDuration(''); setJNotes(''); setJStatus('done');
     loadJournal(targetId);
   }
+
+  useEffect(() => {
+    function handleClick(e: MouseEvent) {
+      if (journalSearchRef.current && !journalSearchRef.current.contains(e.target as Node)) {
+        setJournalDropdownOpen(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
+  }, []);
 
   const future = sessions.filter(s => s.date >= today).reverse();
   const past = sessions.filter(s => s.date < today);
@@ -376,27 +389,32 @@ export default function InstructorDashboard() {
                   className={`px-4 py-1.5 rounded-xl text-sm font-semibold transition-colors ${journalTargetId === visitorId ? 'bg-[#0f2942] text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}>
                   שלי
                 </button>
-                <div className="relative flex-1 min-w-[200px]">
+                <div className="relative flex-1 min-w-[200px]" ref={journalSearchRef}>
                   <input
                     value={journalSearch}
                     onChange={e => setJournalSearch(e.target.value)}
-                    placeholder="חפש משתמש או מדריך..."
+                    onFocus={() => setJournalDropdownOpen(true)}
+                    placeholder="חפש לפי שם או אימייל..."
                     className="w-full border border-slate-200 rounded-xl px-3 py-1.5 text-sm focus:outline-none focus:border-[#7dd8f8]"
                   />
-                  {journalSearch && (
-                    <div className="absolute top-full mt-1 right-0 left-0 bg-white border border-slate-200 rounded-xl shadow-lg z-20 max-h-48 overflow-y-auto">
-                      {clients
-                        .filter(c => c.id !== visitorId && (c.name?.includes(journalSearch) || c.phone?.includes(journalSearch)))
-                        .map(c => (
-                          <button key={c.id} onClick={() => selectJournalTarget(c.id, c.name)}
-                            className="w-full text-right px-4 py-2.5 text-sm hover:bg-slate-50 border-b border-slate-50 last:border-0 flex items-center justify-between">
-                            <span className="font-semibold text-[#0f2942]">{c.name}</span>
-                            <span className="text-slate-400 text-xs font-mono">{c.phone}</span>
-                          </button>
-                        ))}
-                      {clients.filter(c => c.id !== visitorId && (c.name?.includes(journalSearch) || c.phone?.includes(journalSearch))).length === 0 && (
-                        <p className="text-center py-3 text-slate-400 text-sm">לא נמצא</p>
-                      )}
+                  {journalDropdownOpen && (
+                    <div className="absolute top-full mt-1 right-0 left-0 bg-white border border-slate-200 rounded-xl shadow-lg z-20 max-h-56 overflow-y-auto">
+                      {(() => {
+                        const q = journalSearch.toLowerCase();
+                        const filtered = clients.filter(c =>
+                          c.id !== visitorId &&
+                          (q === '' || c.name?.toLowerCase().includes(q) || c.email?.toLowerCase().includes(q))
+                        );
+                        return filtered.length === 0
+                          ? <p className="text-center py-3 text-slate-400 text-sm">לא נמצא</p>
+                          : filtered.map(c => (
+                            <button key={c.id} onMouseDown={() => selectJournalTarget(c.id, c.name)}
+                              className="w-full text-right px-4 py-2.5 text-sm hover:bg-slate-50 border-b border-slate-100 last:border-0 flex items-center justify-between gap-3">
+                              <span className="font-semibold text-[#0f2942]">{c.name}</span>
+                              <span className="text-slate-400 text-xs">{c.email || c.phone || ''}</span>
+                            </button>
+                          ));
+                      })()}
                     </div>
                   )}
                 </div>
