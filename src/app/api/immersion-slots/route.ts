@@ -17,7 +17,7 @@ export async function GET() {
       .order('slot_date', { ascending: true })
       .order('slot_time', { ascending: true });
 
-    if (error) return NextResponse.json({ slots: [] });
+    if (error) return NextResponse.json({ slots: [], _error: error.message }, { headers: { 'Cache-Control': 'no-store' } });
 
     // Count bookings per slot
     const { data: bookingCounts } = await supabase
