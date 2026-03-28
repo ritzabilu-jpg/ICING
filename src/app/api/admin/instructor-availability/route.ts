@@ -87,11 +87,11 @@ export async function DELETE(req: NextRequest) {
 
   // Clear availability for instructor (optionally filtered by day)
   if (instructorId) {
-    let query = supabase.from('instructor_availability').delete().eq('instructor_id', instructorId);
+    let query = supabase.from('instructor_availability').delete({ count: 'exact' }).eq('instructor_id', instructorId);
     if (day !== null) query = query.eq('day_of_week', parseInt(day));
-    const { error } = await query;
+    const { error, count } = await query;
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-    return NextResponse.json({ ok: true });
+    return NextResponse.json({ ok: true, deleted: count ?? 0 });
   }
 
   return NextResponse.json({ error: 'חסר id או instructor_id' }, { status: 400 });
