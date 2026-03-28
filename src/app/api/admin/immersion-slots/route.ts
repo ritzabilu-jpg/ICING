@@ -50,7 +50,7 @@ export async function POST(req: NextRequest) {
   };
 
   const { from_date, to_date, from_time, to_time, notes, location, instructor_id } = body;
-  const max = body.max_participants ?? 10;
+  const max = body.max_participants ?? 1;
 
   if (!from_date || !to_date || !from_time || !to_time) {
     return NextResponse.json({ error: 'שדות חובה חסרים' }, { status: 400 });
