@@ -229,13 +229,17 @@ function AdminContent() {
   useEffect(() => { if (tab === 'manage-instructors') loadDbInstructors(); }, [tab, loadDbInstructors]);
   useEffect(() => { if (tab === 'users') loadUsers(); }, [tab, loadUsers]);
   useEffect(() => { if (tab === 'availability') loadDbInstructors(); }, [tab, loadDbInstructors]);
-  useEffect(() => {
-    if (tab !== 'availability') return;
+  function reloadSummary() {
     setLoadingSummary(true);
-    fetch(`/api/admin/availability-summary?key=${encodeURIComponent(key)}`)
+    fetch(`/api/admin/availability-summary?key=${encodeURIComponent(key)}&t=${Date.now()}`, { cache: 'no-store' })
       .then(r => r.json())
       .then(d => { setSummaryData(d.instructors ?? []); setLoadingSummary(false); })
       .catch(() => setLoadingSummary(false));
+  }
+
+  useEffect(() => {
+    if (tab !== 'availability') return;
+    reloadSummary();
   }, [tab, key]);
 
   // ── Actions ─────────────────────────────────────────────────────────────────
@@ -1221,13 +1225,7 @@ function AdminContent() {
                   </p>
                 )}
               </div>
-              <button onClick={() => {
-                setLoadingSummary(true);
-                fetch(`/api/admin/availability-summary?key=${encodeURIComponent(key)}`)
-                  .then(r => r.json())
-                  .then(d => { setSummaryData(d.instructors ?? []); setLoadingSummary(false); })
-                  .catch(() => setLoadingSummary(false));
-              }} className="text-xs text-slate-500 hover:text-slate-700 border border-slate-200 px-3 py-1 rounded-lg transition-colors">
+              <button onClick={reloadSummary} className="text-xs text-slate-500 hover:text-slate-700 border border-slate-200 px-3 py-1 rounded-lg transition-colors">
                 🔄 רענן
               </button>
             </div>
@@ -1439,15 +1437,12 @@ function AdminContent() {
                     </button>
                     <button onClick={async () => {
                       if (!confirm('למחוק את כל הזמינות של מדריך זה?')) return;
-                      await fetch(`/api/admin/instructor-availability?instructor_id=${availInstructorId}&key=${encodeURIComponent(key)}`, { method: 'DELETE' });
+                      const delRes = await fetch(`/api/admin/instructor-availability?instructor_id=${availInstructorId}&key=${encodeURIComponent(key)}`, { method: 'DELETE' });
+                      const delData = await delRes.json();
                       setAvailSlots([]);
-                      setAvailMsg('✅ כל הזמינות נמחקה');
-                      setTimeout(() => setAvailMsg(''), 4000);
-                      setLoadingSummary(true);
-                      fetch(`/api/admin/availability-summary?key=${encodeURIComponent(key)}`)
-                        .then(r => r.json())
-                        .then(sd => { setSummaryData(sd.instructors ?? []); setLoadingSummary(false); })
-                        .catch(() => setLoadingSummary(false));
+                      setAvailMsg(delRes.ok ? `✅ נמחקו ${delData.deleted ?? 0} שורות` : `❌ ${delData.error}`);
+                      setTimeout(() => setAvailMsg(''), 6000);
+                      reloadSummary();
                     }} className="border-2 border-red-300 text-red-500 hover:bg-red-50 font-semibold px-4 py-2.5 rounded-xl text-sm transition-colors">
                       נקה הכל
                     </button>
@@ -1457,11 +1452,7 @@ function AdminContent() {
                         <button key={i} onClick={async () => {
                           await fetch(`/api/admin/instructor-availability?instructor_id=${availInstructorId}&day=${i}&key=${encodeURIComponent(key)}`, { method: 'DELETE' });
                           setAvailSlots(prev => prev.filter(s => s.day_of_week !== i));
-                          setLoadingSummary(true);
-                          fetch(`/api/admin/availability-summary?key=${encodeURIComponent(key)}`)
-                            .then(r => r.json())
-                            .then(sd => { setSummaryData(sd.instructors ?? []); setLoadingSummary(false); })
-                            .catch(() => setLoadingSummary(false));
+                          reloadSummary();
                         }} className="text-xs border border-slate-300 text-slate-500 hover:bg-red-50 hover:border-red-300 hover:text-red-500 px-2 py-1 rounded-lg transition-colors">
                           {d}
                         </button>

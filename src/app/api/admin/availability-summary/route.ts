@@ -55,5 +55,7 @@ export async function GET(req: NextRequest) {
     blocked: blockedByInstructor[inst.id] ?? [],
   }));
 
-  return NextResponse.json({ instructors: result });
+  return NextResponse.json({ instructors: result }, {
+    headers: { 'Cache-Control': 'no-store, no-cache, must-revalidate' },
+  });
 }
