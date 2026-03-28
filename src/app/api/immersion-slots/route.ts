@@ -8,14 +8,15 @@ export async function GET() {
   try {
     const supabase = getSupabaseClient();
 
-    // Get all slots (future + today) with booking counts
     const today = new Date().toISOString().split('T')[0];
     const { data: slots, error } = await supabase
       .from('immersion_slots')
       .select('id, slot_date, slot_time, max_participants, notes')
-      .limit(5);
+      .gte('slot_date', today)
+      .order('slot_date', { ascending: true })
+      .order('slot_time', { ascending: true });
 
-    if (error) return NextResponse.json({ slots: [], _error: error.message }, { headers: { 'Cache-Control': 'no-store' } });
+    if (error) return NextResponse.json({ slots: [] }, { headers: { 'Cache-Control': 'no-store' } });
 
     // Count bookings per slot
     const { data: bookingCounts } = await supabase
@@ -33,9 +34,8 @@ export async function GET() {
       available: (counts[s.id] ?? 0) < s.max_participants,
     }));
 
-    const _url = (process.env.NEXT_PUBLIC_SUPABASE_URL ?? '').slice(8, 32);
-    return NextResponse.json({ slots: enriched, _today: today, _count: enriched.length, _url }, { headers: { 'Cache-Control': 'no-store' } });
-  } catch (e) {
-    return NextResponse.json({ slots: [], _catch: String(e) }, { headers: { 'Cache-Control': 'no-store' } });
+    return NextResponse.json({ slots: enriched }, { headers: { 'Cache-Control': 'no-store' } });
+  } catch {
+    return NextResponse.json({ slots: [] }, { headers: { 'Cache-Control': 'no-store' } });
   }
 }
