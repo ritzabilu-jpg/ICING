@@ -60,8 +60,8 @@ export default function AvailabilityTable({ type, title, data, onChange, readOnl
             <tr className="bg-slate-50">
               <th className="border border-slate-200 px-3 py-1.5 text-right font-semibold text-slate-500"></th>
               {SLOTS.flatMap(i => [
-                <th key={`f${i}`} className="border border-slate-200 px-2 py-1.5 text-center font-semibold text-slate-500 w-24">משעה</th>,
-                <th key={`t${i}`} className="border border-slate-200 px-2 py-1.5 text-center font-semibold text-slate-500 w-24">עד שעה</th>,
+                <th key={`f${i}`} className="border border-slate-200 px-1 py-1.5 text-center font-semibold text-slate-500 w-14">משעה</th>,
+                <th key={`t${i}`} className="border border-slate-200 px-1 py-1.5 text-center font-semibold text-slate-500 w-14">עד שעה</th>,
               ])}
             </tr>
           </thead>
@@ -77,15 +77,15 @@ export default function AvailabilityTable({ type, title, data, onChange, readOnl
                   {SLOTS.flatMap(slotIdx => {
                     const slot = getSlot(dayIdx, slotIdx);
                     return [
-                      <td key={`f${slotIdx}`} className="border border-slate-200 px-2 py-1.5 text-center">
+                      <td key={`f${slotIdx}`} className="border border-slate-200 px-1 py-1.5 text-center break-words">
                         {readOnly
-                          ? <span className={`font-mono text-xs ${slot.from_time ? 'text-red-600 font-bold' : 'text-slate-300'}`}>{slot.from_time || '——'}</span>
+                          ? <span className={`font-mono text-xs ${slot.from_time ? 'text-red-600 font-bold' : 'text-slate-300'}`}>{slot.from_time ? slot.from_time.slice(0, 5) : '——'}</span>
                           : <TimePicker value={slot.from_time} onChange={v => update(dayIdx, slotIdx, 'from_time', v)} />
                         }
                       </td>,
-                      <td key={`t${slotIdx}`} className="border border-slate-200 px-2 py-1.5 text-center">
+                      <td key={`t${slotIdx}`} className="border border-slate-200 px-1 py-1.5 text-center break-words">
                         {readOnly
-                          ? <span className={`font-mono text-xs ${slot.to_time ? 'text-red-600 font-bold' : 'text-slate-300'}`}>{slot.to_time || '——'}</span>
+                          ? <span className={`font-mono text-xs ${slot.to_time ? 'text-red-600 font-bold' : 'text-slate-300'}`}>{slot.to_time ? slot.to_time.slice(0, 5) : '——'}</span>
                           : <TimePicker value={slot.to_time} onChange={v => update(dayIdx, slotIdx, 'to_time', v)} />
                         }
                       </td>,
