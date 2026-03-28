@@ -1443,6 +1443,11 @@ function AdminContent() {
                       setAvailSlots([]);
                       setAvailMsg('✅ כל הזמינות נמחקה');
                       setTimeout(() => setAvailMsg(''), 4000);
+                      setLoadingSummary(true);
+                      fetch(`/api/admin/availability-summary?key=${encodeURIComponent(key)}`)
+                        .then(r => r.json())
+                        .then(sd => { setSummaryData(sd.instructors ?? []); setLoadingSummary(false); })
+                        .catch(() => setLoadingSummary(false));
                     }} className="border-2 border-red-300 text-red-500 hover:bg-red-50 font-semibold px-4 py-2.5 rounded-xl text-sm transition-colors">
                       נקה הכל
                     </button>
@@ -1452,6 +1457,11 @@ function AdminContent() {
                         <button key={i} onClick={async () => {
                           await fetch(`/api/admin/instructor-availability?instructor_id=${availInstructorId}&day=${i}&key=${encodeURIComponent(key)}`, { method: 'DELETE' });
                           setAvailSlots(prev => prev.filter(s => s.day_of_week !== i));
+                          setLoadingSummary(true);
+                          fetch(`/api/admin/availability-summary?key=${encodeURIComponent(key)}`)
+                            .then(r => r.json())
+                            .then(sd => { setSummaryData(sd.instructors ?? []); setLoadingSummary(false); })
+                            .catch(() => setLoadingSummary(false));
                         }} className="text-xs border border-slate-300 text-slate-500 hover:bg-red-50 hover:border-red-300 hover:text-red-500 px-2 py-1 rounded-lg transition-colors">
                           {d}
                         </button>
