@@ -33,7 +33,7 @@ export async function GET(req: NextRequest) {
     bookings: (bookings ?? []).filter(b => b.slot_id === s.id),
   }));
 
-  return NextResponse.json({ slots: enriched });
+  return NextResponse.json({ slots: enriched }, { headers: { 'Cache-Control': 'no-store' } });
 }
 
 // POST – bulk-create slots from a date/time range (10-minute intervals)

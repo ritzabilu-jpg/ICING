@@ -22,7 +22,7 @@ export async function GET(req: NextRequest) {
     .select('id, name, phone, email, role, created_at')
     .order('created_at', { ascending: false });
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-  return NextResponse.json(data ?? []);
+  return NextResponse.json(data ?? [], { headers: { 'Cache-Control': 'no-store' } });
 }
 
 // PATCH – assign role to user by email or id

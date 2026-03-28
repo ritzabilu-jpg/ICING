@@ -18,7 +18,7 @@ export async function GET(req: NextRequest) {
     supabase.from('instructor_availability').select('*').eq('instructor_id', instructorId),
     supabase.from('instructor_blocked_dates').select('*').eq('instructor_id', instructorId).order('from_date'),
   ]);
-  return NextResponse.json({ slots: slotsRes.data ?? [], blocked: blockedRes.data ?? [] });
+  return NextResponse.json({ slots: slotsRes.data ?? [], blocked: blockedRes.data ?? [] }, { headers: { 'Cache-Control': 'no-store' } });
 }
 
 export async function PUT(req: NextRequest) {

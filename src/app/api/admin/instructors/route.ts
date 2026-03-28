@@ -31,7 +31,7 @@ export async function GET(req: NextRequest) {
     seen.add(key);
     return true;
   });
-  return NextResponse.json(deduped);
+  return NextResponse.json(deduped, { headers: { 'Cache-Control': 'no-store' } });
 }
 
 // POST – create instructor

@@ -49,7 +49,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
         daily_check_completed: b.daily_check_completed ?? false,
         yearly_declaration_completed: b.yearly_declaration_completed ?? false,
       })),
-    });
+    }, { headers: { 'Cache-Control': 'no-store' } });
   }
 
   // Default: immersion_slot
@@ -61,7 +61,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
   return NextResponse.json({
     slot: { ...slotRes.data, kind: 'slot' },
     participants: bookingsRes.data || [],
-  });
+  }, { headers: { 'Cache-Control': 'no-store' } });
 }
 
 export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {

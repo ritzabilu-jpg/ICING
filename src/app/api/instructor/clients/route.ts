@@ -35,5 +35,5 @@ export async function GET(req: NextRequest) {
     return lastA.localeCompare(lastB, 'he');
   });
 
-  return NextResponse.json(sorted);
+  return NextResponse.json(sorted, { headers: { 'Cache-Control': 'no-store' } });
 }
