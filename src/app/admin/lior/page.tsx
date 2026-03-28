@@ -148,7 +148,7 @@ function AdminContent() {
   const [genType, setGenType] = useState<'immersion' | 'workshop'>('immersion');
   const [genFrom, setGenFrom] = useState('');
   const [genTo, setGenTo] = useState('');
-  const [proposed, setProposed] = useState<{ key: string; date: string; time: string; from_time: string; to_time: string }[]>([]);
+  const [proposed, setProposed] = useState<{ key: string; date: string; time: string; from_time: string; to_time: string; instructor_id: string; instructor_name: string }[]>([]);
   const [selectedProposed, setSelectedProposed] = useState<Set<string>>(new Set());
   const [generatingProposed, setGeneratingProposed] = useState(false);
   const [creatingSlots, setCreatingSlots] = useState(false);
@@ -1263,6 +1263,7 @@ function AdminContent() {
                     <select value={genInstructorId} onChange={e => { setGenInstructorId(e.target.value); setProposed([]); }}
                       className="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-[#7dd8f8] bg-white">
                       <option value="">— בחר —</option>
+                      <option value="ALL">⭐ כולם יחד</option>
                       {dbInstructors.map(i => <option key={i.id} value={i.id}>{i.name}</option>)}
                     </select>
                   </div>
@@ -1290,18 +1291,26 @@ function AdminContent() {
                   disabled={!genInstructorId || !genFrom || !genTo || generatingProposed}
                   onClick={async () => {
                     setGeneratingProposed(true); setProposed([]); setSelectedProposed(new Set()); setCreateSlotsMsg('');
-                    const res = await fetch(`/api/admin/generate-slots-from-availability?key=${encodeURIComponent(key)}`, {
-                      method: 'POST',
-                      headers: { 'Content-Type': 'application/json' },
-                      body: JSON.stringify({ instructor_id: genInstructorId, from_date: genFrom, to_date: genTo, type: genType }),
-                    });
-                    const d = await res.json();
-                    if (res.ok) {
-                      setProposed(d.proposed ?? []);
-                      setSelectedProposed(new Set((d.proposed ?? []).map((p: { key: string }) => p.key)));
-                    } else {
-                      setCreateSlotsMsg(`❌ ${d.error}`);
+                    const instructorsToGen = genInstructorId === 'ALL'
+                      ? dbInstructors.filter(i => i.is_active)
+                      : dbInstructors.filter(i => i.id === genInstructorId);
+                    const all: typeof proposed = [];
+                    for (const inst of instructorsToGen) {
+                      const res = await fetch(`/api/admin/generate-slots-from-availability?key=${encodeURIComponent(key)}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ instructor_id: inst.id, from_date: genFrom, to_date: genTo, type: genType }),
+                      });
+                      if (res.ok) {
+                        const d = await res.json();
+                        for (const p of (d.proposed ?? [])) {
+                          all.push({ ...p, key: `${inst.id}-${p.key}`, instructor_id: inst.id, instructor_name: inst.name });
+                        }
+                      }
                     }
+                    all.sort((a, b) => a.date.localeCompare(b.date) || a.time.localeCompare(b.time));
+                    setProposed(all);
+                    setSelectedProposed(new Set(all.map(p => p.key)));
                     setGeneratingProposed(false);
                   }}
                   className="bg-[#0f2942] hover:bg-[#1a3a5c] disabled:opacity-40 text-white font-bold px-6 py-2 rounded-xl text-sm transition-colors">
@@ -1336,6 +1345,7 @@ function AdminContent() {
                           <span className="text-sm font-mono font-semibold text-slate-700">{p.date}</span>
                           <span className="text-sm font-mono text-[#0f2942]">{p.time}</span>
                           <span className="text-xs text-slate-400">{p.from_time}–{p.to_time}</span>
+                          {genInstructorId === 'ALL' && <span className="text-xs font-semibold text-purple-600 mr-auto">{p.instructor_name}</span>}
                         </label>
                       ))}
                     </div>
@@ -1356,7 +1366,7 @@ function AdminContent() {
                                 from_date: p.date, to_date: p.date,
                                 from_time: p.time, to_time: p.time,
                                 max_participants: 10,
-                                instructor_id: genInstructorId,
+                                instructor_id: p.instructor_id,
                               }),
                             });
                             if (res.ok) count++;
@@ -1379,7 +1389,7 @@ function AdminContent() {
                 )}
 
                 {proposed.length === 0 && !generatingProposed && genInstructorId && genFrom && genTo && createSlotsMsg === '' && (
-                  <p className="text-slate-400 text-sm">לא נמצאו סלוטים מוצעים — ודא שהמדריך הגדיר זמינות לימים ולסוג שנבחרו.</p>
+                  <p className="text-slate-400 text-sm">לא נמצאו סלוטים מוצעים — ודא שהמדריכים הגדירו זמינות לימים ולסוג שנבחרו.</p>
                 )}
               </div>
             )}
