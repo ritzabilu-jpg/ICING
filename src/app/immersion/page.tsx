@@ -370,10 +370,12 @@ export default function ImmersionPage() {
                     }`}
                   >
                     <div className="text-lg font-black">{s.slot_time.slice(0, 5)}</div>
-                    <div className="text-xs mt-1 text-slate-500 leading-tight">
-                      {s.available
-                        ? `${s.max_participants - s.booked} פנויים`
-                        : 'מלא'}
+                    <div className="text-xs mt-1 leading-tight font-semibold">
+                      {s.available ? (
+                        <span className="text-green-600">פנוי</span>
+                      ) : (
+                        <span className="text-red-400">תפוס</span>
+                      )}
                     </div>
                   </button>
                 ))}
