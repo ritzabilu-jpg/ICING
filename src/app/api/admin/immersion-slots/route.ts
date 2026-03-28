@@ -99,16 +99,34 @@ export async function POST(req: NextRequest) {
   return NextResponse.json({ success: true, count: toInsert.length });
 }
 
-// DELETE – remove a slot
+// DELETE – remove single slot (id=) OR bulk by date/time range (from_date=&to_date=&time=)
 export async function DELETE(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const key = searchParams.get('key');
-  const id  = searchParams.get('id');
   if (!checkKey(key)) return NextResponse.json({ error: 'לא מורשה' }, { status: 401 });
-  if (!id) return NextResponse.json({ error: 'חסר id' }, { status: 400 });
+
+  const id        = searchParams.get('id');
+  const from_date = searchParams.get('from_date');
+  const to_date   = searchParams.get('to_date');
+  const time      = searchParams.get('time'); // optional specific time HH:MM
 
   const supabase = createAdminClient();
-  const { error } = await supabase.from('immersion_slots').delete().eq('id', id);
+
+  // Single delete
+  if (id) {
+    const { error } = await supabase.from('immersion_slots').delete().eq('id', id);
+    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ success: true });
+  }
+
+  // Bulk delete by date range
+  if (!from_date || !to_date) return NextResponse.json({ error: 'חסרים פרמטרים' }, { status: 400 });
+
+  let q = supabase.from('immersion_slots').delete({ count: 'exact' })
+    .gte('slot_date', from_date).lte('slot_date', to_date);
+  if (time) q = q.eq('slot_time', time + ':00');
+
+  const { count, error } = await q;
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-  return NextResponse.json({ success: true });
+  return NextResponse.json({ success: true, deleted: count ?? 0 });
 }

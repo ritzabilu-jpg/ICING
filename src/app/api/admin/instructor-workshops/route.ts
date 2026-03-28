@@ -49,11 +49,28 @@ export async function DELETE(req: NextRequest) {
   const key = req.nextUrl.searchParams.get('key');
   if (!checkKey(key)) return NextResponse.json({ error: 'לא מורשה' }, { status: 401 });
 
-  const id = req.nextUrl.searchParams.get('id');
-  if (!id) return NextResponse.json({ error: 'חסר id' }, { status: 400 });
+  const id        = req.nextUrl.searchParams.get('id');
+  const from_date = req.nextUrl.searchParams.get('from_date');
+  const to_date   = req.nextUrl.searchParams.get('to_date');
+  const time      = req.nextUrl.searchParams.get('time');
 
   const supabase = createAdminClient();
-  const { error } = await supabase.from('instructor_workshops').delete().eq('id', id);
+
+  // Single delete
+  if (id) {
+    const { error } = await supabase.from('instructor_workshops').delete().eq('id', id);
+    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ ok: true });
+  }
+
+  // Bulk delete by date range
+  if (!from_date || !to_date) return NextResponse.json({ error: 'חסרים פרמטרים' }, { status: 400 });
+
+  let q = supabase.from('instructor_workshops').delete({ count: 'exact' })
+    .gte('workshop_date', from_date).lte('workshop_date', to_date);
+  if (time) q = q.eq('workshop_time', time + ':00');
+
+  const { count, error } = await q;
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-  return NextResponse.json({ ok: true });
+  return NextResponse.json({ ok: true, deleted: count ?? 0 });
 }

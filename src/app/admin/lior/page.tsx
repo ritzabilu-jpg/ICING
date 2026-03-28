@@ -141,6 +141,18 @@ function AdminContent() {
   const [showGenerator, setShowGenerator] = useState(false);
   const [availSaving, setAvailSaving] = useState(false);
   const [availMsg, setAvailMsg] = useState('');
+  // ── Bulk delete immersion ──
+  const [bulkDelFrom, setBulkDelFrom]   = useState('');
+  const [bulkDelTo, setBulkDelTo]       = useState('');
+  const [bulkDelTime, setBulkDelTime]   = useState('');
+  const [bulkDelMsg, setBulkDelMsg]     = useState('');
+  const [bulkDeleting, setBulkDeleting] = useState(false);
+  // ── Bulk delete workshops ──
+  const [wBulkFrom, setWBulkFrom]       = useState('');
+  const [wBulkTo, setWBulkTo]           = useState('');
+  const [wBulkTime, setWBulkTime]       = useState('');
+  const [wBulkMsg, setWBulkMsg]         = useState('');
+  const [wBulkDeleting, setWBulkDeleting] = useState(false);
   // ── Vacations ──
   const [vacAdminNotes, setVacAdminNotes] = useState<Record<string, string>>({});
 
@@ -297,6 +309,44 @@ function AdminContent() {
     setIworkshops(prev => prev.filter(w => w.id !== id));
   }
 
+  async function bulkDeleteSlots() {
+    if (!bulkDelFrom || !bulkDelTo) return;
+    const label = bulkDelTime ? `בשעה ${bulkDelTime}` : 'בכל השעות';
+    if (!confirm(`למחוק את כל מועדי הטבילה מ-${bulkDelFrom} עד ${bulkDelTo} ${label}?`)) return;
+    setBulkDeleting(true); setBulkDelMsg('');
+    const params = new URLSearchParams({ key, from_date: bulkDelFrom, to_date: bulkDelTo });
+    if (bulkDelTime) params.set('time', bulkDelTime);
+    const res = await fetch(`/api/admin/immersion-slots?${params}`, { method: 'DELETE' });
+    const data = await res.json();
+    if (res.ok) {
+      setBulkDelMsg(`✅ נמחקו ${data.deleted} מועדים`);
+      setBulkDelFrom(''); setBulkDelTo(''); setBulkDelTime('');
+      await loadSlots();
+    } else {
+      setBulkDelMsg(`❌ ${data.error ?? 'שגיאה'}`);
+    }
+    setBulkDeleting(false);
+  }
+
+  async function bulkDeleteWorkshops() {
+    if (!wBulkFrom || !wBulkTo) return;
+    const label = wBulkTime ? `בשעה ${wBulkTime}` : 'בכל השעות';
+    if (!confirm(`למחוק את כל הסדנאות מ-${wBulkFrom} עד ${wBulkTo} ${label}?`)) return;
+    setWBulkDeleting(true); setWBulkMsg('');
+    const params = new URLSearchParams({ key, from_date: wBulkFrom, to_date: wBulkTo });
+    if (wBulkTime) params.set('time', wBulkTime);
+    const res = await fetch(`/api/admin/instructor-workshops?${params}`, { method: 'DELETE' });
+    const data = await res.json();
+    if (res.ok) {
+      setWBulkMsg(`✅ נמחקו ${data.deleted} סדנאות`);
+      setWBulkFrom(''); setWBulkTo(''); setWBulkTime('');
+      await loadWorkshops();
+    } else {
+      setWBulkMsg(`❌ ${data.error ?? 'שגיאה'}`);
+    }
+    setWBulkDeleting(false);
+  }
+
   function getInviteMessage(instructor: typeof DEMO_INSTRUCTORS[0]) {
     const url = `${typeof window !== 'undefined' ? window.location.origin : 'https://icing-blond.vercel.app'}/admin/lior?key=${key}`;
     return `שלום ${instructor.name},\n\nמוזמן/ת לצפות בלוח ניהול הסדנאות והלקוחות שלך:\n${url}\n\nבברכה,\nצוות חוויות שוויץ המדע`;
@@ -434,6 +484,33 @@ function AdminContent() {
                 </p>
               )}
             </form>
+          </div>
+
+          {/* Bulk delete */}
+          <div className="bg-red-50 rounded-3xl border-2 border-red-100 shadow-sm p-6">
+            <h2 className="text-base font-black text-red-800 mb-3">🗑️ מחק מועדי טבילה בטווח</h2>
+            <div className="grid sm:grid-cols-3 gap-3 mb-3">
+              <div>
+                <label className="block text-xs font-semibold text-slate-600 mb-1">מתאריך</label>
+                <input type="date" value={bulkDelFrom} onChange={e => setBulkDelFrom(e.target.value)}
+                  className="w-full border-2 border-slate-200 focus:border-red-400 rounded-xl px-3 py-2 text-sm focus:outline-none" />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-slate-600 mb-1">עד תאריך</label>
+                <input type="date" value={bulkDelTo} onChange={e => setBulkDelTo(e.target.value)}
+                  className="w-full border-2 border-slate-200 focus:border-red-400 rounded-xl px-3 py-2 text-sm focus:outline-none" />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-slate-600 mb-1">שעה ספציפית (אופציונלי)</label>
+                <input type="time" value={bulkDelTime} onChange={e => setBulkDelTime(e.target.value)}
+                  className="w-full border-2 border-slate-200 focus:border-red-400 rounded-xl px-3 py-2 text-sm focus:outline-none" />
+              </div>
+            </div>
+            <button onClick={bulkDeleteSlots} disabled={!bulkDelFrom || !bulkDelTo || bulkDeleting}
+              className="bg-red-600 hover:bg-red-700 disabled:opacity-40 text-white font-bold px-6 py-2 rounded-xl text-sm transition-colors">
+              {bulkDeleting ? 'מוחק...' : 'מחק מועדים'}
+            </button>
+            {bulkDelMsg && <p className={`mt-2 text-sm font-semibold ${bulkDelMsg.startsWith('✅') ? 'text-green-700' : 'text-red-600'}`}>{bulkDelMsg}</p>}
           </div>
 
           {loadingS ? (
@@ -717,6 +794,33 @@ function AdminContent() {
                 </tbody>
               </table>
             )}
+          </div>
+
+          {/* Bulk delete workshops */}
+          <div className="bg-red-50 rounded-3xl border-2 border-red-100 shadow-sm p-6">
+            <h2 className="text-base font-black text-red-800 mb-3">🗑️ מחק סדנאות בטווח</h2>
+            <div className="grid sm:grid-cols-3 gap-3 mb-3">
+              <div>
+                <label className="block text-xs font-semibold text-slate-600 mb-1">מתאריך</label>
+                <input type="date" value={wBulkFrom} onChange={e => setWBulkFrom(e.target.value)}
+                  className="w-full border-2 border-slate-200 focus:border-red-400 rounded-xl px-3 py-2 text-sm focus:outline-none" />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-slate-600 mb-1">עד תאריך</label>
+                <input type="date" value={wBulkTo} onChange={e => setWBulkTo(e.target.value)}
+                  className="w-full border-2 border-slate-200 focus:border-red-400 rounded-xl px-3 py-2 text-sm focus:outline-none" />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-slate-600 mb-1">שעה ספציפית (אופציונלי)</label>
+                <input type="time" value={wBulkTime} onChange={e => setWBulkTime(e.target.value)}
+                  className="w-full border-2 border-slate-200 focus:border-red-400 rounded-xl px-3 py-2 text-sm focus:outline-none" />
+              </div>
+            </div>
+            <button onClick={bulkDeleteWorkshops} disabled={!wBulkFrom || !wBulkTo || wBulkDeleting}
+              className="bg-red-600 hover:bg-red-700 disabled:opacity-40 text-white font-bold px-6 py-2 rounded-xl text-sm transition-colors">
+              {wBulkDeleting ? 'מוחק...' : 'מחק סדנאות'}
+            </button>
+            {wBulkMsg && <p className={`mt-2 text-sm font-semibold ${wBulkMsg.startsWith('✅') ? 'text-green-700' : 'text-red-600'}`}>{wBulkMsg}</p>}
           </div>
         </div>
       )}
