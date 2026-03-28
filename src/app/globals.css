@@ -116,6 +116,36 @@
   color: #cbd5e1 !important;
 }
 
+/* Calendar RTL: all day numbers same color, no red for weekends */
+.react-calendar__month-view__days__day--weekend {
+  color: #0f172a !important;
+}
+.react-calendar__month-view__days__day--neighboringMonth {
+  color: #94a3b8 !important;
+}
+/* DD/MM format tiles need smaller font */
+.cal-day-uniform abbr {
+  font-size: 11px !important;
+  font-weight: 600;
+}
+.react-calendar__tile.cal-day-uniform {
+  color: #0f172a !important;
+}
+.react-calendar__tile.cal-day-uniform:disabled {
+  color: #cbd5e1 !important;
+}
+/* RTL week layout: display in RTL order */
+.calendar-rtl-wrapper .react-calendar__month-view__weekdays {
+  direction: rtl;
+}
+.calendar-rtl-wrapper .react-calendar__month-view__days {
+  direction: rtl;
+}
+/* Navigation buttons in RTL order */
+.calendar-rtl-wrapper .react-calendar__navigation {
+  direction: rtl;
+}
+
 /* Signature canvas */
 .signature-canvas {
   border: 2px solid #e2e8f0;

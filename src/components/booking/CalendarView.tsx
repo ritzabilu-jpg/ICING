@@ -107,38 +107,43 @@ export default function CalendarView({ type, instructorId, onSelect, onBack }: C
               </div>
             </div>
           ) : (
-            <Calendar
-              locale="he-IL"
-              value={selectedDate}
-              onClickDay={(date) => setSelectedDate(date)}
-              onActiveStartDateChange={({ activeStartDate }) => {
-                if (activeStartDate) setCurrentMonth(activeStartDate);
-              }}
-              minDate={new Date()}
-              tileContent={({ date, view }) => {
-                if (view !== 'month') return null;
-                const dateStr = format(date, 'yyyy-MM-dd');
-                if (datesWithWorkshops.has(dateStr)) {
-                  return (
-                    <div className="flex justify-center mt-0.5">
-                      <div className="w-1.5 h-1.5 bg-ice-500 rounded-full" />
-                    </div>
-                  );
+            <div dir="rtl" className="calendar-rtl-wrapper">
+              <Calendar
+                locale="he-IL"
+                value={selectedDate}
+                onClickDay={(date) => setSelectedDate(date)}
+                onActiveStartDateChange={({ activeStartDate }) => {
+                  if (activeStartDate) setCurrentMonth(activeStartDate);
+                }}
+                minDate={new Date()}
+                formatDay={(_, date) =>
+                  `${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')}`
                 }
-                return null;
-              }}
-              tileDisabled={({ date, view }) => {
-                if (view !== 'month') return false;
-                if (date < new Date()) return true;
-                const dateStr = format(date, 'yyyy-MM-dd');
-                return !datesWithWorkshops.has(dateStr);
-              }}
-              tileClassName={({ date, view }) => {
-                if (view !== 'month') return '';
-                if (selectedDate && isSameDay(date, selectedDate)) return 'react-calendar__tile--active';
-                return '';
-              }}
-            />
+                tileContent={({ date, view }) => {
+                  if (view !== 'month') return null;
+                  const dateStr = format(date, 'yyyy-MM-dd');
+                  if (datesWithWorkshops.has(dateStr)) {
+                    return (
+                      <div className="flex justify-center mt-0.5">
+                        <div className="w-1.5 h-1.5 bg-ice-500 rounded-full" />
+                      </div>
+                    );
+                  }
+                  return null;
+                }}
+                tileDisabled={({ date, view }) => {
+                  if (view !== 'month') return false;
+                  if (date < new Date()) return true;
+                  const dateStr = format(date, 'yyyy-MM-dd');
+                  return !datesWithWorkshops.has(dateStr);
+                }}
+                tileClassName={({ date, view }) => {
+                  if (view !== 'month') return 'cal-day-uniform';
+                  if (selectedDate && isSameDay(date, selectedDate)) return 'cal-day-uniform react-calendar__tile--active';
+                  return 'cal-day-uniform';
+                }}
+              />
+            </div>
           )}
 
           <div className="mt-4 flex items-center gap-4 text-sm text-slate-500">
