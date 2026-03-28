@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 import Calendar from 'react-calendar';
 import { format, isSameDay } from 'date-fns';
 import { he } from 'date-fns/locale';
@@ -29,6 +29,7 @@ export default function CalendarView({ type, instructorId, onSelect, onBack }: C
   const [error, setError] = useState<string | null>(null);
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const timeSlotsRef = useRef<HTMLDivElement>(null);
 
   const fetchWorkshops = useCallback(async (date: Date) => {
     setLoading(true);
@@ -111,7 +112,10 @@ export default function CalendarView({ type, instructorId, onSelect, onBack }: C
               <Calendar
                 locale="he-IL"
                 value={selectedDate}
-                onClickDay={(date) => setSelectedDate(date)}
+                onClickDay={(date) => {
+                  setSelectedDate(date);
+                  setTimeout(() => timeSlotsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
+                }}
                 onActiveStartDateChange={({ activeStartDate }) => {
                   if (activeStartDate) setCurrentMonth(activeStartDate);
                 }}
@@ -159,7 +163,7 @@ export default function CalendarView({ type, instructorId, onSelect, onBack }: C
         </div>
 
         {/* Time slots for selected day */}
-        <div className="lg:col-span-2">
+        <div ref={timeSlotsRef} className="lg:col-span-2">
           {!selectedDate ? (
             <div className="h-full flex items-center justify-center">
               <div className="text-center text-slate-400 p-8">

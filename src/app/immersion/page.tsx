@@ -5,7 +5,7 @@
  */
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 
 interface Slot {
@@ -228,6 +228,7 @@ export default function ImmersionPage() {
   const [error, setError] = useState('');
 
   const router = useRouter();
+  const slotsSectionRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     const saved = localStorage.getItem('visitor_name');
@@ -249,6 +250,7 @@ export default function ImmersionPage() {
   function handleSelectDate(d: string) {
     setSelectedDate(d);
     setSelectedSlotId('');
+    setTimeout(() => slotsSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
   }
 
   const pkg = PACKAGES.find(p => p.key === selectedPkg)!;
@@ -340,7 +342,7 @@ export default function ImmersionPage() {
 
         {/* ── Step 2: Time slots (only after date selected) ─────────────────── */}
         {selectedDate && (
-          <section className="bg-white rounded-3xl shadow-xl p-6">
+          <section ref={slotsSectionRef} className="bg-white rounded-3xl shadow-xl p-6">
             <div className="flex items-center gap-3 mb-5">
               <StepBadge n={2} />
               <div>
