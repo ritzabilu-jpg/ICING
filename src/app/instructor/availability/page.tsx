@@ -32,6 +32,12 @@ export default function InstructorAvailabilityPage() {
   const [showCal, setShowCal] = useState(false);
   const [blockReason, setBlockReason] = useState('');
   const [addingBlock, setAddingBlock] = useState(false);
+  // Edit blocked date state
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editFrom, setEditFrom] = useState('');
+  const [editTo, setEditTo] = useState('');
+  const [editReason, setEditReason] = useState('');
+  const [savingEdit, setSavingEdit] = useState(false);
 
   useEffect(() => {
     const vid = localStorage.getItem('visitor_id') ?? '';
@@ -108,6 +114,29 @@ export default function InstructorAvailabilityPage() {
     if (res.ok) setBlocked(prev => prev.filter(b => b.id !== id));
   }
 
+  function startEdit(b: BlockedDate) {
+    setEditingId(b.id);
+    setEditFrom(b.from_date);
+    setEditTo(b.to_date);
+    setEditReason(b.reason);
+  }
+
+  async function saveEdit(id: string) {
+    if (!editFrom || !editTo) return;
+    setSavingEdit(true);
+    const res = await fetch('/api/instructor/availability/blocked', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json', 'x-visitor-id': visitorId },
+      body: JSON.stringify({ id, from_date: editFrom, to_date: editTo, reason: editReason }),
+    });
+    if (res.ok) {
+      const updated = await res.json();
+      setBlocked(prev => prev.map(b => b.id === id ? updated : b).sort((a, b) => a.from_date.localeCompare(b.from_date)));
+      setEditingId(null);
+    }
+    setSavingEdit(false);
+  }
+
   if (loading) return (
     <main className="min-h-screen bg-slate-50 flex items-center justify-center" dir="rtl">
       <p className="text-slate-400">טוען...</p>
@@ -178,15 +207,49 @@ export default function InstructorAvailabilityPage() {
           {blocked.length > 0 && (
             <div className="mb-4 space-y-2">
               {blocked.map(b => (
-                <div key={b.id} className="flex items-center justify-between bg-orange-50 border border-orange-200 rounded-xl px-4 py-2">
-                  <div>
-                    <span className="font-mono text-sm font-semibold text-orange-800">
-                      {fmtDate(b.from_date)} — {fmtDate(b.to_date)}
-                    </span>
-                    {b.reason && <span className="text-xs text-orange-600 mr-2">({b.reason})</span>}
-                  </div>
-                  <button onClick={() => removeBlocked(b.id)}
-                    className="text-xs text-red-400 hover:text-red-600 font-semibold">מחק</button>
+                <div key={b.id} className="bg-orange-50 border border-orange-200 rounded-xl px-4 py-2">
+                  {editingId === b.id ? (
+                    <div className="space-y-2">
+                      <div className="flex gap-2 flex-wrap items-center">
+                        <div className="flex items-center gap-1 text-xs font-semibold text-slate-600">
+                          <span>מ:</span>
+                          <input type="date" value={editFrom} onChange={e => setEditFrom(e.target.value)}
+                            className="border border-slate-200 rounded-lg px-2 py-1 text-sm focus:outline-none focus:border-orange-400" />
+                        </div>
+                        <div className="flex items-center gap-1 text-xs font-semibold text-slate-600">
+                          <span>עד:</span>
+                          <input type="date" value={editTo} onChange={e => setEditTo(e.target.value)}
+                            className="border border-slate-200 rounded-lg px-2 py-1 text-sm focus:outline-none focus:border-orange-400" />
+                        </div>
+                        <input value={editReason} onChange={e => setEditReason(e.target.value)}
+                          placeholder="סיבה (אופציונלי)"
+                          className="border border-slate-200 rounded-lg px-2 py-1 text-sm focus:outline-none focus:border-orange-400 flex-1 min-w-[120px]" />
+                      </div>
+                      <div className="flex gap-2">
+                        <button onClick={() => saveEdit(b.id)} disabled={savingEdit}
+                          className="text-xs bg-orange-500 hover:bg-orange-600 disabled:opacity-50 text-white font-bold px-3 py-1 rounded-lg transition-colors">
+                          {savingEdit ? '...' : 'שמור'}
+                        </button>
+                        <button onClick={() => setEditingId(null)}
+                          className="text-xs text-slate-500 hover:text-slate-700 font-semibold px-2 py-1">ביטול</button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <span className="font-mono text-sm font-semibold text-orange-800">
+                          {b.from_date === b.to_date ? fmtDate(b.from_date) : `${fmtDate(b.from_date)} — ${fmtDate(b.to_date)}`}
+                        </span>
+                        {b.reason && <span className="text-xs text-orange-600 mr-2">({b.reason})</span>}
+                      </div>
+                      <div className="flex gap-3">
+                        <button onClick={() => startEdit(b)}
+                          className="text-xs text-[#0f2942] hover:text-[#1a3a5c] font-semibold">עריכה</button>
+                        <button onClick={() => removeBlocked(b.id)}
+                          className="text-xs text-red-400 hover:text-red-600 font-semibold">מחק</button>
+                      </div>
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
