@@ -62,5 +62,5 @@ export async function GET(req: NextRequest) {
   });
 
   const all = [...slotItems, ...workshopItems].sort((a, b) => b.date.localeCompare(a.date));
-  return NextResponse.json({ sessions: all, instructor });
+  return NextResponse.json({ sessions: all, instructor }, { headers: { 'Cache-Control': 'no-store' } });
 }

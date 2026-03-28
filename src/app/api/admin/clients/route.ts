@@ -95,5 +95,5 @@ export async function GET(req: NextRequest) {
     }
   } catch { /* table may not exist yet */ }
 
-  return NextResponse.json({ clients });
+  return NextResponse.json({ clients }, { headers: { 'Cache-Control': 'no-store' } });
 }

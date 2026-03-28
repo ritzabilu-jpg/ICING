@@ -21,7 +21,7 @@ export async function GET(req: NextRequest) {
       .order('created_at', { ascending: true });
 
     if (error) throw error;
-    return NextResponse.json({ bookings: data ?? [] });
+    return NextResponse.json({ bookings: data ?? [] }, { headers: { 'Cache-Control': 'no-store' } });
   } catch (e) {
     return NextResponse.json({ error: String(e) }, { status: 500 });
   }
