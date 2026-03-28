@@ -90,8 +90,10 @@ export default function InstructorAvailabilityPage() {
   async function addBlocked() {
     if (!calendarRange[0]) return;
     setAddingBlock(true);
-    const from = calendarRange[0].toISOString().split('T')[0];
-    const to = (calendarRange[1] ?? calendarRange[0]).toISOString().split('T')[0];
+    const toLocalDate = (d: Date) =>
+      `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    const from = toLocalDate(calendarRange[0]);
+    const to = toLocalDate(calendarRange[1] ?? calendarRange[0]);
     const res = await fetch('/api/instructor/availability/blocked', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'x-visitor-id': visitorId },
