@@ -31,6 +31,25 @@ export async function POST(req: NextRequest) {
   return NextResponse.json(data);
 }
 
+export async function PATCH(req: NextRequest) {
+  const visitorId = req.headers.get('x-visitor-id') ?? '';
+  if (!visitorId) return NextResponse.json({ error: 'לא מורשה' }, { status: 401 });
+  const instructorId = await getInstructorId(visitorId);
+  if (!instructorId) return NextResponse.json({ error: 'פרופיל מדריך לא נמצא' }, { status: 403 });
+
+  const { id, from_date, to_date, reason } = await req.json();
+  if (!id || !from_date || !to_date) return NextResponse.json({ error: 'נתונים חסרים' }, { status: 400 });
+
+  const supabase = createAdminClient();
+  const { data, error } = await supabase
+    .from('instructor_blocked_dates')
+    .update({ from_date, to_date, reason: reason ?? '' })
+    .eq('id', id).eq('instructor_id', instructorId)
+    .select().maybeSingle();
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  return NextResponse.json(data);
+}
+
 export async function DELETE(req: NextRequest) {
   const visitorId = req.headers.get('x-visitor-id') ?? '';
   if (!visitorId) return NextResponse.json({ error: 'לא מורשה' }, { status: 401 });
