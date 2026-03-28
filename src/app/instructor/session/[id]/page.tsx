@@ -115,7 +115,6 @@ export default function SessionDetailPage() {
       {/* Header */}
       <div className="bg-[#0f2942] text-white py-5 px-4">
         <div className="max-w-3xl mx-auto">
-          <Link href="/instructor/dashboard" className="text-[#7dd8f8] text-sm mb-3 inline-block">← חזרה לדשבורד</Link>
           <h1 className="text-xl font-bold">{formatDate(slot.slot_date)}</h1>
           <p className="text-slate-300 text-sm mt-1">
             🕐 {slot.slot_time?.slice(0, 5)}
@@ -191,6 +190,11 @@ export default function SessionDetailPage() {
             </div>
           </div>
         )}
+        <div className="mt-8 flex justify-center">
+          <Link href="/instructor/dashboard" className="inline-flex items-center gap-2 bg-[#0f2942] hover:bg-[#1a3a5c] text-white text-sm font-semibold px-6 py-3 rounded-xl transition-colors">
+            ← חזרה לדשבורד
+          </Link>
+        </div>
       </div>
     </main>
   );
