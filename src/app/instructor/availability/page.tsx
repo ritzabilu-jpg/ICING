@@ -82,10 +82,10 @@ export default function InstructorAvailabilityPage() {
   }
 
   async function addBlocked() {
-    if (!calendarRange[0] || !calendarRange[1]) return;
+    if (!calendarRange[0]) return;
     setAddingBlock(true);
     const from = calendarRange[0].toISOString().split('T')[0];
-    const to = calendarRange[1].toISOString().split('T')[0];
+    const to = (calendarRange[1] ?? calendarRange[0]).toISOString().split('T')[0];
     const res = await fetch('/api/instructor/availability/blocked', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'x-visitor-id': visitorId },
@@ -209,10 +209,12 @@ export default function InstructorAvailabilityPage() {
                   className="rounded-2xl border-slate-200 shadow-sm"
                 />
               </div>
-              {calendarRange[0] && calendarRange[1] && (
+              {calendarRange[0] && (
                 <div className="flex gap-3 items-center flex-wrap">
                   <span className="text-sm font-semibold text-slate-700">
-                    {fmtDate(calendarRange[0].toISOString().split('T')[0])} — {fmtDate(calendarRange[1].toISOString().split('T')[0])}
+                    {calendarRange[1] && calendarRange[1].toDateString() !== calendarRange[0].toDateString()
+                      ? `${fmtDate(calendarRange[0].toISOString().split('T')[0])} — ${fmtDate(calendarRange[1].toISOString().split('T')[0])}`
+                      : fmtDate(calendarRange[0].toISOString().split('T')[0])}
                   </span>
                   <input value={blockReason} onChange={e => setBlockReason(e.target.value)}
                     placeholder="סיבה (אופציונלי)"
