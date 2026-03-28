@@ -74,6 +74,9 @@ export default function InstructorDashboard() {
   const [jStatus, setJStatus] = useState<'planned' | 'done' | 'cancelled'>('done');
   const [jNotes, setJNotes] = useState('');
   const [jSaving, setJSaving] = useState(false);
+  const [journalTargetId, setJournalTargetId] = useState('');
+  const [journalTargetName, setJournalTargetName] = useState('');
+  const [journalSearch, setJournalSearch] = useState('');
 
   const today = new Date().toISOString().split('T')[0];
 
@@ -103,7 +106,7 @@ export default function InstructorDashboard() {
   }, [visitorId]);
 
   useEffect(() => {
-    if (!visitorId || tab !== 'clients') return;
+    if (!visitorId || (tab !== 'clients' && tab !== 'journal')) return;
     if (clients.length > 0) return;
     setLoadingClients(true);
     fetch('/api/instructor/clients', { headers: { 'x-visitor-id': visitorId } })
@@ -112,10 +115,11 @@ export default function InstructorDashboard() {
       .catch(() => setLoadingClients(false));
   }, [visitorId, tab, clients.length]);
 
-  function loadJournal() {
-    if (!visitorId) return;
+  function loadJournal(targetId?: string) {
+    const tid = targetId ?? journalTargetId ?? visitorId;
+    if (!tid || !visitorId) return;
     setLoadingJournal(true);
-    fetch(`/api/immersion-sessions?visitor_id=${visitorId}`, { headers: { 'x-visitor-id': visitorId } })
+    fetch(`/api/immersion-sessions?visitor_id=${tid}`, { headers: { 'x-visitor-id': visitorId } })
       .then(r => r.json())
       .then(d => { setJournalSessions(Array.isArray(d) ? d : []); setLoadingJournal(false); })
       .catch(() => setLoadingJournal(false));
@@ -123,18 +127,33 @@ export default function InstructorDashboard() {
 
   useEffect(() => {
     if (!visitorId || tab !== 'journal') return;
-    loadJournal();
+    if (!journalTargetId) {
+      setJournalTargetId(visitorId);
+      setJournalTargetName(name);
+      loadJournal(visitorId);
+    } else {
+      loadJournal();
+    }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [visitorId, tab]);
 
+  function selectJournalTarget(id: string, tname: string) {
+    setJournalTargetId(id);
+    setJournalTargetName(tname);
+    setShowAddJournal(false);
+    setJournalSearch('');
+    loadJournal(id);
+  }
+
   async function saveJournalEntry() {
-    if (!jDuration || !visitorId) return;
+    const targetId = journalTargetId || visitorId;
+    if (!jDuration || !targetId) return;
     setJSaving(true);
     await fetch('/api/immersion-sessions', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'x-visitor-id': visitorId },
       body: JSON.stringify({
-        visitor_id: visitorId,
+        visitor_id: targetId,
         session_date: jDate,
         session_time: jTime,
         temperature_celsius: jTemp ? parseFloat(jTemp) : null,
@@ -147,7 +166,7 @@ export default function InstructorDashboard() {
     setJSaving(false);
     setShowAddJournal(false);
     setJTemp(''); setJDuration(''); setJNotes(''); setJStatus('done');
-    loadJournal();
+    loadJournal(targetId);
   }
 
   const future = sessions.filter(s => s.date >= today).reverse();
@@ -348,6 +367,47 @@ export default function InstructorDashboard() {
         {/* Journal */}
         {tab === 'journal' && (
           <div>
+            {/* User picker */}
+            <div className="bg-white rounded-2xl border border-slate-100 p-4 mb-4">
+              <div className="flex items-center gap-3 flex-wrap">
+                <span className="text-sm font-semibold text-slate-600">יומן של:</span>
+                <button
+                  onClick={() => selectJournalTarget(visitorId, name)}
+                  className={`px-4 py-1.5 rounded-xl text-sm font-semibold transition-colors ${journalTargetId === visitorId ? 'bg-[#0f2942] text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}>
+                  שלי
+                </button>
+                <div className="relative flex-1 min-w-[200px]">
+                  <input
+                    value={journalSearch}
+                    onChange={e => setJournalSearch(e.target.value)}
+                    placeholder="חפש משתמש או מדריך..."
+                    className="w-full border border-slate-200 rounded-xl px-3 py-1.5 text-sm focus:outline-none focus:border-[#7dd8f8]"
+                  />
+                  {journalSearch && (
+                    <div className="absolute top-full mt-1 right-0 left-0 bg-white border border-slate-200 rounded-xl shadow-lg z-20 max-h-48 overflow-y-auto">
+                      {clients
+                        .filter(c => c.id !== visitorId && (c.name?.includes(journalSearch) || c.phone?.includes(journalSearch)))
+                        .map(c => (
+                          <button key={c.id} onClick={() => selectJournalTarget(c.id, c.name)}
+                            className="w-full text-right px-4 py-2.5 text-sm hover:bg-slate-50 border-b border-slate-50 last:border-0 flex items-center justify-between">
+                            <span className="font-semibold text-[#0f2942]">{c.name}</span>
+                            <span className="text-slate-400 text-xs font-mono">{c.phone}</span>
+                          </button>
+                        ))}
+                      {clients.filter(c => c.id !== visitorId && (c.name?.includes(journalSearch) || c.phone?.includes(journalSearch))).length === 0 && (
+                        <p className="text-center py-3 text-slate-400 text-sm">לא נמצא</p>
+                      )}
+                    </div>
+                  )}
+                </div>
+                {journalTargetId && journalTargetId !== visitorId && (
+                  <span className="text-sm font-bold text-[#0f2942] bg-[#e8f4fd] px-3 py-1.5 rounded-xl">
+                    📋 {journalTargetName}
+                  </span>
+                )}
+              </div>
+            </div>
+
             {/* Stats */}
             {!loadingJournal && journalSessions.length > 0 && (() => {
               const weekAgo = new Date(); weekAgo.setDate(weekAgo.getDate() - 7);
@@ -371,7 +431,9 @@ export default function InstructorDashboard() {
 
             <div className="bg-white rounded-2xl border border-slate-100 overflow-hidden">
               <div className="flex items-center justify-between px-4 py-3 border-b border-slate-100">
-                <h2 className="font-bold text-[#0f2942]">יומן הטבילות האישי שלי</h2>
+                <h2 className="font-bold text-[#0f2942]">
+                  {journalTargetId === visitorId ? 'יומן הטבילות האישי שלי' : `יומן טבילות — ${journalTargetName}`}
+                </h2>
                 <button onClick={() => setShowAddJournal(v => !v)}
                   className="text-sm text-[#7dd8f8] hover:text-[#0f2942] font-semibold transition-colors">
                   {showAddJournal ? 'סגור' : '+ הוסף כניסה'}
