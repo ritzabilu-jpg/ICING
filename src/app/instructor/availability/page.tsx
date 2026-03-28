@@ -172,7 +172,7 @@ export default function InstructorAvailabilityPage() {
         {/* Blocked dates */}
         <div className="bg-white rounded-2xl border border-slate-100 p-5 shadow-sm">
           <h2 className="text-base font-bold text-[#0f2942] mb-1">תאריכים שבהם לא אהיה (חופש או סיבה אחרת)</h2>
-          <p className="text-slate-400 text-xs mb-4">אם כבר יש ז' — סמנו על התאריכים. יש לדבר עם המנהלים.</p>
+          <p className="text-slate-400 text-xs mb-4">בחר.י תאריכים בהם תעדר.י</p>
 
           {/* Existing blocked ranges */}
           {blocked.length > 0 && (
