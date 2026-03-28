@@ -31,15 +31,14 @@ export default function WorkshopCard({
                        ? 'bg-navy-900 border-ice-500 shadow-xl shadow-ice-500/20'
                        : 'bg-white border-ice-100 hover:border-ice-400 shadow-lg'
                      }`}>
-      {popular && (
-        <div className="absolute -top-4 right-1/2 translate-x-1/2">
-          <span className="bg-ice-500 text-white text-xs font-bold px-4 py-1.5 rounded-full shadow-lg">
-            הכי פופולרי
-          </span>
-        </div>
-      )}
-
       <div className="p-8 flex flex-col flex-1">
+        {popular && (
+          <div className="flex justify-center mb-4 -mt-2">
+            <span className="bg-ice-500 text-white text-xs font-bold px-4 py-1.5 rounded-full shadow-lg">
+              הכי פופולרי
+            </span>
+          </div>
+        )}
         {/* Icon + Title */}
         <div className="flex items-start gap-4 mb-5">
           <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-3xl flex-shrink-0
