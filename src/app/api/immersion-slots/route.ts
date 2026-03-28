@@ -1,12 +1,12 @@
 // immersion-slots – returns available immersion time slots with booking counts
 import { NextResponse } from 'next/server';
-import { createAdminClient } from '@/lib/supabase';
+import { getSupabaseClient } from '@/lib/supabase';
 
 export const dynamic = 'force-dynamic';
 
 export async function GET() {
   try {
-    const supabase = createAdminClient();
+    const supabase = getSupabaseClient();
 
     // Get all slots (future + today) with booking counts
     const today = new Date().toISOString().split('T')[0];
