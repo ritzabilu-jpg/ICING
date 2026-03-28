@@ -11,6 +11,10 @@ interface Session {
   temperature_celsius: number | null;
   duration_minutes: number;
   instructor_name: string;
+  status?: 'planned' | 'done' | 'cancelled';
+  visitor_notes?: string;
+  instructor_notes?: string;
+  photo_url?: string;
 }
 
 interface Visitor {
@@ -28,6 +32,10 @@ function AddSessionForm({ targetId, onAdded }: { targetId: string; onAdded: () =
   const [temp, setTemp] = useState('');
   const [duration, setDuration] = useState('');
   const [instructor, setInstructor] = useState(localStorage.getItem('visitor_name') || '');
+  const [status, setStatus] = useState<'planned' | 'done' | 'cancelled'>('planned');
+  const [visitorNotes, setVisitorNotes] = useState('');
+  const [instructorNotes, setInstructorNotes] = useState('');
+  const [photoUrl, setPhotoUrl] = useState('');
   const [saving, setSaving] = useState(false);
 
   async function save() {
@@ -41,8 +49,12 @@ function AddSessionForm({ targetId, onAdded }: { targetId: string; onAdded: () =
         session_date: date,
         session_time: time,
         temperature_celsius: temp ? parseFloat(temp) : null,
-        duration_minutes: parseInt(duration),
+        duration_minutes: parseInt(duration, 10),
         instructor_name: instructor,
+        status,
+        visitor_notes: visitorNotes,
+        instructor_notes: instructorNotes,
+        photo_url: photoUrl,
       }),
     });
     setSaving(false);
@@ -61,8 +73,22 @@ function AddSessionForm({ targetId, onAdded }: { targetId: string; onAdded: () =
           <input type="number" step="0.1" value={temp} onChange={e => setTemp(e.target.value)} placeholder="5.0" className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ice-400" /></div>
         <div><label className="block text-slate-600 mb-1">משך (דקות) *</label>
           <input type="number" value={duration} onChange={e => setDuration(e.target.value)} placeholder="15" className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ice-400" /></div>
+        <div><label className="block text-slate-600 mb-1">סטטוס</label>
+          <select value={status} onChange={e => setStatus(e.target.value as 'planned' | 'done' | 'cancelled')} className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ice-400">
+            <option value="planned">מתוכנן</option>
+            <option value="done">בוצע</option>
+            <option value="cancelled">בוטל</option>
+          </select></div>
+        <div><label className="block text-slate-600 mb-1">תמונת טבילה (URL)</label>
+          <input type="url" value={photoUrl} onChange={e => setPhotoUrl(e.target.value)} placeholder="https://example.com/photo.jpg" className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ice-400" /></div>
         <div className="col-span-2"><label className="block text-slate-600 mb-1">שם מדריך</label>
           <input type="text" value={instructor} onChange={e => setInstructor(e.target.value)} className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ice-400" /></div>
+      </div>
+      <div className="grid grid-cols-1 gap-3 text-sm mt-3">
+        <div><label className="block text-slate-600 mb-1">הערות מטביל</label>
+          <textarea value={visitorNotes} onChange={e => setVisitorNotes(e.target.value)} rows={2} className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ice-400" /></div>
+        <div><label className="block text-slate-600 mb-1">הערות מדריך</label>
+          <textarea value={instructorNotes} onChange={e => setInstructorNotes(e.target.value)} rows={2} className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ice-400" /></div>
       </div>
       <button onClick={save} disabled={!duration || saving}
         className="mt-3 bg-ice-600 hover:bg-ice-700 disabled:opacity-40 text-white font-bold px-5 py-2 rounded-xl text-sm transition-colors">
@@ -88,6 +114,7 @@ function SessionTable({ sessions }: { sessions: Session[] }) {
           <tr className="border-b border-slate-100 bg-slate-50">
             <th className="text-right px-4 py-3 font-semibold text-slate-600">תאריך</th>
             <th className="text-right px-4 py-3 font-semibold text-slate-600">שעה</th>
+            <th className="text-right px-4 py-3 font-semibold text-slate-600">סטטוס</th>
             <th className="text-right px-4 py-3 font-semibold text-slate-600">טמפרטורה</th>
             <th className="text-right px-4 py-3 font-semibold text-slate-600">משך טבילה</th>
             <th className="text-right px-4 py-3 font-semibold text-slate-600">שם מדריך</th>
@@ -100,6 +127,9 @@ function SessionTable({ sessions }: { sessions: Session[] }) {
                 {new Date(s.session_date).toLocaleDateString('he-IL', { day: '2-digit', month: '2-digit', year: '2-digit' })}
               </td>
               <td className="px-4 py-3 text-right font-mono">{s.session_time?.slice(0, 5)}</td>
+              <td className="px-4 py-3 text-right text-sm font-semibold">
+                {s.status === 'done' ? 'בוצע' : s.status === 'cancelled' ? 'בוטל' : 'מתוכנן'}
+              </td>
               <td className="px-4 py-3 text-right text-ice-700 font-semibold">
                 {s.temperature_celsius != null ? `${s.temperature_celsius}°C` : '—'}
               </td>
@@ -217,10 +247,13 @@ export default function DashboardPage() {
     setVisitorName(name);
     setVisitorRole(role);
 
-    fetch(`/api/immersion-sessions?visitor_id=${id}`, { headers: { 'x-visitor-id': id } })
-      .then(r => r.json()).then(d => setSessions(Array.isArray(d) ? d : []));
-    fetch(`/api/daily-health-check?visitor_id=${id}&date=${today}`)
-      .then(r => r.json()).then(d => setHealthFilled(d.filled));
+    Promise.all([
+      fetch(`/api/immersion-sessions?visitor_id=${id}`, { headers: { 'x-visitor-id': id } }).then(r => r.json()),
+      fetch(`/api/daily-health-check?visitor_id=${id}&date=${today}`).then(r => r.json()),
+    ]).then(([sessions, hc]) => {
+      setSessions(Array.isArray(sessions) ? sessions : []);
+      setHealthFilled(hc.filled);
+    });
   }, [router, today]);
 
   // Stats

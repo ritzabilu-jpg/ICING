@@ -37,15 +37,22 @@ export async function GET(req: NextRequest) {
     supabase.from('instructor_blocked_dates').select('*').in('instructor_id', instructorIds).order('from_date'),
   ]);
 
-  const allSlots = slotsRes.data ?? [];
-  const allBlocked = blockedRes.data ?? [];
+  // Build lookup maps O(n) instead of repeated O(n×m) filters
+  const slotsByInstructor: Record<string, typeof slotsRes.data> = {};
+  const blockedByInstructor: Record<string, typeof blockedRes.data> = {};
+  for (const s of slotsRes.data ?? []) {
+    (slotsByInstructor[s.instructor_id] ??= []).push(s);
+  }
+  for (const b of blockedRes.data ?? []) {
+    (blockedByInstructor[b.instructor_id] ??= []).push(b);
+  }
 
   const result = instructors.map((inst, idx) => ({
     id: inst.id,
     name: inst.name,
     color: INSTRUCTOR_COLORS[idx % INSTRUCTOR_COLORS.length],
-    slots: allSlots.filter(s => s.instructor_id === inst.id),
-    blocked: allBlocked.filter(b => b.instructor_id === inst.id),
+    slots: slotsByInstructor[inst.id] ?? [],
+    blocked: blockedByInstructor[inst.id] ?? [],
   }));
 
   return NextResponse.json({ instructors: result });

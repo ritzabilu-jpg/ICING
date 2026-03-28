@@ -20,6 +20,7 @@ const typeLabels: Record<WorkshopType, string> = {
   individual: 'יחידים',
   couple: 'זוגות',
   team: 'קבוצות מאורגנות',
+  'one-on-one': 'אחד על אחד',
 };
 
 export default function CalendarView({ type, instructorId, onSelect, onBack }: CalendarViewProps) {

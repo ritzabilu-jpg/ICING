@@ -71,11 +71,28 @@ export async function POST(req: NextRequest) {
 
 export async function DELETE(req: NextRequest) {
   if (!checkAdmin(req)) return NextResponse.json({ error: 'לא מורשה' }, { status: 401 });
-  const id = new URL(req.url).searchParams.get('id');
-  if (!id) return NextResponse.json({ error: 'חסר id' }, { status: 400 });
+  const { searchParams } = new URL(req.url);
+  const id = searchParams.get('id');
+  const instructorId = searchParams.get('instructor_id');
+  const day = searchParams.get('day'); // day_of_week to clear (optional)
 
   const supabase = createAdminClient();
-  const { error } = await supabase.from('instructor_blocked_dates').delete().eq('id', id);
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-  return NextResponse.json({ ok: true });
+
+  // Delete a blocked date by id
+  if (id) {
+    const { error } = await supabase.from('instructor_blocked_dates').delete().eq('id', id);
+    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ ok: true });
+  }
+
+  // Clear availability for instructor (optionally filtered by day)
+  if (instructorId) {
+    let query = supabase.from('instructor_availability').delete().eq('instructor_id', instructorId);
+    if (day !== null) query = query.eq('day_of_week', parseInt(day));
+    const { error } = await query;
+    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ ok: true });
+  }
+
+  return NextResponse.json({ error: 'חסר id או instructor_id' }, { status: 400 });
 }

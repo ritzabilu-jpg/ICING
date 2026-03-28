@@ -532,7 +532,7 @@ function AdminContent() {
               <div className="grid sm:grid-cols-2 gap-3">
                 <div>
                   <label className="block text-xs font-semibold text-slate-600 mb-1">מיקום</label>
-                  <input value={newLocation} onChange={e => setNewLocation(e.target.value)} placeholder="למשל: חולון סירני 52"
+                  <input value={newLocation} onChange={e => setNewLocation(e.target.value)} placeholder="למשל: רחובות סירני 52"
                     className="w-full border-2 border-slate-200 focus:border-ice-400 rounded-xl px-3 py-2 text-sm focus:outline-none" />
                 </div>
                 <div>
@@ -1212,7 +1212,15 @@ function AdminContent() {
           {/* Combined Summary Grid */}
           <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-5">
             <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
-              <h2 className="text-lg font-bold text-navy-900">סיכום זמינות — כל המדריכים</h2>
+              <div>
+                <h2 className="text-lg font-bold text-navy-900">סיכום זמינות — כל המדריכים</h2>
+                {!loadingSummary && summaryData.length > 0 && (
+                  <p className="text-xs text-slate-400 mt-0.5">
+                    {summaryData.length} מדריכים ·{' '}
+                    {summaryData.reduce((n, i) => n + i.slots.length, 0)} שורות זמינות בDB
+                  </p>
+                )}
+              </div>
               <button onClick={() => {
                 setLoadingSummary(true);
                 fetch(`/api/admin/availability-summary?key=${encodeURIComponent(key)}`)
@@ -1226,8 +1234,13 @@ function AdminContent() {
             {loadingSummary
               ? <p className="text-slate-400 text-sm py-4 text-center">טוען...</p>
               : summaryData.length === 0
-                ? <p className="text-slate-400 text-sm">אין נתוני זמינות — המדריכים עדיין לא הגדירו שעות.</p>
-                : <AvailabilitySummaryGrid instructors={summaryData} />
+                ? <p className="text-slate-400 text-sm">אין מדריכים בDB — בדוק שטבלת instructors מאוכלסת.</p>
+                : summaryData.every(i => i.slots.length === 0)
+                  ? <p className="text-slate-400 text-sm">
+                      נמצאו {summaryData.length} מדריכים אך אין שורות זמינות בDB.{' '}
+                      פתח &quot;עריכת זמינות מדריך בודד&quot; → שמור, ואז לחץ 🔄 רענן.
+                    </p>
+                  : <AvailabilitySummaryGrid instructors={summaryData} />
             }
           </div>
 
@@ -1399,7 +1412,7 @@ function AdminContent() {
                   <AvailabilityTable type="workshop" title="סדנאות — שעות פוטנציאליות" data={availSlots} onChange={setAvailSlots} />
                   <AvailabilityTable type="immersion" title="הטבלות — שעות פוטנציאליות" data={availSlots} onChange={setAvailSlots} />
 
-                  <div className="flex items-center gap-4">
+                  <div className="flex flex-wrap items-center gap-3">
                     <button onClick={async () => {
                       setAvailSaving(true); setAvailMsg('');
                       const res = await fetch(`/api/admin/instructor-availability?instructor_id=${availInstructorId}&key=${encodeURIComponent(key)}`, {
@@ -1408,16 +1421,42 @@ function AdminContent() {
                         body: JSON.stringify({ slots: availSlots }),
                       });
                       const d = await res.json();
-                      setAvailMsg(res.ok ? `✅ נשמר (${d.saved} שורות)` : `❌ ${d.error}`);
+                      if (res.ok) {
+                        setAvailMsg(`✅ נשמר (${d.saved} שורות)`);
+                      } else {
+                        setAvailMsg(`❌ ${d.error}`);
+                      }
                       setAvailSaving(false);
-                      setTimeout(() => setAvailMsg(''), 3000);
-                      // Refresh summary
+                      setTimeout(() => setAvailMsg(''), 6000);
+                      setLoadingSummary(true);
                       fetch(`/api/admin/availability-summary?key=${encodeURIComponent(key)}`)
-                        .then(r => r.json()).then(d => setSummaryData(d.instructors ?? []));
+                        .then(r => r.json())
+                        .then(sd => { setSummaryData(sd.instructors ?? []); setLoadingSummary(false); })
+                        .catch(() => setLoadingSummary(false));
                     }} disabled={availSaving}
                       className="bg-navy-900 hover:bg-navy-700 disabled:opacity-50 text-white font-bold px-6 py-2.5 rounded-xl text-sm transition-colors">
                       {availSaving ? 'שומר...' : 'שמור זמינות'}
                     </button>
+                    <button onClick={async () => {
+                      if (!confirm('למחוק את כל הזמינות של מדריך זה?')) return;
+                      await fetch(`/api/admin/instructor-availability?instructor_id=${availInstructorId}&key=${encodeURIComponent(key)}`, { method: 'DELETE' });
+                      setAvailSlots([]);
+                      setAvailMsg('✅ כל הזמינות נמחקה');
+                      setTimeout(() => setAvailMsg(''), 4000);
+                    }} className="border-2 border-red-300 text-red-500 hover:bg-red-50 font-semibold px-4 py-2.5 rounded-xl text-sm transition-colors">
+                      נקה הכל
+                    </button>
+                    <div className="flex flex-wrap gap-1.5 items-center">
+                      <span className="text-xs text-slate-400 font-semibold">נקה יום:</span>
+                      {['א׳','ב׳','ג׳','ד׳','ה׳','ו׳','ש׳'].map((d, i) => (
+                        <button key={i} onClick={async () => {
+                          await fetch(`/api/admin/instructor-availability?instructor_id=${availInstructorId}&day=${i}&key=${encodeURIComponent(key)}`, { method: 'DELETE' });
+                          setAvailSlots(prev => prev.filter(s => s.day_of_week !== i));
+                        }} className="text-xs border border-slate-300 text-slate-500 hover:bg-red-50 hover:border-red-300 hover:text-red-500 px-2 py-1 rounded-lg transition-colors">
+                          {d}
+                        </button>
+                      ))}
+                    </div>
                     {availMsg && <span className={`text-sm font-semibold ${availMsg.startsWith('✅') ? 'text-green-600' : 'text-red-500'}`}>{availMsg}</span>}
                   </div>
 

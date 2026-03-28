@@ -4,6 +4,7 @@ import Hero from '@/components/Hero';
 import WorkshopCard from '@/components/WorkshopCard';
 import TestimonialsSection from '@/components/TestimonialsSection';
 import WelcomeGreeting from '@/components/WelcomeGreeting';
+import AccordionSection from '@/components/AccordionSection';
 
 export const revalidate = 60;
 
@@ -170,43 +171,6 @@ const faqs = [
   },
 ];
 
-/* ── Collapsible section header (light bg) ── */
-function SectionSummary({ title, subtitle }: { title: string; subtitle?: string }) {
-  return (
-    <summary className="list-none cursor-pointer py-10 px-6 relative select-none group/sum">
-      <div className="text-center max-w-3xl mx-auto">
-        <h2 className="text-4xl font-black text-navy-900 mb-1 group-open/sum:text-ice-700 transition-colors">
-          {title}
-        </h2>
-        {subtitle && (
-          <p className="text-lg text-slate-500">{subtitle}</p>
-        )}
-      </div>
-      <span className="absolute left-6 top-1/2 -translate-y-1/2 text-ice-500 text-2xl
-                       transition-transform duration-200 [details[open]_&]:rotate-180">
-        ↓
-      </span>
-    </summary>
-  );
-}
-
-/* ── Collapsible section header (dark bg) ── */
-function SectionSummaryDark({ title, subtitle }: { title: string; subtitle?: string }) {
-  return (
-    <summary className="list-none cursor-pointer py-10 px-6 relative select-none">
-      <div className="text-center max-w-3xl mx-auto">
-        <h2 className="text-4xl font-black text-white mb-1">{title}</h2>
-        {subtitle && (
-          <p className="text-lg text-slate-400">{subtitle}</p>
-        )}
-      </div>
-      <span className="absolute left-6 top-1/2 -translate-y-1/2 text-ice-400 text-2xl
-                       transition-transform duration-200 [details[open]_&]:rotate-180">
-        ↓
-      </span>
-    </summary>
-  );
-}
 
 export default function HomePage() {
   return (
@@ -216,11 +180,7 @@ export default function HomePage() {
 
       {/* Benefits Section */}
       <section id="benefits" className="bg-white border-b border-slate-100">
-        <details className="group">
-          <SectionSummary
-            title="למה אמבטיות קרח?"
-            subtitle="שינויים ביוכימיים מוכחים מדעית שמתרחשים בגופך בכל טבילה"
-          />
+        <AccordionSection title="למה אמבטיות קרח?" subtitle="שינויים ביוכימיים מוכחים מדעית שמתרחשים בגופך בכל טבילה" fadeColor="#ffffff">
           <div className="pb-16 px-6 max-w-7xl mx-auto">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {benefits.map(b => (
@@ -242,16 +202,12 @@ export default function HomePage() {
               ))}
             </div>
           </div>
-        </details>
+        </AccordionSection>
       </section>
 
       {/* Workshop Types */}
       <section id="workshop-types" className="bg-ice-50 border-b border-slate-100">
-        <details className="group">
-          <SectionSummary
-            title="סוגי הסדנאות"
-            subtitle="בחרו את הפורמט המתאים לכם"
-          />
+        <AccordionSection title="סוגי הסדנאות" subtitle="בחרו את הפורמט המתאים לכם" fadeColor="#f0f9ff">
           <div className="pb-16 px-6 max-w-7xl mx-auto">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 items-stretch">
               {workshopTypes.map(w => (
@@ -259,16 +215,12 @@ export default function HomePage() {
               ))}
             </div>
           </div>
-        </details>
+        </AccordionSection>
       </section>
 
       {/* Agenda Section */}
       <section id="agenda" className="bg-white border-b border-slate-100">
-        <details className="group">
-          <SectionSummary
-            title="מה מחכה לכם בסדנה?"
-            subtitle="סדנה בת כ-90 דקות מתוכננת ומבוצעת בקפידה"
-          />
+        <AccordionSection title="מה מחכה לכם בסדנה?" subtitle="סדנה בת כ-90 דקות מתוכננת ומבוצעת בקפידה" fadeColor="#ffffff">
           <div className="pb-16 px-6 max-w-4xl mx-auto">
             <div className="relative">
               <div className="absolute right-8 top-0 bottom-0 w-0.5 bg-ice-200 hidden sm:block" />
@@ -300,26 +252,21 @@ export default function HomePage() {
               </Link>
             </div>
           </div>
-        </details>
+        </AccordionSection>
       </section>
 
       {/* Testimonials */}
       <section id="testimonials" className="bg-ice-50 border-b border-slate-100">
-        <details className="group">
-          <SectionSummary title="מה אומרים המשתתפים" />
+        <AccordionSection title="מה אומרים המשתתפים" fadeColor="#f0f9ff">
           <div className="pb-4">
             <TestimonialsSection />
           </div>
-        </details>
+        </AccordionSection>
       </section>
 
       {/* FAQ Section */}
       <section id="faq" className="bg-white border-b border-slate-100">
-        <details className="group">
-          <SectionSummary
-            title="שאלות נפוצות"
-            subtitle="כל מה שרציתם לדעת לפני שמגיעים"
-          />
+        <AccordionSection title="שאלות נפוצות" subtitle="כל מה שרציתם לדעת לפני שמגיעים" fadeColor="#ffffff">
           <div className="pb-16 px-6 max-w-3xl mx-auto">
             <div className="space-y-4">
               {faqs.map((faq, i) => (
@@ -343,16 +290,12 @@ export default function HomePage() {
               ))}
             </div>
           </div>
-        </details>
+        </AccordionSection>
       </section>
 
       {/* Contact & Location */}
       <section id="contact" className="bg-navy-900">
-        <details className="group">
-          <SectionSummaryDark
-            title="איך מגיעים אלינו?"
-            subtitle="ממוקמים בלב רחובות, נגישים בתחבורה ציבורית ובחניה פרטית"
-          />
+        <AccordionSection dark title="איך מגיעים אלינו?" subtitle="ממוקמים בלב רחובות, נגישים בתחבורה ציבורית ובחניה פרטית" fadeColor="#0f172a">
           <div className="pb-16 px-6 max-w-6xl mx-auto">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-stretch">
               <div className="flex flex-col gap-6">
@@ -430,7 +373,7 @@ export default function HomePage() {
               </div>
             </div>
           </div>
-        </details>
+        </AccordionSection>
       </section>
     </>
   );
