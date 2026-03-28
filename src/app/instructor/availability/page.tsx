@@ -15,7 +15,12 @@ interface BlockedDate {
 }
 
 function fmtDate(d: string) {
-  return new Date(d).toLocaleDateString('he-IL', { day: '2-digit', month: '2-digit', year: 'numeric' });
+  const [y, m, day] = d.split('-');
+  return `${day}.${m}.${y}`;
+}
+
+function localDateStr(d: Date) {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 }
 
 export default function InstructorAvailabilityPage() {
@@ -90,10 +95,8 @@ export default function InstructorAvailabilityPage() {
   async function addBlocked() {
     if (!calendarRange[0]) return;
     setAddingBlock(true);
-    const toLocalDate = (d: Date) =>
-      `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-    const from = toLocalDate(calendarRange[0]);
-    const to = toLocalDate(calendarRange[1] ?? calendarRange[0]);
+    const from = localDateStr(calendarRange[0]);
+    const to = localDateStr(calendarRange[1] ?? calendarRange[0]);
     const res = await fetch('/api/instructor/availability/blocked', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'x-visitor-id': visitorId },
@@ -278,8 +281,8 @@ export default function InstructorAvailabilityPage() {
                 <div className="flex gap-3 items-center flex-wrap">
                   <span className="text-sm font-semibold text-slate-700">
                     {calendarRange[1] && calendarRange[1].toDateString() !== calendarRange[0].toDateString()
-                      ? `${fmtDate(calendarRange[0].toISOString().split('T')[0])} — ${fmtDate(calendarRange[1].toISOString().split('T')[0])}`
-                      : fmtDate(calendarRange[0].toISOString().split('T')[0])}
+                      ? `${fmtDate(localDateStr(calendarRange[0]))} — ${fmtDate(localDateStr(calendarRange[1]))}`
+                      : fmtDate(localDateStr(calendarRange[0]))}
                   </span>
                   <input value={blockReason} onChange={e => setBlockReason(e.target.value)}
                     placeholder="סיבה (אופציונלי)"
