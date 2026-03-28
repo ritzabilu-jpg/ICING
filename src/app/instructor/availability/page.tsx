@@ -118,7 +118,6 @@ export default function InstructorAvailabilityPage() {
     <main className="min-h-screen bg-slate-50" dir="rtl">
       <div className="bg-[#0f2942] text-white py-5 px-4">
         <div className="max-w-5xl mx-auto">
-          <Link href="/instructor/dashboard" className="text-[#7dd8f8] text-sm mb-2 inline-block">← חזרה לדשבורד</Link>
           <h1 className="text-xl font-bold">שעות זמינות שבועיות</h1>
           <p className="text-slate-400 text-sm mt-0.5">הגדר את שעות הזמינות שלך לסדנאות ולטבילות</p>
         </div>
@@ -226,6 +225,12 @@ export default function InstructorAvailabilityPage() {
               )}
             </div>
           )}
+        </div>
+
+        <div className="flex justify-center pb-10">
+          <Link href="/instructor/dashboard" className="inline-flex items-center gap-2 bg-[#0f2942] hover:bg-[#1a3a5c] text-white text-sm font-semibold px-6 py-3 rounded-xl transition-colors">
+            ← חזרה לדשבורד
+          </Link>
         </div>
       </div>
     </main>

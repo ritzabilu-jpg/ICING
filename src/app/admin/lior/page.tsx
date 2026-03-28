@@ -9,19 +9,11 @@ import AvailabilitySummaryGrid, { SummaryInstructor } from '@/components/Availab
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
-interface Booking {
-  id: string; time_slot: string; slot_date: string;
-  name: string; phone: string; created_at: string;
-}
-
 interface ImmersionSlot {
   id: string; slot_date: string; slot_time: string;
   max_participants: number; notes: string; booked: number;
   bookings: { visitor_name: string; visitor_phone: string; package_type: string; created_at: string }[];
 }
-
-const TIME_SLOTS = ['08:00', '09:30', '11:00'];
-const MAX = 10;
 
 const PKG_LABELS: Record<string, string> = {
   single: 'בודדת', '5pack': 'חבילת 5', '10pack': 'חבילת 10',
@@ -41,7 +33,6 @@ const DEMO_INSTRUCTORS = [
 ];
 
 const HEALTH_KEY = 'admin_health_checks_v1';
-
 function loadHealthChecks(): Record<string, { daily: boolean; general: boolean }> {
   if (typeof window === 'undefined') return {};
   const raw = localStorage.getItem(HEALTH_KEY);
@@ -53,7 +44,7 @@ function saveHealthChecks(data: Record<string, { daily: boolean; general: boolea
 
 // ─── Admin Content ────────────────────────────────────────────────────────────
 
-type TabType = 'lior' | 'immersion' | 'clients' | 'instructors' | 'workshops' | 'reviews' | 'manage-instructors' | 'users' | 'availability' | 'vacations';
+type TabType = 'immersion' | 'clients' | 'instructors' | 'workshops' | 'reviews' | 'manage-instructors' | 'users' | 'availability' | 'vacations';
 
 interface InstructorWorkshop {
   id: string;
@@ -74,13 +65,8 @@ function AdminContent() {
     return { 'x-admin-key': key, 'x-visitor-id': visitorId, ...extra };
   }
 
-  const [tab, setTab] = useState<TabType>('lior');
-
-  // ── Lior workshop bookings ──
-  const [bookings, setBookings]   = useState<Booking[]>([]);
-  const [loadingL, setLoadingL]   = useState(true);
-  const [errorL, setErrorL]       = useState('');
-  const [deleting, setDeleting]   = useState<string | null>(null);
+  const [tab, setTab] = useState<TabType>('immersion');
+  const [healthChecks, setHealthChecks] = useState<Record<string, { daily: boolean; general: boolean }>>({});
 
   // ── Immersion slots ──
   const [slots, setSlots]           = useState<ImmersionSlot[]>([]);
@@ -102,7 +88,6 @@ function AdminContent() {
   const [clients, setClients]     = useState<ClientEntry[]>([]);
   const [loadingC, setLoadingC]   = useState(false);
   const [errorC, setErrorC]       = useState('');
-  const [healthChecks, setHealthChecks] = useState<Record<string, { daily: boolean; general: boolean }>>({});
   const [clientSearch, setClientSearch] = useState('');
 
   // ── Instructors ──
@@ -144,7 +129,7 @@ function AdminContent() {
   // ── Availability Summary + Slot Generator ──
   const [summaryData, setSummaryData] = useState<SummaryInstructor[]>([]);
   const [loadingSummary, setLoadingSummary] = useState(false);
-  const [genInstructorId, setGenInstructorId] = useState('');
+  const [genInstructorId, setGenInstructorId] = useState('ALL');
   const [genType, setGenType] = useState<'immersion' | 'workshop'>('immersion');
   const [genFrom, setGenFrom] = useState('');
   const [genTo, setGenTo] = useState('');
@@ -160,17 +145,6 @@ function AdminContent() {
   const [vacAdminNotes, setVacAdminNotes] = useState<Record<string, string>>({});
 
   // ── Load functions ──────────────────────────────────────────────────────────
-
-  const loadLior = useCallback(async () => {
-    setLoadingL(true); setErrorL('');
-    try {
-      const res = await fetch(`/api/admin/lior-bookings?key=${encodeURIComponent(key)}`);
-      const data = await res.json() as { bookings?: Booking[]; error?: string };
-      if (!res.ok) setErrorL(res.status === 401 ? 'קוד גישה שגוי' : (data.error ?? 'שגיאה'));
-      else setBookings(data.bookings ?? []);
-    } catch { setErrorL('שגיאת רשת'); }
-    finally { setLoadingL(false); }
-  }, [key]);
 
   const loadSlots = useCallback(async () => {
     setLoadingS(true); setErrorS('');
@@ -224,7 +198,7 @@ function AdminContent() {
     setLoadingU(false);
   }, [key]);
 
-  useEffect(() => { loadLior(); setHealthChecks(loadHealthChecks()); }, [loadLior]);
+  useEffect(() => { setHealthChecks(loadHealthChecks()); }, []);
   useEffect(() => { if (tab === 'immersion') loadSlots(); }, [tab, loadSlots]);
   useEffect(() => { if (tab === 'clients') loadClients(); }, [tab, loadClients]);
   useEffect(() => { if (tab === 'workshops') loadWorkshops(); }, [tab, loadWorkshops]);
@@ -249,14 +223,6 @@ function AdminContent() {
   }, [tab, key]);
 
   // ── Actions ─────────────────────────────────────────────────────────────────
-
-  async function deleteBooking(id: string) {
-    if (!confirm('למחוק רישום זה?')) return;
-    setDeleting(id);
-    await fetch(`/api/admin/lior-bookings?key=${encodeURIComponent(key)}&id=${id}`, { method: 'DELETE' });
-    setBookings(prev => prev.filter(b => b.id !== id));
-    setDeleting(null);
-  }
 
   // Compute preview slot count for range form
   function previewSlotCount(): number {
@@ -305,18 +271,6 @@ function AdminContent() {
     saveHealthChecks(updated);
   }
 
-  function exportCSV() {
-    const rows = [['שעה', 'תאריך', 'שם', 'טלפון', 'זמן הרשמה']];
-    for (const b of bookings)
-      rows.push([b.time_slot, b.slot_date, b.name, b.phone, new Date(b.created_at).toLocaleString('he-IL')]);
-    const csv = rows.map(r => r.map(c => `"${c}"`).join(',')).join('\n');
-    const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a'); a.href = url;
-    a.download = `לקוחות.csv`; a.click();
-    URL.revokeObjectURL(url);
-  }
-
   async function addWorkshop(e: React.FormEvent) {
     e.preventDefault();
     if (!wDate || !wTime || !wInstructor) return;
@@ -349,12 +303,12 @@ function AdminContent() {
   }
 
   // ── Auth check ───────────────────────────────────────────────────────────────
-  if (!loadingL && errorL === 'קוד גישה שגוי') {
+  if (!key) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
         <div className="text-center">
           <div className="text-5xl mb-4">🔒</div>
-          <p className="text-xl font-bold text-red-600">{errorL}</p>
+          <p className="text-xl font-bold text-red-600">קוד גישה נדרש</p>
           <p className="text-slate-500 mt-2 text-sm">הוסיפו ?key=הקוד לכתובת הדף</p>
         </div>
       </div>
@@ -379,7 +333,6 @@ function AdminContent() {
       {/* Tabs */}
       <div className="flex gap-2 mb-8 border-b border-slate-200 flex-wrap">
         {([
-          ['lior',        '📋 סדנת ליאור כ"ץ'],
           ['immersion',   '🧊 מועדי טבילה'],
           ['workshops',   '🏊 סדנאות מדריכים'],
           ['clients',     '👥 לקוחות'],
@@ -400,98 +353,6 @@ function AdminContent() {
           </button>
         ))}
       </div>
-
-      {/* ── TAB: Lior workshop ── */}
-      {tab === 'lior' && (
-        loadingL ? (
-          <div className="flex justify-center py-16">
-            <div className="w-10 h-10 border-2 border-ice-500 border-t-transparent rounded-full animate-spin" />
-          </div>
-        ) : (
-          <>
-            <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
-              <p className="text-slate-500">19.3.2026 · {bookings.length} נרשמים בסה&quot;כ</p>
-              <div className="flex gap-3">
-                <button onClick={loadLior}
-                  className="px-4 py-2 rounded-xl border-2 border-slate-200 text-slate-600 hover:border-slate-300 font-semibold text-sm">
-                  ↻ רענן
-                </button>
-                <button onClick={exportCSV} disabled={bookings.length === 0}
-                  className="px-4 py-2 rounded-xl bg-navy-900 text-white font-semibold text-sm hover:bg-navy-700 disabled:opacity-40">
-                  ⬇ ייצוא CSV
-                </button>
-              </div>
-            </div>
-
-            {TIME_SLOTS.map(slot => {
-              const slotBookings = bookings.filter(b => b.time_slot === slot);
-              const count = slotBookings.length;
-              const full  = count >= MAX;
-              return (
-                <div key={slot} className="mb-8 bg-white rounded-3xl border-2 border-ice-100 shadow-sm overflow-hidden">
-                  <div className={`flex items-center justify-between px-6 py-4 border-b border-slate-100 ${full ? 'bg-red-50' : 'bg-ice-50'}`}>
-                    <div>
-                      <span className="text-xl font-black text-navy-900">{slot}</span>
-                      <span className="text-slate-500 text-sm mr-3">19.3.2026</span>
-                    </div>
-                    <span className={`text-sm font-bold px-3 py-1 rounded-full ${full ? 'bg-red-100 text-red-700' : count === 0 ? 'bg-slate-100 text-slate-500' : 'bg-ice-100 text-ice-700'}`}>
-                      {count}/{MAX} {full ? '(מלא)' : 'נרשמו'}
-                    </span>
-                  </div>
-                  {count === 0 ? (
-                    <div className="text-center py-8 text-slate-400 text-sm">אין נרשמים עדיין</div>
-                  ) : (
-                    <table className="w-full text-sm" dir="rtl">
-                      <thead>
-                        <tr className="border-b border-slate-100 bg-slate-50">
-                          <th className="text-right px-6 py-3 font-semibold text-slate-600 w-8">#</th>
-                          <th className="text-right px-4 py-3 font-semibold text-slate-600">שם</th>
-                          <th className="text-right px-4 py-3 font-semibold text-slate-600">טלפון</th>
-                          <th className="text-right px-4 py-3 font-semibold text-slate-600">בריאות יומית</th>
-                          <th className="text-right px-4 py-3 font-semibold text-slate-600">הצהרה כללית</th>
-                          <th className="text-right px-4 py-3 font-semibold text-slate-600">נרשם ב</th>
-                          <th className="px-4 py-3 w-12"></th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {slotBookings.map((b, i) => {
-                          const hc = healthChecks[b.id] ?? { daily: false, general: false };
-                          return (
-                            <tr key={b.id} className="border-b border-slate-50 hover:bg-slate-50 transition-colors">
-                              <td className="px-6 py-3 text-slate-400 font-mono text-right">{i + 1}</td>
-                              <td className="px-4 py-3 font-semibold text-navy-900 text-right">{b.name}</td>
-                              <td className="px-4 py-3 text-slate-600 font-mono text-right">
-                                <a href={`tel:${b.phone}`} className="hover:text-ice-600">{b.phone}</a>
-                              </td>
-                              <td className="px-4 py-3 text-center">
-                                <input type="checkbox" checked={hc.daily}
-                                  onChange={() => toggleHealth(b.id, 'daily')}
-                                  className="w-4 h-4 accent-ice-500 cursor-pointer" title="הצהרת בריאות יומית" />
-                              </td>
-                              <td className="px-4 py-3 text-center">
-                                <input type="checkbox" checked={hc.general}
-                                  onChange={() => toggleHealth(b.id, 'general')}
-                                  className="w-4 h-4 accent-green-500 cursor-pointer" title="הצהרת בריאות כללית" />
-                              </td>
-                              <td className="px-4 py-3 text-slate-400 text-xs text-right">
-                                {new Date(b.created_at).toLocaleString('he-IL', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })}
-                              </td>
-                              <td className="px-4 py-3 text-center">
-                                <button onClick={() => deleteBooking(b.id)} disabled={deleting === b.id}
-                                  className="text-red-400 hover:text-red-600 disabled:opacity-30" title="מחק">✕</button>
-                              </td>
-                            </tr>
-                          );
-                        })}
-                      </tbody>
-                    </table>
-                  )}
-                </div>
-              );
-            })}
-          </>
-        )
-      )}
 
       {/* ── TAB: Immersion slots ── */}
       {tab === 'immersion' && (
@@ -1265,7 +1126,6 @@ function AdminContent() {
                     <label className="block text-xs font-semibold text-slate-600 mb-1">מדריך</label>
                     <select value={genInstructorId} onChange={e => { setGenInstructorId(e.target.value); setProposed([]); }}
                       className="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-[#7dd8f8] bg-white">
-                      <option value="">— בחר —</option>
                       <option value="ALL">⭐ כולם יחד</option>
                       {dbInstructors.map(i => <option key={i.id} value={i.id}>{i.name}</option>)}
                     </select>

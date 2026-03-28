@@ -28,7 +28,19 @@ interface InstructorInfo {
   name: string;
 }
 
-type Tab = 'future' | 'past' | 'schedule' | 'clients';
+type Tab = 'future' | 'past' | 'schedule' | 'clients' | 'journal';
+
+interface JournalSession {
+  id: string;
+  session_date: string;
+  session_time: string;
+  temperature_celsius: number | null;
+  duration_minutes: number;
+  instructor_name: string;
+  status?: 'planned' | 'done' | 'cancelled';
+  visitor_notes?: string;
+  instructor_notes?: string;
+}
 
 function formatDate(d: string) {
   return new Date(d).toLocaleDateString('he-IL', { weekday: 'long', day: '2-digit', month: '2-digit', year: 'numeric' });
@@ -51,6 +63,17 @@ export default function InstructorDashboard() {
   const [loading, setLoading] = useState(false);
   const [loadingClients, setLoadingClients] = useState(false);
   const [error, setError] = useState('');
+  // ── Journal ──
+  const [journalSessions, setJournalSessions] = useState<JournalSession[]>([]);
+  const [loadingJournal, setLoadingJournal] = useState(false);
+  const [showAddJournal, setShowAddJournal] = useState(false);
+  const [jDate, setJDate] = useState(new Date().toISOString().split('T')[0]);
+  const [jTime, setJTime] = useState('08:00');
+  const [jTemp, setJTemp] = useState('');
+  const [jDuration, setJDuration] = useState('');
+  const [jStatus, setJStatus] = useState<'planned' | 'done' | 'cancelled'>('done');
+  const [jNotes, setJNotes] = useState('');
+  const [jSaving, setJSaving] = useState(false);
 
   const today = new Date().toISOString().split('T')[0];
 
@@ -89,6 +112,44 @@ export default function InstructorDashboard() {
       .catch(() => setLoadingClients(false));
   }, [visitorId, tab, clients.length]);
 
+  function loadJournal() {
+    if (!visitorId) return;
+    setLoadingJournal(true);
+    fetch(`/api/immersion-sessions?visitor_id=${visitorId}`, { headers: { 'x-visitor-id': visitorId } })
+      .then(r => r.json())
+      .then(d => { setJournalSessions(Array.isArray(d) ? d : []); setLoadingJournal(false); })
+      .catch(() => setLoadingJournal(false));
+  }
+
+  useEffect(() => {
+    if (!visitorId || tab !== 'journal') return;
+    loadJournal();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [visitorId, tab]);
+
+  async function saveJournalEntry() {
+    if (!jDuration || !visitorId) return;
+    setJSaving(true);
+    await fetch('/api/immersion-sessions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-visitor-id': visitorId },
+      body: JSON.stringify({
+        visitor_id: visitorId,
+        session_date: jDate,
+        session_time: jTime,
+        temperature_celsius: jTemp ? parseFloat(jTemp) : null,
+        duration_minutes: parseInt(jDuration, 10),
+        instructor_name: name,
+        status: jStatus,
+        visitor_notes: jNotes,
+      }),
+    });
+    setJSaving(false);
+    setShowAddJournal(false);
+    setJTemp(''); setJDuration(''); setJNotes(''); setJStatus('done');
+    loadJournal();
+  }
+
   const future = sessions.filter(s => s.date >= today).reverse();
   const past = sessions.filter(s => s.date < today);
 
@@ -101,6 +162,7 @@ export default function InstructorDashboard() {
     { key: 'past', label: `סדנאות עבר (${past.length})` },
     { key: 'schedule', label: 'שעות סדנאות' },
     { key: 'clients', label: 'רשימת לקוחות' },
+    { key: 'journal', label: '📖 יומן טבילות' },
     { key: 'future', label: 'זמינות שבועית', href: '/instructor/availability' },
   ];
 
@@ -279,6 +341,125 @@ export default function InstructorDashboard() {
                     </table>
                   </div>
                 )}
+            </div>
+          </div>
+        )}
+
+        {/* Journal */}
+        {tab === 'journal' && (
+          <div>
+            {/* Stats */}
+            {!loadingJournal && journalSessions.length > 0 && (() => {
+              const weekAgo = new Date(); weekAgo.setDate(weekAgo.getDate() - 7);
+              const weekMin = journalSessions.filter(s => new Date(s.session_date) >= weekAgo).reduce((sum, s) => sum + s.duration_minutes, 0);
+              const totalMin = journalSessions.reduce((sum, s) => sum + s.duration_minutes, 0);
+              return (
+                <div className="grid grid-cols-3 gap-3 mb-5">
+                  {[
+                    { label: 'טבילות סה״כ', value: journalSessions.length },
+                    { label: 'דק׳ השבוע', value: weekMin },
+                    { label: 'דק׳ סה״כ', value: totalMin },
+                  ].map(stat => (
+                    <div key={stat.label} className="bg-white rounded-2xl border border-slate-100 p-4 text-center">
+                      <p className="text-2xl font-bold text-[#0f2942]">{stat.value}</p>
+                      <p className="text-slate-500 text-xs mt-1">{stat.label}</p>
+                    </div>
+                  ))}
+                </div>
+              );
+            })()}
+
+            <div className="bg-white rounded-2xl border border-slate-100 overflow-hidden">
+              <div className="flex items-center justify-between px-4 py-3 border-b border-slate-100">
+                <h2 className="font-bold text-[#0f2942]">יומן הטבילות האישי שלי</h2>
+                <button onClick={() => setShowAddJournal(v => !v)}
+                  className="text-sm text-[#7dd8f8] hover:text-[#0f2942] font-semibold transition-colors">
+                  {showAddJournal ? 'סגור' : '+ הוסף כניסה'}
+                </button>
+              </div>
+
+              {showAddJournal && (
+                <div className="p-4 bg-slate-50 border-b border-slate-100">
+                  <div className="grid grid-cols-2 gap-3 text-sm">
+                    <div><label className="block text-slate-600 mb-1 text-xs font-semibold">תאריך</label>
+                      <input type="date" value={jDate} onChange={e => setJDate(e.target.value)}
+                        className="w-full border border-slate-200 rounded-xl px-3 py-2 focus:outline-none focus:border-[#7dd8f8]" /></div>
+                    <div><label className="block text-slate-600 mb-1 text-xs font-semibold">שעה</label>
+                      <input type="time" value={jTime} onChange={e => setJTime(e.target.value)}
+                        className="w-full border border-slate-200 rounded-xl px-3 py-2 focus:outline-none focus:border-[#7dd8f8]" /></div>
+                    <div><label className="block text-slate-600 mb-1 text-xs font-semibold">טמפרטורה (°C)</label>
+                      <input type="number" step="0.1" value={jTemp} onChange={e => setJTemp(e.target.value)} placeholder="5.0"
+                        className="w-full border border-slate-200 rounded-xl px-3 py-2 focus:outline-none focus:border-[#7dd8f8]" /></div>
+                    <div><label className="block text-slate-600 mb-1 text-xs font-semibold">משך (דקות) *</label>
+                      <input type="number" value={jDuration} onChange={e => setJDuration(e.target.value)} placeholder="15"
+                        className="w-full border border-slate-200 rounded-xl px-3 py-2 focus:outline-none focus:border-[#7dd8f8]" /></div>
+                    <div><label className="block text-slate-600 mb-1 text-xs font-semibold">סטטוס</label>
+                      <select value={jStatus} onChange={e => setJStatus(e.target.value as 'planned' | 'done' | 'cancelled')}
+                        className="w-full border border-slate-200 rounded-xl px-3 py-2 focus:outline-none focus:border-[#7dd8f8]">
+                        <option value="done">בוצע</option>
+                        <option value="planned">מתוכנן</option>
+                        <option value="cancelled">בוטל</option>
+                      </select></div>
+                    <div><label className="block text-slate-600 mb-1 text-xs font-semibold">הערות</label>
+                      <input value={jNotes} onChange={e => setJNotes(e.target.value)} placeholder="הערות אישיות..."
+                        className="w-full border border-slate-200 rounded-xl px-3 py-2 focus:outline-none focus:border-[#7dd8f8]" /></div>
+                  </div>
+                  <button onClick={saveJournalEntry} disabled={!jDuration || jSaving}
+                    className="mt-3 bg-[#0f2942] hover:bg-[#1a3a5c] disabled:opacity-40 text-white font-bold px-5 py-2 rounded-xl text-sm transition-colors">
+                    {jSaving ? 'שומר...' : '+ הוסף'}
+                  </button>
+                </div>
+              )}
+
+              {loadingJournal ? (
+                <div className="flex justify-center py-12">
+                  <div className="w-8 h-8 border-2 border-[#7dd8f8] border-t-transparent rounded-full animate-spin" />
+                </div>
+              ) : journalSessions.length === 0 ? (
+                <div className="text-center py-12 text-slate-400">
+                  <p className="text-4xl mb-2">🏊</p>
+                  <p>עדיין אין טבילות מתועדות</p>
+                </div>
+              ) : (
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead className="bg-slate-50 border-b border-slate-100">
+                      <tr>
+                        <th className="text-right px-4 py-3 font-semibold text-slate-600">תאריך</th>
+                        <th className="text-right px-4 py-3 font-semibold text-slate-600">שעה</th>
+                        <th className="text-right px-4 py-3 font-semibold text-slate-600">סטטוס</th>
+                        <th className="text-right px-4 py-3 font-semibold text-slate-600">טמפ׳</th>
+                        <th className="text-right px-4 py-3 font-semibold text-slate-600">משך</th>
+                        <th className="text-right px-4 py-3 font-semibold text-slate-600">הערות</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {journalSessions.map(s => (
+                        <tr key={s.id} className="border-b border-slate-50 hover:bg-slate-50 transition-colors">
+                          <td className="px-4 py-3">
+                            {new Date(s.session_date).toLocaleDateString('he-IL', { day: '2-digit', month: '2-digit', year: '2-digit' })}
+                          </td>
+                          <td className="px-4 py-3 font-mono">{s.session_time?.slice(0, 5)}</td>
+                          <td className="px-4 py-3">
+                            <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
+                              s.status === 'done' ? 'bg-green-100 text-green-700' :
+                              s.status === 'cancelled' ? 'bg-red-100 text-red-600' :
+                              'bg-blue-100 text-blue-700'
+                            }`}>
+                              {s.status === 'done' ? 'בוצע' : s.status === 'cancelled' ? 'בוטל' : 'מתוכנן'}
+                            </span>
+                          </td>
+                          <td className="px-4 py-3 text-[#7dd8f8] font-semibold">
+                            {s.temperature_celsius != null ? `${s.temperature_celsius}°C` : '—'}
+                          </td>
+                          <td className="px-4 py-3 font-semibold">{s.duration_minutes} דק׳</td>
+                          <td className="px-4 py-3 text-slate-400 text-xs">{s.visitor_notes || s.instructor_notes || '—'}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
             </div>
           </div>
         )}
