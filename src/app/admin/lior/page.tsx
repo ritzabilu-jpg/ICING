@@ -53,7 +53,7 @@ function saveHealthChecks(data: Record<string, { daily: boolean; general: boolea
 
 // ─── Admin Content ────────────────────────────────────────────────────────────
 
-type TabType = 'lior' | 'immersion' | 'clients' | 'instructors' | 'workshops' | 'reviews' | 'manage-instructors' | 'users' | 'availability';
+type TabType = 'lior' | 'immersion' | 'clients' | 'instructors' | 'workshops' | 'reviews' | 'manage-instructors' | 'users' | 'availability' | 'vacations';
 
 interface InstructorWorkshop {
   id: string;
@@ -156,6 +156,8 @@ function AdminContent() {
   const [showGenerator, setShowGenerator] = useState(false);
   const [availSaving, setAvailSaving] = useState(false);
   const [availMsg, setAvailMsg] = useState('');
+  // ── Vacations ──
+  const [vacAdminNotes, setVacAdminNotes] = useState<Record<string, string>>({});
 
   // ── Load functions ──────────────────────────────────────────────────────────
 
@@ -242,7 +244,7 @@ function AdminContent() {
   }
 
   useEffect(() => {
-    if (tab !== 'availability') return;
+    if (tab !== 'availability' && tab !== 'vacations') return;
     reloadSummary();
   }, [tab, key]);
 
@@ -384,6 +386,7 @@ function AdminContent() {
           ['manage-instructors', '🏊 ניהול מדריכים'],
           ['users',        '👤 משתמשים'],
           ['availability', '📅 זמינות מדריכים'],
+          ['vacations',    '🏖️ חופשות מדריכים'],
           ['instructors',  '📧 הזמנות מדריכים'],
           ['reviews',      '✍️ חוות דעת'],
         ] as [TabType, string][]).map(([t, label]) => (
@@ -1500,6 +1503,63 @@ function AdminContent() {
           </details>
         </div>
       )}
+
+      {/* ── TAB: Vacations ── */}
+      {tab === 'vacations' && (() => {
+        // Flatten all blocked dates from summaryData, sorted by instructor name
+        const rows = summaryData
+          .filter(i => i.blocked.length > 0)
+          .flatMap(i => i.blocked.map(b => ({ ...b, instructor_name: i.name })))
+          .sort((a, b) => a.instructor_name.localeCompare(b.instructor_name, 'he'));
+        return (
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <h2 className="text-lg font-bold text-navy-900">חופשות מדריכים</h2>
+              <button onClick={reloadSummary} disabled={loadingSummary}
+                className="text-xs border border-slate-200 px-3 py-1 rounded-lg text-slate-500 hover:text-slate-700 transition-colors">
+                🔄 רענן
+              </button>
+            </div>
+            {loadingSummary ? (
+              <p className="text-slate-400 text-sm text-center py-8">טוען...</p>
+            ) : rows.length === 0 ? (
+              <p className="text-slate-400 text-sm text-center py-8">אין חופשות מוגדרות</p>
+            ) : (
+              <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="bg-slate-50 border-b border-slate-200">
+                      <th className="text-right px-4 py-3 font-bold text-slate-600 w-36">מדריך</th>
+                      <th className="text-right px-4 py-3 font-bold text-slate-600">מתאריך</th>
+                      <th className="text-right px-4 py-3 font-bold text-slate-600">עד תאריך</th>
+                      <th className="text-right px-4 py-3 font-bold text-slate-600">הערת מדריך</th>
+                      <th className="text-right px-4 py-3 font-bold text-slate-600">הערת אדמין</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100">
+                    {rows.map(r => (
+                      <tr key={r.id} className="hover:bg-slate-50">
+                        <td className="px-4 py-3 font-semibold text-navy-900">{r.instructor_name}</td>
+                        <td className="px-4 py-3 font-mono text-slate-700">{r.from_date}</td>
+                        <td className="px-4 py-3 font-mono text-slate-700">{r.to_date}</td>
+                        <td className="px-4 py-3 text-slate-500">{r.reason || '—'}</td>
+                        <td className="px-4 py-3">
+                          <input
+                            value={vacAdminNotes[r.id] ?? ''}
+                            onChange={e => setVacAdminNotes(prev => ({ ...prev, [r.id]: e.target.value }))}
+                            placeholder="הוסף הערה..."
+                            className="w-full border border-slate-200 rounded-lg px-2 py-1 text-sm focus:outline-none focus:border-ice-400"
+                          />
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        );
+      })()}
 
       {/* ── TAB: Instructors ── */}
       {tab === 'instructors' && (
