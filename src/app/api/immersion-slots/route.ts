@@ -13,9 +13,7 @@ export async function GET() {
     const { data: slots, error } = await supabase
       .from('immersion_slots')
       .select('id, slot_date, slot_time, max_participants, notes')
-      .gte('slot_date', today)
-      .order('slot_date', { ascending: true })
-      .order('slot_time', { ascending: true });
+      .limit(5);
 
     if (error) return NextResponse.json({ slots: [], _error: error.message }, { headers: { 'Cache-Control': 'no-store' } });
 
