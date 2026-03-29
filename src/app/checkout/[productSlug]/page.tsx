@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import SignatureCanvas from 'react-signature-canvas';
 
@@ -61,7 +61,14 @@ const INITIAL_STATE: CheckoutState = {
 export default function CheckoutPage() {
   const params = useParams();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const slug = params.productSlug as string;
+
+  const IMMERSION_PACKAGES: Record<string, { title: string; price: number }> = {
+    single:  { title: 'טבילה בודדת',     price: 80  },
+    '5pack': { title: 'חבילת 5 טבילות',  price: 350 },
+    '10pack':{ title: 'חבילת 10 טבילות', price: 550 },
+  };
 
   const [state, setState] = useState<CheckoutState>(INITIAL_STATE);
   const [loading, setLoading] = useState(false);
@@ -112,6 +119,8 @@ export default function CheckoutPage() {
         })
         .catch(() => setMsg('שגיאה בטעינת הסדנה'));
     } else if (type === 'immersion') {
+      const pkgKey = searchParams.get('pkg') ?? 'single';
+      const pkgInfo = IMMERSION_PACKAGES[pkgKey] ?? IMMERSION_PACKAGES['single'];
       fetch(`/api/immersion-slots/single?id=${id}`)
         .then(r => r.json())
         .then(d => {
@@ -120,14 +129,14 @@ export default function CheckoutPage() {
             setProduct({
               type: 'immersion',
               id: s.id,
-              title: 'טבילה במים קרים',
+              title: `טבילה במים קרים – ${pkgInfo.title}`,
               date: new Date(s.slot_date + 'T00:00:00').toLocaleDateString('he-IL', {
                 weekday: 'long',
                 day: 'numeric',
                 month: 'long',
               }),
               time: s.slot_time.slice(0, 5),
-              price: 80,
+              price: pkgInfo.price,
               instructorName: s.instructor_name,
             });
           }

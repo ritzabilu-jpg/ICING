@@ -423,70 +423,41 @@ export default function ImmersionPage() {
           </section>
         )}
 
-        {/* ── Step 4: Personal details + summary (only after slot selected) ─── */}
+        {/* ── Step 4: Summary + proceed to checkout ─── */}
         {selectedSlotId && (
           <section className="bg-white rounded-3xl shadow-xl p-6">
             <div className="flex items-center gap-3 mb-5">
               <StepBadge n={4} />
-              <h2 className="text-xl font-black text-navy-900">פרטים אישיים</h2>
+              <h2 className="text-xl font-black text-navy-900">סיכום והמשך לתשלום</h2>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-1">שם מלא</label>
-                <input
-                  required
-                  value={name}
-                  onChange={e => setName(e.target.value)}
-                  placeholder="שם מלא"
-                  className="w-full border-2 border-slate-200 focus:border-ice-400 rounded-xl px-4 py-3 text-sm focus:outline-none"
-                />
+            <div className="bg-ice-50 border border-ice-200 rounded-2xl p-4 text-sm space-y-2 mb-5">
+              <div className="font-black text-navy-900 mb-1 text-base">סיכום הזמנה</div>
+              <div className="flex justify-between text-slate-700">
+                <span className="font-semibold">תאריך</span>
+                <span>{formatDateHe(selectedDate)}</span>
               </div>
-              <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-1">טלפון</label>
-                <input
-                  required
-                  value={phone}
-                  onChange={e => setPhone(e.target.value)}
-                  placeholder="05X-XXXXXXX"
-                  type="tel"
-                  className="w-full border-2 border-slate-200 focus:border-ice-400 rounded-xl px-4 py-3 text-sm focus:outline-none"
-                />
+              <div className="flex justify-between text-slate-700">
+                <span className="font-semibold">שעה</span>
+                <span>{selectedSlot?.slot_time.slice(0, 5)}</span>
               </div>
-
-              {/* Summary card */}
-              <div className="bg-ice-50 border border-ice-200 rounded-2xl p-4 text-sm space-y-2">
-                <div className="font-black text-navy-900 mb-1 text-base">סיכום הזמנה</div>
-                <div className="flex justify-between text-slate-700">
-                  <span className="font-semibold">תאריך</span>
-                  <span>{formatDateHe(selectedDate)}</span>
-                </div>
-                <div className="flex justify-between text-slate-700">
-                  <span className="font-semibold">שעה</span>
-                  <span>{selectedSlot?.slot_time.slice(0, 5)}</span>
-                </div>
-                <div className="flex justify-between text-slate-700">
-                  <span className="font-semibold">חבילה</span>
-                  <span>{pkg.title}</span>
-                </div>
-                <div className="border-t border-ice-200 pt-2 flex justify-between font-black text-navy-900 text-base">
-                  <span>סה״כ לתשלום</span>
-                  <span>₪{pkg.price}</span>
-                </div>
+              <div className="flex justify-between text-slate-700">
+                <span className="font-semibold">חבילה</span>
+                <span>{pkg.title}</span>
               </div>
+              <div className="border-t border-ice-200 pt-2 flex justify-between font-black text-navy-900 text-base">
+                <span>סה״כ לתשלום</span>
+                <span>₪{pkg.price}</span>
+              </div>
+            </div>
 
-              {error && <p className="text-red-500 text-sm font-semibold">{error}</p>}
-
-              <button
-                type="submit"
-                disabled={submitting}
-                className="w-full bg-ice-600 hover:bg-ice-700 disabled:opacity-50 text-white font-black
-                           text-lg py-4 rounded-2xl transition-all shadow-lg shadow-ice-500/30"
-              >
-                {submitting ? 'שולח...' : `✅ אישור הרשמה – ₪${pkg.price}`}
-              </button>
-              <p className="text-center text-xs text-slate-400">התשלום מתבצע במקום לפני הטבילה</p>
-            </form>
+            <button
+              onClick={() => router.push(`/checkout/immersion-${selectedSlotId}?pkg=${selectedPkg}`)}
+              className="w-full bg-ice-600 hover:bg-ice-700 text-white font-black
+                         text-lg py-4 rounded-2xl transition-all shadow-lg shadow-ice-500/30"
+            >
+              המשך לפרטים ותשלום →
+            </button>
           </section>
         )}
 

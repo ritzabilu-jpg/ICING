@@ -1,24 +1,23 @@
 'use client';
 
 import { useState, Suspense } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import type { Workshop, WorkshopType } from '@/types';
 import WorkshopTypeSelector from '@/components/booking/WorkshopTypeSelector';
 import CalendarView from '@/components/booking/CalendarView';
-import BookingForm from '@/components/booking/BookingForm';
 import StepIndicator from '@/components/booking/StepIndicator';
 import OneOnOneContactForm from '@/components/booking/OneOnOneContactForm';
 
-type BookingStep = 1 | 2 | 3;
+type BookingStep = 1 | 2;
 
 function BookingContent() {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const initialType = searchParams.get('type') as WorkshopType | null;
   const instructorId = searchParams.get('instructorId') ?? undefined;
 
   const [step, setStep] = useState<BookingStep>(initialType ? 2 : 1);
   const [selectedType, setSelectedType] = useState<WorkshopType | null>(initialType);
-  const [selectedWorkshop, setSelectedWorkshop] = useState<Workshop | null>(null);
 
   const isOneOnOne = selectedType === 'one-on-one';
 
@@ -46,23 +45,12 @@ function BookingContent() {
         <CalendarView
           type={selectedType}
           instructorId={instructorId}
-          onSelect={(workshop) => {
-            setSelectedWorkshop(workshop);
-            setStep(3);
+          onSelect={(workshop: Workshop) => {
+            router.push(`/checkout/workshop-${workshop.id}`);
           }}
           onBack={() => {
             setSelectedType(null);
             setStep(1);
-          }}
-        />
-      )}
-
-      {step === 3 && selectedWorkshop && (
-        <BookingForm
-          workshop={selectedWorkshop}
-          onBack={() => {
-            setSelectedWorkshop(null);
-            setStep(2);
           }}
         />
       )}
