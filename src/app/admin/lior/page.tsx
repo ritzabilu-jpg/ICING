@@ -46,7 +46,7 @@ function saveHealthChecks(data: Record<string, { daily: boolean; general: boolea
 
 // ─── Admin Content ────────────────────────────────────────────────────────────
 
-type TabType = 'immersion' | 'clients' | 'instructors' | 'workshops' | 'reviews' | 'manage-instructors' | 'users' | 'availability' | 'vacations' | 'schedule';
+type TabType = 'immersion' | 'clients' | 'instructors' | 'workshops' | 'reviews' | 'manage-instructors' | 'users' | 'availability' | 'vacations' | 'schedule' | 'phone-requests';
 
 interface InstructorWorkshop {
   id: string;
@@ -171,6 +171,23 @@ function AdminContent() {
   const [wBulkDeleting, setWBulkDeleting] = useState(false);
   // ── Vacations ──
   const [vacAdminNotes, setVacAdminNotes] = useState<Record<string, string>>({});
+  // ── Phone requests ──
+  interface PhoneRequest {
+    id: string;
+    created_at: string;
+    name: string;
+    phone: string;
+    email: string;
+    preferred_hours: string;
+    product_title?: string;
+    product_date?: string;
+    product_time?: string;
+    confirmation_code: string;
+    callback_deadline: string;
+    handled_at?: string;
+  }
+  const [phoneRequests, setPhoneRequests] = useState<PhoneRequest[]>([]);
+  const [loadingPR, setLoadingPR] = useState(false);
 
   // ── Load functions ──────────────────────────────────────────────────────────
 
@@ -246,6 +263,14 @@ function AdminContent() {
   useEffect(() => { if (tab === 'users') loadUsers(); }, [tab, loadUsers]);
   useEffect(() => { if (tab === 'availability') loadDbInstructors(); }, [tab, loadDbInstructors]);
   useEffect(() => { if (tab === 'schedule') loadSchedule(scheduleDate); }, [tab]);
+  useEffect(() => {
+    if (tab !== 'phone-requests') return;
+    setLoadingPR(true);
+    fetch(`/api/admin/phone-requests?key=${key}`)
+      .then(r => r.json())
+      .then(d => { setPhoneRequests(d.requests ?? []); setLoadingPR(false); })
+      .catch(() => setLoadingPR(false));
+  }, [tab]);
   function reloadSummary() {
     setLoadingSummary(true);
     fetch(`/api/admin/availability-summary`, {
@@ -446,6 +471,7 @@ function AdminContent() {
           ['availability', '📅 זמינות מדריכים'],
           ['vacations',    '🏖️ חופשות מדריכים'],
           ['reviews',      '✍️ חוות דעת'],
+          ['phone-requests', '📞 פניות טלפון'],
         ] as [TabType, string][]).map(([t, label]) => (
           <button key={t} onClick={() => setTab(t)}
             className={`px-5 py-2.5 font-bold text-sm rounded-t-xl transition-colors ${
@@ -1791,7 +1817,122 @@ function AdminContent() {
         </div>
       )}
 
+      {/* ── TAB: Phone Requests ── */}
+      {tab === 'phone-requests' && (
+        <div>
+          <h2 className="text-xl font-black text-navy-900 mb-4">פניות טלפון ({phoneRequests.length})</h2>
+          {loadingPR ? (
+            <div className="flex justify-center py-10"><div className="w-8 h-8 border-2 border-ice-500 border-t-transparent rounded-full animate-spin" /></div>
+          ) : phoneRequests.length === 0 ? (
+            <div className="text-center py-10 text-slate-400">אין פניות</div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm border-collapse">
+                <thead>
+                  <tr className="bg-slate-50 text-xs text-slate-500 font-bold">
+                    <th className="border border-slate-200 px-3 py-2 text-right">שם</th>
+                    <th className="border border-slate-200 px-3 py-2 text-right">טלפון</th>
+                    <th className="border border-slate-200 px-3 py-2 text-right">אימייל</th>
+                    <th className="border border-slate-200 px-3 py-2 text-right">שעות מועדפות</th>
+                    <th className="border border-slate-200 px-3 py-2 text-right">מוצר</th>
+                    <th className="border border-slate-200 px-3 py-2 text-center">זמן שנותר</th>
+                    <th className="border border-slate-200 px-3 py-2 text-center">טופל</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {phoneRequests.map(pr => (
+                    <PhoneRequestRow
+                      key={pr.id}
+                      pr={pr}
+                      adminKey={key}
+                      onToggle={(id, handled) => {
+                        setPhoneRequests(prev => prev.map(r => r.id === id ? { ...r, handled_at: handled ? new Date().toISOString() : undefined } : r));
+                      }}
+                    />
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      )}
+
     </div>
+  );
+}
+
+function PhoneRequestRow({ pr, adminKey, onToggle }: {
+  pr: { id: string; created_at: string; name: string; phone: string; email: string; preferred_hours: string; product_title?: string; product_date?: string; product_time?: string; confirmation_code: string; callback_deadline: string; handled_at?: string };
+  adminKey: string;
+  onToggle: (id: string, handled: boolean) => void;
+}) {
+  const [timeLeft, setTimeLeft] = useState('');
+  const [toggling, setToggling] = useState(false);
+
+  useEffect(() => {
+    function update() {
+      const deadline = new Date(pr.callback_deadline);
+      const now = new Date();
+      const diff = deadline.getTime() - now.getTime();
+      if (diff <= 0) { setTimeLeft('פג תוקף'); return; }
+      const h = Math.floor(diff / 3600000);
+      const m = Math.floor((diff % 3600000) / 60000);
+      setTimeLeft(`${h}ש׳ ${m}ד׳`);
+    }
+    update();
+    const t = setInterval(update, 60000);
+    return () => clearInterval(t);
+  }, [pr.callback_deadline]);
+
+  const isHandled = !!pr.handled_at;
+  const isExpired = new Date(pr.callback_deadline) < new Date();
+
+  async function toggle() {
+    setToggling(true);
+    await fetch(`/api/admin/phone-requests?key=${adminKey}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: pr.id, handled: !isHandled }),
+    });
+    onToggle(pr.id, !isHandled);
+    setToggling(false);
+  }
+
+  return (
+    <tr className={`${isHandled ? 'opacity-40' : ''} hover:bg-slate-50`}>
+      <td className={`border border-slate-200 px-3 py-2 font-semibold ${isHandled ? 'line-through' : ''}`}>{pr.name}</td>
+      <td className={`border border-slate-200 px-3 py-2 font-mono ${isHandled ? 'line-through' : ''}`}>
+        <a href={`tel:${pr.phone}`} className="text-blue-600 hover:underline">{pr.phone}</a>
+      </td>
+      <td className={`border border-slate-200 px-3 py-2 text-xs ${isHandled ? 'line-through' : ''}`}>{pr.email}</td>
+      <td className="border border-slate-200 px-3 py-2 text-xs text-slate-600">{pr.preferred_hours}</td>
+      <td className="border border-slate-200 px-3 py-2 text-xs text-slate-500">
+        {pr.product_title && <div>{pr.product_title}</div>}
+        {pr.product_date && <div className="text-slate-400">{pr.product_date} {pr.product_time}</div>}
+      </td>
+      <td className="border border-slate-200 px-3 py-2 text-center">
+        {isHandled ? (
+          <span className="text-green-600 text-xs font-bold">✓ טופל</span>
+        ) : (
+          <span className={`font-mono text-xs font-bold ${isExpired ? 'text-red-600' : 'text-amber-600'}`}>
+            {timeLeft}
+          </span>
+        )}
+      </td>
+      <td className="border border-slate-200 px-3 py-2 text-center">
+        <button
+          onClick={toggle}
+          disabled={toggling}
+          className={`text-xs font-bold px-3 py-1 rounded-lg transition-colors ${
+            isHandled
+              ? 'bg-slate-100 text-slate-500 hover:bg-slate-200'
+              : 'bg-green-100 text-green-700 hover:bg-green-200'
+          }`}
+        >
+          {toggling ? '...' : isHandled ? 'בטל' : 'סמן כטופל'}
+        </button>
+      </td>
+    </tr>
   );
 }
 

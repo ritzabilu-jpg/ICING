@@ -37,6 +37,7 @@ interface CheckoutState {
   paymentMethod: 'credit' | 'bit' | 'paybox' | 'phone' | '';
   paymentConfirmed: boolean;
   confirmationCode?: string;
+  preferredHours: string;
 }
 
 const STORAGE_KEY = 'ck_v1';
@@ -54,6 +55,7 @@ const INITIAL_STATE: CheckoutState = {
   healthDone: false,
   paymentMethod: '',
   paymentConfirmed: false,
+  preferredHours: '',
 };
 
 // ── Main Page ──────────────────────────────────────────────────────────────
@@ -76,6 +78,9 @@ export default function CheckoutPage() {
   const [product, setProduct] = useState<ProductInfo | null>(null);
   const [otpCode, setOtpCode] = useState('');
   const [otpTimer, setOtpTimer] = useState(0);
+  const [phoneSubmitting, setPhoneSubmitting] = useState(false);
+  const [phoneSubmitted, setPhoneSubmitted] = useState(false);
+  const [callbackDeadlineStr, setCallbackDeadlineStr] = useState('');
 
   // OTP countdown timer
   useEffect(() => {
@@ -83,6 +88,12 @@ export default function CheckoutPage() {
     const t = setTimeout(() => setOtpTimer(s => s - 1), 1000);
     return () => clearTimeout(t);
   }, [otpTimer]);
+
+  // Compute callback deadline string on load
+  useEffect(() => {
+    setCallbackDeadlineStr(computeDeadlineStr());
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Parse slug and load product info + saved state
   useEffect(() => {
@@ -341,6 +352,57 @@ export default function CheckoutPage() {
     setLoading(false);
   }
 
+  function computeDeadlineStr(): string {
+    const now = new Date();
+    const day = now.getDay();
+    const hour = now.getHours();
+    const isWeekend = day === 5 || day === 6 || (day === 4 && hour >= 12);
+    const hebrewDays = ['ראשון', 'שני', 'שלישי', 'רביעי', 'חמישי', 'שישי', 'שבת'];
+    if (isWeekend) {
+      const daysToSun = day === 0 ? 7 : (7 - day);
+      const sun = new Date(now);
+      sun.setDate(now.getDate() + daysToSun);
+      return `ביום ${hebrewDays[0]} ${String(sun.getDate()).padStart(2,'0')}/${String(sun.getMonth()+1).padStart(2,'0')} עד שעה 18:00`;
+    }
+    const dl = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+    return `ביום ${hebrewDays[dl.getDay()]} ${String(dl.getDate()).padStart(2,'0')}/${String(dl.getMonth()+1).padStart(2,'0')} עד שעה ${String(dl.getHours()).padStart(2,'0')}:${String(dl.getMinutes()).padStart(2,'0')}`;
+  }
+
+  async function submitPhoneRequest() {
+    if (!state.name || !state.phone || !state.preferredHours) return;
+    setPhoneSubmitting(true);
+    setMsg('');
+    const deadlineStr = computeDeadlineStr();
+    setCallbackDeadlineStr(deadlineStr);
+    try {
+      const res = await fetch('/api/checkout/phone-request', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: state.name,
+          phone: state.phone,
+          email: state.email,
+          preferred_hours: state.preferredHours,
+          product_title: product?.title,
+          product_date: product?.date,
+          product_time: product?.time,
+          booking_id: state.bookingId,
+        }),
+      });
+      const d = await res.json();
+      if (res.ok) {
+        setCallbackDeadlineStr(d.deadline_str ?? deadlineStr);
+        setPhoneSubmitted(true);
+        save({ confirmationCode: d.confirmation_code, paymentMethod: 'phone' });
+      } else {
+        setMsg(d.error ?? 'שגיאה בשליחת הפנייה');
+      }
+    } catch {
+      setMsg('שגיאת רשת — נסה שנית');
+    }
+    setPhoneSubmitting(false);
+  }
+
   function goToTranzila() {
     if (!product || !state.bookingId) return;
     confirmPayment('credit').then(() => {
@@ -575,144 +637,105 @@ export default function CheckoutPage() {
 
               <div className="space-y-3">
 
-                {/* Credit card */}
-                <button
-                  onClick={goToTranzila}
-                  disabled={loading}
-                  className="w-full border-2 border-slate-200 hover:border-ice-400 hover:bg-ice-50 rounded-2xl p-4 text-right transition-all flex items-center justify-between disabled:opacity-50"
-                >
+                {/* Credit card – coming soon */}
+                <div className="w-full border-2 border-slate-100 rounded-2xl p-4 flex items-center justify-between opacity-50 cursor-not-allowed bg-slate-50">
                   <div>
-                    <div className="font-black text-navy-900">💳 כרטיס אשראי</div>
-                    <div className="text-xs text-slate-500 mt-0.5">מאובטח על-ידי טרנזילה</div>
+                    <div className="font-black text-slate-400">💳 כרטיס אשראי</div>
+                    <div className="text-xs text-slate-300">מאובטח על-ידי טרנזילה</div>
                   </div>
-                  <span className="text-slate-400">›</span>
-                </button>
+                  <span className="text-xs font-bold bg-slate-200 text-slate-500 px-2 py-0.5 rounded-full">בקרוב</span>
+                </div>
 
-                {/* Bit */}
-                <button
-                  onClick={() => save({ paymentMethod: 'bit' })}
-                  disabled={loading}
-                  className={`w-full border-2 rounded-2xl p-4 text-right transition-all flex items-center justify-between ${
-                    state.paymentMethod === 'bit'
-                      ? 'border-ice-500 bg-ice-50'
-                      : 'border-slate-200 hover:border-ice-400 hover:bg-ice-50'
-                  }`}
-                >
+                {/* Bit – coming soon */}
+                <div className="w-full border-2 border-slate-100 rounded-2xl p-4 flex items-center justify-between opacity-50 cursor-not-allowed bg-slate-50">
                   <div className="flex items-center gap-3">
-                    <Image
-                      src="/Bit logo ביט.png"
-                      alt="Bit"
-                      width={40}
-                      height={24}
-                      className="object-contain"
-                      unoptimized
-                    />
+                    <Image src="/Bit logo ביט.png" alt="Bit" width={40} height={24} className="object-contain grayscale" unoptimized />
                     <div>
-                      <div className="font-black text-navy-900">Bit</div>
-                      <div className="text-xs text-slate-500">העברה מהירה</div>
+                      <div className="font-black text-slate-400">Bit</div>
+                      <div className="text-xs text-slate-300">העברה מהירה</div>
                     </div>
                   </div>
-                  <span className="text-slate-400">›</span>
-                </button>
+                  <span className="text-xs font-bold bg-slate-200 text-slate-500 px-2 py-0.5 rounded-full">בקרוב</span>
+                </div>
 
-                {/* Bit instructions */}
-                {state.paymentMethod === 'bit' && (
-                  <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 text-sm space-y-2">
-                    <p className="font-bold text-blue-800">הוראות תשלום בביט:</p>
-                    <p className="text-blue-700">
-                      העבר/י <strong>₪{total}</strong> לפלאפון <strong>{ADMIN_PHONE}</strong>
-                    </p>
-                    <p className="text-xs text-blue-600">
-                      לאחר ההעברה לחץ/י &quot;שילמתי&quot; — נאמת ב-24 שעות ונשלח אישור למייל.
-                    </p>
-                    <a
-                      href={`https://www.bitpay.co.il/app/transfer?amount=${total}&name=ICING`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="block bg-blue-600 text-white font-bold px-4 py-2 rounded-xl text-center"
-                    >
-                      פתח ביט ›
-                    </a>
-                    <button
-                      onClick={() => confirmPayment('bit')}
-                      disabled={loading}
-                      className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-xl disabled:opacity-50"
-                    >
-                      {loading ? '...' : '✅ שילמתי בביט'}
-                    </button>
-                  </div>
-                )}
-
-                {/* Paybox */}
-                <button
-                  onClick={() => save({ paymentMethod: 'paybox' })}
-                  disabled={loading}
-                  className={`w-full border-2 rounded-2xl p-4 text-right transition-all flex items-center justify-between ${
-                    state.paymentMethod === 'paybox'
-                      ? 'border-ice-500 bg-ice-50'
-                      : 'border-slate-200 hover:border-ice-400 hover:bg-ice-50'
-                  }`}
-                >
+                {/* Paybox – coming soon */}
+                <div className="w-full border-2 border-slate-100 rounded-2xl p-4 flex items-center justify-between opacity-50 cursor-not-allowed bg-slate-50">
                   <div className="flex items-center gap-3">
-                    <Image
-                      src="/PAYBOX LOGO פייבוקס.jpg"
-                      alt="Paybox"
-                      width={50}
-                      height={24}
-                      className="object-contain"
-                      unoptimized
-                    />
+                    <Image src="/PAYBOX LOGO פייבוקס.jpg" alt="Paybox" width={50} height={24} className="object-contain grayscale" unoptimized />
                     <div>
-                      <div className="font-black text-navy-900">Paybox</div>
-                      <div className="text-xs text-slate-500">תשלום דיגיטלי</div>
+                      <div className="font-black text-slate-400">Paybox</div>
+                      <div className="text-xs text-slate-300">תשלום דיגיטלי</div>
                     </div>
                   </div>
-                  <span className="text-slate-400">›</span>
-                </button>
+                  <span className="text-xs font-bold bg-slate-200 text-slate-500 px-2 py-0.5 rounded-full">בקרוב</span>
+                </div>
 
-                {/* Paybox instructions */}
-                {state.paymentMethod === 'paybox' && (
-                  <div className="bg-purple-50 border border-purple-200 rounded-xl p-4 text-sm space-y-2">
-                    <p className="font-bold text-purple-800">הוראות תשלום בפייבוקס:</p>
-                    <p className="text-purple-700">
-                      העבר/י <strong>₪{total}</strong> לחשבון ICING
-                    </p>
-                    <p className="text-xs text-purple-600">
-                      לאחר ההעברה לחץ/י &quot;שילמתי&quot; — נאמת ב-24 שעות ונשלח אישור למייל.
-                    </p>
-                    <a
-                      href={`https://payboxapp.page.link/?amount=${total}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="block bg-purple-600 text-white font-bold px-4 py-2 rounded-xl text-center"
-                    >
-                      פתח פייבוקס ›
-                    </a>
-                    <button
-                      onClick={() => confirmPayment('paybox')}
-                      disabled={loading}
-                      className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-xl disabled:opacity-50"
-                    >
-                      {loading ? '...' : '✅ שילמתי בפייבוקס'}
-                    </button>
+                {/* Phone callback – ACTIVE */}
+                <div className="border-2 border-ice-400 bg-ice-50 rounded-2xl p-4">
+                  <div className="flex items-center gap-2 mb-3">
+                    <span className="text-lg">📞</span>
+                    <div>
+                      <div className="font-black text-navy-900">תשלום טלפוני</div>
+                      <div className="text-xs text-slate-500">ניצור קשר ונסגור את ההזמנה יחד</div>
+                    </div>
                   </div>
-                )}
 
-                {/* Phone */}
-                <button
-                  onClick={() => confirmPayment('phone')}
-                  disabled={loading}
-                  className="w-full border-2 border-slate-200 hover:border-ice-400 hover:bg-ice-50 rounded-2xl p-4 text-right transition-all flex items-center justify-between disabled:opacity-50"
-                >
-                  <div>
-                    <div className="font-black text-navy-900">📞 תשלום טלפוני</div>
-                    <div className="text-xs text-slate-500">נחזור אליך תוך 24 שעות</div>
-                  </div>
-                  <span className="text-slate-400">›</span>
-                </button>
+                  {phoneSubmitted ? (
+                    <div className="bg-green-50 border border-green-200 rounded-xl p-4 text-center">
+                      <div className="text-3xl mb-2">✅</div>
+                      <p className="font-bold text-green-800 text-sm">הפנייה נשלחה!</p>
+                      <p className="text-green-700 text-xs mt-1">נחזור אליך {callbackDeadlineStr}</p>
+                    </div>
+                  ) : (
+                    <div className="space-y-2">
+                      <input
+                        value={state.name}
+                        onChange={e => setState(p => ({ ...p, name: e.target.value }))}
+                        placeholder="שם מלא"
+                        className="w-full border border-slate-200 focus:border-ice-400 rounded-xl px-3 py-2 text-sm focus:outline-none"
+                      />
+                      <input
+                        value={state.phone}
+                        onChange={e => setState(p => ({ ...p, phone: e.target.value }))}
+                        placeholder="מספר טלפון"
+                        type="tel"
+                        className="w-full border border-slate-200 focus:border-ice-400 rounded-xl px-3 py-2 text-sm focus:outline-none"
+                      />
+                      <input
+                        value={state.email}
+                        onChange={e => setState(p => ({ ...p, email: e.target.value }))}
+                        placeholder="כתובת אימייל (לקבלת אישור)"
+                        type="email"
+                        className="w-full border border-slate-200 focus:border-ice-400 rounded-xl px-3 py-2 text-sm focus:outline-none"
+                      />
+                      <select
+                        value={state.preferredHours}
+                        onChange={e => setState(p => ({ ...p, preferredHours: e.target.value }))}
+                        className="w-full border border-slate-200 focus:border-ice-400 rounded-xl px-3 py-2 text-sm focus:outline-none bg-white"
+                      >
+                        <option value="">באיזה שעות נוח לך? *</option>
+                        <option value="בוקר 08:00-12:00">בוקר 08:00–12:00</option>
+                        <option value="צהריים 12:00-16:00">צהריים 12:00–16:00</option>
+                        <option value="אחה״צ 16:00-20:00">אחה״צ 16:00–20:00</option>
+                        <option value="כל שעה">כל שעה</option>
+                      </select>
+                      <div className="bg-amber-50 border border-amber-200 rounded-xl px-3 py-2 text-xs text-amber-800">
+                        ⏰ {callbackDeadlineStr ? `נחזור אליך ${callbackDeadlineStr}` : 'נחזור אליך תוך 24 שעות'}
+                      </div>
+                      {msg && <p className="text-red-500 text-xs">{msg}</p>}
+                      <button
+                        onClick={submitPhoneRequest}
+                        disabled={phoneSubmitting || !state.name || !state.phone || !state.preferredHours}
+                        className="w-full bg-ice-600 hover:bg-ice-700 disabled:opacity-50 text-white font-black py-3 rounded-xl text-sm transition-colors"
+                      >
+                        {phoneSubmitting ? 'שולח...' : 'שלח פנייה — נחזור אליך ›'}
+                      </button>
+                    </div>
+                  )}
+                </div>
               </div>
 
-              {msg && <p className="text-red-500 text-sm mt-3">{msg}</p>}
+              {msg && !state.paymentMethod && <p className="text-red-500 text-sm mt-3">{msg}</p>}
             </div>
           )}
 
