@@ -48,7 +48,7 @@ export default function AvailabilitySummaryGrid({ instructors }: Props) {
       s => s.type === viewType && s.day_of_week === day && s.slot_index === slotIdx
     );
     if (!s) return '';
-    return `${s.from_time.slice(0, 5)}–${s.to_time.slice(0, 5)}`;
+    return `${(s.from_time ?? '').slice(0, 5)}–${(s.to_time ?? '').slice(0, 5)}`;
   }
 
   // Get upcoming blocked dates (next 60 days)
