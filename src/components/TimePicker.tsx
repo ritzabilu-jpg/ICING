@@ -9,7 +9,7 @@ interface TimePickerProps {
 }
 
 const HOURS = Array.from({ length: 24 }, (_, i) => i.toString().padStart(2, '0'));
-const MINUTES = ['00', '15', '30', '45'];
+const MINUTES = ['00', '30'];
 
 export default function TimePicker({ value, onChange, placeholder = 'HH:MM' }: TimePickerProps) {
   const [open, setOpen] = useState(false);
