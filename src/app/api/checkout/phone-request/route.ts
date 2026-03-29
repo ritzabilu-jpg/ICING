@@ -94,7 +94,7 @@ export async function POST(req: NextRequest) {
               </div>
               <p style="color: #64748b; font-size: 13px;">שמור את קוד האישור לעיון עתידי.</p>
               <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 20px 0;">
-              <p style="color: #94a3b8; font-size: 12px;">ICING – חוויות שוויץ המדע | חולון</p>
+              <p style="color: #94a3b8; font-size: 12px;">ICING – חוויות שוויץ המדע | רחובות</p>
             </div>
           `,
         }),
