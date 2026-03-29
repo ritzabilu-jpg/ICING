@@ -48,7 +48,7 @@ export default function AvailabilitySummaryGrid({ instructors }: Props) {
       s => s.type === viewType && s.day_of_week === day && s.slot_index === slotIdx
     );
     if (!s) return '';
-    return `${s.from_time}–${s.to_time}`;
+    return `${s.from_time.slice(0, 5)}–${s.to_time.slice(0, 5)}`;
   }
 
   // Get upcoming blocked dates (next 60 days)
@@ -123,7 +123,7 @@ export default function AvailabilitySummaryGrid({ instructors }: Props) {
                 {DAYS.map((_, dayIdx) => {
                   const available = getInstructorsForCell(dayIdx, slotIdx);
                   return (
-                    <td key={dayIdx} className="border border-slate-200 px-2 py-2 text-center align-top min-w-[80px]">
+                    <td key={dayIdx} className="border border-slate-200 px-1 py-1.5 text-center align-top w-[110px] max-w-[130px]">
                       {available.length === 0 ? (
                         <span className="text-slate-200 text-xs">—</span>
                       ) : (
@@ -132,11 +132,10 @@ export default function AvailabilitySummaryGrid({ instructors }: Props) {
                             const timeRange = getTimeRange(inst, dayIdx, slotIdx);
                             return (
                               <span key={inst.id}
-                                title={timeRange}
-                                className="inline-block text-xs font-semibold px-2 py-0.5 rounded-full text-white cursor-default whitespace-nowrap"
+                                className="inline-flex flex-wrap justify-center gap-x-1 text-xs font-semibold px-2 py-0.5 rounded-full text-white cursor-default leading-snug"
                                 style={{ backgroundColor: inst.color }}>
-                                {inst.name}
-                                {timeRange && <span className="opacity-80 mr-1 font-normal text-[10px]">{timeRange}</span>}
+                                <span>{inst.name}</span>
+                                {timeRange && <span className="opacity-80 font-normal text-[10px]">{timeRange}</span>}
                               </span>
                             );
                           })}
