@@ -147,7 +147,7 @@ function AdminContent() {
   const [conflictData, setConflictData] = useState<{ conflicts: ConflictItem[]; clean: CleanSlot[] } | null>(null);
   const [conflictConfirming, setConflictConfirming] = useState(false);
   // ── Weekly schedule ──
-  interface ScheduleSlot { id: string; date: string; time: string; instructor_id: string | null; instructor_name: string | null }
+  interface ScheduleSlot { id: string; date: string; time: string; instructor_id: string | null; instructor_name: string | null; available_instructors: { id: string; name: string }[] }
   const [scheduleDate, setScheduleDate] = useState(() => {
     const d = new Date();
     return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
@@ -758,17 +758,36 @@ function AdminContent() {
                         </td>
                         {dates.map(d => {
                           const cell = cellMap.get(`${d}|${t}`) ?? [];
-                          if (cell.length === 0) return <td key={d} className="border border-slate-100 px-2 py-1" />;
-                          const isConflict = cell.length > 1;
+                          if (cell.length === 0) return <td key={d} className="border border-slate-100 px-1 py-0.5" />;
+                          const slot = cell[0];
+                          const avail = slot.available_instructors ?? [];
+                          const isConflict = avail.length > 1;
                           return (
                             <td key={d} className={`border px-1 py-0.5 text-center text-xs ${
                               isConflict ? 'border-red-300 bg-red-50' : 'border-green-200 bg-green-50'
                             }`}>
                               {isConflict ? (
-                                <span className="text-red-600 font-bold">⚠ {cell.length}</span>
+                                <select
+                                  value={slot.instructor_id ?? ''}
+                                  onChange={async e => {
+                                    const newId = e.target.value || null;
+                                    await fetch(`/api/admin/schedule-week?key=${key}`, {
+                                      method: 'PATCH',
+                                      headers: { 'Content-Type': 'application/json' },
+                                      body: JSON.stringify({ slot_id: slot.id, instructor_id: newId }),
+                                    });
+                                    loadSchedule(scheduleDate);
+                                  }}
+                                  className="text-xs border border-red-300 rounded p-0.5 w-full bg-white text-red-700 font-semibold"
+                                >
+                                  <option value="">⚠ {avail.length} מדריכים</option>
+                                  {avail.map(a => (
+                                    <option key={a.id} value={a.id}>{a.name}</option>
+                                  ))}
+                                </select>
                               ) : (
                                 <span className="text-green-700 font-semibold">
-                                  {cell[0].instructor_name ?? '—'}
+                                  {slot.instructor_name ?? (avail[0]?.name ?? '—')}
                                 </span>
                               )}
                             </td>
@@ -779,8 +798,8 @@ function AdminContent() {
                   </tbody>
                 </table>
                 <div className="flex gap-4 mt-3 text-xs text-slate-500">
-                  <span className="flex items-center gap-1"><span className="inline-block w-3 h-3 rounded bg-green-100 border border-green-300" /> מועד עם מדריך</span>
-                  <span className="flex items-center gap-1"><span className="inline-block w-3 h-3 rounded bg-red-100 border border-red-300" /> קונפליקט</span>
+                  <span className="flex items-center gap-1"><span className="inline-block w-3 h-3 rounded bg-green-100 border border-green-300" /> מדריך יחיד זמין</span>
+                  <span className="flex items-center gap-1"><span className="inline-block w-3 h-3 rounded bg-red-100 border border-red-300" /> קונפליקט – יותר ממדריך אחד זמין</span>
                 </div>
               </div>
             )}
