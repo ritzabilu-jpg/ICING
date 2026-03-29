@@ -444,7 +444,6 @@ function AdminContent() {
           ['schedule',     '📋 לוח שבועי'],
           ['availability', '📅 זמינות מדריכים'],
           ['vacations',    '🏖️ חופשות מדריכים'],
-          ['instructors',  '📧 הזמנות מדריכים'],
           ['reviews',      '✍️ חוות דעת'],
         ] as [TabType, string][]).map(([t, label]) => (
           <button key={t} onClick={() => setTab(t)}
@@ -674,8 +673,19 @@ function AdminContent() {
 
       {/* ── TAB: Weekly Schedule ── */}
       {tab === 'schedule' && (() => {
-        // Build grid: unique dates × unique times
-        const dates = [...new Set(scheduleSlots.map(s => s.date))].sort();
+        // Build full week dates (Sun–Sat) from weekStart
+        function allWeekDates(): string[] {
+          if (!scheduleWeekStart) return [...new Set(scheduleSlots.map(s => s.date))].sort();
+          const dates: string[] = [];
+          const start = new Date(scheduleWeekStart + 'T00:00:00');
+          for (let i = 0; i < 7; i++) {
+            const d = new Date(start);
+            d.setDate(start.getDate() + i);
+            dates.push(`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`);
+          }
+          return dates;
+        }
+        const dates = allWeekDates();
         const times = [...new Set(scheduleSlots.map(s => s.time))].sort();
         // Map: "date|time" → slots[]
         const cellMap = new Map<string, ScheduleSlot[]>();
@@ -704,16 +714,16 @@ function AdminContent() {
           <div className="space-y-4">
             {/* Week navigation */}
             <div className="flex items-center justify-between bg-white rounded-2xl border border-slate-200 px-4 py-3">
-              <button onClick={() => shiftWeek(-1)} className="text-slate-500 hover:text-navy-900 font-bold px-3 py-1 rounded-lg hover:bg-slate-100">
-                › שבוע הבא
+              <button onClick={() => shiftWeek(1)} className="text-slate-500 hover:text-navy-900 font-bold px-3 py-1 rounded-lg hover:bg-slate-100">
+                ‹ שבוע הבא
               </button>
               <span className="font-black text-navy-900 text-sm">
                 {scheduleWeekStart && scheduleWeekEnd
                   ? `${scheduleWeekStart.split('-').reverse().slice(0,2).join('.')} – ${scheduleWeekEnd.split('-').reverse().slice(0,2).join('.')}`
                   : '...'}
               </span>
-              <button onClick={() => shiftWeek(1)} className="text-slate-500 hover:text-navy-900 font-bold px-3 py-1 rounded-lg hover:bg-slate-100">
-                שבוע קודם ‹
+              <button onClick={() => shiftWeek(-1)} className="text-slate-500 hover:text-navy-900 font-bold px-3 py-1 rounded-lg hover:bg-slate-100">
+                שבוע קודם ›
               </button>
             </div>
 
