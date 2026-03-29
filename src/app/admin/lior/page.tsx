@@ -156,6 +156,7 @@ function AdminContent() {
   const [scheduleWeekStart, setScheduleWeekStart] = useState('');
   const [scheduleWeekEnd, setScheduleWeekEnd] = useState('');
   const [loadingSchedule, setLoadingSchedule] = useState(false);
+  const [resolvedSlots, setResolvedSlots] = useState<Set<string>>(new Set());
   // ── Bulk delete immersion ──
   const [bulkDelFrom, setBulkDelFrom]   = useState('');
   const [bulkDelTo, setBulkDelTo]       = useState('');
@@ -762,9 +763,14 @@ function AdminContent() {
                           const slot = cell[0];
                           const avail = slot.available_instructors ?? [];
                           const isConflict = avail.length > 1;
+                          const isResolved = resolvedSlots.has(slot.id);
                           return (
                             <td key={d} className={`border px-1 py-0.5 text-center text-xs ${
-                              isConflict ? 'border-red-300 bg-red-50' : 'border-green-200 bg-green-50'
+                              isResolved
+                                ? 'border-yellow-300 bg-yellow-50'
+                                : isConflict
+                                  ? 'border-red-300 bg-red-50'
+                                  : 'border-green-200 bg-green-50'
                             }`}>
                               {isConflict ? (
                                 <select
@@ -776,11 +782,15 @@ function AdminContent() {
                                       headers: { 'Content-Type': 'application/json' },
                                       body: JSON.stringify({ slot_id: slot.id, instructor_id: newId }),
                                     });
-                                    loadSchedule(scheduleDate);
+                                    if (newId) setResolvedSlots(prev => new Set(prev).add(slot.id));
                                   }}
-                                  className="text-xs border border-red-300 rounded p-0.5 w-full bg-white text-red-700 font-semibold"
+                                  className={`text-xs border rounded p-0.5 w-full font-semibold ${
+                                    isResolved
+                                      ? 'border-yellow-400 bg-yellow-50 text-yellow-800'
+                                      : 'border-red-300 bg-white text-red-700'
+                                  }`}
                                 >
-                                  <option value="">⚠ {avail.length} מדריכים</option>
+                                  <option value="">{isResolved ? '✓ שויך' : `⚠ ${avail.length} מדריכים`}</option>
                                   {avail.map(a => (
                                     <option key={a.id} value={a.id}>{a.name}</option>
                                   ))}
@@ -800,6 +810,7 @@ function AdminContent() {
                 <div className="flex gap-4 mt-3 text-xs text-slate-500">
                   <span className="flex items-center gap-1"><span className="inline-block w-3 h-3 rounded bg-green-100 border border-green-300" /> מדריך יחיד זמין</span>
                   <span className="flex items-center gap-1"><span className="inline-block w-3 h-3 rounded bg-red-100 border border-red-300" /> קונפליקט – יותר ממדריך אחד זמין</span>
+                  <span className="flex items-center gap-1"><span className="inline-block w-3 h-3 rounded bg-yellow-100 border border-yellow-300" /> קונפליקט נפתר</span>
                 </div>
               </div>
             )}
