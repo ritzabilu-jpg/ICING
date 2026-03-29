@@ -6,12 +6,14 @@ import { Suspense } from 'react';
 import type { ClientEntry } from '@/app/api/admin/clients/route';
 import AvailabilityTable, { AvailabilitySlot } from '@/components/AvailabilityTable';
 import AvailabilitySummaryGrid, { SummaryInstructor } from '@/components/AvailabilitySummaryGrid';
+import ConflictGrid, { ConflictItem, CleanSlot } from '@/components/admin/ConflictGrid';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 interface ImmersionSlot {
   id: string; slot_date: string; slot_time: string;
   max_participants: number; notes: string; booked: number;
+  instructor_id?: string | null; instructor_name?: string | null;
   bookings: { visitor_name: string; visitor_phone: string; package_type: string; created_at: string }[];
 }
 
@@ -44,7 +46,7 @@ function saveHealthChecks(data: Record<string, { daily: boolean; general: boolea
 
 // ─── Admin Content ────────────────────────────────────────────────────────────
 
-type TabType = 'immersion' | 'clients' | 'instructors' | 'workshops' | 'reviews' | 'manage-instructors' | 'users' | 'availability' | 'vacations';
+type TabType = 'immersion' | 'clients' | 'instructors' | 'workshops' | 'reviews' | 'manage-instructors' | 'users' | 'availability' | 'vacations' | 'schedule';
 
 interface InstructorWorkshop {
   id: string;
@@ -141,6 +143,19 @@ function AdminContent() {
   const [showGenerator, setShowGenerator] = useState(false);
   const [availSaving, setAvailSaving] = useState(false);
   const [availMsg, setAvailMsg] = useState('');
+  // ── Conflict resolution ──
+  const [conflictData, setConflictData] = useState<{ conflicts: ConflictItem[]; clean: CleanSlot[] } | null>(null);
+  const [conflictConfirming, setConflictConfirming] = useState(false);
+  // ── Weekly schedule ──
+  interface ScheduleSlot { id: string; date: string; time: string; instructor_id: string | null; instructor_name: string | null }
+  const [scheduleDate, setScheduleDate] = useState(() => {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  });
+  const [scheduleSlots, setScheduleSlots] = useState<ScheduleSlot[]>([]);
+  const [scheduleWeekStart, setScheduleWeekStart] = useState('');
+  const [scheduleWeekEnd, setScheduleWeekEnd] = useState('');
+  const [loadingSchedule, setLoadingSchedule] = useState(false);
   // ── Bulk delete immersion ──
   const [bulkDelFrom, setBulkDelFrom]   = useState('');
   const [bulkDelTo, setBulkDelTo]       = useState('');
@@ -210,6 +225,18 @@ function AdminContent() {
     setLoadingU(false);
   }, [key]);
 
+  async function loadSchedule(date: string) {
+    setLoadingSchedule(true);
+    try {
+      const res = await fetch(`/api/admin/schedule-week?key=${encodeURIComponent(key)}&date=${date}`);
+      const data = await res.json();
+      setScheduleSlots(data.slots ?? []);
+      setScheduleWeekStart(data.weekStart ?? '');
+      setScheduleWeekEnd(data.weekEnd ?? '');
+    } catch { /* ignore */ }
+    setLoadingSchedule(false);
+  }
+
   useEffect(() => { setHealthChecks(loadHealthChecks()); }, []);
   useEffect(() => { if (tab === 'immersion') loadSlots(); }, [tab, loadSlots]);
   useEffect(() => { if (tab === 'clients') loadClients(); }, [tab, loadClients]);
@@ -217,6 +244,7 @@ function AdminContent() {
   useEffect(() => { if (tab === 'manage-instructors') loadDbInstructors(); }, [tab, loadDbInstructors]);
   useEffect(() => { if (tab === 'users') loadUsers(); }, [tab, loadUsers]);
   useEffect(() => { if (tab === 'availability') loadDbInstructors(); }, [tab, loadDbInstructors]);
+  useEffect(() => { if (tab === 'schedule') loadSchedule(scheduleDate); }, [tab]);
   function reloadSummary() {
     setLoadingSummary(true);
     fetch(`/api/admin/availability-summary`, {
@@ -254,14 +282,17 @@ function AdminContent() {
   async function addSlot(e: React.FormEvent) {
     e.preventDefault();
     if (!fromDate || !toDate || !fromTime || !toTime) return;
-    setAddingSlot(true); setAddSlotMsg('');
+    setAddingSlot(true); setAddSlotMsg(''); setConflictData(null);
     const res = await fetch(`/api/admin/immersion-slots?key=${encodeURIComponent(key)}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ from_date: fromDate, to_date: toDate, from_time: fromTime, to_time: toTime, max_participants: newMax, notes: newNotes, location: newLocation, instructor_id: newInstructorId || undefined }),
     });
-    const data = await res.json() as { success?: boolean; count?: number; error?: string };
-    if (res.ok) {
+    const data = await res.json() as { status?: string; success?: boolean; count?: number; error?: string; conflicts?: ConflictItem[]; clean?: CleanSlot[] };
+    if (res.ok && data.status === 'conflicts') {
+      setConflictData({ conflicts: data.conflicts ?? [], clean: data.clean ?? [] });
+      setAddSlotMsg('');
+    } else if (res.ok && data.status === 'ok') {
       setAddSlotMsg(`✅ נוצרו ${data.count} מועדים בהצלחה`);
       setFromDate(''); setToDate(''); setFromTime(''); setToTime(''); setNewNotes(''); setNewLocation(''); setNewInstructorId('');
       await loadSlots();
@@ -269,6 +300,28 @@ function AdminContent() {
       setAddSlotMsg(`❌ ${data.error ?? 'שגיאה'}`);
     }
     setAddingSlot(false);
+  }
+
+  async function handleConfirmSlots(
+    decisions: { existingId: string; keepExisting: boolean; newSlot?: Record<string, unknown> }[],
+    clean: CleanSlot[],
+  ) {
+    setConflictConfirming(true);
+    const res = await fetch(`/api/admin/immersion-slots?key=${encodeURIComponent(key)}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ resolved: decisions, clean }),
+    });
+    const data = await res.json() as { success?: boolean; count?: number; error?: string };
+    if (res.ok) {
+      setAddSlotMsg(`✅ נוצרו ${data.count} מועדים בהצלחה`);
+      setConflictData(null);
+      setFromDate(''); setToDate(''); setFromTime(''); setToTime(''); setNewNotes(''); setNewLocation(''); setNewInstructorId('');
+      await loadSlots();
+    } else {
+      setAddSlotMsg(`❌ ${data.error ?? 'שגיאה'}`);
+    }
+    setConflictConfirming(false);
   }
 
   async function deleteSlot(id: string) {
@@ -388,6 +441,7 @@ function AdminContent() {
           ['clients',     '👥 לקוחות'],
           ['manage-instructors', '🏊 ניהול מדריכים'],
           ['users',        '👤 משתמשים'],
+          ['schedule',     '📋 לוח שבועי'],
           ['availability', '📅 זמינות מדריכים'],
           ['vacations',    '🏖️ חופשות מדריכים'],
           ['instructors',  '📧 הזמנות מדריכים'],
@@ -485,6 +539,17 @@ function AdminContent() {
               )}
             </form>
           </div>
+
+          {/* Conflict resolution grid */}
+          {conflictData && (
+            <ConflictGrid
+              conflicts={conflictData.conflicts}
+              clean={conflictData.clean}
+              onConfirm={handleConfirmSlots}
+              onCancel={() => setConflictData(null)}
+              confirming={conflictConfirming}
+            />
+          )}
 
           {/* Bulk delete */}
           <div className="bg-red-50 rounded-3xl border-2 border-red-100 shadow-sm p-6">
@@ -606,6 +671,112 @@ function AdminContent() {
           )}
         </div>
       )}
+
+      {/* ── TAB: Weekly Schedule ── */}
+      {tab === 'schedule' && (() => {
+        // Build grid: unique dates × unique times
+        const dates = [...new Set(scheduleSlots.map(s => s.date))].sort();
+        const times = [...new Set(scheduleSlots.map(s => s.time))].sort();
+        // Map: "date|time" → slots[]
+        const cellMap = new Map<string, ScheduleSlot[]>();
+        for (const s of scheduleSlots) {
+          const k = `${s.date}|${s.time}`;
+          if (!cellMap.has(k)) cellMap.set(k, []);
+          cellMap.get(k)!.push(s);
+        }
+        function shiftWeek(direction: number) {
+          const d = new Date(scheduleDate + 'T00:00:00');
+          d.setDate(d.getDate() + direction * 7);
+          const nd = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+          setScheduleDate(nd);
+          loadSchedule(nd);
+        }
+        function fmtDateShort(d: string) {
+          const [y, m, day] = d.split('-');
+          void y;
+          return `${day}.${m}`;
+        }
+        const HE_DAYS_SHORT = ['א׳','ב׳','ג׳','ד׳','ה׳','ו׳','ש׳'];
+        function dayName(d: string) {
+          return HE_DAYS_SHORT[new Date(d + 'T00:00:00').getDay()];
+        }
+        return (
+          <div className="space-y-4">
+            {/* Week navigation */}
+            <div className="flex items-center justify-between bg-white rounded-2xl border border-slate-200 px-4 py-3">
+              <button onClick={() => shiftWeek(-1)} className="text-slate-500 hover:text-navy-900 font-bold px-3 py-1 rounded-lg hover:bg-slate-100">
+                › שבוע הבא
+              </button>
+              <span className="font-black text-navy-900 text-sm">
+                {scheduleWeekStart && scheduleWeekEnd
+                  ? `${scheduleWeekStart.split('-').reverse().slice(0,2).join('.')} – ${scheduleWeekEnd.split('-').reverse().slice(0,2).join('.')}`
+                  : '...'}
+              </span>
+              <button onClick={() => shiftWeek(1)} className="text-slate-500 hover:text-navy-900 font-bold px-3 py-1 rounded-lg hover:bg-slate-100">
+                שבוע קודם ‹
+              </button>
+            </div>
+
+            {loadingSchedule ? (
+              <div className="flex justify-center py-10">
+                <div className="w-8 h-8 border-2 border-ice-500 border-t-transparent rounded-full animate-spin" />
+              </div>
+            ) : scheduleSlots.length === 0 ? (
+              <div className="text-center py-10 text-slate-400">
+                <div className="text-4xl mb-2">📋</div>
+                <p>אין מועדים בשבוע זה.</p>
+              </div>
+            ) : (
+              <div className="overflow-auto bg-white rounded-3xl border border-slate-200 p-4">
+                <table className="text-xs border-collapse w-full">
+                  <thead>
+                    <tr>
+                      <th className="border border-slate-200 px-2 py-1.5 bg-slate-100 text-right font-bold sticky right-0 z-10">שעה</th>
+                      {dates.map(d => (
+                        <th key={d} className="border border-slate-200 px-2 py-1.5 bg-slate-100 font-bold text-center min-w-[90px]">
+                          <div className="font-black">{dayName(d)}</div>
+                          <div className="text-slate-500 font-normal">{fmtDateShort(d)}</div>
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {times.map(t => (
+                      <tr key={t}>
+                        <td className="border border-slate-200 px-2 py-1 font-mono font-bold text-slate-600 bg-slate-50 whitespace-nowrap sticky right-0">
+                          {t}
+                        </td>
+                        {dates.map(d => {
+                          const cell = cellMap.get(`${d}|${t}`) ?? [];
+                          if (cell.length === 0) return <td key={d} className="border border-slate-100 px-2 py-1" />;
+                          const isConflict = cell.length > 1;
+                          return (
+                            <td key={d} className={`border px-1 py-0.5 text-center text-xs ${
+                              isConflict ? 'border-red-300 bg-red-50' : 'border-green-200 bg-green-50'
+                            }`}>
+                              {isConflict ? (
+                                <span className="text-red-600 font-bold">⚠ {cell.length}</span>
+                              ) : (
+                                <span className="text-green-700 font-semibold">
+                                  {cell[0].instructor_name ?? '—'}
+                                </span>
+                              )}
+                            </td>
+                          );
+                        })}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                <div className="flex gap-4 mt-3 text-xs text-slate-500">
+                  <span className="flex items-center gap-1"><span className="inline-block w-3 h-3 rounded bg-green-100 border border-green-300" /> מועד עם מדריך</span>
+                  <span className="flex items-center gap-1"><span className="inline-block w-3 h-3 rounded bg-red-100 border border-red-300" /> קונפליקט</span>
+                </div>
+              </div>
+            )}
+          </div>
+        );
+      })()}
 
       {/* ── TAB: Clients ── */}
       {tab === 'clients' && (
