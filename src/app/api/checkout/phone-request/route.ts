@@ -71,6 +71,19 @@ export async function POST(req: NextRequest) {
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
+  // Build calendar links
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://icing.co.il';
+  function fmtGCal(d: Date) {
+    return d.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+  }
+  const dlEnd = new Date(deadline.getTime() + 60 * 60 * 1000);
+  const gcTitle   = encodeURIComponent('ICING יחזור אליך');
+  const gcDetails = encodeURIComponent(`שעות מועדפות: ${body.preferred_hours}\nקוד: ${confirmation_code}`);
+  const gcLoc     = encodeURIComponent('רחובות');
+  const googleUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${gcTitle}&dates=${fmtGCal(deadline)}/${fmtGCal(dlEnd)}&details=${gcDetails}&location=${gcLoc}`;
+  const outlookUrl = `https://outlook.live.com/calendar/0/deeplink/compose?subject=${gcTitle}&startdt=${deadline.toISOString()}&enddt=${dlEnd.toISOString()}&body=${gcDetails}&location=${gcLoc}`;
+  const icsUrl = `${baseUrl}/api/calendar/${confirmation_code}`;
+
   // Send email confirmation
   try {
     const RESEND_KEY = process.env.RESEND_API_KEY;
@@ -88,10 +101,36 @@ export async function POST(req: NextRequest) {
               <p>קיבלנו את פנייתך ונחזור אליך <strong style="color: #e05c2e;">${deadlineStr}</strong>.</p>
               ${body.product_title ? `<p>פרטי ההזמנה: <strong>${body.product_title}</strong>${body.product_date ? ` – ${body.product_date}` : ''}${body.product_time ? ` ${body.product_time}` : ''}</p>` : ''}
               <p>שעות מועדפות לחזרה: <strong>${body.preferred_hours}</strong></p>
+
               <div style="background: #f0f9ff; border: 1px solid #bae6fd; border-radius: 12px; padding: 16px; margin: 16px 0;">
                 <p style="margin: 0; color: #64748b; font-size: 12px;">קוד אישור פנייה</p>
                 <p style="margin: 4px 0 0; font-size: 24px; font-weight: 900; font-family: monospace; color: #0f2942;">${confirmation_code}</p>
               </div>
+
+              <p style="color: #475569; font-size: 13px; font-weight: bold; margin-bottom: 8px;">הוסף ליומן שלך:</p>
+              <table cellpadding="0" cellspacing="0" border="0" style="margin-bottom: 16px;">
+                <tr>
+                  <td style="padding: 0 6px 0 0;">
+                    <a href="${googleUrl}" target="_blank"
+                      style="display:inline-block; background:#4285F4; color:white; font-weight:bold; font-size:13px; padding:10px 16px; border-radius:8px; text-decoration:none;">
+                      📅 Google Calendar
+                    </a>
+                  </td>
+                  <td style="padding: 0 6px;">
+                    <a href="${outlookUrl}" target="_blank"
+                      style="display:inline-block; background:#0078D4; color:white; font-weight:bold; font-size:13px; padding:10px 16px; border-radius:8px; text-decoration:none;">
+                      📅 Outlook
+                    </a>
+                  </td>
+                  <td style="padding: 0 0 0 6px;">
+                    <a href="${icsUrl}"
+                      style="display:inline-block; background:#1d4ed8; color:white; font-weight:bold; font-size:13px; padding:10px 16px; border-radius:8px; text-decoration:none;">
+                      📥 Apple / .ics
+                    </a>
+                  </td>
+                </tr>
+              </table>
+
               <p style="color: #64748b; font-size: 13px;">שמור את קוד האישור לעיון עתידי.</p>
               <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 20px 0;">
               <p style="color: #94a3b8; font-size: 12px;">ICING – חוויות שוויץ המדע | רחובות</p>
