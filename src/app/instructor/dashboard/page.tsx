@@ -73,7 +73,9 @@ export default function InstructorDashboard() {
   const [jDuration, setJDuration] = useState('');
   const [jStatus, setJStatus] = useState<'planned' | 'done' | 'cancelled'>('done');
   const [jNotes, setJNotes] = useState('');
+  const [jInstructorNotes, setJInstructorNotes] = useState('');
   const [jSaving, setJSaving] = useState(false);
+  const [jSaveError, setJSaveError] = useState('');
   const [journalTargetId, setJournalTargetId] = useState('');
   const [journalTargetName, setJournalTargetName] = useState('');
   const [journalSearch, setJournalSearch] = useState('');
@@ -152,24 +154,36 @@ export default function InstructorDashboard() {
     const targetId = journalTargetId || visitorId;
     if (!jDuration || !targetId) return;
     setJSaving(true);
-    await fetch('/api/immersion-sessions', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-visitor-id': visitorId },
-      body: JSON.stringify({
-        visitor_id: targetId,
-        session_date: jDate,
-        session_time: jTime,
-        temperature_celsius: jTemp ? parseFloat(jTemp) : null,
-        duration_minutes: parseInt(jDuration, 10),
-        instructor_name: name,
-        status: jStatus,
-        visitor_notes: jNotes,
-      }),
-    });
+    setJSaveError('');
+    try {
+      const res = await fetch('/api/immersion-sessions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-visitor-id': visitorId },
+        body: JSON.stringify({
+          visitor_id: targetId,
+          session_date: jDate,
+          session_time: jTime,
+          temperature_celsius: jTemp ? parseFloat(jTemp) : null,
+          duration_minutes: parseInt(jDuration, 10),
+          instructor_name: name,
+          status: jStatus,
+          visitor_notes: jNotes,
+          instructor_notes: jInstructorNotes,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setJSaveError(data?.error || `שגיאה ${res.status}`);
+        setJSaving(false);
+        return;
+      }
+      setShowAddJournal(false);
+      setJTemp(''); setJDuration(''); setJNotes(''); setJInstructorNotes(''); setJStatus('done');
+      loadJournal(targetId);
+    } catch {
+      setJSaveError('שגיאת רשת, נסה שוב');
+    }
     setJSaving(false);
-    setShowAddJournal(false);
-    setJTemp(''); setJDuration(''); setJNotes(''); setJStatus('done');
-    loadJournal(targetId);
   }
 
   useEffect(() => {
@@ -480,10 +494,14 @@ export default function InstructorDashboard() {
                         <option value="planned">מתוכנן</option>
                         <option value="cancelled">בוטל</option>
                       </select></div>
-                    <div><label className="block text-slate-600 mb-1 text-xs font-semibold">הערות</label>
-                      <input value={jNotes} onChange={e => setJNotes(e.target.value)} placeholder="הערות אישיות..."
+                    <div><label className="block text-slate-600 mb-1 text-xs font-semibold">הערות לטובל</label>
+                      <input value={jNotes} onChange={e => setJNotes(e.target.value)} placeholder="הערות הנראות לטובל..."
+                        className="w-full border border-slate-200 rounded-xl px-3 py-2 focus:outline-none focus:border-[#7dd8f8]" /></div>
+                    <div><label className="block text-slate-600 mb-1 text-xs font-semibold">הערות מדריך (פנימי)</label>
+                      <input value={jInstructorNotes} onChange={e => setJInstructorNotes(e.target.value)} placeholder="הערות פנימיות..."
                         className="w-full border border-slate-200 rounded-xl px-3 py-2 focus:outline-none focus:border-[#7dd8f8]" /></div>
                   </div>
+                  {jSaveError && <p className="mt-2 text-red-600 text-sm font-semibold">{jSaveError}</p>}
                   <button onClick={saveJournalEntry} disabled={!jDuration || jSaving}
                     className="mt-3 bg-[#0f2942] hover:bg-[#1a3a5c] disabled:opacity-40 text-white font-bold px-5 py-2 rounded-xl text-sm transition-colors">
                     {jSaving ? 'שומר...' : '+ הוסף'}
