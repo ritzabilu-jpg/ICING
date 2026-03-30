@@ -29,6 +29,7 @@ interface Session {
   temperature_celsius: number | null;
   notes: string;
   instructor: string;
+  photo_url?: string;
 }
 
 // ─── Storage ──────────────────────────────────────────────────────────────────
@@ -254,9 +255,24 @@ function UpcomingList({ sessions, onDelete }: { sessions: Session[]; onDelete: (
 
 // ─── Past sessions table (last 10 + sum) ─────────────────────────────────────
 
-function PastTable({ sessions, onDelete }: { sessions: Session[]; onDelete: (id: string) => void }) {
+interface PastTableProps {
+  sessions: Session[];
+  onDelete: (id: string) => void;
+  expandedId: string | null;
+  onExpand: (id: string, notes: string) => void;
+  onCollapse: () => void;
+  editNotes: string;
+  setEditNotes: (v: string) => void;
+  savingNote: boolean;
+  uploadingPhoto: boolean;
+  onSave: (id: string, notes: string, photo?: File) => void;
+  readOnly?: boolean;
+}
+
+function PastTable({ sessions, onDelete, expandedId, onExpand, onCollapse, editNotes, setEditNotes, savingNote, uploadingPhoto, onSave, readOnly }: PastTableProps) {
   const last10 = sessions.slice(0, 10);
   const totalMin = last10.reduce((a, s) => a + (s.duration_minutes ?? 0), 0);
+  const [photoFile, setPhotoFile] = useState<File | null>(null);
 
   if (!last10.length) return (
     <div className="text-center py-16 text-slate-500">
@@ -272,50 +288,94 @@ function PastTable({ sessions, onDelete }: { sessions: Session[]; onDelete: (id:
         <thead>
           <tr className="bg-navy-800 border-b border-navy-700">
             <th className="text-right px-4 py-3 text-slate-400 font-semibold">תאריך</th>
-            <th className="text-right px-4 py-3 text-slate-400 font-semibold">טמפ&apos; (°C)</th>
-            <th className="text-right px-4 py-3 text-slate-400 font-semibold">משך (דק&apos;)</th>
+            <th className="text-right px-4 py-3 text-slate-400 font-semibold">טמפ׳</th>
+            <th className="text-right px-4 py-3 text-slate-400 font-semibold">משך</th>
             <th className="text-right px-4 py-3 text-slate-400 font-semibold">מדריך</th>
             <th className="text-right px-4 py-3 text-slate-400 font-semibold">הערות</th>
-            <th className="px-4 py-3 w-10"></th>
+            <th className="px-4 py-3 w-8"></th>
           </tr>
         </thead>
         <tbody>
           {last10.map((s, i) => (
-            <tr key={s.id}
-              className={`border-b border-navy-800 hover:bg-navy-800/50 transition-colors ${i%2===0?'bg-navy-900':'bg-navy-900/60'}`}>
-              <td className="px-4 py-3 text-white font-mono text-right">
-                {new Date(s.session_date+'T12:00:00').toLocaleDateString('he-IL', { day:'2-digit', month:'2-digit', year:'2-digit' })}
-              </td>
-              <td className="px-4 py-3 text-right">
-                {s.temperature_celsius !== null
-                  ? <span className="text-cyan-400 font-semibold">{s.temperature_celsius}°</span>
-                  : <span className="text-slate-600">—</span>}
-              </td>
-              <td className="px-4 py-3 text-right">
-                {s.duration_minutes
-                  ? <span className="font-black text-ice-400 text-base">{s.duration_minutes}</span>
-                  : <span className="text-slate-600">—</span>}
-              </td>
-              <td className="px-4 py-3 text-slate-300 text-xs text-right">{s.instructor || '—'}</td>
-              <td className="px-4 py-3 text-slate-400 text-xs max-w-[160px] truncate text-right">
-                {s.notes || <span className="text-slate-600 italic">אין הערות</span>}
-              </td>
-              <td className="px-4 py-3 text-center">
-                <button
-                  onClick={() => { if (confirm('למחוק רשומה זו?')) onDelete(s.id); }}
-                  className="text-slate-600 hover:text-red-400 transition-colors text-lg" title="מחק">
-                  ✕
-                </button>
-              </td>
-            </tr>
+            <>
+              <tr key={s.id}
+                onClick={() => expandedId === s.id ? onCollapse() : onExpand(s.id, s.notes)}
+                className={`border-b border-navy-800 cursor-pointer transition-colors ${expandedId === s.id ? 'bg-navy-700' : i%2===0 ? 'bg-navy-900' : 'bg-navy-900/60'} hover:bg-navy-700/70`}>
+                <td className="px-4 py-3 text-white font-mono">
+                  {new Date(s.session_date+'T12:00:00').toLocaleDateString('he-IL', { day:'2-digit', month:'2-digit', year:'2-digit' })}
+                </td>
+                <td className="px-4 py-3">
+                  {s.temperature_celsius !== null
+                    ? <span className="text-cyan-400 font-semibold">{s.temperature_celsius}°</span>
+                    : <span className="text-slate-600">—</span>}
+                </td>
+                <td className="px-4 py-3">
+                  {s.duration_minutes
+                    ? <><span className="font-black text-ice-400 text-base">{s.duration_minutes}</span><span className="text-slate-500 text-xs mr-1">דק׳</span></>
+                    : <span className="text-slate-600">—</span>}
+                </td>
+                <td className="px-4 py-3 text-slate-300 text-xs">{s.instructor || '—'}</td>
+                <td className="px-4 py-3 text-slate-400 text-xs max-w-[140px] truncate">
+                  {s.notes || <span className="text-slate-600 italic">לחץ להוספת הערה</span>}
+                </td>
+                <td className="px-3 py-3 text-slate-500 text-xs text-center">
+                  {s.photo_url ? '📷' : ''}{expandedId === s.id ? ' ▲' : ' ▼'}
+                </td>
+              </tr>
+              {expandedId === s.id && (
+                <tr key={s.id + '_exp'}>
+                  <td colSpan={6} className="bg-navy-700 border-b border-navy-600 px-5 py-4">
+                    <div className="space-y-3" dir="rtl">
+                      {s.photo_url && (
+                        <img src={s.photo_url} alt="תמונת טבילה" className="rounded-xl max-h-52 object-cover border border-navy-500" />
+                      )}
+                      <div>
+                        <label className="block text-slate-400 text-xs font-semibold mb-1.5">הערות אישיות</label>
+                        {readOnly ? (
+                          <p className="text-slate-300 text-sm bg-navy-800 rounded-xl px-3 py-2">{editNotes || '—'}</p>
+                        ) : (
+                          <textarea value={editNotes} onChange={e => setEditNotes(e.target.value)} rows={3}
+                            placeholder="מה הרגשת? מה עבד? מה תשנה בפעם הבאה?"
+                            className="w-full bg-navy-800 border border-navy-600 rounded-xl px-3 py-2 text-slate-200 text-sm resize-none focus:outline-none focus:border-[#7dd8f8]" />
+                        )}
+                      </div>
+                      {!readOnly && (
+                        <div>
+                          <label className="block text-slate-400 text-xs font-semibold mb-1.5">תמונה (עד 1MB)</label>
+                          <input type="file" accept="image/*"
+                            onClick={e => e.stopPropagation()}
+                            onChange={e => { e.stopPropagation(); setPhotoFile(e.target.files?.[0] ?? null); }}
+                            className="text-slate-300 text-xs file:mr-3 file:py-1 file:px-3 file:rounded-lg file:border-0 file:bg-navy-600 file:text-slate-200 file:text-xs" />
+                          {photoFile && <p className="text-slate-400 text-xs mt-1">{photoFile.name} ({(photoFile.size/1024).toFixed(0)}KB)</p>}
+                          {photoFile && photoFile.size > 1_048_576 && (
+                            <p className="text-red-400 text-xs mt-1">קובץ גדול מדי — מקסימום 1MB</p>
+                          )}
+                        </div>
+                      )}
+                      {!readOnly && (
+                        <div className="flex gap-3 items-center flex-wrap">
+                          <button onClick={e => { e.stopPropagation(); onSave(s.id, editNotes, photoFile ?? undefined); setPhotoFile(null); }}
+                            disabled={savingNote || (!!photoFile && photoFile.size > 1_048_576)}
+                            className="bg-[#7dd8f8] hover:bg-[#5ec5ef] disabled:opacity-40 text-[#0f2942] font-bold px-5 py-2 rounded-xl text-sm transition-colors">
+                            {uploadingPhoto ? 'מעלה תמונה...' : savingNote ? 'שומר...' : '💾 שמור'}
+                          </button>
+                          <button onClick={e => { e.stopPropagation(); onCollapse(); setPhotoFile(null); }}
+                            className="text-slate-400 hover:text-white text-sm transition-colors">ביטול</button>
+                          <button onClick={e => { e.stopPropagation(); if (confirm('למחוק רשומה זו?')) onDelete(s.id); }}
+                            className="text-red-500 hover:text-red-400 text-sm transition-colors mr-auto">🗑 מחק</button>
+                        </div>
+                      )}
+                    </div>
+                  </td>
+                </tr>
+              )}
+            </>
           ))}
         </tbody>
         <tfoot>
           <tr className="bg-navy-700 border-t-2 border-navy-600">
-            <td className="px-4 py-3 text-slate-400 font-bold text-right text-xs" colSpan={2}>
-              סה&quot;כ ({last10.length} טבילות)
-            </td>
-            <td className="px-4 py-3 text-right">
+            <td className="px-4 py-3 text-slate-400 font-bold text-xs" colSpan={2}>סה&quot;כ ({last10.length} טבילות)</td>
+            <td className="px-4 py-3">
               <span className="font-black text-ice-300 text-base">{totalMin}</span>
               <span className="text-slate-400 text-xs mr-1">דק&apos;</span>
             </td>
@@ -346,6 +406,7 @@ function apiEntryToSession(e: Record<string, unknown>): Session {
     temperature_celsius: (e.temperature_celsius as number | null) ?? null,
     notes: ((e.visitor_notes ?? e.notes) as string) ?? '',
     instructor: ((e.instructor_name ?? e.instructor) as string) ?? '',
+    photo_url: (e.photo_url as string | undefined) ?? undefined,
   };
 }
 
@@ -356,6 +417,10 @@ function JournalContent() {
   const [ready, setReady] = useState(false);
   const [visitorId, setVisitorId] = useState('');
   const [viewName, setViewName] = useState('');
+  const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [editNotes, setEditNotes] = useState('');
+  const [savingNote, setSavingNote] = useState(false);
+  const [uploadingPhoto, setUploadingPhoto] = useState(false);
 
   useEffect(() => {
     let vid = localStorage.getItem('visitor_id') ?? '';
@@ -428,6 +493,41 @@ function JournalContent() {
     } catch { /* ignore */ }
   }
 
+  async function handleUpdateSession(id: string, notes: string, photoFile?: File) {
+    setSavingNote(true);
+    let photo_url: string | undefined;
+    if (photoFile) {
+      setUploadingPhoto(true);
+      const fd = new FormData();
+      fd.append('file', photoFile);
+      fd.append('session_id', id);
+      try {
+        const r = await fetch('/api/upload/session-photo', { method: 'POST', body: fd });
+        const d = await r.json();
+        if (r.ok) photo_url = d.url;
+      } catch { /* ignore */ }
+      setUploadingPhoto(false);
+    }
+    try {
+      const targetVid = viewVid || visitorId;
+      const body: Record<string, unknown> = { id, visitor_id: targetVid, visitor_notes: notes };
+      if (photo_url) body.photo_url = photo_url;
+      const res = await fetch('/api/journal', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+      const d = await res.json();
+      if (d.entry) {
+        setSessions(prev => prev.map(s => s.id === id
+          ? { ...s, notes, photo_url: photo_url ?? s.photo_url }
+          : s));
+        setExpandedId(null);
+      }
+    } catch { /* ignore */ }
+    setSavingNote(false);
+  }
+
   const today = new Date().toISOString().split('T')[0];
   const past   = sessions.filter(s => s.session_date <= today);
   const future = sessions.filter(s => s.session_date > today)
@@ -475,7 +575,19 @@ function JournalContent() {
             </span>
           </h2>
           {ready
-            ? <PastTable sessions={past} onDelete={viewVid ? () => {} : handleDelete} />
+            ? <PastTable
+                sessions={past}
+                onDelete={viewVid ? () => {} : handleDelete}
+                expandedId={expandedId}
+                onExpand={(id, notes) => { setExpandedId(id); setEditNotes(notes); }}
+                onCollapse={() => setExpandedId(null)}
+                editNotes={editNotes}
+                setEditNotes={setEditNotes}
+                savingNote={savingNote}
+                uploadingPhoto={uploadingPhoto}
+                onSave={handleUpdateSession}
+                readOnly={!!viewVid}
+              />
             : <div className="text-center py-16 text-slate-500">טוען...</div>}
         </div>
 

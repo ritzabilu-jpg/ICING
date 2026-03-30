@@ -78,6 +78,7 @@ export default function InstructorDashboard() {
   const [jSaveError, setJSaveError] = useState('');
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editFields, setEditFields] = useState<Partial<JournalSession>>({});
+  const [editPhotoFile, setEditPhotoFile] = useState<File | null>(null);
   const [journalTargetId, setJournalTargetId] = useState('');
   const [journalTargetName, setJournalTargetName] = useState('');
   const [journalSearch, setJournalSearch] = useState('');
@@ -199,15 +200,28 @@ export default function InstructorDashboard() {
   async function saveEdit(id: string) {
     setJSaving(true);
     try {
+      let photo_url: string | undefined;
+      if (editPhotoFile) {
+        if (editPhotoFile.size > 1_048_576) { setJSaveError('קובץ גדול מדי (מקסימום 1MB)'); setJSaving(false); return; }
+        const fd = new FormData();
+        fd.append('file', editPhotoFile);
+        fd.append('session_id', id);
+        const r = await fetch('/api/upload/session-photo', { method: 'POST', body: fd });
+        const d = await r.json();
+        if (!r.ok) { setJSaveError(d.error || 'שגיאת העלאה'); setJSaving(false); return; }
+        photo_url = d.url;
+      }
+      const payload = { id, ...editFields, ...(photo_url ? { photo_url } : {}) };
       const res = await fetch('/api/immersion-sessions', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json', 'x-visitor-id': visitorId },
-        body: JSON.stringify({ id, ...editFields }),
+        body: JSON.stringify(payload),
       });
       const data = await res.json();
       if (!res.ok) { setJSaveError(data?.error || `שגיאה ${res.status}`); setJSaving(false); return; }
       setEditingId(null);
       setEditFields({});
+      setEditPhotoFile(null);
       loadJournal(journalTargetId || visitorId);
     } catch { setJSaveError('שגיאת רשת'); }
     setJSaving(false);
@@ -607,7 +621,15 @@ export default function InstructorDashboard() {
                             <input placeholder="הערות"
                               value={editFields.visitor_notes ?? s.visitor_notes ?? ''}
                               onChange={e => setEditFields(f => ({ ...f, visitor_notes: e.target.value }))}
-                              className="border border-slate-200 rounded px-1 py-0.5 text-xs w-32" />
+                              className="border border-slate-200 rounded px-1 py-0.5 text-xs w-28" />
+                          </td>
+                          <td className="px-3 py-2">
+                            <input type="file" accept="image/*"
+                              onChange={e => setEditPhotoFile(e.target.files?.[0] ?? null)}
+                              className="text-xs w-24" />
+                            {editPhotoFile && editPhotoFile.size > 1_048_576 && (
+                              <p className="text-red-500 text-xs">גדול מדי</p>
+                            )}
                           </td>
                           <td className="px-3 py-2 flex gap-1">
                             <button onClick={() => saveEdit(s.id)} disabled={jSaving}

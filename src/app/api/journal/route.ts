@@ -74,3 +74,29 @@ export async function DELETE(req: NextRequest) {
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   return NextResponse.json({ success: true });
 }
+
+export async function PATCH(req: NextRequest) {
+  const body = await req.json() as {
+    id: string;
+    visitor_id: string;
+    visitor_notes?: string;
+    photo_url?: string;
+  };
+  if (!body.id || !body.visitor_id) return NextResponse.json({ error: 'חסרים פרטים' }, { status: 400 });
+
+  const supabase = createAdminClient();
+  const update: Record<string, unknown> = {};
+  if (body.visitor_notes !== undefined) update.visitor_notes = body.visitor_notes;
+  if (body.photo_url !== undefined) update.photo_url = body.photo_url;
+
+  const { data, error } = await supabase
+    .from('immersion_sessions')
+    .update(update)
+    .eq('id', body.id)
+    .eq('visitor_id', body.visitor_id)
+    .select()
+    .single();
+
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  return NextResponse.json({ entry: data });
+}
