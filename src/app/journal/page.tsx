@@ -30,6 +30,7 @@ interface Session {
   notes: string;
   instructor: string;
   photo_url?: string;
+  photo_url_2?: string;
 }
 
 // ─── Storage ──────────────────────────────────────────────────────────────────
@@ -258,14 +259,15 @@ interface PastTableProps {
   setEditNotes: (v: string) => void;
   savingNote: boolean;
   uploadingPhoto: boolean;
-  onSave: (id: string, notes: string, photo?: File) => void;
+  onSave: (id: string, notes: string, photo1?: File, photo2?: File) => void;
   readOnly?: boolean;
 }
 
 function PastTable({ sessions, expandedId, onExpand, onCollapse, editNotes, setEditNotes, savingNote, uploadingPhoto, onSave, readOnly }: PastTableProps) {
   const last10 = sessions.slice(0, 10);
   const totalMin = last10.reduce((a, s) => a + (s.duration_minutes ?? 0), 0);
-  const [photoFile, setPhotoFile] = useState<File | null>(null);
+  const [photoFile1, setPhotoFile1] = useState<File | null>(null);
+  const [photoFile2, setPhotoFile2] = useState<File | null>(null);
 
   if (!last10.length) return (
     <div className="text-center py-16 text-slate-500">
@@ -319,8 +321,16 @@ function PastTable({ sessions, expandedId, onExpand, onCollapse, editNotes, setE
                 <tr key={s.id + '_exp'}>
                   <td colSpan={6} className="bg-navy-700 border-b border-navy-600 px-5 py-4">
                     <div className="space-y-3" dir="rtl">
-                      {s.photo_url && (
-                        <img src={s.photo_url} alt="תמונת טבילה" className="rounded-xl max-h-52 object-cover border border-navy-500" />
+                      {/* Photos display */}
+                      {(s.photo_url || s.photo_url_2) && (
+                        <div className="flex gap-3 flex-wrap">
+                          {s.photo_url && (
+                            <img src={s.photo_url} alt="תמונה 1" className="rounded-xl max-h-44 object-cover border border-navy-500" />
+                          )}
+                          {s.photo_url_2 && (
+                            <img src={s.photo_url_2} alt="תמונה 2" className="rounded-xl max-h-44 object-cover border border-navy-500" />
+                          )}
+                        </div>
                       )}
                       <div>
                         <label className="block text-slate-400 text-xs font-semibold mb-1.5">הערות אישיות</label>
@@ -333,26 +343,56 @@ function PastTable({ sessions, expandedId, onExpand, onCollapse, editNotes, setE
                         )}
                       </div>
                       {!readOnly && (
-                        <div>
-                          <label className="block text-slate-400 text-xs font-semibold mb-1.5">תמונה (עד 1MB)</label>
-                          <input type="file" accept="image/*"
-                            onClick={e => e.stopPropagation()}
-                            onChange={e => { e.stopPropagation(); setPhotoFile(e.target.files?.[0] ?? null); }}
-                            className="text-slate-300 text-xs file:mr-3 file:py-1 file:px-3 file:rounded-lg file:border-0 file:bg-navy-600 file:text-slate-200 file:text-xs" />
-                          {photoFile && <p className="text-slate-400 text-xs mt-1">{photoFile.name} ({(photoFile.size/1024).toFixed(0)}KB)</p>}
-                          {photoFile && photoFile.size > 1_048_576 && (
-                            <p className="text-red-400 text-xs mt-1">קובץ גדול מדי — מקסימום 1MB</p>
+                        <div className="space-y-2">
+                          <p className="text-slate-400 text-xs font-semibold">
+                            תמונות (עד 2, כל אחת עד 1MB)
+                            <span className="text-slate-500 font-normal mr-1">
+                              — {[s.photo_url, s.photo_url_2].filter(Boolean).length}/2 קיימות
+                            </span>
+                          </p>
+                          {/* Slot 1 */}
+                          {!s.photo_url ? (
+                            <div>
+                              <label className="block text-slate-500 text-xs mb-1">תמונה 1</label>
+                              <input type="file" accept="image/*"
+                                onClick={e => e.stopPropagation()}
+                                onChange={e => { e.stopPropagation(); setPhotoFile1(e.target.files?.[0] ?? null); }}
+                                className="text-slate-300 text-xs file:mr-3 file:py-1 file:px-3 file:rounded-lg file:border-0 file:bg-navy-600 file:text-slate-200 file:text-xs" />
+                              {photoFile1 && <p className="text-slate-400 text-xs mt-0.5">{photoFile1.name} ({(photoFile1.size/1024).toFixed(0)}KB)</p>}
+                              {photoFile1 && photoFile1.size > 1_048_576 && <p className="text-red-400 text-xs mt-0.5">קובץ גדול מדי — מקסימום 1MB</p>}
+                            </div>
+                          ) : (
+                            <p className="text-slate-500 text-xs">תמונה 1 ✓ (קיימת)</p>
                           )}
+                          {/* Slot 2 — only shown if slot 1 is filled */}
+                          {(s.photo_url || photoFile1) && !s.photo_url_2 && (
+                            <div>
+                              <label className="block text-slate-500 text-xs mb-1">תמונה 2</label>
+                              <input type="file" accept="image/*"
+                                onClick={e => e.stopPropagation()}
+                                onChange={e => { e.stopPropagation(); setPhotoFile2(e.target.files?.[0] ?? null); }}
+                                className="text-slate-300 text-xs file:mr-3 file:py-1 file:px-3 file:rounded-lg file:border-0 file:bg-navy-600 file:text-slate-200 file:text-xs" />
+                              {photoFile2 && <p className="text-slate-400 text-xs mt-0.5">{photoFile2.name} ({(photoFile2.size/1024).toFixed(0)}KB)</p>}
+                              {photoFile2 && photoFile2.size > 1_048_576 && <p className="text-red-400 text-xs mt-0.5">קובץ גדול מדי — מקסימום 1MB</p>}
+                            </div>
+                          )}
+                          {s.photo_url_2 && <p className="text-slate-500 text-xs">תמונה 2 ✓ (קיימת)</p>}
                         </div>
                       )}
                       {!readOnly && (
                         <div className="flex gap-3 items-center flex-wrap">
-                          <button onClick={e => { e.stopPropagation(); onSave(s.id, editNotes, photoFile ?? undefined); setPhotoFile(null); }}
-                            disabled={savingNote || (!!photoFile && photoFile.size > 1_048_576)}
+                          <button onClick={e => {
+                              e.stopPropagation();
+                              onSave(s.id, editNotes, photoFile1 ?? undefined, photoFile2 ?? undefined);
+                              setPhotoFile1(null); setPhotoFile2(null);
+                            }}
+                            disabled={savingNote
+                              || (!!photoFile1 && photoFile1.size > 1_048_576)
+                              || (!!photoFile2 && photoFile2.size > 1_048_576)}
                             className="bg-[#7dd8f8] hover:bg-[#5ec5ef] disabled:opacity-40 text-[#0f2942] font-bold px-5 py-2 rounded-xl text-sm transition-colors">
                             {uploadingPhoto ? 'מעלה תמונה...' : savingNote ? 'שומר...' : '💾 שמור'}
                           </button>
-                          <button onClick={e => { e.stopPropagation(); onCollapse(); setPhotoFile(null); }}
+                          <button onClick={e => { e.stopPropagation(); onCollapse(); setPhotoFile1(null); setPhotoFile2(null); }}
                             className="text-slate-400 hover:text-white text-sm transition-colors">ביטול</button>
                         </div>
                       )}
@@ -398,6 +438,7 @@ function apiEntryToSession(e: Record<string, unknown>): Session {
     notes: ((e.visitor_notes ?? e.notes) as string) ?? '',
     instructor: ((e.instructor_name ?? e.instructor) as string) ?? '',
     photo_url: (e.photo_url as string | undefined) ?? undefined,
+    photo_url_2: (e.photo_url_2 as string | undefined) ?? undefined,
   };
 }
 
@@ -489,25 +530,44 @@ function JournalContent() {
     } catch { /* ignore */ }
   }
 
-  async function handleUpdateSession(id: string, notes: string, photoFile?: File) {
+  async function handleUpdateSession(id: string, notes: string, photoFile1?: File, photoFile2?: File) {
     setSavingNote(true);
     let photo_url: string | undefined;
-    if (photoFile) {
-      setUploadingPhoto(true);
+    let photo_url_2: string | undefined;
+
+    if (photoFile1 || photoFile2) setUploadingPhoto(true);
+
+    if (photoFile1) {
       const fd = new FormData();
-      fd.append('file', photoFile);
+      fd.append('file', photoFile1);
       fd.append('session_id', id);
+      fd.append('slot', '1');
       try {
         const r = await fetch('/api/upload/session-photo', { method: 'POST', body: fd });
         const d = await r.json();
         if (r.ok) photo_url = d.url;
       } catch { /* ignore */ }
-      setUploadingPhoto(false);
     }
+
+    if (photoFile2) {
+      const fd = new FormData();
+      fd.append('file', photoFile2);
+      fd.append('session_id', id);
+      fd.append('slot', '2');
+      try {
+        const r = await fetch('/api/upload/session-photo', { method: 'POST', body: fd });
+        const d = await r.json();
+        if (r.ok) photo_url_2 = d.url;
+      } catch { /* ignore */ }
+    }
+
+    setUploadingPhoto(false);
+
     try {
       const targetVid = viewVid || visitorId;
       const body: Record<string, unknown> = { id, visitor_id: targetVid, visitor_notes: notes };
       if (photo_url) body.photo_url = photo_url;
+      if (photo_url_2) body.photo_url_2 = photo_url_2;
       const res = await fetch('/api/journal', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
@@ -516,7 +576,7 @@ function JournalContent() {
       const d = await res.json();
       if (d.entry) {
         setSessions(prev => prev.map(s => s.id === id
-          ? { ...s, notes, photo_url: photo_url ?? s.photo_url }
+          ? { ...s, notes, photo_url: photo_url ?? s.photo_url, photo_url_2: photo_url_2 ?? s.photo_url_2 }
           : s));
         setExpandedId(null);
       }

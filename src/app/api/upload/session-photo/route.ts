@@ -7,6 +7,7 @@ export async function POST(req: NextRequest) {
   const formData = await req.formData();
   const file = formData.get('file') as File | null;
   const sessionId = formData.get('session_id') as string | null;
+  const slot = (formData.get('slot') as string | null) ?? '1'; // '1' or '2'
 
   if (!file || !sessionId) return NextResponse.json({ error: 'חסרים פרטים' }, { status: 400 });
   if (file.size > 1_048_576) return NextResponse.json({ error: 'קובץ גדול מדי (מקסימום 1MB)' }, { status: 400 });
@@ -14,7 +15,8 @@ export async function POST(req: NextRequest) {
 
   const supabase = createAdminClient();
   const ext = file.name.split('.').pop() ?? 'jpg';
-  const path = `sessions/${sessionId}.${ext}`;
+  const suffix = slot === '2' ? '_2' : '';
+  const path = `sessions/${sessionId}${suffix}.${ext}`;
   const buffer = Buffer.from(await file.arrayBuffer());
 
   const { error } = await supabase.storage

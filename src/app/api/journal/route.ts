@@ -81,6 +81,7 @@ export async function PATCH(req: NextRequest) {
     visitor_id: string;
     visitor_notes?: string;
     photo_url?: string;
+    photo_url_2?: string;
   };
   if (!body.id || !body.visitor_id) return NextResponse.json({ error: 'חסרים פרטים' }, { status: 400 });
 
@@ -88,6 +89,7 @@ export async function PATCH(req: NextRequest) {
   const update: Record<string, unknown> = {};
   if (body.visitor_notes !== undefined) update.visitor_notes = body.visitor_notes;
   if (body.photo_url !== undefined) update.photo_url = body.photo_url;
+  if (body.photo_url_2 !== undefined) update.photo_url_2 = body.photo_url_2;
 
   const { data, error } = await supabase
     .from('immersion_sessions')
