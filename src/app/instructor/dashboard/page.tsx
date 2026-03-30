@@ -43,7 +43,7 @@ interface JournalSession {
 }
 
 function formatDate(d: string) {
-  return new Date(d).toLocaleDateString('he-IL', { weekday: 'long', day: '2-digit', month: '2-digit', year: 'numeric' });
+  return new Date(d).toLocaleDateString('he-IL', { weekday: 'long', day: '2-digit', month: '2-digit', year: '2-digit' });
 }
 
 function KindBadge({ kind }: { kind: 'slot' | 'workshop' }) {

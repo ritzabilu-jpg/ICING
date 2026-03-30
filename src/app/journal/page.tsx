@@ -205,7 +205,7 @@ function AddForm({ onAdd }: { onAdd: (s: Session) => void }) {
 
 // ─── Upcoming sessions ────────────────────────────────────────────────────────
 
-function UpcomingList({ sessions, onDelete }: { sessions: Session[]; onDelete: (id: string) => void }) {
+function UpcomingList({ sessions }: { sessions: Session[] }) {
   if (!sessions.length) return null;
   return (
     <div className="mb-8">
@@ -240,12 +240,6 @@ function UpcomingList({ sessions, onDelete }: { sessions: Session[]; onDelete: (
                 </div>
               )}
             </div>
-            <button
-              onClick={() => { if (confirm('לבטל טבילה זו?')) onDelete(s.id); }}
-              className="text-slate-600 hover:text-red-400 text-lg flex-shrink-0 transition-colors"
-              title="בטל">
-              ✕
-            </button>
           </div>
         ))}
       </div>
@@ -257,7 +251,6 @@ function UpcomingList({ sessions, onDelete }: { sessions: Session[]; onDelete: (
 
 interface PastTableProps {
   sessions: Session[];
-  onDelete: (id: string) => void;
   expandedId: string | null;
   onExpand: (id: string, notes: string) => void;
   onCollapse: () => void;
@@ -269,7 +262,7 @@ interface PastTableProps {
   readOnly?: boolean;
 }
 
-function PastTable({ sessions, onDelete, expandedId, onExpand, onCollapse, editNotes, setEditNotes, savingNote, uploadingPhoto, onSave, readOnly }: PastTableProps) {
+function PastTable({ sessions, expandedId, onExpand, onCollapse, editNotes, setEditNotes, savingNote, uploadingPhoto, onSave, readOnly }: PastTableProps) {
   const last10 = sessions.slice(0, 10);
   const totalMin = last10.reduce((a, s) => a + (s.duration_minutes ?? 0), 0);
   const [photoFile, setPhotoFile] = useState<File | null>(null);
@@ -361,8 +354,6 @@ function PastTable({ sessions, onDelete, expandedId, onExpand, onCollapse, editN
                           </button>
                           <button onClick={e => { e.stopPropagation(); onCollapse(); setPhotoFile(null); }}
                             className="text-slate-400 hover:text-white text-sm transition-colors">ביטול</button>
-                          <button onClick={e => { e.stopPropagation(); if (confirm('למחוק רשומה זו?')) onDelete(s.id); }}
-                            className="text-red-500 hover:text-red-400 text-sm transition-colors mr-auto">🗑 מחק</button>
                         </div>
                       )}
                     </div>
@@ -421,11 +412,16 @@ function JournalContent() {
   const [editNotes, setEditNotes] = useState('');
   const [savingNote, setSavingNote] = useState(false);
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
+  const [isStaff, setIsStaff] = useState(false);
 
   useEffect(() => {
     let vid = localStorage.getItem('visitor_id') ?? '';
     if (!vid) { vid = crypto.randomUUID(); localStorage.setItem('visitor_id', vid); }
     setVisitorId(vid);
+
+    fetch('/api/instructor/clients', { headers: { 'x-visitor-id': vid } })
+      .then(r => { if (r.ok) setIsStaff(true); })
+      .catch(() => {});
 
     // If ?vid= is provided, load that person's journal (instructor view)
     const targetVid = viewVid || vid;
@@ -565,7 +561,7 @@ function JournalContent() {
 
         {/* Upcoming */}
         <div dir="rtl">
-          {ready && <UpcomingList sessions={future} onDelete={viewVid ? () => {} : handleDelete} />}
+          {ready && <UpcomingList sessions={future} />}
 
           {/* Past — last 10 */}
           <h2 className="text-white font-black text-lg mb-4">
@@ -577,7 +573,6 @@ function JournalContent() {
           {ready
             ? <PastTable
                 sessions={past}
-                onDelete={viewVid ? () => {} : handleDelete}
                 expandedId={expandedId}
                 onExpand={(id, notes) => { setExpandedId(id); setEditNotes(notes); }}
                 onCollapse={() => setExpandedId(null)}
@@ -586,7 +581,7 @@ function JournalContent() {
                 savingNote={savingNote}
                 uploadingPhoto={uploadingPhoto}
                 onSave={handleUpdateSession}
-                readOnly={!!viewVid}
+                readOnly={!!viewVid && !isStaff}
               />
             : <div className="text-center py-16 text-slate-500">טוען...</div>}
         </div>

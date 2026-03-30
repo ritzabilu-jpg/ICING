@@ -23,7 +23,7 @@ interface Participant {
 }
 
 function formatDate(d: string) {
-  return new Date(d).toLocaleDateString('he-IL', { weekday: 'long', day: '2-digit', month: '2-digit', year: 'numeric' });
+  return new Date(d).toLocaleDateString('he-IL', { weekday: 'long', day: '2-digit', month: '2-digit', year: '2-digit' });
 }
 
 function Check({ checked, onClick, label }: { checked: boolean; onClick: () => void; label: string }) {
