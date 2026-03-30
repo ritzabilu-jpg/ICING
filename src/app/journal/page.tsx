@@ -4,7 +4,19 @@ import { useEffect, useState } from 'react';
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
-const INSTRUCTORS = ['גילה גרוס קורנט', 'יסמין חמוד', 'ורד פקטור', 'ליאור כ"ץ', 'גיא רייבנבך', 'עצמאי'];
+const INSTRUCTORS = [
+  'ליאור כ"ץ',
+  'אורן אלון',
+  'איתמר מאיירס',
+  'גולן בר נוי',
+  'גיא רייבנבך',
+  'גילה גרוס קורנט',
+  'ורד פקטור',
+  'יסמין חמוד',
+  'ראם נביס',
+  'שיר ממן שמואלי',
+  'עצמאי',
+];
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -316,24 +328,90 @@ function PastTable({ sessions, onDelete }: { sessions: Session[]; onDelete: (id:
 
 // ─── Main Page ────────────────────────────────────────────────────────────────
 
+const MIGRATION_KEY = 'journal_migrated_v1';
+
+function sortSessions(arr: Session[]) {
+  return [...arr].sort((a, b) =>
+    (b.session_date + b.session_time).localeCompare(a.session_date + a.session_time)
+  );
+}
+
+function apiEntryToSession(e: Record<string, unknown>): Session {
+  return {
+    id: e.id as string,
+    session_date: e.session_date as string,
+    session_time: ((e.session_time as string) ?? '').slice(0, 5),
+    duration_minutes: (e.duration_minutes as number | null) ?? null,
+    temperature_celsius: (e.temperature_celsius as number | null) ?? null,
+    notes: ((e.visitor_notes ?? e.notes) as string) ?? '',
+    instructor: ((e.instructor_name ?? e.instructor) as string) ?? '',
+  };
+}
+
 export default function JournalPage() {
   const [sessions, setSessions] = useState<Session[]>([]);
   const [ready, setReady] = useState(false);
+  const [visitorId, setVisitorId] = useState('');
 
-  useEffect(() => { setSessions(loadSessions()); setReady(true); }, []);
+  useEffect(() => {
+    let vid = localStorage.getItem('visitor_id') ?? '';
+    if (!vid) { vid = crypto.randomUUID(); localStorage.setItem('visitor_id', vid); }
+    setVisitorId(vid);
 
-  function handleAdd(s: Session) {
-    const updated = [s, ...sessions].sort((a, b) =>
-      (b.session_date + b.session_time).localeCompare(a.session_date + a.session_time)
-    );
-    persist(updated);
-    setSessions(updated);
+    fetch(`/api/journal?visitor_id=${encodeURIComponent(vid)}`)
+      .then(r => r.json())
+      .then(async (d) => {
+        if (d.entries && d.entries.length > 0) {
+          setSessions(sortSessions(d.entries.map(apiEntryToSession)));
+        } else if (!localStorage.getItem(MIGRATION_KEY)) {
+          // Migrate localStorage data to API once
+          const local = localStorage.getItem(KEY_V2);
+          if (local) {
+            const parsed = JSON.parse(local) as Session[];
+            const nonDemo = parsed.filter(s => !['1','2','3','4','5','6','7'].includes(s.id));
+            if (nonDemo.length > 0) {
+              await Promise.all(nonDemo.map(s =>
+                fetch('/api/journal', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ visitor_id: vid, session_date: s.session_date, session_time: s.session_time, duration_minutes: s.duration_minutes, temperature_celsius: s.temperature_celsius, notes: s.notes, instructor: s.instructor }),
+                })
+              ));
+              // Reload after migration
+              const res2 = await fetch(`/api/journal?visitor_id=${encodeURIComponent(vid)}`);
+              const d2 = await res2.json();
+              setSessions(sortSessions((d2.entries ?? []).map(apiEntryToSession)));
+            }
+          }
+          localStorage.setItem(MIGRATION_KEY, '1');
+        }
+        setReady(true);
+      })
+      .catch(() => { setSessions(loadSessions()); setReady(true); });
+  }, []);
+
+  async function handleAdd(s: Session) {
+    try {
+      const res = await fetch('/api/journal', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ visitor_id: visitorId, session_date: s.session_date, session_time: s.session_time, duration_minutes: s.duration_minutes, temperature_celsius: s.temperature_celsius, notes: s.notes, instructor: s.instructor }),
+      });
+      const d = await res.json();
+      if (d.entry) {
+        setSessions(prev => sortSessions([apiEntryToSession(d.entry), ...prev]));
+        return;
+      }
+    } catch { /* fallback */ }
+    // Offline fallback
+    setSessions(prev => sortSessions([s, ...prev]));
   }
 
-  function handleDelete(id: string) {
-    const updated = sessions.filter(s => s.id !== id);
-    persist(updated);
-    setSessions(updated);
+  async function handleDelete(id: string) {
+    setSessions(prev => prev.filter(s => s.id !== id));
+    try {
+      await fetch(`/api/journal?id=${encodeURIComponent(id)}&visitor_id=${encodeURIComponent(visitorId)}`, { method: 'DELETE' });
+    } catch { /* ignore */ }
   }
 
   const today = new Date().toISOString().split('T')[0];

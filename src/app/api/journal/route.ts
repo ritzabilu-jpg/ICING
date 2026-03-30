@@ -1,101 +1,76 @@
-/**
- * /api/journal
- * REST API for the ice bath journal module.
- * GET  – fetch all entries (optionally scoped to visitor_id header)
- * POST – create a new entry
- * DELETE – remove an entry by ?id=
- *
- * Uses Supabase (immersion_sessions table) via the service-role admin client.
- * No auth required for demo mode; pass x-visitor-id header to scope per user.
- */
-
 import { NextRequest, NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase';
 
 export const dynamic = 'force-dynamic';
 
-// Demo seed data – inserted once if the table is empty for the demo visitor
-const DEMO_VISITOR_ID = '00000000-0000-0000-0000-000000000001';
-const DEMO_SEEDS = [
-  { session_date: '2026-03-08', session_time: '07:30', duration_minutes: 12, temperature_celsius: 5.2, instructor_name: 'demo', notes: 'First time – felt the cold shock strongly' },
-  { session_date: '2026-03-10', session_time: '08:00', duration_minutes: 15, temperature_celsius: 4.9,  instructor_name: 'demo', notes: 'Much calmer entry – breathing helped' },
-  { session_date: '2026-03-11', session_time: '07:45', duration_minutes: 18, temperature_celsius: 5.0, instructor_name: 'demo', notes: 'Felt energetic all morning after' },
-  { session_date: '2026-03-13', session_time: '09:00', duration_minutes: 20, temperature_celsius: 4.8,  instructor_name: 'demo', notes: '' },
-  { session_date: '2026-03-14', session_time: '07:30', duration_minutes: 14, temperature_celsius: 5.1, instructor_name: 'demo', notes: 'Slight dizziness at the end – stayed shorter' },
-];
+// GET  /api/journal?visitor_id=xxx          → entries for that visitor (from immersion_sessions)
+// POST /api/journal                          → user adds own entry
+// DELETE /api/journal?id=xxx&visitor_id=xxx  → user deletes own entry
 
-// GET – return all entries for the given visitor (or demo visitor)
 export async function GET(req: NextRequest) {
+  const visitorId = req.nextUrl.searchParams.get('visitor_id');
+  if (!visitorId) return NextResponse.json({ entries: [] });
+
   const supabase = createAdminClient();
-  const visitorId = req.headers.get('x-visitor-id') || DEMO_VISITOR_ID;
-
-  // Seed demo data once if this is the demo visitor and the table is empty
-  if (visitorId === DEMO_VISITOR_ID) {
-    const { count } = await supabase
-      .from('immersion_sessions')
-      .select('id', { count: 'exact', head: true })
-      .eq('visitor_id', DEMO_VISITOR_ID);
-
-    if ((count ?? 0) === 0) {
-      // Ensure demo visitor profile exists
-      await supabase.from('visitor_profiles').upsert(
-        { id: DEMO_VISITOR_ID, name: 'Demo User', phone: '0000000000', role: 'user' },
-        { onConflict: 'id' }
-      );
-      // Insert demo sessions
-      await supabase.from('immersion_sessions').insert(
-        DEMO_SEEDS.map(s => ({ ...s, visitor_id: DEMO_VISITOR_ID }))
-      );
-    }
-  }
-
   const { data, error } = await supabase
     .from('immersion_sessions')
-    .select('id, session_date, session_time, duration_minutes, temperature_celsius, notes')
+    .select('*')
     .eq('visitor_id', visitorId)
     .order('session_date', { ascending: false })
     .order('session_time', { ascending: false });
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-  return NextResponse.json(data ?? []);
+  return NextResponse.json({ entries: data ?? [] });
 }
 
-// POST – create a new entry
 export async function POST(req: NextRequest) {
-  const supabase = createAdminClient();
-  const visitorId = req.headers.get('x-visitor-id') || DEMO_VISITOR_ID;
+  const body = await req.json() as {
+    visitor_id: string;
+    session_date: string;
+    session_time: string;
+    duration_minutes?: number | null;
+    temperature_celsius?: number | null;
+    notes?: string;
+    instructor?: string;
+  };
 
-  const { session_date, session_time, duration_minutes, temperature_celsius, notes } = await req.json();
-
-  if (!session_date || !session_time || !duration_minutes) {
-    return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
+  if (!body.visitor_id || !body.session_date || !body.session_time) {
+    return NextResponse.json({ error: 'חסרים פרטים' }, { status: 400 });
   }
 
+  const supabase = createAdminClient();
   const { data, error } = await supabase
     .from('immersion_sessions')
     .insert({
-      visitor_id: visitorId,
-      session_date,
-      session_time,
-      duration_minutes: Number(duration_minutes),
-      temperature_celsius: temperature_celsius ? Number(temperature_celsius) : null,
-      instructor_name: '',
-      notes: notes || '',
+      visitor_id: body.visitor_id,
+      session_date: body.session_date,
+      session_time: body.session_time,
+      duration_minutes: body.duration_minutes ?? null,
+      temperature_celsius: body.temperature_celsius ?? null,
+      visitor_notes: body.notes ?? '',
+      instructor_name: body.instructor ?? '',
+      status: body.duration_minutes ? 'done' : 'planned',
+      logged_by: body.visitor_id,
     })
-    .select('id, session_date, session_time, duration_minutes, temperature_celsius, notes')
+    .select()
     .single();
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-  return NextResponse.json(data, { status: 201 });
+  return NextResponse.json({ entry: data });
 }
 
-// DELETE – remove entry by ?id=
 export async function DELETE(req: NextRequest) {
-  const supabase = createAdminClient();
-  const id = new URL(req.url).searchParams.get('id');
-  if (!id) return NextResponse.json({ error: 'Missing id' }, { status: 400 });
+  const id = req.nextUrl.searchParams.get('id');
+  const visitorId = req.nextUrl.searchParams.get('visitor_id');
+  if (!id || !visitorId) return NextResponse.json({ error: 'חסרים פרטים' }, { status: 400 });
 
-  const { error } = await supabase.from('immersion_sessions').delete().eq('id', id);
+  const supabase = createAdminClient();
+  const { error } = await supabase
+    .from('immersion_sessions')
+    .delete()
+    .eq('id', id)
+    .eq('visitor_id', visitorId); // safety: only own entries
+
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   return NextResponse.json({ success: true });
 }
