@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -349,22 +350,36 @@ function apiEntryToSession(e: Record<string, unknown>): Session {
 }
 
 export default function JournalPage() {
+  const searchParams = useSearchParams();
+  const viewVid = searchParams.get('vid'); // instructor viewing another user's journal
   const [sessions, setSessions] = useState<Session[]>([]);
   const [ready, setReady] = useState(false);
   const [visitorId, setVisitorId] = useState('');
+  const [viewName, setViewName] = useState('');
 
   useEffect(() => {
     let vid = localStorage.getItem('visitor_id') ?? '';
     if (!vid) { vid = crypto.randomUUID(); localStorage.setItem('visitor_id', vid); }
     setVisitorId(vid);
 
-    fetch(`/api/journal?visitor_id=${encodeURIComponent(vid)}`)
+    // If ?vid= is provided, load that person's journal (instructor view)
+    const targetVid = viewVid || vid;
+    if (viewVid && viewVid !== vid) {
+      fetch(`/api/instructor/clients`, { headers: { 'x-visitor-id': vid } })
+        .then(r => r.json())
+        .then((clients: Array<{id: string; name: string}>) => {
+          const found = clients.find(c => c.id === viewVid);
+          if (found) setViewName(found.name);
+        }).catch(() => {});
+    }
+
+    fetch(`/api/journal?visitor_id=${encodeURIComponent(targetVid)}`)
       .then(r => r.json())
       .then(async (d) => {
         if (d.entries && d.entries.length > 0) {
           setSessions(sortSessions(d.entries.map(apiEntryToSession)));
-        } else if (!localStorage.getItem(MIGRATION_KEY)) {
-          // Migrate localStorage data to API once
+        } else if (!viewVid && !localStorage.getItem(MIGRATION_KEY)) {
+          // Migrate localStorage data to API once (only for own journal)
           const local = localStorage.getItem(KEY_V2);
           if (local) {
             const parsed = JSON.parse(local) as Session[];
@@ -377,7 +392,6 @@ export default function JournalPage() {
                   body: JSON.stringify({ visitor_id: vid, session_date: s.session_date, session_time: s.session_time, duration_minutes: s.duration_minutes, temperature_celsius: s.temperature_celsius, notes: s.notes, instructor: s.instructor }),
                 })
               ));
-              // Reload after migration
               const res2 = await fetch(`/api/journal?visitor_id=${encodeURIComponent(vid)}`);
               const d2 = await res2.json();
               setSessions(sortSessions((d2.entries ?? []).map(apiEntryToSession)));
@@ -423,22 +437,35 @@ export default function JournalPage() {
     <main className="min-h-screen py-10 px-4" style={{ backgroundColor: '#0a1628' }}>
       <div className="max-w-4xl mx-auto">
 
+        {/* Instructor view banner */}
+        {viewVid && (
+          <div className="mb-6 bg-blue-900 border border-blue-700 rounded-2xl px-5 py-3 text-center" dir="rtl">
+            <p className="text-blue-200 text-sm font-semibold">
+              צופה ביומן של: <span className="text-white font-black">{viewName || viewVid}</span>
+            </p>
+            <button onClick={() => window.history.back()}
+              className="text-blue-400 hover:text-white text-xs mt-1 underline">חזור לדשבורד</button>
+          </div>
+        )}
+
         {/* Header */}
         <div className="text-center mb-8" dir="rtl">
           <div className="text-5xl mb-3">🧊</div>
-          <h1 className="text-3xl font-black text-white mb-1">יומן טבילות קרח</h1>
+          <h1 className="text-3xl font-black text-white mb-1">
+            {viewName ? `יומן טבילות — ${viewName}` : 'יומן טבילות קרח'}
+          </h1>
           <p className="text-slate-400 text-sm">עקוב, נתח והשתפר</p>
         </div>
 
         {/* Analytics */}
         {ready && <AnalyticsBar a={computeAnalytics(sessions)} />}
 
-        {/* Add form */}
-        <AddForm onAdd={handleAdd} />
+        {/* Add form — hidden in instructor view */}
+        {!viewVid && <AddForm onAdd={handleAdd} />}
 
         {/* Upcoming */}
         <div dir="rtl">
-          {ready && <UpcomingList sessions={future} onDelete={handleDelete} />}
+          {ready && <UpcomingList sessions={future} onDelete={viewVid ? () => {} : handleDelete} />}
 
           {/* Past — last 10 */}
           <h2 className="text-white font-black text-lg mb-4">

@@ -477,6 +477,12 @@ export default function InstructorDashboard() {
                 <div className="flex items-center gap-3">
                   <button onClick={() => loadJournal(journalTargetId)}
                     className="text-sm text-slate-400 hover:text-[#0f2942] font-semibold transition-colors">↻ רענן</button>
+                  {journalTargetId && journalTargetId !== visitorId && (
+                    <a href={`/journal?vid=${journalTargetId}`} target="_blank" rel="noopener noreferrer"
+                      className="text-sm text-emerald-600 hover:text-emerald-800 font-semibold transition-colors">
+                      פתח דשבורד ↗
+                    </a>
+                  )}
                   <button onClick={() => setShowAddJournal(v => !v)}
                     className="text-sm text-[#7dd8f8] hover:text-[#0f2942] font-semibold transition-colors">
                     {showAddJournal ? 'סגור' : '+ הוסף כניסה'}
