@@ -443,8 +443,8 @@ function JournalContent() {
             <p className="text-blue-200 text-sm font-semibold">
               צופה ביומן של: <span className="text-white font-black">{viewName || viewVid}</span>
             </p>
-            <button onClick={() => window.history.back()}
-              className="text-blue-400 hover:text-white text-xs mt-1 underline">חזור לדשבורד</button>
+            <button onClick={() => { window.location.href = '/instructor/dashboard'; }}
+              className="text-blue-400 hover:text-white text-xs mt-1 underline">חזור לדשבורד מדריך</button>
           </div>
         )}
 
