@@ -123,11 +123,9 @@ export default function InstructorDashboard() {
     const tid = targetId ?? journalTargetId ?? visitorId;
     if (!tid || !visitorId) return;
     setLoadingJournal(true);
-    console.log('[journal load] fetching visitor_id=', tid);
     fetch(`/api/immersion-sessions?visitor_id=${tid}`, { headers: { 'x-visitor-id': visitorId } })
       .then(async r => {
         const d = await r.json();
-        console.log('[journal load] status=', r.status, 'data=', d);
         if (!r.ok) {
           setJSaveError(`שגיאת טעינה ${r.status}: ${d?.error || JSON.stringify(d)}`);
           setJournalSessions([]);
@@ -136,7 +134,7 @@ export default function InstructorDashboard() {
         }
         setLoadingJournal(false);
       })
-      .catch(e => { console.error('[journal load] error', e); setJSaveError('שגיאת רשת'); setLoadingJournal(false); });
+      .catch(() => { setJSaveError('שגיאת רשת'); setLoadingJournal(false); });
   }
 
   useEffect(() => {
@@ -165,7 +163,6 @@ export default function InstructorDashboard() {
     if (!jDuration || !targetId) return;
     setJSaving(true);
     setJSaveError('');
-    console.log('[journal save] targetId=', targetId, 'visitorId=', visitorId);
     try {
       const res = await fetch('/api/immersion-sessions', {
         method: 'POST',
@@ -183,7 +180,6 @@ export default function InstructorDashboard() {
         }),
       });
       const data = await res.json();
-      console.log('[journal save] response:', res.status, data);
       if (!res.ok) {
         setJSaveError(data?.error || `שגיאה ${res.status}`);
         setJSaving(false);
@@ -475,12 +471,9 @@ export default function InstructorDashboard() {
 
             <div className="bg-white rounded-2xl border border-slate-100 overflow-hidden">
               <div className="flex items-center justify-between px-4 py-3 border-b border-slate-100">
-                <div>
-                  <h2 className="font-bold text-[#0f2942]">
-                    {journalTargetId === visitorId ? 'יומן הטבילות האישי שלי' : `יומן טבילות — ${journalTargetName}`}
-                  </h2>
-                  <p className="text-xs text-slate-400 font-mono mt-0.5">ID: {journalTargetId}</p>
-                </div>
+                <h2 className="font-bold text-[#0f2942]">
+                  {journalTargetId === visitorId ? 'יומן הטבילות האישי שלי' : `יומן טבילות — ${journalTargetName}`}
+                </h2>
                 <div className="flex items-center gap-3">
                   <button onClick={() => loadJournal(journalTargetId)}
                     className="text-sm text-slate-400 hover:text-[#0f2942] font-semibold transition-colors">↻ רענן</button>
