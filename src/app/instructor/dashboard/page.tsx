@@ -125,13 +125,18 @@ export default function InstructorDashboard() {
     setLoadingJournal(true);
     console.log('[journal load] fetching visitor_id=', tid);
     fetch(`/api/immersion-sessions?visitor_id=${tid}`, { headers: { 'x-visitor-id': visitorId } })
-      .then(r => r.json())
-      .then(d => {
-        console.log('[journal load] got', Array.isArray(d) ? d.length : d, 'entries');
-        setJournalSessions(Array.isArray(d) ? d : []);
+      .then(async r => {
+        const d = await r.json();
+        console.log('[journal load] status=', r.status, 'data=', d);
+        if (!r.ok) {
+          setJSaveError(`שגיאת טעינה ${r.status}: ${d?.error || JSON.stringify(d)}`);
+          setJournalSessions([]);
+        } else {
+          setJournalSessions(Array.isArray(d) ? d : []);
+        }
         setLoadingJournal(false);
       })
-      .catch(e => { console.error('[journal load] error', e); setLoadingJournal(false); });
+      .catch(e => { console.error('[journal load] error', e); setJSaveError('שגיאת רשת'); setLoadingJournal(false); });
   }
 
   useEffect(() => {
@@ -520,6 +525,13 @@ export default function InstructorDashboard() {
                     className="mt-3 bg-[#0f2942] hover:bg-[#1a3a5c] disabled:opacity-40 text-white font-bold px-5 py-2 rounded-xl text-sm transition-colors">
                     {jSaving ? 'שומר...' : '+ הוסף'}
                   </button>
+                </div>
+              )}
+
+              {jSaveError && !showAddJournal && (
+                <div className="px-4 py-3 bg-red-50 border-b border-red-100 text-red-600 text-sm font-semibold">
+                  {jSaveError}
+                  <button onClick={() => setJSaveError('')} className="mr-2 text-red-400 hover:text-red-600">✕</button>
                 </div>
               )}
 
