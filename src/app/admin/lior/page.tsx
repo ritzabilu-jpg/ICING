@@ -85,6 +85,12 @@ function AdminContent() {
   const [addingSlot, setAddingSlot] = useState(false);
   const [addSlotMsg, setAddSlotMsg] = useState('');
   const [expandedSlot, setExpandedSlot] = useState<string | null>(null);
+  const [addingBookingSlotId, setAddingBookingSlotId] = useState<string | null>(null);
+  const [newClientName, setNewClientName] = useState('');
+  const [newClientPhone, setNewClientPhone] = useState('');
+  const [newClientPkg, setNewClientPkg] = useState('single');
+  const [addingClient, setAddingClient] = useState(false);
+  const [addClientMsg, setAddClientMsg] = useState('');
 
   // ── Clients ──
   const [clients, setClients]     = useState<ClientEntry[]>([]);
@@ -407,6 +413,29 @@ function AdminContent() {
     setBulkDeleting(false);
   }
 
+  async function addClientToSlot(slotId: string) {
+    if (!newClientName.trim() || !newClientPhone.trim()) return;
+    setAddingClient(true);
+    setAddClientMsg('');
+    try {
+      const res = await fetch('/api/immersion-bookings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ slot_id: slotId, name: newClientName.trim(), phone: newClientPhone.trim(), package_type: newClientPkg }),
+      });
+      const d = await res.json();
+      if (res.ok) {
+        setAddClientMsg('✅ נרשם בהצלחה');
+        setNewClientName(''); setNewClientPhone(''); setNewClientPkg('single');
+        setAddingBookingSlotId(null);
+        await loadSlots();
+      } else {
+        setAddClientMsg(d.error ?? 'שגיאה');
+      }
+    } catch { setAddClientMsg('שגיאת רשת'); }
+    setAddingClient(false);
+  }
+
   async function bulkDeleteWorkshops() {
     if (!wBulkFrom || !wBulkTo) return;
     const label = wBulkTime ? `בשעה ${wBulkTime}` : 'בכל השעות';
@@ -643,54 +672,85 @@ function AdminContent() {
                   </div>
                 </div>
                 {expandedSlot === s.id && (
-                  s.bookings.length === 0 ? (
-                    <div className="text-center py-6 text-slate-400 text-sm">אין נרשמים עדיין</div>
-                  ) : (
-                    <table className="w-full text-sm" dir="rtl">
-                      <thead>
-                        <tr className="border-b border-slate-100 bg-slate-50">
-                          <th className="text-right px-6 py-3 font-semibold text-slate-600 w-8">#</th>
-                          <th className="text-right px-4 py-3 font-semibold text-slate-600">שם</th>
-                          <th className="text-right px-4 py-3 font-semibold text-slate-600">טלפון</th>
-                          <th className="text-right px-4 py-3 font-semibold text-slate-600">בריאות יומית</th>
-                          <th className="text-right px-4 py-3 font-semibold text-slate-600">הצהרה כללית</th>
-                          <th className="text-right px-4 py-3 font-semibold text-slate-600">חבילה</th>
-                          <th className="text-right px-4 py-3 font-semibold text-slate-600">נרשם ב</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {s.bookings.map((b, i) => {
-                          const bid = `imm-${s.id}-${i}`;
-                          const hc = healthChecks[bid] ?? { daily: false, general: false };
-                          return (
-                            <tr key={i} className="border-b border-slate-50 hover:bg-slate-50">
-                              <td className="px-6 py-3 text-slate-400 font-mono text-right">{i + 1}</td>
-                              <td className="px-4 py-3 font-semibold text-navy-900 text-right">{b.visitor_name}</td>
-                              <td className="px-4 py-3 font-mono text-right">
-                                <a href={`tel:${b.visitor_phone}`} className="hover:text-ice-600 text-slate-600">{b.visitor_phone}</a>
-                              </td>
-                              <td className="px-4 py-3 text-center">
-                                <input type="checkbox" checked={hc.daily} onChange={() => toggleHealth(bid, 'daily')}
-                                  className="w-4 h-4 accent-ice-500 cursor-pointer" />
-                              </td>
-                              <td className="px-4 py-3 text-center">
-                                <input type="checkbox" checked={hc.general} onChange={() => toggleHealth(bid, 'general')}
-                                  className="w-4 h-4 accent-green-500 cursor-pointer" />
-                              </td>
-                              <td className="px-4 py-3 text-right">
-                                <span className="bg-ice-100 text-ice-700 text-xs font-bold px-2 py-0.5 rounded-full">
-                                  {PKG_LABELS[b.package_type] ?? b.package_type}
-                                </span>
-                              </td>
-                              <td className="px-4 py-3 text-slate-400 text-xs text-right">
-                                {new Date(b.created_at).toLocaleString('he-IL', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })}
-                              </td>
-                            </tr>
-                          );
-                        })}
-                      </tbody>
-                    </table>
-                  )
+                  <div>
+                    {s.bookings.length === 0 ? (
+                      <div className="text-center py-4 text-slate-400 text-sm">אין נרשמים עדיין</div>
+                    ) : (
+                      <table className="w-full text-sm" dir="rtl">
+                        <thead>
+                          <tr className="border-b border-slate-100 bg-slate-50">
+                            <th className="text-right px-6 py-3 font-semibold text-slate-600 w-8">#</th>
+                            <th className="text-right px-4 py-3 font-semibold text-slate-600">שם</th>
+                            <th className="text-right px-4 py-3 font-semibold text-slate-600">טלפון</th>
+                            <th className="text-right px-4 py-3 font-semibold text-slate-600">בריאות יומית</th>
+                            <th className="text-right px-4 py-3 font-semibold text-slate-600">הצהרה כללית</th>
+                            <th className="text-right px-4 py-3 font-semibold text-slate-600">חבילה</th>
+                            <th className="text-right px-4 py-3 font-semibold text-slate-600">נרשם ב</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {s.bookings.map((b, i) => {
+                            const bid = `imm-${s.id}-${i}`;
+                            const hc = healthChecks[bid] ?? { daily: false, general: false };
+                            return (
+                              <tr key={i} className="border-b border-slate-50 hover:bg-slate-50">
+                                <td className="px-6 py-3 text-slate-400 font-mono text-right">{i + 1}</td>
+                                <td className="px-4 py-3 font-semibold text-navy-900 text-right">{b.visitor_name}</td>
+                                <td className="px-4 py-3 font-mono text-right">
+                                  <a href={`tel:${b.visitor_phone}`} className="hover:text-ice-600 text-slate-600">{b.visitor_phone}</a>
+                                </td>
+                                <td className="px-4 py-3 text-center">
+                                  <input type="checkbox" checked={hc.daily} onChange={() => toggleHealth(bid, 'daily')}
+                                    className="w-4 h-4 accent-ice-500 cursor-pointer" />
+                                </td>
+                                <td className="px-4 py-3 text-center">
+                                  <input type="checkbox" checked={hc.general} onChange={() => toggleHealth(bid, 'general')}
+                                    className="w-4 h-4 accent-green-500 cursor-pointer" />
+                                </td>
+                                <td className="px-4 py-3 text-right">
+                                  <span className="bg-ice-100 text-ice-700 text-xs font-bold px-2 py-0.5 rounded-full">
+                                    {PKG_LABELS[b.package_type] ?? b.package_type}
+                                  </span>
+                                </td>
+                                <td className="px-4 py-3 text-slate-400 text-xs text-right">
+                                  {new Date(b.created_at).toLocaleString('he-IL', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })}
+                                </td>
+                              </tr>
+                            );
+                          })}
+                        </tbody>
+                      </table>
+                    )}
+                    {/* Manual add client */}
+                    <div className="border-t border-slate-100 px-6 py-3 bg-slate-50">
+                      {addingBookingSlotId === s.id ? (
+                        <div className="flex flex-wrap gap-2 items-end" dir="rtl">
+                          <input value={newClientName} onChange={e => setNewClientName(e.target.value)}
+                            placeholder="שם לקוח" className="border border-slate-300 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:border-ice-400 w-36" />
+                          <input value={newClientPhone} onChange={e => setNewClientPhone(e.target.value)}
+                            placeholder="טלפון" className="border border-slate-300 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:border-ice-400 w-32" />
+                          <select value={newClientPkg} onChange={e => setNewClientPkg(e.target.value)}
+                            className="border border-slate-300 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:border-ice-400 bg-white">
+                            <option value="single">בודדת</option>
+                            <option value="5pack">חבילת 5</option>
+                            <option value="10pack">חבילת 10</option>
+                          </select>
+                          <button onClick={() => addClientToSlot(s.id)} disabled={addingClient || !newClientName.trim() || !newClientPhone.trim()}
+                            className="bg-ice-600 hover:bg-ice-700 disabled:opacity-40 text-white font-bold px-4 py-1.5 rounded-lg text-sm">
+                            {addingClient ? '...' : 'שמור'}
+                          </button>
+                          <button onClick={() => { setAddingBookingSlotId(null); setAddClientMsg(''); }}
+                            className="text-slate-400 hover:text-slate-600 text-sm px-2 py-1.5">ביטול</button>
+                          {addClientMsg && <span className={`text-sm font-semibold ${addClientMsg.startsWith('✅') ? 'text-green-600' : 'text-red-500'}`}>{addClientMsg}</span>}
+                        </div>
+                      ) : (
+                        <button onClick={() => { setAddingBookingSlotId(s.id); setNewClientName(''); setNewClientPhone(''); setNewClientPkg('single'); setAddClientMsg(''); }}
+                          className="text-ice-600 hover:text-ice-800 text-sm font-bold">
+                          + הוסף לקוח ידנית
+                        </button>
+                      )}
+                    </div>
+                  </div>
                 )}
               </div>
             ))
@@ -702,7 +762,7 @@ function AdminContent() {
       {tab === 'schedule' && (() => {
         // Build full week dates (Sun–Sat) from weekStart
         function allWeekDates(): string[] {
-          if (!scheduleWeekStart) return [...new Set(scheduleSlots.map(s => s.date))].sort();
+          if (!scheduleWeekStart) return Array.from(new Set(scheduleSlots.map(s => s.date))).sort();
           const dates: string[] = [];
           const start = new Date(scheduleWeekStart + 'T00:00:00');
           for (let i = 0; i < 7; i++) {
@@ -713,7 +773,7 @@ function AdminContent() {
           return dates;
         }
         const dates = allWeekDates();
-        const times = [...new Set(scheduleSlots.map(s => s.time))].sort();
+        const times = Array.from(new Set(scheduleSlots.map(s => s.time))).sort();
         // Map: "date|time" → slots[]
         const cellMap = new Map<string, ScheduleSlot[]>();
         for (const s of scheduleSlots) {

@@ -40,12 +40,18 @@ export async function POST(req: NextRequest) {
     product_title?: string;
     product_date?: string;
     product_time?: string;
+    product_date_iso?: string;
     booking_id?: string;
   };
 
   const now = new Date();
   const deadline = getCallbackDeadline(now);
   const deadlineStr = formatDeadlineHebrew(deadline);
+
+  // Use actual booking date for calendar if available
+  const bookingDate = body.product_date_iso ? new Date(body.product_date_iso) : null;
+  const calStart = bookingDate ?? deadline;
+  const calEnd = new Date(calStart.getTime() + 60 * 60 * 1000);
 
   // Generate confirmation code
   const confirmation_code = 'PH-' + Math.random().toString(36).substring(2, 8).toUpperCase();
@@ -62,6 +68,7 @@ export async function POST(req: NextRequest) {
       product_title: body.product_title ?? null,
       product_date: body.product_date ?? null,
       product_time: body.product_time ?? null,
+      product_date_iso: body.product_date_iso ?? null,
       booking_id: body.booking_id ?? null,
       confirmation_code,
       callback_deadline: deadline.toISOString(),
@@ -71,17 +78,17 @@ export async function POST(req: NextRequest) {
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
-  // Build calendar links
+  // Build calendar links (use actual booking date if available, else callback deadline)
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://icing.co.il';
   function fmtGCal(d: Date) {
     return d.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
   }
-  const dlEnd = new Date(deadline.getTime() + 60 * 60 * 1000);
-  const gcTitle   = encodeURIComponent('ICING יחזור אליך');
-  const gcDetails = encodeURIComponent(`שעות מועדפות: ${body.preferred_hours}\nקוד: ${confirmation_code}`);
+  const calTitle  = body.product_title ? body.product_title : 'ICING – הזמנה';
+  const gcTitle   = encodeURIComponent(calTitle);
+  const gcDetails = encodeURIComponent(`שעות מועדפות לשיחה: ${body.preferred_hours}\nקוד: ${confirmation_code}`);
   const gcLoc     = encodeURIComponent('רחובות');
-  const googleUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${gcTitle}&dates=${fmtGCal(deadline)}/${fmtGCal(dlEnd)}&details=${gcDetails}&location=${gcLoc}`;
-  const outlookUrl = `https://outlook.live.com/calendar/0/deeplink/compose?subject=${gcTitle}&startdt=${deadline.toISOString()}&enddt=${dlEnd.toISOString()}&body=${gcDetails}&location=${gcLoc}`;
+  const googleUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${gcTitle}&dates=${fmtGCal(calStart)}/${fmtGCal(calEnd)}&details=${gcDetails}&location=${gcLoc}`;
+  const outlookUrl = `https://outlook.live.com/calendar/0/deeplink/compose?subject=${gcTitle}&startdt=${calStart.toISOString()}&enddt=${calEnd.toISOString()}&body=${gcDetails}&location=${gcLoc}`;
   const icsUrl = `${baseUrl}/api/calendar/${confirmation_code}`;
 
   // Send email confirmation

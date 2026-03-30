@@ -12,6 +12,15 @@ const INSTRUCTOR_COLORS = [
   '#14B8A6', // טורקיז
 ];
 
+// ספציפי לפי שם מדריך
+const INSTRUCTOR_COLOR_BY_NAME: Record<string, string> = {
+  'גיא רייבנבך':   '#FBBF24', // צהוב
+  'איתמר מאיירס':  '#F472B6', // ורוד
+  'ליאור כ"ץ':     '#38BDF8', // תכלת
+  'אורן אלון':     '#A16207', // חום
+  'גולן בר נוי':   '#6B7280', // אפור
+};
+
 function checkAdmin(req: NextRequest) {
   const key = req.headers.get('x-admin-key') ?? new URL(req.url).searchParams.get('key') ?? '';
   return key === (process.env.ADMIN_KEY ?? 'lior2026') || key === (process.env.ADMIN_CODE ?? '');
@@ -51,7 +60,7 @@ export async function POST(req: NextRequest) {
   const result = instructors.map((inst, idx) => ({
     id: inst.id,
     name: inst.name,
-    color: INSTRUCTOR_COLORS[idx % INSTRUCTOR_COLORS.length],
+    color: INSTRUCTOR_COLOR_BY_NAME[inst.name] ?? INSTRUCTOR_COLORS[idx % INSTRUCTOR_COLORS.length],
     slots: slotsByInstructor[inst.id] ?? [],
     blocked: blockedByInstructor[inst.id] ?? [],
   }));

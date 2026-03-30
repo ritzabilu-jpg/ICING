@@ -15,6 +15,7 @@ interface ProductInfo {
   time: string;
   price: number;
   instructorName?: string;
+  dateISO?: string; // raw ISO datetime for calendar links
 }
 
 interface CheckoutState {
@@ -125,6 +126,7 @@ export default function CheckoutPage() {
               time: dt.toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' }),
               price: w.price,
               instructorName: w.instructor?.name,
+              dateISO: dt.toISOString(),
             });
           }
         })
@@ -149,6 +151,7 @@ export default function CheckoutPage() {
               time: s.slot_time.slice(0, 5),
               price: pkgInfo.price,
               instructorName: s.instructor_name,
+              dateISO: s.slot_date + 'T' + s.slot_time.slice(0, 5),
             });
           }
         })
@@ -386,6 +389,7 @@ export default function CheckoutPage() {
           product_title: product?.title,
           product_date: product?.date,
           product_time: product?.time,
+          product_date_iso: product?.dateISO,
           booking_id: state.bookingId,
         }),
       });
