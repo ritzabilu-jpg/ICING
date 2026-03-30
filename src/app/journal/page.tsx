@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 
 // ─── Constants ────────────────────────────────────────────────────────────────
@@ -349,7 +349,7 @@ function apiEntryToSession(e: Record<string, unknown>): Session {
   };
 }
 
-export default function JournalPage() {
+function JournalContent() {
   const searchParams = useSearchParams();
   const viewVid = searchParams.get('vid'); // instructor viewing another user's journal
   const [sessions, setSessions] = useState<Session[]>([]);
@@ -475,11 +475,19 @@ export default function JournalPage() {
             </span>
           </h2>
           {ready
-            ? <PastTable sessions={past} onDelete={handleDelete} />
+            ? <PastTable sessions={past} onDelete={viewVid ? () => {} : handleDelete} />
             : <div className="text-center py-16 text-slate-500">טוען...</div>}
         </div>
 
       </div>
     </main>
+  );
+}
+
+export default function JournalPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#0a1628' }}><div className="text-white">טוען...</div></div>}>
+      <JournalContent />
+    </Suspense>
   );
 }
