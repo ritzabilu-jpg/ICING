@@ -76,6 +76,8 @@ export default function InstructorDashboard() {
   const [jInstructorNotes, setJInstructorNotes] = useState('');
   const [jSaving, setJSaving] = useState(false);
   const [jSaveError, setJSaveError] = useState('');
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editFields, setEditFields] = useState<Partial<JournalSession>>({});
   const [journalTargetId, setJournalTargetId] = useState('');
   const [journalTargetName, setJournalTargetName] = useState('');
   const [journalSearch, setJournalSearch] = useState('');
@@ -191,6 +193,23 @@ export default function InstructorDashboard() {
     } catch {
       setJSaveError('שגיאת רשת, נסה שוב');
     }
+    setJSaving(false);
+  }
+
+  async function saveEdit(id: string) {
+    setJSaving(true);
+    try {
+      const res = await fetch('/api/immersion-sessions', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json', 'x-visitor-id': visitorId },
+        body: JSON.stringify({ id, ...editFields }),
+      });
+      const data = await res.json();
+      if (!res.ok) { setJSaveError(data?.error || `שגיאה ${res.status}`); setJSaving(false); return; }
+      setEditingId(null);
+      setEditFields({});
+      loadJournal(journalTargetId || visitorId);
+    } catch { setJSaveError('שגיאת רשת'); }
     setJSaving(false);
   }
 
@@ -548,22 +567,62 @@ export default function InstructorDashboard() {
                   <table className="w-full text-sm">
                     <thead className="bg-slate-50 border-b border-slate-100">
                       <tr>
-                        <th className="text-right px-4 py-3 font-semibold text-slate-600">תאריך</th>
-                        <th className="text-right px-4 py-3 font-semibold text-slate-600">שעה</th>
-                        <th className="text-right px-4 py-3 font-semibold text-slate-600">סטטוס</th>
-                        <th className="text-right px-4 py-3 font-semibold text-slate-600">טמפ׳</th>
-                        <th className="text-right px-4 py-3 font-semibold text-slate-600">משך</th>
-                        <th className="text-right px-4 py-3 font-semibold text-slate-600">הערות</th>
+                        <th className="text-right px-3 py-3 font-semibold text-slate-600">תאריך</th>
+                        <th className="text-right px-3 py-3 font-semibold text-slate-600">סטטוס</th>
+                        <th className="text-right px-3 py-3 font-semibold text-slate-600">טמפ׳</th>
+                        <th className="text-right px-3 py-3 font-semibold text-slate-600">משך</th>
+                        <th className="text-right px-3 py-3 font-semibold text-slate-600">הערות</th>
+                        <th className="px-3 py-3"></th>
                       </tr>
                     </thead>
                     <tbody>
-                      {journalSessions.map(s => (
-                        <tr key={s.id} className="border-b border-slate-50 hover:bg-slate-50 transition-colors">
-                          <td className="px-4 py-3">
+                      {journalSessions.map(s => editingId === s.id ? (
+                        <tr key={s.id} className="border-b border-blue-100 bg-blue-50">
+                          <td className="px-3 py-2 text-xs text-slate-500">
                             {new Date(s.session_date).toLocaleDateString('he-IL', { day: '2-digit', month: '2-digit', year: '2-digit' })}
                           </td>
-                          <td className="px-4 py-3 font-mono">{s.session_time?.slice(0, 5)}</td>
-                          <td className="px-4 py-3">
+                          <td className="px-3 py-2">
+                            <select value={editFields.status ?? s.status ?? 'done'}
+                              onChange={e => setEditFields(f => ({ ...f, status: e.target.value as JournalSession['status'] }))}
+                              className="border border-slate-200 rounded px-1 py-0.5 text-xs w-20">
+                              <option value="done">בוצע</option>
+                              <option value="planned">מתוכנן</option>
+                              <option value="cancelled">בוטל</option>
+                            </select>
+                          </td>
+                          <td className="px-3 py-2">
+                            <input type="number" step="0.1" placeholder="°C"
+                              value={editFields.temperature_celsius ?? s.temperature_celsius ?? ''}
+                              onChange={e => setEditFields(f => ({ ...f, temperature_celsius: e.target.value ? parseFloat(e.target.value) : null }))}
+                              className="border border-slate-200 rounded px-1 py-0.5 text-xs w-16" />
+                          </td>
+                          <td className="px-3 py-2">
+                            <input type="number" placeholder="דק׳"
+                              value={editFields.duration_minutes ?? s.duration_minutes ?? ''}
+                              onChange={e => setEditFields(f => ({ ...f, duration_minutes: parseInt(e.target.value) || 0 }))}
+                              className="border border-slate-200 rounded px-1 py-0.5 text-xs w-16" />
+                          </td>
+                          <td className="px-3 py-2">
+                            <input placeholder="הערות"
+                              value={editFields.visitor_notes ?? s.visitor_notes ?? ''}
+                              onChange={e => setEditFields(f => ({ ...f, visitor_notes: e.target.value }))}
+                              className="border border-slate-200 rounded px-1 py-0.5 text-xs w-32" />
+                          </td>
+                          <td className="px-3 py-2 flex gap-1">
+                            <button onClick={() => saveEdit(s.id)} disabled={jSaving}
+                              className="text-xs bg-[#0f2942] text-white px-2 py-1 rounded font-semibold disabled:opacity-40">
+                              {jSaving ? '...' : 'שמור'}
+                            </button>
+                            <button onClick={() => { setEditingId(null); setEditFields({}); }}
+                              className="text-xs text-slate-400 hover:text-slate-600 px-1">ביטול</button>
+                          </td>
+                        </tr>
+                      ) : (
+                        <tr key={s.id} className="border-b border-slate-50 hover:bg-slate-50 transition-colors">
+                          <td className="px-3 py-3">
+                            {new Date(s.session_date).toLocaleDateString('he-IL', { day: '2-digit', month: '2-digit', year: '2-digit' })}
+                          </td>
+                          <td className="px-3 py-3">
                             <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
                               s.status === 'done' ? 'bg-green-100 text-green-700' :
                               s.status === 'cancelled' ? 'bg-red-100 text-red-600' :
@@ -572,11 +631,15 @@ export default function InstructorDashboard() {
                               {s.status === 'done' ? 'בוצע' : s.status === 'cancelled' ? 'בוטל' : 'מתוכנן'}
                             </span>
                           </td>
-                          <td className="px-4 py-3 text-[#7dd8f8] font-semibold">
+                          <td className="px-3 py-3 text-[#7dd8f8] font-semibold">
                             {s.temperature_celsius != null ? `${s.temperature_celsius}°C` : '—'}
                           </td>
-                          <td className="px-4 py-3 font-semibold">{s.duration_minutes} דק׳</td>
-                          <td className="px-4 py-3 text-slate-400 text-xs">{s.visitor_notes || s.instructor_notes || '—'}</td>
+                          <td className="px-3 py-3 font-semibold">{s.duration_minutes} דק׳</td>
+                          <td className="px-3 py-3 text-slate-400 text-xs">{s.visitor_notes || s.instructor_notes || '—'}</td>
+                          <td className="px-3 py-3">
+                            <button onClick={() => { setEditingId(s.id); setEditFields({}); }}
+                              className="text-xs text-[#7dd8f8] hover:text-[#0f2942] font-semibold transition-colors">עריכה</button>
+                          </td>
                         </tr>
                       ))}
                     </tbody>
