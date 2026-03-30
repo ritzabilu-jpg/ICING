@@ -12,14 +12,19 @@ const INSTRUCTOR_COLORS = [
   '#14B8A6', // טורקיז
 ];
 
-// ספציפי לפי שם מדריך
-const INSTRUCTOR_COLOR_BY_NAME: Record<string, string> = {
-  'גיא רייבנבך':   '#FDE68A', // צהוב בהיר
-  'איתמר מאיירס':  '#F472B6', // ורוד
-  'ליאור כ"ץ':     '#38BDF8', // תכלת
-  'אורן אלון':     '#A0522D', // חום
-  'גולן בר נוי':   '#6B7280', // אפור
+// מיפוי צבע לפי שם פרטי (חלקי) — עמיד לשינויי כתיב בשם משפחה
+const INSTRUCTOR_COLOR_BY_FIRST_NAME: Record<string, string> = {
+  'גיא':    '#FDE68A', // צהוב בהיר
+  'איתמר':  '#F472B6', // ורוד
+  'ליאור':  '#38BDF8', // תכלת
+  'אורן':   '#A0522D', // חום
+  'גולן':   '#6B7280', // אפור
 };
+
+function getInstructorColor(name: string, fallbackIdx: number): string {
+  const firstName = name.trim().split(/\s+/)[0];
+  return INSTRUCTOR_COLOR_BY_FIRST_NAME[firstName] ?? INSTRUCTOR_COLORS[fallbackIdx % INSTRUCTOR_COLORS.length];
+}
 
 function checkAdmin(req: NextRequest) {
   const key = req.headers.get('x-admin-key') ?? new URL(req.url).searchParams.get('key') ?? '';
@@ -60,7 +65,7 @@ export async function POST(req: NextRequest) {
   const result = instructors.map((inst, idx) => ({
     id: inst.id,
     name: inst.name,
-    color: INSTRUCTOR_COLOR_BY_NAME[inst.name] ?? INSTRUCTOR_COLORS[idx % INSTRUCTOR_COLORS.length],
+    color: getInstructorColor(inst.name, idx),
     slots: slotsByInstructor[inst.id] ?? [],
     blocked: blockedByInstructor[inst.id] ?? [],
   }));
