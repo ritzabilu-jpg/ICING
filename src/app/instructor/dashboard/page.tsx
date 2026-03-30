@@ -460,9 +460,10 @@ export default function InstructorDashboard() {
                   )}
                 </div>
                 {journalTargetId && journalTargetId !== visitorId && (
-                  <span className="text-sm font-bold text-[#0f2942] bg-[#e8f4fd] px-3 py-1.5 rounded-xl">
-                    📋 {journalTargetName}
-                  </span>
+                  <button onClick={() => window.open(`/journal?vid=${journalTargetId}`, '_blank')}
+                    className="text-sm font-bold text-[#0f2942] bg-[#e8f4fd] hover:bg-[#d0ebff] px-3 py-1.5 rounded-xl transition-colors" title="פתח יומן">
+                    📋 {journalTargetName} ↗
+                  </button>
                 )}
               </div>
             </div>
