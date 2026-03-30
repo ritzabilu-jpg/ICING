@@ -290,29 +290,29 @@ export default function InstructorDashboard() {
             {past.length === 0
               ? <div className="bg-white rounded-2xl border border-slate-100 p-10 text-center text-slate-400">אין סדנאות שעברו</div>
               : (
-                <div className="bg-white rounded-2xl border border-slate-100 overflow-hidden">
-                  <table className="w-full text-sm">
+                <div className="bg-white rounded-2xl border border-slate-100 overflow-x-auto">
+                  <table className="w-full text-sm min-w-[360px]">
                     <thead className="bg-slate-50 border-b border-slate-100">
                       <tr>
-                        <th className="text-right px-4 py-3 font-semibold text-slate-600">סוג</th>
-                        <th className="text-right px-4 py-3 font-semibold text-slate-600">תאריך</th>
-                        <th className="text-right px-4 py-3 font-semibold text-slate-600">שעה</th>
-                        <th className="text-right px-4 py-3 font-semibold text-slate-600">מיקום</th>
-                        <th className="text-right px-4 py-3 font-semibold text-slate-600">משתתפים</th>
-                        <th className="px-4 py-3"></th>
+                        <th className="text-right px-2 py-3 font-semibold text-slate-600">סוג</th>
+                        <th className="text-right px-2 py-3 font-semibold text-slate-600">תאריך</th>
+                        <th className="text-right px-2 py-3 font-semibold text-slate-600">שעה</th>
+                        <th className="text-right px-2 py-3 font-semibold text-slate-600 hidden sm:table-cell">מיקום</th>
+                        <th className="text-right px-2 py-3 font-semibold text-slate-600">משו׳</th>
+                        <th className="px-2 py-3"></th>
                       </tr>
                     </thead>
                     <tbody>
                       {past.map(s => (
                         <tr key={s.id} className="border-b border-slate-50 hover:bg-slate-50">
-                          <td className="px-4 py-3"><KindBadge kind={s.kind} /></td>
-                          <td className="px-4 py-3 font-medium">
+                          <td className="px-2 py-3"><KindBadge kind={s.kind} /></td>
+                          <td className="px-2 py-3 font-medium">
                             {new Date(s.date).toLocaleDateString('he-IL', { day: '2-digit', month: '2-digit', year: '2-digit' })}
                           </td>
-                          <td className="px-4 py-3 font-mono">{s.time}</td>
-                          <td className="px-4 py-3 text-slate-500">{s.location || '—'}</td>
-                          <td className="px-4 py-3">{s.participant_count}/{s.max_participants}</td>
-                          <td className="px-4 py-3">
+                          <td className="px-2 py-3 font-mono">{s.time}</td>
+                          <td className="px-2 py-3 text-slate-500 hidden sm:table-cell">{s.location || '—'}</td>
+                          <td className="px-2 py-3">{s.participant_count}/{s.max_participants}</td>
+                          <td className="px-2 py-3">
                             <Link href={sessionHref(s)} className="text-[#0f2942] text-xs font-semibold underline">פרטים</Link>
                           </td>
                         </tr>
@@ -344,29 +344,29 @@ export default function InstructorDashboard() {
               {future.length === 0
                 ? <p className="text-slate-400 text-sm">אין סדנאות מתוכננות</p>
                 : (
-                  <div className="bg-white rounded-2xl border border-slate-100 overflow-hidden">
-                    <table className="w-full text-sm">
+                  <div className="bg-white rounded-2xl border border-slate-100 overflow-x-auto">
+                    <table className="w-full text-sm min-w-[340px]">
                       <thead className="bg-slate-50 border-b border-slate-100">
                         <tr>
-                          <th className="text-right px-4 py-3 font-semibold text-slate-600">סוג</th>
-                          <th className="text-right px-4 py-3 font-semibold text-slate-600">תאריך</th>
-                          <th className="text-right px-4 py-3 font-semibold text-slate-600">שעה</th>
-                          <th className="text-right px-4 py-3 font-semibold text-slate-600">מיקום</th>
-                          <th className="text-right px-4 py-3 font-semibold text-slate-600">רשומים</th>
-                          <th className="text-right px-4 py-3 font-semibold text-slate-600">פנויים</th>
+                          <th className="text-right px-2 py-3 font-semibold text-slate-600">סוג</th>
+                          <th className="text-right px-2 py-3 font-semibold text-slate-600">תאריך</th>
+                          <th className="text-right px-2 py-3 font-semibold text-slate-600">שעה</th>
+                          <th className="text-right px-2 py-3 font-semibold text-slate-600 hidden sm:table-cell">מיקום</th>
+                          <th className="text-right px-2 py-3 font-semibold text-slate-600">רשומים</th>
+                          <th className="text-right px-2 py-3 font-semibold text-slate-600">פנויים</th>
                         </tr>
                       </thead>
                       <tbody>
                         {future.map(s => (
                           <tr key={s.id} className="border-b border-slate-50">
-                            <td className="px-4 py-3"><KindBadge kind={s.kind} /></td>
-                            <td className="px-4 py-3 font-medium">
+                            <td className="px-2 py-3"><KindBadge kind={s.kind} /></td>
+                            <td className="px-2 py-3 font-medium">
                               {new Date(s.date).toLocaleDateString('he-IL', { weekday: 'short', day: '2-digit', month: '2-digit' })}
                             </td>
-                            <td className="px-4 py-3 font-mono">{s.time}</td>
-                            <td className="px-4 py-3 text-slate-500">{s.location || '—'}</td>
-                            <td className="px-4 py-3">{s.participant_count}</td>
-                            <td className="px-4 py-3 text-green-600 font-semibold">{s.max_participants - s.participant_count}</td>
+                            <td className="px-2 py-3 font-mono">{s.time}</td>
+                            <td className="px-2 py-3 text-slate-500 hidden sm:table-cell">{s.location || '—'}</td>
+                            <td className="px-2 py-3">{s.participant_count}</td>
+                            <td className="px-2 py-3 text-green-600 font-semibold">{s.max_participants - s.participant_count}</td>
                           </tr>
                         ))}
                       </tbody>
