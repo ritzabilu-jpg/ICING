@@ -14,7 +14,7 @@ const INSTRUCTOR_COLORS = [
 
 // ספציפי לפי שם מדריך
 const INSTRUCTOR_COLOR_BY_NAME: Record<string, string> = {
-  'גיא רייבנבך':   '#FBBF24', // צהוב
+  'גיא רייבנבך':   '#FDE68A', // צהוב בהיר
   'איתמר מאיירס':  '#F472B6', // ורוד
   'ליאור כ"ץ':     '#38BDF8', // תכלת
   'אורן אלון':     '#A16207', // חום
