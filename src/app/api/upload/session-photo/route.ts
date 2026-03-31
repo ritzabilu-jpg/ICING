@@ -1,7 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createAdminClient } from '@/lib/supabase';
+import { v2 as cloudinary } from 'cloudinary';
 
 export const dynamic = 'force-dynamic';
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 export async function POST(req: NextRequest) {
   const formData = await req.formData();
@@ -13,18 +19,18 @@ export async function POST(req: NextRequest) {
   if (file.size > 1_048_576) return NextResponse.json({ error: 'קובץ גדול מדי (מקסימום 1MB)' }, { status: 400 });
   if (!file.type.startsWith('image/')) return NextResponse.json({ error: 'קובץ חייב להיות תמונה' }, { status: 400 });
 
-  const supabase = createAdminClient();
-  const ext = file.name.split('.').pop() ?? 'jpg';
-  const suffix = slot === '2' ? '_2' : '';
-  const path = `sessions/${sessionId}${suffix}.${ext}`;
   const buffer = Buffer.from(await file.arrayBuffer());
+  const publicId = `sessions/${sessionId}${slot === '2' ? '_2' : ''}`;
 
-  const { error } = await supabase.storage
-    .from('session-photos')
-    .upload(path, buffer, { contentType: file.type, upsert: true });
+  const result = await new Promise<{ secure_url: string }>((resolve, reject) => {
+    cloudinary.uploader.upload_stream(
+      { public_id: publicId, overwrite: true, resource_type: 'image' },
+      (error, result) => {
+        if (error || !result) return reject(error ?? new Error('Upload failed'));
+        resolve(result as { secure_url: string });
+      }
+    ).end(buffer);
+  });
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-
-  const { data: urlData } = supabase.storage.from('session-photos').getPublicUrl(path);
-  return NextResponse.json({ url: urlData.publicUrl });
+  return NextResponse.json({ url: result.secure_url });
 }
