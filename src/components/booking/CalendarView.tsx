@@ -111,6 +111,7 @@ export default function CalendarView({ type, instructorId, onSelect, onBack }: C
             <div dir="rtl" className="calendar-rtl-wrapper">
               <Calendar
                 locale="he-IL"
+                activeStartDate={currentMonth}
                 value={selectedDate}
                 onClickDay={(date) => {
                   setSelectedDate(date);
