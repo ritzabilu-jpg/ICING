@@ -181,11 +181,12 @@ export default function ImmersionMultiBooking({ onBack }: ImmersionMultiBookingP
               <div className="font-black text-navy-900 text-sm">{p.label}</div>
               <div className="text-ice-600 font-bold text-lg mt-0.5">₪{p.price}</div>
               <div className="text-xs text-slate-400 mt-0.5">
-                {p.maxDates >= 30 ? 'עד 30 תאריכים' : `${p.maxDates} ${p.maxDates === 1 ? 'תאריך' : 'תאריכים'}`}
+                {`עד ${p.maxDates} תאריכים`}
               </div>
             </button>
           ))}
         </div>
+        <p className="text-xs text-slate-400 mt-2 text-center">ניתן לבחור גם תאריך אחד ולהתקדם לתשלום</p>
       </div>
 
       {/* Calendar */}
@@ -260,7 +261,7 @@ export default function ImmersionMultiBooking({ onBack }: ImmersionMultiBookingP
 
           {selectedDates.length > 0 && (
             <p className="text-xs text-center text-slate-400 mt-3">
-              {selectedDates.length} / {maxDates} תאריכים נבחרו
+              {selectedDates.length} {selectedDates.length === 1 ? 'תאריך נבחר' : 'תאריכים נבחרו'}
             </p>
           )}
         </div>

@@ -28,7 +28,28 @@ interface InstructorInfo {
   name: string;
 }
 
-type Tab = 'future' | 'past' | 'schedule' | 'clients' | 'journal';
+type Tab = 'future' | 'past' | 'schedule' | 'clients' | 'journal' | 'payments';
+
+interface PaymentBooking {
+  id: string;
+  user_name: string;
+  email: string;
+  phone?: string;
+  participants: number;
+  status: string;
+  payment_method: string;
+  payment_status: string;
+  confirmation_code: string;
+  created_at: string;
+  callback_window?: string;
+  workshop_id?: string;
+  workshops?: {
+    id: string;
+    title?: string;
+    date_time?: string;
+    instructors?: { id: string; name: string };
+  } | null;
+}
 
 interface JournalSession {
   id: string;
@@ -84,6 +105,7 @@ export default function InstructorDashboard() {
   const [journalSearch, setJournalSearch] = useState('');
   const [journalDropdownOpen, setJournalDropdownOpen] = useState(false);
   const journalSearchRef = useRef<HTMLDivElement>(null);
+  const [payments, setPayments] = useState<PaymentBooking[]>([]);
 
   const today = new Date().toISOString().split('T')[0];
 
@@ -151,6 +173,13 @@ export default function InstructorDashboard() {
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [visitorId, tab]);
+
+  useEffect(() => {
+    if (tab !== 'payments' || !instructor) return;
+    fetch(`/api/admin/payments?instructorId=${instructor.id}`)
+      .then(r => r.json())
+      .then(d => setPayments(d.bookings ?? []));
+  }, [tab, instructor]);
 
   function selectJournalTarget(id: string, tname: string) {
     setJournalTargetId(id);
@@ -250,6 +279,7 @@ export default function InstructorDashboard() {
     { key: 'schedule', label: 'שעות סדנאות' },
     { key: 'clients', label: 'רשימת לקוחות' },
     { key: 'journal', label: '📖 יומן טבילות' },
+    { key: 'payments', label: '💳 תשלומים' },
     { key: 'future', label: 'זמינות שבועית', href: '/instructor/availability' },
   ];
 
@@ -670,6 +700,56 @@ export default function InstructorDashboard() {
                 </div>
               )}
             </div>
+          </div>
+        )}
+
+        {/* Payments */}
+        {tab === 'payments' && (
+          <div className="bg-white rounded-2xl border border-slate-200 p-5">
+            <h2 className="font-black text-navy-900 text-lg mb-4">💳 תשלומים שהתקבלו</h2>
+            {payments.length === 0 ? (
+              <p className="text-slate-400 text-sm text-center py-6">אין תשלומים עדיין</p>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b border-slate-100 text-slate-500 text-xs">
+                      <th className="text-right py-2 px-2 font-semibold">לקוח</th>
+                      <th className="text-right py-2 px-2 font-semibold">סדנה / טבילה</th>
+                      <th className="text-right py-2 px-2 font-semibold">שיטת תשלום</th>
+                      <th className="text-right py-2 px-2 font-semibold">סטטוס</th>
+                      <th className="text-right py-2 px-2 font-semibold">קוד</th>
+                      <th className="text-right py-2 px-2 font-semibold">תאריך</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {payments.map(b => {
+                      const methodLabel: Record<string, string> = {
+                        credit: '💳 אשראי', bit: 'Bit', paybox: 'Paybox', phone: '📞 טלפוני', '': '-'
+                      };
+                      const statusLabel: Record<string, string> = {
+                        pending: '⏳ ממתין', confirmed: '✅ מאושר', cancelled: '❌ בוטל', '': '-'
+                      };
+                      const sessionTitle = b.workshops?.title
+                        ? `${b.workshops.title} – ${b.workshops.date_time ? new Date(b.workshops.date_time).toLocaleDateString('he-IL', { day: '2-digit', month: '2-digit', year: '2-digit' }) : ''}`
+                        : b.callback_window?.startsWith('immersion:')
+                        ? 'טבילה'
+                        : '-';
+                      return (
+                        <tr key={b.id} className="border-b border-slate-50 hover:bg-slate-50">
+                          <td className="py-2 px-2 font-semibold text-navy-900">{b.user_name}</td>
+                          <td className="py-2 px-2 text-slate-600">{sessionTitle}</td>
+                          <td className="py-2 px-2">{methodLabel[b.payment_method] ?? b.payment_method}</td>
+                          <td className="py-2 px-2">{statusLabel[b.status] ?? b.status}</td>
+                          <td className="py-2 px-2 font-mono text-xs text-slate-500">{b.confirmation_code}</td>
+                          <td className="py-2 px-2 text-slate-400 text-xs">{new Date(b.created_at).toLocaleDateString('he-IL', { day: '2-digit', month: '2-digit', year: '2-digit' })}</td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </div>
         )}
 
