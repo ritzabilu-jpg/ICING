@@ -113,10 +113,10 @@ export default function CalendarView({ type, instructorId, onSelect, onBack }: C
                 locale="he-IL"
                 activeStartDate={currentMonth}
                 value={selectedDate}
-                prev2Label="« שנה"
-                prevLabel="‹ חודש"
-                nextLabel="חודש ›"
-                next2Label="שנה »"
+                prev2Label="שנה »"
+                prevLabel="חודש ›"
+                nextLabel="‹ חודש"
+                next2Label="« שנה"
                 onClickDay={(date) => {
                   setSelectedDate(date);
                   setTimeout(() => timeSlotsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);

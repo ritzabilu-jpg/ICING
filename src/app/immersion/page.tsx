@@ -127,18 +127,6 @@ function Calendar({ slots, selectedDate, onSelectDate }: CalendarProps) {
     <div>
       {/* Month navigation */}
       <div className="flex items-center justify-between mb-4">
-        {/* RTL: next month is on the left → use › (right arrow visually = next) on LEFT side */}
-        <button
-          onClick={nextMonth}
-          disabled={isAfterMax}
-          className="w-9 h-9 rounded-full flex items-center justify-center text-xl text-navy-800 hover:bg-ice-100 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-          aria-label="חודש הבא"
-        >
-          ‹
-        </button>
-        <span className="font-black text-navy-900 text-base">
-          {HE_MONTHS[viewMonth]} {viewYear}
-        </span>
         <button
           onClick={prevMonth}
           disabled={isBeforeMin}
@@ -146,6 +134,17 @@ function Calendar({ slots, selectedDate, onSelectDate }: CalendarProps) {
           aria-label="חודש קודם"
         >
           ›
+        </button>
+        <span className="font-black text-navy-900 text-base">
+          {HE_MONTHS[viewMonth]} {viewYear}
+        </span>
+        <button
+          onClick={nextMonth}
+          disabled={isAfterMax}
+          className="w-9 h-9 rounded-full flex items-center justify-center text-xl text-navy-800 hover:bg-ice-100 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+          aria-label="חודש הבא"
+        >
+          ‹
         </button>
       </div>
 
