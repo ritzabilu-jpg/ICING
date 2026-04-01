@@ -141,9 +141,24 @@
 .calendar-rtl-wrapper .react-calendar__month-view__days {
   direction: rtl;
 }
-/* Navigation buttons in RTL order */
+/* Navigation: LTR so arrows are intuitive (< prev  label  next >) */
 .calendar-rtl-wrapper .react-calendar__navigation {
-  direction: rtl;
+  direction: ltr;
+}
+/* Gap between year buttons and month buttons */
+.react-calendar__navigation__prev2-button {
+  margin-right: 12px !important;
+}
+.react-calendar__navigation__next2-button {
+  margin-left: 12px !important;
+}
+/* Smaller font for nav labels */
+.react-calendar__navigation__prev-button,
+.react-calendar__navigation__next-button,
+.react-calendar__navigation__prev2-button,
+.react-calendar__navigation__next2-button {
+  font-size: 13px !important;
+  padding: 4px 8px !important;
 }
 
 /* Signature canvas */
