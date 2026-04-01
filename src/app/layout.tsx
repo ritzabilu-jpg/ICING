@@ -3,6 +3,7 @@ import './globals.css';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import AccessibilityWidget from '@/components/AccessibilityWidget';
+import WhatsAppButton from '@/components/WhatsAppButton';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://icing-blond.vercel.app'),
@@ -75,6 +76,7 @@ export default function RootLayout({
         </main>
         <Footer />
         <AccessibilityWidget />
+        <WhatsAppButton />
       </body>
     </html>
   );
