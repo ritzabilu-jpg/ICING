@@ -1,7 +1,22 @@
 {
   "permissions": {
     "allow": [
-      "Bash(powershell.exe -Command \"Get-ChildItem -Recurse -Include *.tsx,*.ts | ForEach-Object { \\(Get-Content $_.FullName\\) -replace ''חולון'',''רחובות'' | Set-Content $_.FullName }\")"
+      "Bash(powershell.exe -Command \"Get-ChildItem -Recurse -Include *.tsx,*.ts | ForEach-Object { \\(Get-Content $_.FullName\\) -replace ''חולון'',''רחובות'' | Set-Content $_.FullName }\")",
+      "Read(//c/Users/USER/**)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(sed -i 's/סירני 52, חולון/סירני 52, רחובות/g' /c/Users/USER/BRECHA/src/app/contact/page.tsx)",
+      "Bash(sed -i 's/בהדרכת מדריך מוסמך · חולון/בהדרכת מדריך מוסמך · רחובות/g' /c/Users/USER/BRECHA/src/app/immersion/page.tsx)",
+      "Bash(sed -i 's/תל אביב, חולון/תל אביב, רחובות/g' /c/Users/USER/BRECHA/src/components/booking/BookingForm.tsx)",
+      "Bash(python3 -c \"print\\(''hello''\\)\")",
+      "Bash(node -e \"console.log\\(''hello''\\)\")",
+      "Bash(grep -rn \"10°\\\\|10 מעלות\\\\| 10C\\\\b\" src/ --include=*.tsx --include=*.ts)"
+    ],
+    "additionalDirectories": [
+      "\\tmp",
+      "C:\\Users\\USER\\AppData\\Local\\Temp",
+      "c:\\Users\\USER\\BRECHA\\src\\app\\admin"
     ]
   }
 }

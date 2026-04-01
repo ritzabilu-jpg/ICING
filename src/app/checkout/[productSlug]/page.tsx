@@ -68,9 +68,10 @@ export default function CheckoutPage() {
   const slug = params.productSlug as string;
 
   const IMMERSION_PACKAGES: Record<string, { title: string; price: number }> = {
-    single:  { title: 'טבילה בודדת',     price: 80  },
-    '5pack': { title: 'חבילת 5 טבילות',  price: 350 },
-    '10pack':{ title: 'חבילת 10 טבילות', price: 550 },
+    single:   { title: 'טבילה בודדת',     price: 80  },
+    '5pack':  { title: 'חבילת 5 טבילות',  price: 350 },
+    '10pack': { title: 'חבילת 10 טבילות', price: 550 },
+    monthly:  { title: 'חופשי חודשי',     price: 600 },
   };
 
   const [state, setState] = useState<CheckoutState>(INITIAL_STATE);
@@ -642,7 +643,7 @@ export default function CheckoutPage() {
               <div className="space-y-3">
 
                 {/* Credit card – coming soon */}
-                <div className="w-full border-2 border-slate-100 rounded-2xl p-4 flex items-center justify-between opacity-50 cursor-not-allowed bg-slate-50">
+                <div className="w-full border-2 border-slate-100 rounded-2xl p-4 flex items-center justify-between opacity-25 cursor-not-allowed bg-slate-50">
                   <div>
                     <div className="font-black text-slate-400">💳 כרטיס אשראי</div>
                     <div className="text-xs text-slate-300">מאובטח על-ידי טרנזילה</div>
@@ -651,7 +652,7 @@ export default function CheckoutPage() {
                 </div>
 
                 {/* Bit – coming soon */}
-                <div className="w-full border-2 border-slate-100 rounded-2xl p-4 flex items-center justify-between opacity-50 cursor-not-allowed bg-slate-50">
+                <div className="w-full border-2 border-slate-100 rounded-2xl p-4 flex items-center justify-between opacity-25 cursor-not-allowed bg-slate-50">
                   <div className="flex items-center gap-3">
                     <Image src="/Bit logo ביט.png" alt="Bit" width={40} height={24} className="object-contain grayscale" unoptimized />
                     <div>
@@ -663,7 +664,7 @@ export default function CheckoutPage() {
                 </div>
 
                 {/* Paybox – coming soon */}
-                <div className="w-full border-2 border-slate-100 rounded-2xl p-4 flex items-center justify-between opacity-50 cursor-not-allowed bg-slate-50">
+                <div className="w-full border-2 border-slate-100 rounded-2xl p-4 flex items-center justify-between opacity-25 cursor-not-allowed bg-slate-50">
                   <div className="flex items-center gap-3">
                     <Image src="/PAYBOX LOGO פייבוקס.jpg" alt="Paybox" width={50} height={24} className="object-contain grayscale" unoptimized />
                     <div>

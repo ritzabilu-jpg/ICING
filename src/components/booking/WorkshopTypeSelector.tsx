@@ -54,7 +54,7 @@ export default function WorkshopTypeSelector({ onSelect }: WorkshopTypeSelectorP
   return (
     <div>
       <h2 className="text-2xl font-black text-navy-900 mb-2">שלב 1: בחרו סוג סדנה</h2>
-      <p className="text-slate-500 mb-8">לחצו על הסוג המתאים לכם כדי לעבור לבחירת תאריך</p>
+      <p className="text-slate-500 mb-8">העבירו עכבר מעל הכרטיס כדי לראות פרטים ולבחור</p>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch">
         {types.map(t => (
@@ -81,33 +81,38 @@ export default function WorkshopTypeSelector({ onSelect }: WorkshopTypeSelectorP
               </div>
             )}
 
+            {/* Compact view – always visible */}
             <div className="text-4xl mb-4">{t.icon}</div>
             <h3 className={`text-lg font-black mb-2 ${t.highlight ? 'text-white' : 'text-navy-900'}`}>
               {t.title}
             </h3>
-            <p className={`text-sm mb-5 flex-1 ${t.highlight ? 'text-slate-300' : 'text-slate-500'}`}>
-              {t.description}
-            </p>
 
-            <div className={`border-t pt-4 space-y-1.5 text-sm
-                             ${t.highlight ? 'border-navy-700' : 'border-slate-100'}`}>
-              <div className={`flex justify-between ${t.highlight ? 'text-slate-300' : 'text-slate-600'}`}>
-                <span>⏱ {t.duration}</span>
-                <span>👥 {t.capacity}</span>
-              </div>
-              <div className={`text-xl font-black ${t.highlight ? 'text-ice-400' : 'text-ice-600'}`}>
-                {t.price}
-              </div>
-            </div>
+            {/* Expanded details – hidden by default, shown on hover */}
+            <div className="overflow-hidden max-h-0 group-hover:max-h-96 transition-all duration-300 ease-in-out">
+              <p className={`text-sm mb-5 ${t.highlight ? 'text-slate-300' : 'text-slate-500'}`}>
+                {t.description}
+              </p>
 
-            <div className={`mt-auto pt-5 flex items-center justify-center gap-2 py-2.5 rounded-xl
-                             font-bold text-sm transition-all
-                             ${t.highlight
-                               ? 'bg-ice-500 text-white group-hover:bg-ice-400'
-                               : 'bg-navy-900 text-white group-hover:bg-navy-700'
-                             }`}>
-              {t.whatsapp ? 'צור קשר כדי לתפור לכם סדנה מתאימה' : 'בחרו ועברו לתאריך'}
-              <span>{t.whatsapp ? '💬' : '→'}</span>
+              <div className={`border-t pt-4 space-y-1.5 text-sm
+                               ${t.highlight ? 'border-navy-700' : 'border-slate-100'}`}>
+                <div className={`flex justify-between ${t.highlight ? 'text-slate-300' : 'text-slate-600'}`}>
+                  <span>⏱ {t.duration}</span>
+                  <span>👥 {t.capacity}</span>
+                </div>
+                <div className={`text-xl font-black ${t.highlight ? 'text-ice-400' : 'text-ice-600'}`}>
+                  {t.price}
+                </div>
+              </div>
+
+              <div className={`mt-4 flex items-center justify-center gap-2 py-2.5 rounded-xl
+                               font-bold text-sm transition-all
+                               ${t.highlight
+                                 ? 'bg-ice-500 text-white group-hover:bg-ice-400'
+                                 : 'bg-navy-900 text-white group-hover:bg-navy-700'
+                               }`}>
+                {t.whatsapp ? 'צור קשר כדי לתפור לכם סדנה מתאימה' : 'בחרו ועברו לתאריך'}
+                <span>{t.whatsapp ? '💬' : '→'}</span>
+              </div>
             </div>
           </button>
         ))}

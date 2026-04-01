@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(grep -r \"Demo\\\\|demo\\\\|مdemo\" /c/Users/USER/BRECHA/src --include=*.tsx --include=*.ts -n)",
+      "Bash(grep -r \"INSTRUCTOR\\\\|Instructor\\\\|instructor\" /c/Users/USER/BRECHA/src --include=*.tsx --include=*.ts -l)",
+      "Bash(grep -rE \"גילה|יסמין|ורד|ליאור|גיא|יוסי|מירה\" /c/Users/USER/BRECHA/src --include=*.tsx --include=*.ts -n)",
+      "WebFetch(domain:www.kolzchut.org.il)",
+      "Bash(cp \"c:/Users/USER/Downloads/IMG-20240303-WA0023\\(1\\) - reem nevies.jpg\" \"c:/Users/USER/BRECHA/public/reem-nevies.jpg\")",
+      "Bash(cp \"c:/Users/USER/Downloads/IMG-20210922-WA0033 - Shir Maman.jpg\" \"c:/Users/USER/BRECHA/public/shir-maman.jpg\")",
+      "Bash(cp \"c:/Users/USER/Downloads/1772912053545 - Oren Alon.png\" \"c:/Users/USER/BRECHA/public/oren-alon.png\")"
+    ]
+  }
+}
