@@ -25,6 +25,10 @@ export default function Footer() {
               שיפור פוקוס והורדת סטרס. בליווי מדריכים מוסמכים CWI.
             </p>
             <div className="flex items-center gap-4">
+              <a href="https://www.tiktok.com/@kallklarhet" target="_blank" rel="noopener noreferrer"
+                 className="w-10 h-10 overflow-hidden rounded-full hover:scale-110 transition-transform" aria-label="טיקטוק">
+                <img src="/logo-tiktok.jpg" alt="TikTok" className="w-full h-full object-cover" />
+              </a>
               <a href="https://www.facebook.com/groups/1581316102106335" target="_blank" rel="noopener noreferrer"
                  className="w-10 h-10 overflow-hidden rounded-full hover:scale-110 transition-transform" aria-label="פייסבוק">
                 <img src="/logo-facebook.png" alt="Facebook" className="w-full h-full object-cover" />
@@ -36,10 +40,6 @@ export default function Footer() {
               <a href="https://wa.me/972524500825" target="_blank" rel="noopener noreferrer"
                  className="w-10 h-10 overflow-hidden rounded-full hover:scale-110 transition-transform" aria-label="וואטסאפ">
                 <img src="/logo-whatsapp.jpg" alt="WhatsApp" className="w-full h-full object-cover" />
-              </a>
-              <a href="https://www.tiktok.com/@kallklarhet" target="_blank" rel="noopener noreferrer"
-                 className="w-10 h-10 overflow-hidden rounded-full hover:scale-110 transition-transform" aria-label="טיקטוק">
-                <img src="/logo-tiktok.jpg" alt="TikTok" className="w-full h-full object-cover" />
               </a>
             </div>
           </div>
