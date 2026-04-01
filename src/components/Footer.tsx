@@ -37,6 +37,10 @@ export default function Footer() {
                  className="w-10 h-10 overflow-hidden rounded-full hover:scale-110 transition-transform" aria-label="וואטסאפ">
                 <img src="/logo-whatsapp.jpg" alt="WhatsApp" className="w-full h-full object-cover" />
               </a>
+              <a href="https://www.tiktok.com/@kallklarhet" target="_blank" rel="noopener noreferrer"
+                 className="w-10 h-10 overflow-hidden rounded-full hover:scale-110 transition-transform" aria-label="טיקטוק">
+                <img src="/logo-tiktok.jpg" alt="TikTok" className="w-full h-full object-cover" />
+              </a>
             </div>
           </div>
 
