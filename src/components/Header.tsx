@@ -6,6 +6,18 @@ import { useState, useEffect } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import LoginModal from './LoginModal';
 
+interface ImmersionSummary {
+  next_date: string | null;
+  next_time: string | null;
+  sessions_remaining: number | null;
+  sessions_total: number;
+}
+
+function formatShortDate(dateStr: string) {
+  const [y, m, d] = dateStr.split('-');
+  return `${d}/${m}/${y.slice(2)}`;
+}
+
 const navLinks = [
   { href: '/', label: 'בית' },
   { href: '/booking', label: 'הזמנת מקום' },
@@ -20,12 +32,23 @@ export default function Header() {
   const [showLogin, setShowLogin] = useState(false);
   const [visitorName, setVisitorName] = useState<string | null>(null);
   const [visitorRole, setVisitorRole] = useState<string>('user');
+  const [immersionSummary, setImmersionSummary] = useState<ImmersionSummary | null>(null);
   const pathname = usePathname();
   const router = useRouter();
 
   useEffect(() => {
-    setVisitorName(localStorage.getItem('visitor_name'));
-    setVisitorRole(localStorage.getItem('visitor_role') || 'user');
+    const name = localStorage.getItem('visitor_name');
+    const role = localStorage.getItem('visitor_role') || 'user';
+    const vid = localStorage.getItem('visitor_id');
+    setVisitorName(name);
+    setVisitorRole(role);
+
+    if (vid && role === 'user') {
+      fetch(`/api/visitor/immersion-summary?vid=${vid}`)
+        .then(r => r.ok ? r.json() : null)
+        .then((d: ImmersionSummary | null) => { if (d) setImmersionSummary(d); })
+        .catch(() => {});
+    }
   }, []);
 
   function getDashboardHref(role: string) {
@@ -91,6 +114,14 @@ export default function Header() {
                     <span className="text-ice-400">👤</span>
                     <span className="max-w-[100px] truncate">{visitorName}</span>
                     {isStaff && <span className="text-xs bg-ice-600 text-white px-1.5 py-0.5 rounded-full">{visitorRole === 'admin' ? 'מנהל' : 'מדריך'}</span>}
+                    {!isStaff && immersionSummary?.next_date && (
+                      <span className="flex items-center gap-1 text-xs bg-ice-900/60 text-ice-300 border border-ice-700/40 px-2 py-0.5 rounded-full">
+                        🧊 {formatShortDate(immersionSummary.next_date)}
+                        {immersionSummary.sessions_remaining !== null && (
+                          <span className="text-ice-400 font-bold">· נשארו {immersionSummary.sessions_remaining}</span>
+                        )}
+                      </span>
+                    )}
                   </Link>
                   <button onClick={handleLogout}
                     className="text-slate-400 hover:text-red-400 text-xs transition-colors px-1">
