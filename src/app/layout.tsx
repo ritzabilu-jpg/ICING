@@ -8,14 +8,14 @@ import WhatsAppButton from '@/components/WhatsAppButton';
 export const metadata: Metadata = {
   metadataBase: new URL('https://www.icing.co.il'),
   title: {
-    default: 'ICING | סדנאות אמבטיות קרח מקצועיות – חולון',
+    default: 'ICING | סדנאות אמבטיות קרח מקצועיות – רחובות',
     template: 'ICING | %s',
   },
   description:
     'סדנאות טבילה במים קרים מבוססות מחקר, בליווי מדריכים מוסמכים CWI. ' +
     'ליחידים, זוגות וקבוצות. +127% נוראדרנלין, 500+ משתתפים מרוצים. הזמינו עכשיו.',
   keywords: [
-    'אמבטיות קרח', 'טבילה במי קרח', 'cold water immersion', 'חולון',
+    'אמבטיות קרח', 'טבילה במי קרח', 'cold water immersion', 'רחובות',
     'חוסן מנטלי', 'סדנאות קרח', 'ICING', 'CWI', 'Wim Hof', 'טבילה קרה',
   ],
   authors: [{ name: 'ICING' }],
@@ -73,9 +73,20 @@ export default function RootLayout({
               "telephone": "08-9310715",
               "address": {
                 "@type": "PostalAddress",
-                "streetAddress": "סירני 52",
-                "addressLocality": "חולון",
+                "streetAddress": "רחוב סירני 52",
+                "addressLocality": "רחובות",
                 "addressCountry": "IL"
+              },
+              "geo": {
+                "@type": "GeoCoordinates",
+                "latitude": 31.9006165,
+                "longitude": 34.8199625
+              },
+              "openingHoursSpecification": {
+                "@type": "OpeningHoursSpecification",
+                "dayOfWeek": ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday"],
+                "opens": "07:00",
+                "closes": "20:00"
               },
               "priceRange": "₪300-₪800",
               "aggregateRating": {

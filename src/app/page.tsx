@@ -9,7 +9,7 @@ import AccordionSection from '@/components/AccordionSection';
 export const revalidate = 60;
 
 export const metadata: Metadata = {
-  title: 'חוויות שוויץ המדע | אמבטיות קרח רחובות',
+  title: 'ICING | סדנאות אמבטיות קרח מקצועיות – רחובות',
 };
 
 const workshopTypes = [

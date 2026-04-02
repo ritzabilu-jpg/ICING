@@ -45,6 +45,34 @@ export async function POST(req: NextRequest) {
   return NextResponse.json(data, { status: 201 });
 }
 
+export async function PUT(req: NextRequest) {
+  const key = req.nextUrl.searchParams.get('key');
+  if (!checkKey(key)) return NextResponse.json({ error: 'לא מורשה' }, { status: 401 });
+
+  const body = await req.json();
+  const { id, instructor_name, workshop_date, workshop_time, max_participants, notes, status } = body;
+  if (!id) return NextResponse.json({ error: 'חסר id' }, { status: 400 });
+
+  const updates: Record<string, unknown> = {};
+  if (instructor_name !== undefined) updates.instructor_name = instructor_name;
+  if (workshop_date !== undefined) updates.workshop_date = workshop_date;
+  if (workshop_time !== undefined) updates.workshop_time = workshop_time;
+  if (max_participants !== undefined) updates.max_participants = Number(max_participants);
+  if (notes !== undefined) updates.notes = notes;
+  if (status !== undefined) updates.status = status;
+
+  const supabase = createAdminClient();
+  const { data, error } = await supabase
+    .from('instructor_workshops')
+    .update(updates)
+    .eq('id', id)
+    .select()
+    .single();
+
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  return NextResponse.json(data);
+}
+
 export async function DELETE(req: NextRequest) {
   const key = req.nextUrl.searchParams.get('key');
   if (!checkKey(key)) return NextResponse.json({ error: 'לא מורשה' }, { status: 401 });

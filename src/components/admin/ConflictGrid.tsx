@@ -43,27 +43,30 @@ export default function ConflictGrid({ conflicts, clean, onConfirm, onCancel, co
     return d;
   });
 
+  // Normalize to HH:MM (DB may return HH:MM:SS)
+  const norm = (t: string) => t.slice(0, 5);
+
   const dates = Array.from(new Set([
     ...conflicts.map(c => c.date),
     ...clean.map(s => s.slot_date),
   ])).sort();
 
   const times = Array.from(new Set([
-    ...conflicts.map(c => c.time),
-    ...clean.map(s => s.slot_time),
+    ...conflicts.map(c => norm(c.time)),
+    ...clean.map(s => norm(s.slot_time)),
   ])).sort();
 
   const conflictMap = new Map<string, ConflictItem>();
-  for (const c of conflicts) conflictMap.set(`${c.date}|${c.time}`, c);
+  for (const c of conflicts) conflictMap.set(`${c.date}|${norm(c.time)}`, c);
 
   const cleanSet = new Set<string>();
-  for (const s of clean) cleanSet.add(`${s.slot_date}|${s.slot_time}`);
+  for (const s of clean) cleanSet.add(`${s.slot_date}|${norm(s.slot_time)}`);
 
   // Apply decision to all conflicts in a specific time row
   function applyRow(time: string, keepExisting: boolean) {
     const next = { ...decisions };
     for (const c of conflicts) {
-      if (c.time === time) next[c.existingId] = keepExisting;
+      if (norm(c.time) === time) next[c.existingId] = keepExisting;
     }
     setDecisions(next);
   }
@@ -124,7 +127,7 @@ export default function ConflictGrid({ conflicts, clean, onConfirm, onCancel, co
           </thead>
           <tbody>
             {times.map(t => {
-              const rowConflicts = conflicts.filter(c => c.time === t);
+              const rowConflicts = conflicts.filter(c => norm(c.time) === t);
               const hasConflictsInRow = rowConflicts.length > 0;
               return (
                 <tr key={t}>
