@@ -117,7 +117,8 @@ export default function CheckoutPage() {
     const id = slug.slice(dashIdx + 1);
 
     if (type === 'workshop') {
-      fetch(`/api/workshops/single?id=${id}`)
+      const wtype = searchParams.get('wtype') ?? 'individual';
+      fetch(`/api/workshops/single?id=${id}&type=${wtype}`)
         .then(r => r.json())
         .then(d => {
           if (d.workshop) {
@@ -168,12 +169,17 @@ export default function CheckoutPage() {
         .catch(() => setMsg('שגיאה בטעינת חלון הטבילה'));
     }
 
-    // Restore saved checkout state
+    // Restore saved checkout state — only if same product
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
         const parsed = JSON.parse(saved);
-        setState(prev => ({ ...prev, ...parsed }));
+        if (parsed.product_id && parsed.product_id !== id) {
+          // Different product — clear stale state
+          localStorage.removeItem(STORAGE_KEY);
+        } else {
+          setState(prev => ({ ...prev, ...parsed }));
+        }
       }
     } catch {
       // ignore parse errors
@@ -204,6 +210,7 @@ export default function CheckoutPage() {
         localStorage.setItem(
           STORAGE_KEY,
           JSON.stringify({
+            product_id: slug?.split('-').slice(1).join('-') ?? '',
             bookingId: next.bookingId,
             sessionToken: next.sessionToken,
             step: next.step,
@@ -639,6 +646,12 @@ export default function CheckoutPage() {
           )}
 
           {/* ── STEP 5: Payment Method ── */}
+          {state.step === 5 && !product && (
+            <div className="py-8 text-center text-slate-400">
+              <div className="w-6 h-6 border-2 border-ice-500 border-t-transparent rounded-full animate-spin mx-auto mb-2" />
+              טוען...
+            </div>
+          )}
           {state.step === 5 && product && (
             <div>
               <h2 className="text-2xl font-black text-navy-900 mb-1">{stepTitles[5]}</h2>

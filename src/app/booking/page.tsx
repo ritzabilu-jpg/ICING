@@ -117,7 +117,7 @@ function BookingContent() {
           type={selectedType}
           instructorId={instructorId}
           onSelect={(workshop: Workshop) => {
-            router.push(`/checkout/workshop-${workshop.id}`);
+            router.push(`/checkout/workshop-${workshop.id}?wtype=${workshop.type}`);
           }}
           onBack={() => {
             setSelectedType(null);

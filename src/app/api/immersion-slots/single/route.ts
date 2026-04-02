@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { supabaseClient } from '@/lib/supabase';
+import { createAdminClient } from '@/lib/supabase';
 
 export const dynamic = 'force-dynamic';
 
@@ -13,7 +13,8 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: 'נדרש מזהה חלון טבילה' }, { status: 400 });
   }
 
-  const { data: slot, error } = await supabaseClient
+  const supabase = createAdminClient();
+  const { data: slot, error } = await supabase
     .from('immersion_slots')
     .select('id, slot_date, slot_time, max_participants, notes')
     .eq('id', id)
