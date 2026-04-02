@@ -1,12 +1,12 @@
 // immersion-slots – returns available immersion time slots with booking counts
 import { NextResponse } from 'next/server';
-import { getSupabaseClient } from '@/lib/supabase';
+import { createAdminClient } from '@/lib/supabase';
 
 export const dynamic = 'force-dynamic';
 
 export async function GET() {
   try {
-    const supabase = getSupabaseClient();
+    const supabase = createAdminClient();
 
     const today = new Date().toISOString().split('T')[0];
     const { data: slots, error } = await supabase
@@ -16,7 +16,10 @@ export async function GET() {
       .order('slot_date', { ascending: true })
       .order('slot_time', { ascending: true });
 
-    if (error) return NextResponse.json({ slots: [] }, { headers: { 'Cache-Control': 'no-store' } });
+    if (error) {
+      console.error('immersion-slots GET error:', error.message);
+      return NextResponse.json({ slots: [] }, { headers: { 'Cache-Control': 'no-store' } });
+    }
 
     // Count bookings per slot
     const { data: bookingCounts } = await supabase
@@ -31,11 +34,12 @@ export async function GET() {
     const enriched = (slots ?? []).map(s => ({
       ...s,
       booked: counts[s.id] ?? 0,
-      available: (counts[s.id] ?? 0) < s.max_participants,
+      available: s.max_participants - (counts[s.id] ?? 0), // number of free spots
     }));
 
     return NextResponse.json({ slots: enriched }, { headers: { 'Cache-Control': 'no-store' } });
-  } catch {
+  } catch (e) {
+    console.error('immersion-slots unexpected error:', e);
     return NextResponse.json({ slots: [] }, { headers: { 'Cache-Control': 'no-store' } });
   }
 }
