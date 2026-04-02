@@ -267,7 +267,7 @@ function AdminContent() {
   useEffect(() => { if (tab === 'workshops') loadWorkshops(); }, [tab, loadWorkshops]);
   useEffect(() => { if (tab === 'manage-instructors') loadDbInstructors(); }, [tab, loadDbInstructors]);
   useEffect(() => { if (tab === 'users') loadUsers(); }, [tab, loadUsers]);
-  useEffect(() => { if (tab === 'availability') loadDbInstructors(); }, [tab, loadDbInstructors]);
+  useEffect(() => { if (tab === 'availability' || tab === 'immersion') loadDbInstructors(); }, [tab, loadDbInstructors]);
   useEffect(() => { if (tab === 'schedule') loadSchedule(scheduleDate); }, [tab]);
   useEffect(() => {
     if (tab !== 'phone-requests') return;
@@ -537,12 +537,12 @@ function AdminContent() {
               <div className="grid sm:grid-cols-2 gap-3">
                 <div>
                   <label className="block text-xs font-semibold text-slate-600 mb-1">משעה</label>
-                  <input type="time" required value={fromTime} onChange={e => setFromTime(e.target.value)}
+                  <input type="time" required dir="ltr" value={fromTime} onChange={e => setFromTime(e.target.value)}
                     className="w-full border-2 border-slate-200 focus:border-ice-400 rounded-xl px-3 py-2 text-sm focus:outline-none" />
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-slate-600 mb-1">עד שעה</label>
-                  <input type="time" required value={toTime} onChange={e => setToTime(e.target.value)}
+                  <input type="time" required dir="ltr" value={toTime} onChange={e => setToTime(e.target.value)}
                     className="w-full border-2 border-slate-200 focus:border-ice-400 rounded-xl px-3 py-2 text-sm focus:outline-none" />
                 </div>
               </div>
