@@ -179,11 +179,13 @@ function AdminContent() {
   const [conflictConfirming, setConflictConfirming] = useState(false);
   // ── Weekly schedule ──
   interface ScheduleSlot { id: string; date: string; time: string; instructor_id: string | null; instructor_name: string | null; available_instructors: { id: string; name: string }[] }
+  interface WorkshopScheduleSlot { id: string; date: string; time: string; instructor_name: string | null; status: string; notes: string | null; hasConflict: boolean; }
   const [scheduleDate, setScheduleDate] = useState(() => {
     const d = new Date();
     return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
   });
   const [scheduleSlots, setScheduleSlots] = useState<ScheduleSlot[]>([]);
+  const [workshopScheduleSlots, setWorkshopScheduleSlots] = useState<WorkshopScheduleSlot[]>([]);
   const [scheduleWeekStart, setScheduleWeekStart] = useState('');
   const [scheduleWeekEnd, setScheduleWeekEnd] = useState('');
   const [loadingSchedule, setLoadingSchedule] = useState(false);
@@ -297,6 +299,7 @@ function AdminContent() {
       const res = await fetch(`/api/admin/schedule-week?key=${encodeURIComponent(key)}&date=${date}`);
       const data = await res.json();
       setScheduleSlots(data.slots ?? []);
+      setWorkshopScheduleSlots(data.workshopSlots ?? []);
       setScheduleWeekStart(data.weekStart ?? '');
       setScheduleWeekEnd(data.weekEnd ?? '');
     } catch { /* ignore */ }
@@ -975,13 +978,79 @@ function AdminContent() {
                     ))}
                   </tbody>
                 </table>
-                <div className="flex gap-4 mt-3 text-xs text-slate-500">
+                <div className="flex gap-4 mt-3 text-xs text-slate-500 flex-wrap">
                   <span className="flex items-center gap-1"><span className="inline-block w-3 h-3 rounded bg-green-100 border border-green-300" /> מדריך יחיד זמין</span>
                   <span className="flex items-center gap-1"><span className="inline-block w-3 h-3 rounded bg-red-100 border border-red-300" /> קונפליקט – יותר ממדריך אחד זמין</span>
                   <span className="flex items-center gap-1"><span className="inline-block w-3 h-3 rounded bg-yellow-100 border border-yellow-300" /> קונפליקט נפתר</span>
                 </div>
               </div>
             )}
+
+            {/* ── Workshop schedule grid (always visible when not loading) ── */}
+            {!loadingSchedule && (() => {
+              const wSlots = workshopScheduleSlots;
+              if (wSlots.length === 0) return (
+                <div className="bg-white rounded-3xl border border-slate-200 p-4">
+                  <h3 className="font-black text-navy-900 mb-2">🏊 לוח סדנאות שבועי</h3>
+                  <p className="text-slate-400 text-sm">אין סדנאות בשבוע זה.</p>
+                </div>
+              );
+              const wDates = Array.from(new Set(wSlots.map(s => s.date))).sort();
+              const wTimes = Array.from(new Set(wSlots.map(s => s.time))).sort();
+              const wMap = new Map<string, WorkshopScheduleSlot>();
+              for (const s of wSlots) wMap.set(`${s.date}|${s.time}`, s);
+              return (
+                <div className="overflow-auto bg-white rounded-3xl border border-slate-200 p-4">
+                  <h3 className="font-black text-navy-900 mb-3">🏊 לוח סדנאות שבועי</h3>
+                  <table className="text-xs border-collapse w-full">
+                    <thead>
+                      <tr>
+                        <th className="border border-slate-200 px-2 py-1.5 bg-slate-100 text-right font-bold sticky right-0 z-10">שעה</th>
+                        {wDates.map(d => (
+                          <th key={d} className="border border-slate-200 px-2 py-1.5 bg-slate-100 font-bold text-center min-w-[90px]">
+                            <div className="font-black">{['א׳','ב׳','ג׳','ד׳','ה׳','ו׳','ש׳'][new Date(d+'T00:00:00').getDay()]}</div>
+                            <div className="text-slate-500 font-normal">{d.split('-').slice(1).reverse().join('.')}</div>
+                          </th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {wTimes.map(t => (
+                        <tr key={t}>
+                          <td className="border border-slate-200 px-2 py-1 font-mono font-bold text-slate-600 bg-slate-50 whitespace-nowrap sticky right-0">{t}</td>
+                          {wDates.map(d => {
+                            const ws = wMap.get(`${d}|${t}`);
+                            if (!ws) return <td key={d} className="border border-slate-100 px-1 py-0.5" />;
+                            const noInstructor = !ws.instructor_name;
+                            const conflict = ws.hasConflict;
+                            return (
+                              <td key={d} className={`border px-1 py-0.5 text-center text-xs ${
+                                conflict
+                                  ? 'border-red-300 bg-red-50'
+                                  : noInstructor
+                                    ? 'border-yellow-300 bg-yellow-50'
+                                    : 'border-green-200 bg-green-50'
+                              }`}>
+                                <div className={`font-semibold truncate max-w-[80px] ${conflict ? 'text-red-700' : noInstructor ? 'text-yellow-700' : 'text-green-700'}`}>
+                                  {ws.instructor_name ?? '—'}
+                                </div>
+                                {conflict && <div className="text-[9px] text-red-500 font-bold">⚠ גם טובל</div>}
+                                {ws.notes && <div className="text-[9px] text-slate-400 truncate">{ws.notes}</div>}
+                              </td>
+                            );
+                          })}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  <div className="flex gap-4 mt-3 text-xs text-slate-500 flex-wrap">
+                    <span className="flex items-center gap-1"><span className="inline-block w-3 h-3 rounded bg-green-100 border border-green-300" /> מדריך משויך, אין קונפליקט</span>
+                    <span className="flex items-center gap-1"><span className="inline-block w-3 h-3 rounded bg-red-100 border border-red-300" /> קונפליקט – מדריך זה גם מטביל באותה שעה</span>
+                    <span className="flex items-center gap-1"><span className="inline-block w-3 h-3 rounded bg-yellow-100 border border-yellow-300" /> ממתין – אין מדריך</span>
+                  </div>
+                </div>
+              );
+            })()}
           </div>
         );
       })()}

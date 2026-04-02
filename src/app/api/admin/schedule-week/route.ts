@@ -31,7 +31,7 @@ export async function GET(req: NextRequest) {
 
   const supabase = createAdminClient();
 
-  const [slotsRes, availRes, instrRes] = await Promise.all([
+  const [slotsRes, availRes, instrRes, workshopsRes] = await Promise.all([
     supabase
       .from('immersion_slots')
       .select('id, slot_date, slot_time, max_participants, instructor_id, instructor:instructors(name)')
@@ -45,6 +45,13 @@ export async function GET(req: NextRequest) {
     supabase
       .from('instructors')
       .select('id, name'),
+    supabase
+      .from('instructor_workshops')
+      .select('id, workshop_date, workshop_time, instructor_name, status, max_participants, notes')
+      .gte('workshop_date', weekStart)
+      .lte('workshop_date', weekEnd)
+      .order('workshop_date', { ascending: true })
+      .order('workshop_time', { ascending: true }),
   ]);
 
   const availability = (availRes.data ?? []).filter((a: any) => a.type === 'immersion');
@@ -78,8 +85,32 @@ export async function GET(req: NextRequest) {
     };
   });
 
+  // Build cross-conflict map: "date|HH:MM|instructor_name" → true (immersion has this instructor)
+  const immersionInstructorKeys = new Set<string>();
+  for (const s of slotsRes.data ?? []) {
+    const name = (s as any).instructor?.name;
+    const time = (s.slot_time as string).slice(0, 5);
+    if (name) immersionInstructorKeys.add(`${s.slot_date}|${time}|${name}`);
+  }
+
+  const workshopSlots = (workshopsRes.data ?? []).map((w: any) => {
+    const time = (w.workshop_time as string).slice(0, 5);
+    const hasConflict = w.instructor_name
+      ? immersionInstructorKeys.has(`${w.workshop_date}|${time}|${w.instructor_name}`)
+      : false;
+    return {
+      id: w.id,
+      date: w.workshop_date,
+      time,
+      instructor_name: w.instructor_name ?? null,
+      status: w.status,
+      notes: w.notes ?? null,
+      hasConflict,
+    };
+  });
+
   return NextResponse.json(
-    { weekStart, weekEnd, slots: result },
+    { weekStart, weekEnd, slots: result, workshopSlots },
     { headers: { 'Cache-Control': 'no-store' } },
   );
 }
