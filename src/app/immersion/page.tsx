@@ -25,8 +25,7 @@ const PACKAGES = [
     price: 80,
     sessions: 1,
     badge: '',
-    description:
-      'טבילה באמבטיית קרח בהדרכת מדריך מוסמך. בסביבה מבוקרת ובטוחה, עד עשר דקות, תוך פיקוח מקצועי.',
+    description: 'טבילה באמבטיית קרח בהדרכת מדריך מוסמך. בסביבה מבוקרת ובטוחה, עד עשר דקות, תוך פיקוח מקצועי.',
   },
   {
     key: '5pack',
@@ -43,6 +42,14 @@ const PACKAGES = [
     sessions: 10,
     badge: '🔥 הכי משתלם',
     description: '10 טבילות בהדרכה מקצועית. חבילת השגרה המומלצת להתקדמות ממשית.',
+  },
+  {
+    key: 'monthly',
+    title: 'חופשי חודשי',
+    price: 600,
+    sessions: 30,
+    badge: '∞ ללא הגבלה',
+    description: 'גישה חופשית לכל הטבילות במשך חודש קלנדרי אחד. ללא הגבלת מספר טבילות.',
   },
 ];
 
@@ -393,7 +400,7 @@ export default function ImmersionPage() {
               <h2 className="text-xl font-black text-navy-900">בחר חבילה</h2>
             </div>
 
-            <div className="grid sm:grid-cols-3 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               {PACKAGES.map(p => (
                 <button
                   key={p.key}
