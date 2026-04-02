@@ -1620,22 +1620,21 @@ function AdminContent() {
                         onClick={async () => {
                           setCreatingSlots(true); setCreateSlotsMsg('');
                           const selected = proposed.filter(p => selectedProposed.has(p.key));
-                          // Group by date and send one request per date range (simplest: one per slot)
-                          let count = 0;
-                          for (const p of selected) {
-                            const res = await fetch(`/api/admin/immersion-slots?key=${encodeURIComponent(key)}`, {
-                              method: 'POST',
-                              headers: { 'Content-Type': 'application/json' },
-                              body: JSON.stringify({
-                                from_date: p.date, to_date: p.date,
-                                from_time: p.time, to_time: p.time,
-                                max_participants: 10,
-                                instructor_id: p.instructor_id,
-                              }),
-                            });
-                            if (res.ok) count++;
+                          const res = await fetch(`/api/admin/immersion-slots?key=${encodeURIComponent(key)}`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                              max_participants: 10,
+                              slots: selected.map(p => ({ slot_date: p.date, slot_time: p.time, instructor_id: p.instructor_id })),
+                            }),
+                          });
+                          if (res.ok) {
+                            const d = await res.json();
+                            setCreateSlotsMsg(`✅ נוצרו ${d.count ?? selected.length} סלוטים`);
+                          } else {
+                            const d = await res.json().catch(() => ({}));
+                            setCreateSlotsMsg(`❌ שגיאה: ${d.error ?? 'לא ידועה'}`);
                           }
-                          setCreateSlotsMsg(`✅ נוצרו ${count} סלוטים`);
                           setProposed([]); setSelectedProposed(new Set());
                           setCreatingSlots(false);
                           setTimeout(() => setCreateSlotsMsg(''), 4000);

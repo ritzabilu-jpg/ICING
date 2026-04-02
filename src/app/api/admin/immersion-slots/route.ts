@@ -48,7 +48,23 @@ export async function POST(req: NextRequest) {
     from_time?: string; to_time?: string;
     max_participants?: number; notes?: string;
     location?: string; instructor_id?: string;
+    slots?: { slot_date: string; slot_time: string; instructor_id?: string }[];
   };
+
+  // Fast-path: direct slots array
+  if (Array.isArray(body.slots) && body.slots.length > 0) {
+    const supabase = createAdminClient();
+    const rows = body.slots.map(s => ({
+      slot_date: s.slot_date,
+      slot_time: s.slot_time,
+      max_participants: body.max_participants ?? 1,
+      notes: body.notes ?? '',
+      ...(s.instructor_id ? { instructor_id: s.instructor_id } : {}),
+    }));
+    const { error } = await supabase.from('immersion_slots').insert(rows);
+    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ status: 'ok', count: rows.length });
+  }
 
   const { from_date, to_date, from_time, to_time, notes, location, instructor_id } = body;
   const max = body.max_participants ?? 1;
@@ -95,8 +111,8 @@ export async function POST(req: NextRequest) {
   const supabase = createAdminClient();
 
   // Check for conflicts: slots with same date+time already in DB
-  const uniqueDates = [...new Set(toInsert.map(s => s.slot_date))];
-  const uniqueTimes = [...new Set(toInsert.map(s => s.slot_time + ':00'))]; // HH:MM:SS for DB comparison
+  const uniqueDates = Array.from(new Set(toInsert.map(s => s.slot_date)));
+  const uniqueTimes = Array.from(new Set(toInsert.map(s => s.slot_time + ':00'))); // HH:MM:SS for DB comparison
 
   const { data: existing } = await supabase
     .from('immersion_slots')
