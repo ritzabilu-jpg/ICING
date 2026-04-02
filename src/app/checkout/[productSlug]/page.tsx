@@ -91,6 +91,15 @@ export default function CheckoutPage() {
     return () => clearTimeout(t);
   }, [otpTimer]);
 
+  // Auto-advance if otpVerified is true but stuck at step 2 (stale localStorage)
+  useEffect(() => {
+    if (state.step === 2 && state.otpVerified) {
+      const t = setTimeout(() => save({ step: 3 }), 800);
+      return () => clearTimeout(t);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state.step, state.otpVerified]);
+
   // Compute callback deadline string on load
   useEffect(() => {
     setCallbackDeadlineStr(computeDeadlineStr());
