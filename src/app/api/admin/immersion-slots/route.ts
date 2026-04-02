@@ -48,6 +48,7 @@ export async function POST(req: NextRequest) {
     from_time?: string; to_time?: string;
     max_participants?: number; notes?: string;
     location?: string; instructor_id?: string;
+    interval?: number;
     slots?: { slot_date: string; slot_time: string; instructor_id?: string }[];
   };
 
@@ -68,6 +69,7 @@ export async function POST(req: NextRequest) {
 
   const { from_date, to_date, from_time, to_time, notes, location, instructor_id } = body;
   const max = body.max_participants ?? 1;
+  const interval = body.interval ?? 10;
 
   if (!from_date || !to_date || !from_time || !to_time) {
     return NextResponse.json({ error: 'שדות חובה חסרים' }, { status: 400 });
@@ -89,7 +91,7 @@ export async function POST(req: NextRequest) {
 
   while (cursor <= endDate) {
     const dateStr = `${cursor.getFullYear()}-${String(cursor.getMonth()+1).padStart(2,'0')}-${String(cursor.getDate()).padStart(2,'0')}`;
-    for (let m = fromMin; m <= toMin; m += 10) {
+    for (let m = fromMin; m <= toMin; m += interval) {
       const h   = Math.floor(m / 60).toString().padStart(2, '0');
       const min = (m % 60).toString().padStart(2, '0');
       const row: SlotRow = {

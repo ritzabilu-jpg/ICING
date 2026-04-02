@@ -44,6 +44,31 @@ function saveHealthChecks(data: Record<string, { daily: boolean; general: boolea
   localStorage.setItem(HEALTH_KEY, JSON.stringify(data));
 }
 
+// ─── Confirm Dialog ───────────────────────────────────────────────────────────
+
+interface ConfirmDialogProps {
+  open: boolean;
+  title: string;
+  message: string;
+  onConfirm: () => void;
+  onCancel: () => void;
+}
+function ConfirmDialog({ open, title, message, onConfirm, onCancel }: ConfirmDialogProps) {
+  if (!open) return null;
+  return (
+    <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" dir="rtl">
+      <div className="bg-white rounded-2xl p-6 max-w-sm w-full shadow-xl">
+        <h3 className="text-lg font-bold text-navy-900 mb-2">{title}</h3>
+        <p className="text-slate-600 text-sm mb-5">{message}</p>
+        <div className="flex gap-3 justify-end">
+          <button onClick={onCancel} className="px-4 py-2 text-sm font-semibold text-slate-600 hover:text-slate-900 border border-slate-200 rounded-xl">ביטול</button>
+          <button onClick={onConfirm} className="px-4 py-2 text-sm font-bold text-white bg-red-600 hover:bg-red-700 rounded-xl">אשר</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ─── Admin Content ────────────────────────────────────────────────────────────
 
 type TabType = 'immersion' | 'clients' | 'instructors' | 'workshops' | 'reviews' | 'manage-instructors' | 'users' | 'availability' | 'vacations' | 'schedule' | 'phone-requests';
@@ -175,6 +200,23 @@ function AdminContent() {
   const [wBulkTime, setWBulkTime]       = useState('');
   const [wBulkMsg, setWBulkMsg]         = useState('');
   const [wBulkDeleting, setWBulkDeleting] = useState(false);
+  // ── Confirm dialog ──
+  const [confirmDialog, setConfirmDialog] = useState<{ open: boolean; title: string; message: string; onConfirm: () => void }>({
+    open: false, title: '', message: '', onConfirm: () => {},
+  });
+  function openConfirm(title: string, message: string, onConfirm: () => void) {
+    setConfirmDialog({ open: true, title, message, onConfirm });
+  }
+  // ── Instructor workshop editing ──
+  const [editingWorkshop, setEditingWorkshop] = useState<InstructorWorkshop | null>(null);
+  // ── Slot interval ──
+  const [slotInterval, setSlotInterval] = useState(10);
+  // ── Sync message ──
+  const [syncMsg, setSyncMsg] = useState('');
+  // ── Save instructor error message ──
+  const [saveInstrMsg, setSaveInstrMsg] = useState('');
+  // ── Delete user error message ──
+  const [deleteUserMsg, setDeleteUserMsg] = useState('');
   // ── Vacations ──
   const [vacAdminNotes, setVacAdminNotes] = useState<Record<string, string>>({});
   // ── Phone requests ──
@@ -304,7 +346,7 @@ function AdminContent() {
     const fromMin = fh * 60 + fm;
     const toMin   = th * 60 + tm;
     if (toMin < fromMin) return 0;
-    const stepsPerDay = Math.floor((toMin - fromMin) / 10) + 1;
+    const stepsPerDay = Math.floor((toMin - fromMin) / slotInterval) + 1;
     const d1 = new Date(fromDate + 'T00:00:00');
     const d2 = new Date(toDate   + 'T00:00:00');
     const days = Math.max(0, Math.round((d2.getTime() - d1.getTime()) / 86400000)) + 1;
@@ -318,7 +360,7 @@ function AdminContent() {
     const res = await fetch(`/api/admin/immersion-slots?key=${encodeURIComponent(key)}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ from_date: fromDate, to_date: toDate, from_time: fromTime, to_time: toTime, max_participants: newMax, notes: newNotes, location: newLocation, instructor_id: newInstructorId || undefined }),
+      body: JSON.stringify({ from_date: fromDate, to_date: toDate, from_time: fromTime, to_time: toTime, max_participants: newMax, notes: newNotes, location: newLocation, instructor_id: newInstructorId || undefined, interval: slotInterval }),
     });
     const data = await res.json() as { status?: string; success?: boolean; count?: number; error?: string; conflicts?: ConflictItem[]; clean?: CleanSlot[] };
     if (res.ok && data.status === 'conflicts') {
@@ -356,10 +398,12 @@ function AdminContent() {
     setConflictConfirming(false);
   }
 
-  async function deleteSlot(id: string) {
-    if (!confirm('למחוק מועד זה? כל ההרשמות אליו יימחקו.')) return;
-    await fetch(`/api/admin/immersion-slots?key=${encodeURIComponent(key)}&id=${id}`, { method: 'DELETE' });
-    setSlots(prev => prev.filter(s => s.id !== id));
+  function deleteSlot(id: string) {
+    openConfirm('מחיקת מועד', 'למחוק מועד זה? כל ההרשמות אליו יימחקו.', async () => {
+      setConfirmDialog(d => ({ ...d, open: false }));
+      await fetch(`/api/admin/immersion-slots?key=${encodeURIComponent(key)}&id=${id}`, { method: 'DELETE' });
+      setSlots(prev => prev.filter(s => s.id !== id));
+    });
   }
 
   function toggleHealth(clientId: string, field: 'daily' | 'general') {
@@ -388,33 +432,40 @@ function AdminContent() {
     setAddingW(false);
   }
 
-  async function deleteWorkshop(id: string) {
-    if (!confirm('למחוק סדנה זו?')) return;
-    await fetch(`/api/admin/instructor-workshops?key=${encodeURIComponent(key)}&id=${id}`, { method: 'DELETE' });
-    setIworkshops(prev => prev.filter(w => w.id !== id));
+  function deleteWorkshop(id: string) {
+    openConfirm('מחיקת סדנה', 'למחוק סדנה זו?', async () => {
+      setConfirmDialog(d => ({ ...d, open: false }));
+      await fetch(`/api/admin/instructor-workshops?key=${encodeURIComponent(key)}&id=${id}`, { method: 'DELETE' });
+      setIworkshops(prev => prev.filter(w => w.id !== id));
+    });
   }
 
-  async function bulkDeleteSlots() {
+  function bulkDeleteSlots() {
     if (!bulkDelFrom || !bulkDelTo) return;
     const label = bulkDelTime ? `בשעה ${bulkDelTime}` : 'בכל השעות';
-    if (!confirm(`למחוק את כל מועדי הטבילה מ-${bulkDelFrom} עד ${bulkDelTo} ${label}?`)) return;
-    setBulkDeleting(true); setBulkDelMsg('');
-    const params = new URLSearchParams({ key, from_date: bulkDelFrom, to_date: bulkDelTo });
-    if (bulkDelTime) params.set('time', bulkDelTime);
-    const res = await fetch(`/api/admin/immersion-slots?${params}`, { method: 'DELETE' });
-    const data = await res.json();
-    if (res.ok) {
-      setBulkDelMsg(`✅ נמחקו ${data.deleted} מועדים`);
-      setBulkDelFrom(''); setBulkDelTo(''); setBulkDelTime('');
-      await loadSlots();
-    } else {
-      setBulkDelMsg(`❌ ${data.error ?? 'שגיאה'}`);
-    }
-    setBulkDeleting(false);
+    openConfirm('מחיקת מועדים', `למחוק את כל מועדי הטבילה מ-${bulkDelFrom} עד ${bulkDelTo} ${label}?`, async () => {
+      setConfirmDialog(d => ({ ...d, open: false }));
+      setBulkDeleting(true); setBulkDelMsg('');
+      const params = new URLSearchParams({ key, from_date: bulkDelFrom, to_date: bulkDelTo });
+      if (bulkDelTime) params.set('time', bulkDelTime);
+      const res = await fetch(`/api/admin/immersion-slots?${params}`, { method: 'DELETE' });
+      const data = await res.json();
+      if (res.ok) {
+        setBulkDelMsg(`✅ נמחקו ${data.deleted} מועדים`);
+        setBulkDelFrom(''); setBulkDelTo(''); setBulkDelTime('');
+        await loadSlots();
+      } else {
+        setBulkDelMsg(`❌ ${data.error ?? 'שגיאה'}`);
+      }
+      setBulkDeleting(false);
+    });
   }
 
   async function addClientToSlot(slotId: string) {
     if (!newClientName.trim() || !newClientPhone.trim()) return;
+    const phoneClean = newClientPhone.replace(/-/g, '');
+    if (newClientName.trim().length < 2) { setAddClientMsg('שם חייב להכיל לפחות 2 תווים'); return; }
+    if (!/^0[5-9][0-9]{8}$/.test(phoneClean)) { setAddClientMsg('טלפון חייב להיות מספר ישראלי תקני (05XXXXXXXX)'); return; }
     setAddingClient(true);
     setAddClientMsg('');
     try {
@@ -436,23 +487,25 @@ function AdminContent() {
     setAddingClient(false);
   }
 
-  async function bulkDeleteWorkshops() {
+  function bulkDeleteWorkshops() {
     if (!wBulkFrom || !wBulkTo) return;
     const label = wBulkTime ? `בשעה ${wBulkTime}` : 'בכל השעות';
-    if (!confirm(`למחוק את כל הסדנאות מ-${wBulkFrom} עד ${wBulkTo} ${label}?`)) return;
-    setWBulkDeleting(true); setWBulkMsg('');
-    const params = new URLSearchParams({ key, from_date: wBulkFrom, to_date: wBulkTo });
-    if (wBulkTime) params.set('time', wBulkTime);
-    const res = await fetch(`/api/admin/instructor-workshops?${params}`, { method: 'DELETE' });
-    const data = await res.json();
-    if (res.ok) {
-      setWBulkMsg(`✅ נמחקו ${data.deleted} סדנאות`);
-      setWBulkFrom(''); setWBulkTo(''); setWBulkTime('');
-      await loadWorkshops();
-    } else {
-      setWBulkMsg(`❌ ${data.error ?? 'שגיאה'}`);
-    }
-    setWBulkDeleting(false);
+    openConfirm('מחיקת סדנאות', `למחוק את כל הסדנאות מ-${wBulkFrom} עד ${wBulkTo} ${label}?`, async () => {
+      setConfirmDialog(d => ({ ...d, open: false }));
+      setWBulkDeleting(true); setWBulkMsg('');
+      const params = new URLSearchParams({ key, from_date: wBulkFrom, to_date: wBulkTo });
+      if (wBulkTime) params.set('time', wBulkTime);
+      const res = await fetch(`/api/admin/instructor-workshops?${params}`, { method: 'DELETE' });
+      const data = await res.json();
+      if (res.ok) {
+        setWBulkMsg(`✅ נמחקו ${data.deleted} סדנאות`);
+        setWBulkFrom(''); setWBulkTo(''); setWBulkTime('');
+        await loadWorkshops();
+      } else {
+        setWBulkMsg(`❌ ${data.error ?? 'שגיאה'}`);
+      }
+      setWBulkDeleting(false);
+    });
   }
 
   function getInviteMessage(instructor: typeof DEMO_INSTRUCTORS[0]) {
@@ -476,6 +529,24 @@ function AdminContent() {
   const filteredClients = clients.filter(c =>
     !clientSearch || c.name.includes(clientSearch) || c.phone.includes(clientSearch)
   );
+
+  function exportClientsCSV() {
+    const headers = ['שם', 'טלפון', 'אימייל', 'סוג', 'תאריך'];
+    const rows = filteredClients.map((c: ClientEntry) => [
+      c.name, c.phone, c.email ?? '', c.type ?? '', c.date ?? '',
+    ]);
+    const csv = [headers, ...rows]
+      .map(r => r.map((v: string) => `"${String(v).replace(/"/g, '""')}"`).join(','))
+      .join('\n');
+    const bom = '\uFEFF';
+    const blob = new Blob([bom + csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `icing-clients-${new Date().toISOString().slice(0,10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
 
   return (
     <div className="max-w-5xl mx-auto px-4 py-10" dir="rtl">
@@ -546,6 +617,17 @@ function AdminContent() {
                     className="w-full border-2 border-slate-200 focus:border-ice-400 rounded-xl px-3 py-2 text-sm focus:outline-none" />
                 </div>
               </div>
+              {/* Row 2b: interval */}
+              <div>
+                <label className="block text-xs font-semibold text-slate-600 mb-1">מרווח בין מועדים</label>
+                <select value={slotInterval} onChange={e => setSlotInterval(Number(e.target.value))}
+                  className="w-full border-2 border-slate-200 focus:border-ice-400 rounded-xl px-3 py-2 text-sm focus:outline-none bg-white">
+                  <option value={10}>כל 10 דקות</option>
+                  <option value={15}>כל 15 דקות</option>
+                  <option value={30}>כל 30 דקות</option>
+                  <option value={60}>כל שעה</option>
+                </select>
+              </div>
               {/* Row 3: max + notes */}
               <div className="grid sm:grid-cols-2 gap-3">
                 <div>
@@ -580,7 +662,7 @@ function AdminContent() {
               {/* Preview */}
               {previewSlotCount() > 0 && (
                 <div className="bg-ice-50 border border-ice-200 rounded-xl px-4 py-2 text-sm text-ice-700 font-semibold">
-                  יוצרו <strong>{previewSlotCount()}</strong> מועדים (כל 10 דקות, {fromTime}–{toTime}, {fromDate} עד {toDate})
+                  יוצרו <strong>{previewSlotCount()}</strong> מועדים (כל {slotInterval} דקות, {fromTime}–{toTime}, {fromDate} עד {toDate})
                 </div>
               )}
               <button type="submit" disabled={addingSlot || previewSlotCount() === 0}
@@ -921,6 +1003,9 @@ function AdminContent() {
                 className="px-4 py-2 rounded-xl border-2 border-slate-200 text-slate-600 hover:border-slate-300 font-semibold text-sm">
                 ↻ רענן
               </button>
+              <button onClick={exportClientsCSV} className="bg-slate-700 hover:bg-slate-800 text-white font-bold px-4 py-2 rounded-xl text-sm">
+                📥 ייצוא CSV
+              </button>
               <a href={`/admin/clients?key=${encodeURIComponent(key)}`}
                 className="px-4 py-2 rounded-xl bg-navy-900 text-white font-semibold text-sm hover:bg-navy-700"
                 target="_blank" rel="noopener noreferrer">
@@ -1081,10 +1166,16 @@ function AdminContent() {
                         </span>
                       </td>
                       <td className="px-4 py-3">
-                        <button onClick={() => deleteWorkshop(w.id)}
-                          className="text-red-400 hover:text-red-600 text-xs font-semibold transition-colors">
-                          מחק
-                        </button>
+                        <div className="flex gap-2">
+                          <button onClick={() => setEditingWorkshop(w)}
+                            className="text-ice-600 hover:text-ice-800 text-xs font-semibold transition-colors">
+                            ✏️ ערוך
+                          </button>
+                          <button onClick={() => deleteWorkshop(w.id)}
+                            className="text-red-400 hover:text-red-600 text-xs font-semibold transition-colors">
+                            מחק
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   ))}
@@ -1092,6 +1183,77 @@ function AdminContent() {
               </table>
             )}
           </div>
+
+          {/* Edit workshop modal */}
+          {editingWorkshop && (
+            <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" dir="rtl">
+              <div className="bg-white rounded-2xl p-6 max-w-md w-full shadow-xl">
+                <h3 className="text-lg font-bold text-navy-900 mb-4">עריכת סדנה</h3>
+                <div className="space-y-3">
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-600 mb-1">מדריך</label>
+                    <select value={editingWorkshop.instructor_name}
+                      onChange={e => setEditingWorkshop(w => w ? {...w, instructor_name: e.target.value} : null)}
+                      className="w-full border-2 border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-ice-400 bg-white">
+                      {DEMO_INSTRUCTORS.map(i => <option key={i.name} value={i.name}>{i.name}</option>)}
+                    </select>
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-600 mb-1">תאריך</label>
+                      <input type="date" value={editingWorkshop.workshop_date}
+                        onChange={e => setEditingWorkshop(w => w ? {...w, workshop_date: e.target.value} : null)}
+                        className="w-full border-2 border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-ice-400" />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-600 mb-1">שעה</label>
+                      <input type="time" dir="ltr" value={editingWorkshop.workshop_time?.slice(0,5)}
+                        onChange={e => setEditingWorkshop(w => w ? {...w, workshop_time: e.target.value} : null)}
+                        className="w-full border-2 border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-ice-400" />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-600 mb-1">מקס׳ משתתפים</label>
+                    <input type="number" min={1} max={50} value={editingWorkshop.max_participants}
+                      onChange={e => setEditingWorkshop(w => w ? {...w, max_participants: Number(e.target.value)} : null)}
+                      className="w-full border-2 border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-ice-400" />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-600 mb-1">הערות</label>
+                    <textarea value={editingWorkshop.notes ?? ''}
+                      onChange={e => setEditingWorkshop(w => w ? {...w, notes: e.target.value} : null)}
+                      rows={2}
+                      className="w-full border-2 border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-ice-400 resize-none" />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-600 mb-1">סטטוס</label>
+                    <select value={editingWorkshop.status}
+                      onChange={e => setEditingWorkshop(w => w ? {...w, status: e.target.value as InstructorWorkshop['status']} : null)}
+                      className="w-full border-2 border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-ice-400 bg-white">
+                      <option value="pending">ממתין</option>
+                      <option value="accepted">אישר</option>
+                      <option value="declined">דחה</option>
+                    </select>
+                  </div>
+                </div>
+                <div className="flex gap-3 mt-5">
+                  <button onClick={() => setEditingWorkshop(null)} className="flex-1 py-2 text-sm font-semibold border border-slate-200 rounded-xl">ביטול</button>
+                  <button onClick={async () => {
+                    if (!editingWorkshop) return;
+                    const res = await fetch(`/api/admin/instructor-workshops?key=${encodeURIComponent(key)}`, {
+                      method: 'PUT',
+                      headers: {'Content-Type': 'application/json'},
+                      body: JSON.stringify(editingWorkshop),
+                    });
+                    if (res.ok) {
+                      setIworkshops(prev => prev.map(w => w.id === editingWorkshop.id ? editingWorkshop : w));
+                      setEditingWorkshop(null);
+                    }
+                  }} className="flex-1 py-2 text-sm font-bold text-white bg-ice-600 hover:bg-ice-700 rounded-xl">שמור</button>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Bulk delete workshops */}
           <div className="bg-red-50 rounded-3xl border-2 border-red-100 shadow-sm p-6">
@@ -1142,12 +1304,14 @@ function AdminContent() {
           <div className="flex items-center justify-between flex-wrap gap-2">
             <h2 className="text-xl font-black text-navy-900">ניהול מדריכים</h2>
             <div className="flex gap-2">
-              <button onClick={async () => {
-                if (!confirm('לסנכרן את כל המדריכים מהקוד לבסיס הנתונים? פעולה זו תעדכן מדריכים קיימים ותוסיף חסרים.')) return;
-                const res = await fetch('/api/admin/instructors/sync', { method: 'POST', headers: adminHeaders() });
-                const data = await res.json();
-                if (data.synced > 0) { alert(`סונכרנו ${data.synced} מדריכים בהצלחה${data.errors?.length ? '\n\nשגיאות:\n' + data.errors.join('\n') : ''}`); await loadDbInstructors(); }
-                else alert('שגיאה: ' + (data.error || data.errors?.join('\n') || 'לא ידוע'));
+              <button onClick={() => {
+                openConfirm('סנכרון מדריכים', 'לסנכרן את כל המדריכים מהקוד לבסיס הנתונים? פעולה זו תעדכן מדריכים קיימים ותוסיף חסרים.', async () => {
+                  setConfirmDialog(d => ({ ...d, open: false }));
+                  const res = await fetch('/api/admin/instructors/sync', { method: 'POST', headers: adminHeaders() });
+                  const data = await res.json();
+                  if (data.synced > 0) { setSyncMsg(`✅ סונכרנו ${data.synced} מדריכים בהצלחה${data.errors?.length ? ' (שגיאות: ' + data.errors.join(', ') + ')' : ''}`); await loadDbInstructors(); }
+                  else setSyncMsg('❌ שגיאה: ' + (data.error || data.errors?.join(', ') || 'לא ידוע'));
+                });
               }} className="bg-amber-500 hover:bg-amber-600 text-white font-bold px-4 py-2 rounded-xl text-sm transition-colors">
                 🔄 סנכרן מדריכים
               </button>
@@ -1157,6 +1321,7 @@ function AdminContent() {
               </button>
             </div>
           </div>
+          {syncMsg && <p className={`text-sm font-semibold mt-1 ${syncMsg.startsWith('✅') ? 'text-green-700' : 'text-red-600'}`}>{syncMsg}</p>}
 
           {showAddInstructor && (
             <div className="bg-ice-50 border border-ice-200 rounded-2xl p-5">
@@ -1324,15 +1489,16 @@ function AdminContent() {
                             headers: adminHeaders({ 'Content-Type': 'application/json' }),
                             body: JSON.stringify(payload),
                           });
-                          if (res.ok) { setEditingInstructor(null); await loadDbInstructors(); }
-                          else { const d = await res.json(); alert('שגיאה בשמירה: ' + (d.error || res.status)); }
+                          if (res.ok) { setSaveInstrMsg(''); setEditingInstructor(null); await loadDbInstructors(); }
+                          else { const d = await res.json(); setSaveInstrMsg('❌ שגיאה בשמירה: ' + (d.error || res.status)); }
                         }} className="bg-ice-600 hover:bg-ice-700 text-white font-bold px-4 py-1.5 rounded-lg text-sm transition-colors">
                           שמור
                         </button>
-                        <button onClick={() => setEditingInstructor(null)}
+                        <button onClick={() => { setEditingInstructor(null); setSaveInstrMsg(''); }}
                           className="text-slate-400 hover:text-slate-600 text-sm px-3">
                           ביטול
                         </button>
+                        {saveInstrMsg && <span className="text-sm font-semibold text-red-600">{saveInstrMsg}</span>}
                       </div>
                     </div>
                   ) : (
@@ -1354,13 +1520,15 @@ function AdminContent() {
                           className="bg-navy-100 hover:bg-navy-200 text-navy-900 font-semibold px-3 py-1.5 rounded-lg text-sm transition-colors">
                           עריכה
                         </button>
-                        <button onClick={async () => {
-                          if (!confirm('למחוק מדריך זה?')) return;
-                          await fetch(`/api/admin/instructors?id=${inst.id}`, {
-                            method: 'DELETE',
-                            headers: adminHeaders(),
+                        <button onClick={() => {
+                          openConfirm('מחיקת מדריך', `למחוק את המדריך ${inst.name}?`, async () => {
+                            setConfirmDialog(d => ({ ...d, open: false }));
+                            await fetch(`/api/admin/instructors?id=${inst.id}`, {
+                              method: 'DELETE',
+                              headers: adminHeaders(),
+                            });
+                            await loadDbInstructors();
                           });
-                          await loadDbInstructors();
                         }} className="bg-red-50 hover:bg-red-100 text-red-600 font-semibold px-3 py-1.5 rounded-lg text-sm transition-colors">
                           מחק
                         </button>
@@ -1457,13 +1625,15 @@ function AdminContent() {
                           <option value="admin">אדמין</option>
                         </select>
                         {['instructor', 'admin'].includes(u.role) && (
-                          <button onClick={async () => {
-                            if (!confirm(`למחוק את ${u.name}?`)) return;
-                            const res = await fetch(`/api/admin/users?id=${u.id}`, {
-                              method: 'DELETE', headers: adminHeaders(),
+                          <button onClick={() => {
+                            openConfirm('מחיקת משתמש', `למחוק את ${u.name}?`, async () => {
+                              setConfirmDialog(d => ({ ...d, open: false }));
+                              const res = await fetch(`/api/admin/users?id=${u.id}`, {
+                                method: 'DELETE', headers: adminHeaders(),
+                              });
+                              if (res.ok) await loadUsers();
+                              else { const d = await res.json(); setDeleteUserMsg('❌ שגיאה: ' + (d.error || res.status)); }
                             });
-                            if (res.ok) await loadUsers();
-                            else { const d = await res.json(); alert('שגיאה: ' + (d.error || res.status)); }
                           }} className="text-xs bg-red-50 hover:bg-red-100 text-red-600 font-semibold px-2 py-1 rounded-lg transition-colors">
                             מחק
                           </button>
@@ -1474,6 +1644,7 @@ function AdminContent() {
                 }
               </div>
             )}
+            {deleteUserMsg && <p className="mt-2 text-sm font-semibold text-red-600">{deleteUserMsg}</p>}
           </div>
         </div>
       )}
@@ -1712,14 +1883,16 @@ function AdminContent() {
                       className="bg-navy-900 hover:bg-navy-700 disabled:opacity-50 text-white font-bold px-6 py-2.5 rounded-xl text-sm transition-colors">
                       {availSaving ? 'שומר...' : 'שמור זמינות'}
                     </button>
-                    <button onClick={async () => {
-                      if (!confirm('למחוק את כל הזמינות של מדריך זה?')) return;
-                      const delRes = await fetch(`/api/admin/instructor-availability?instructor_id=${availInstructorId}&key=${encodeURIComponent(key)}`, { method: 'DELETE' });
-                      const delData = await delRes.json();
-                      setAvailSlots([]);
-                      setAvailMsg(delRes.ok ? `✅ נמחקו ${delData.deleted ?? 0} שורות` : `❌ ${delData.error}`);
-                      setTimeout(() => setAvailMsg(''), 6000);
-                      reloadSummary();
+                    <button onClick={() => {
+                      openConfirm('מחיקת זמינות', 'למחוק את כל הזמינות של מדריך זה?', async () => {
+                        setConfirmDialog(d => ({ ...d, open: false }));
+                        const delRes = await fetch(`/api/admin/instructor-availability?instructor_id=${availInstructorId}&key=${encodeURIComponent(key)}`, { method: 'DELETE' });
+                        const delData = await delRes.json();
+                        setAvailSlots([]);
+                        setAvailMsg(delRes.ok ? `✅ נמחקו ${delData.deleted ?? 0} שורות` : `❌ ${delData.error}`);
+                        setTimeout(() => setAvailMsg(''), 6000);
+                        reloadSummary();
+                      });
                     }} className="border-2 border-red-300 text-red-500 hover:bg-red-50 font-semibold px-4 py-2.5 rounded-xl text-sm transition-colors">
                       נקה הכל
                     </button>
@@ -1916,6 +2089,13 @@ function AdminContent() {
         </div>
       )}
 
+      <ConfirmDialog
+        open={confirmDialog.open}
+        title={confirmDialog.title}
+        message={confirmDialog.message}
+        onConfirm={confirmDialog.onConfirm}
+        onCancel={() => setConfirmDialog(d => ({ ...d, open: false }))}
+      />
     </div>
   );
 }
