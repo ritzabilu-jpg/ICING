@@ -147,6 +147,9 @@ export async function POST(req: NextRequest) {
     const mapKey = `${s.slot_date}|${s.slot_time}`;
     const ex = existingMap.get(mapKey);
     if (ex) {
+      // Same instructor already has this slot → skip silently (no conflict)
+      if (ex.instructor_id === (s.instructor_id ?? null)) continue;
+      // Different instructor → real conflict
       conflicts.push({
         date: s.slot_date,
         time: s.slot_time,

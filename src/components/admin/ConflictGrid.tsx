@@ -37,28 +37,36 @@ function fmtDate(d: string) {
 }
 
 export default function ConflictGrid({ conflicts, clean, onConfirm, onCancel, confirming }: Props) {
-  // default: keep existing instructor (true = keep existing, false = use new)
   const [decisions, setDecisions] = useState<Record<string, boolean>>(() => {
     const d: Record<string, boolean> = {};
     for (const c of conflicts) d[c.existingId] = true;
     return d;
   });
 
-  const dates = [...new Set([
+  const dates = Array.from(new Set([
     ...conflicts.map(c => c.date),
     ...clean.map(s => s.slot_date),
-  ])].sort();
+  ])).sort();
 
-  const times = [...new Set([
+  const times = Array.from(new Set([
     ...conflicts.map(c => c.time),
     ...clean.map(s => s.slot_time),
-  ])].sort();
+  ])).sort();
 
   const conflictMap = new Map<string, ConflictItem>();
   for (const c of conflicts) conflictMap.set(`${c.date}|${c.time}`, c);
 
   const cleanSet = new Set<string>();
   for (const s of clean) cleanSet.add(`${s.slot_date}|${s.slot_time}`);
+
+  // Apply decision to all conflicts in a specific time row
+  function applyRow(time: string, keepExisting: boolean) {
+    const next = { ...decisions };
+    for (const c of conflicts) {
+      if (c.time === time) next[c.existingId] = keepExisting;
+    }
+    setDecisions(next);
+  }
 
   function handleConfirm() {
     const resolved = conflicts.map(c => ({
@@ -72,10 +80,35 @@ export default function ConflictGrid({ conflicts, clean, onConfirm, onCancel, co
   return (
     <div className="bg-orange-50 rounded-3xl border-2 border-orange-200 shadow-sm p-6">
       <h2 className="text-lg font-black text-orange-800 mb-1">⚠️ נמצאו קונפליקטים – {conflicts.length} מועדים</h2>
-      <p className="text-xs text-slate-500 mb-4">
-        תאים אדומים = מועד קיים עם מדריך אחר. בחר מי ידריך בכל מועד כזה.
+      <p className="text-xs text-slate-500 mb-3">
+        תאים אדומים = מועד קיים עם מדריך אחר. בחר מי ידריך בכל מועד.
         {clean.length > 0 && <span className="mr-1 text-green-700">תאים ירוקים ({clean.length}) ייצרו אוטומטית.</span>}
       </p>
+
+      {/* Batch action buttons */}
+      <div className="flex gap-2 mb-3 flex-wrap">
+        <span className="text-xs font-semibold text-slate-500 self-center">בחר לכולם:</span>
+        <button
+          onClick={() => {
+            const next: Record<string, boolean> = {};
+            for (const c of conflicts) next[c.existingId] = true;
+            setDecisions(next);
+          }}
+          className="text-xs bg-blue-100 hover:bg-blue-200 text-blue-800 font-bold px-3 py-1 rounded-lg transition-colors"
+        >
+          🔵 שמור קיימים לכולם
+        </button>
+        <button
+          onClick={() => {
+            const next: Record<string, boolean> = {};
+            for (const c of conflicts) next[c.existingId] = false;
+            setDecisions(next);
+          }}
+          className="text-xs bg-green-100 hover:bg-green-200 text-green-800 font-bold px-3 py-1 rounded-lg transition-colors"
+        >
+          🟢 החלף בחדשים לכולם
+        </button>
+      </div>
 
       <div className="overflow-auto max-h-96 border border-orange-100 rounded-xl">
         <table className="text-xs border-collapse w-full">
@@ -90,47 +123,60 @@ export default function ConflictGrid({ conflicts, clean, onConfirm, onCancel, co
             </tr>
           </thead>
           <tbody>
-            {times.map(t => (
-              <tr key={t}>
-                <td className="border border-slate-200 px-2 py-1 font-mono font-bold text-slate-600 bg-slate-50 whitespace-nowrap">
-                  {t}
-                </td>
-                {dates.map(d => {
-                  const mapKey = `${d}|${t}`;
-                  const conflict = conflictMap.get(mapKey);
-                  const isClean = cleanSet.has(mapKey);
+            {times.map(t => {
+              const rowConflicts = conflicts.filter(c => c.time === t);
+              const hasConflictsInRow = rowConflicts.length > 0;
+              return (
+                <tr key={t}>
+                  <td
+                    className={`border border-slate-200 px-2 py-1 font-mono font-bold text-slate-600 bg-slate-50 whitespace-nowrap ${hasConflictsInRow ? 'cursor-pointer hover:bg-orange-100 select-none' : ''}`}
+                    title={hasConflictsInRow ? 'לחץ לשינוי כל השורה' : undefined}
+                    onClick={hasConflictsInRow ? () => {
+                      // Toggle: if all in row are 'existing', switch all to 'new', and vice versa
+                      const allExisting = rowConflicts.every(c => decisions[c.existingId] ?? true);
+                      applyRow(t, !allExisting);
+                    } : undefined}
+                  >
+                    {t}
+                    {hasConflictsInRow && <span className="mr-1 text-orange-400 text-[10px]">⇄</span>}
+                  </td>
+                  {dates.map(d => {
+                    const mapKey = `${d}|${t}`;
+                    const conflict = conflictMap.get(mapKey);
+                    const isClean = cleanSet.has(mapKey);
 
-                  if (conflict) {
-                    const keepExisting = decisions[conflict.existingId] ?? true;
-                    return (
-                      <td key={d} className="border border-red-300 bg-red-50 px-1 py-0.5">
-                        <select
-                          value={keepExisting ? 'existing' : 'new'}
-                          onChange={e => setDecisions(prev => ({
-                            ...prev,
-                            [conflict.existingId]: e.target.value === 'existing',
-                          }))}
-                          className="text-xs border border-red-300 rounded p-0.5 w-full bg-white"
-                        >
-                          <option value="existing">🔵 {conflict.existingInstructorName}</option>
-                          <option value="new">🟢 {conflict.newInstructorName}</option>
-                        </select>
-                      </td>
-                    );
-                  }
+                    if (conflict) {
+                      const keepExisting = decisions[conflict.existingId] ?? true;
+                      return (
+                        <td key={d} className="border border-red-300 bg-red-50 px-1 py-0.5">
+                          <select
+                            value={keepExisting ? 'existing' : 'new'}
+                            onChange={e => setDecisions(prev => ({
+                              ...prev,
+                              [conflict.existingId]: e.target.value === 'existing',
+                            }))}
+                            className="text-xs border border-red-300 rounded p-0.5 w-full bg-white"
+                          >
+                            <option value="existing">🔵 {conflict.existingInstructorName}</option>
+                            <option value="new">🟢 {conflict.newInstructorName}</option>
+                          </select>
+                        </td>
+                      );
+                    }
 
-                  if (isClean) {
-                    return (
-                      <td key={d} className="border border-green-300 bg-green-50 px-2 py-1 text-center text-green-700 font-bold">
-                        ✓
-                      </td>
-                    );
-                  }
+                    if (isClean) {
+                      return (
+                        <td key={d} className="border border-green-300 bg-green-50 px-2 py-1 text-center text-green-700 font-bold">
+                          ✓
+                        </td>
+                      );
+                    }
 
-                  return <td key={d} className="border border-slate-100 px-2 py-1" />;
-                })}
-              </tr>
-            ))}
+                    return <td key={d} className="border border-slate-100 px-2 py-1" />;
+                  })}
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>
