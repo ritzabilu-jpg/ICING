@@ -34,10 +34,21 @@ export async function GET() {
     const enriched = (slots ?? []).map(s => ({
       ...s,
       booked: counts[s.id] ?? 0,
-      available: s.max_participants - (counts[s.id] ?? 0), // number of free spots
+      available: s.max_participants - (counts[s.id] ?? 0),
     }));
 
-    return NextResponse.json({ slots: enriched }, { headers: { 'Cache-Control': 'no-store' } });
+    // One slot per date+time — prefer the first available, else first slot
+    const byTime = new Map<string, typeof enriched[0]>();
+    for (const s of enriched) {
+      const key = `${s.slot_date}|${s.slot_time}`;
+      const existing = byTime.get(key);
+      if (!existing || (s.available > 0 && existing.available <= 0)) {
+        byTime.set(key, s);
+      }
+    }
+    const deduped = Array.from(byTime.values());
+
+    return NextResponse.json({ slots: deduped }, { headers: { 'Cache-Control': 'no-store' } });
   } catch (e) {
     console.error('immersion-slots unexpected error:', e);
     return NextResponse.json({ slots: [] }, { headers: { 'Cache-Control': 'no-store' } });
