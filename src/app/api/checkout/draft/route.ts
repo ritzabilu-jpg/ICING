@@ -31,7 +31,6 @@ export async function POST(req: NextRequest) {
 
   if (product_type === 'workshop') {
     bookingData = {
-      workshop_id: product_id,
       user_name: 'טרם הוזן',
       email: 'pending@checkout.tmp',
       phone: '000',
@@ -41,6 +40,7 @@ export async function POST(req: NextRequest) {
       confirmation_code: confirmationCode,
       session_token: sessionToken,
       expires_at: expiresAt,
+      callback_window: `workshop:${product_id}`,
     };
   } else {
     // immersion – stored in immersion_bookings but we need a bookings row for session tracking
