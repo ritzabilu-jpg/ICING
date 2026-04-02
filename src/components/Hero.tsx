@@ -75,14 +75,17 @@ export default function Hero() {
 
         {/* CTA buttons */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-          <Link
-            href="/booking"
-            className="w-full sm:w-auto bg-ice-500 hover:bg-ice-600 text-white font-bold
-                       px-10 py-4 rounded-2xl text-xl transition-all duration-200
-                       hover:scale-105 shadow-xl shadow-ice-500/30 active:scale-100"
-          >
-            הזמינו מקום בסדנה הקרובה
-          </Link>
+          <div className="flex flex-col items-center gap-1">
+            <Link
+              href="/booking"
+              className="w-full sm:w-auto bg-ice-500 hover:bg-ice-600 text-white font-bold
+                         px-10 py-4 rounded-2xl text-xl transition-all duration-200
+                         hover:scale-105 shadow-xl shadow-ice-500/30 active:scale-100"
+            >
+              הזמינו מקום בסדנה הקרובה
+            </Link>
+            <span className="text-xs text-slate-500">מקומות מוגבלים — הזמינו מראש</span>
+          </div>
           <a
             href="#workshop-types"
             className="w-full sm:w-auto border-2 border-ice-400/60 text-ice-300
@@ -95,18 +98,24 @@ export default function Hero() {
 
         {/* Stats row */}
         <div className="mt-16 grid grid-cols-3 gap-6 max-w-2xl mx-auto">
-          {[
-            { value: '+127%', label: 'עלייה בנוראדרנלין' },
-            { value: '5°C', label: 'טמפרטורת מים' },
-            { value: '90 דק\'', label: 'משך הסדנה' },
-          ].map(stat => (
-            <div key={stat.label} className="text-center">
-              <div className="text-2xl md:text-3xl font-black text-ice-400 mb-1">
-                {stat.value}
-              </div>
-              <div className="text-xs md:text-sm text-slate-500">{stat.label}</div>
-            </div>
-          ))}
+          <div className="text-center">
+            <div className="text-2xl md:text-3xl font-black text-ice-400 mb-1">+127%</div>
+            <div className="text-xs md:text-sm text-slate-500">עלייה בנוראדרנלין</div>
+            <a href="https://pubmed.ncbi.nlm.nih.gov/23633908" target="_blank" rel="noopener noreferrer"
+               className="text-[10px] text-slate-600 hover:text-ice-400 border-b border-dashed border-slate-600 transition-colors mt-1 inline-block">
+              Janssen et al., 2016 ↗
+            </a>
+          </div>
+          <div className="text-center">
+            <div className="text-2xl md:text-3xl font-black text-ice-400 mb-1">5°C</div>
+            <div className="text-xs md:text-sm text-slate-500">טמפרטורת מים</div>
+            <span className="text-[10px] text-slate-600 mt-1 inline-block">פרוטוקול CWI מוסמך</span>
+          </div>
+          <div className="text-center">
+            <div className="text-2xl md:text-3xl font-black text-ice-400 mb-1">90 דק&apos;</div>
+            <div className="text-xs md:text-sm text-slate-500">משך הסדנה</div>
+            <span className="text-[10px] text-slate-600 mt-1 inline-block">כולל תרגול ושיתוף</span>
+          </div>
         </div>
       </div>
 

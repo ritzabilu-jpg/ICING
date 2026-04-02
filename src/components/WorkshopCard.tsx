@@ -90,17 +90,22 @@ export default function WorkshopCard({
               </div>
             )}
           </div>
-          <Link
-            href={`/booking?type=${type}`}
-            className={`font-bold px-5 py-2.5 rounded-xl text-sm transition-all
-                        hover:scale-105 whitespace-nowrap
-                        ${highlight
-                          ? 'bg-ice-500 hover:bg-ice-600 text-white shadow-lg shadow-ice-500/30'
-                          : 'bg-navy-900 hover:bg-navy-800 text-white'
-                        }`}
-          >
-            הזמינו עכשיו
-          </Link>
+          <div className="flex flex-col items-end gap-1">
+            <Link
+              href={`/booking?type=${type}`}
+              className={`font-bold px-5 py-2.5 rounded-xl text-sm transition-all
+                          hover:scale-105 whitespace-nowrap
+                          ${highlight
+                            ? 'bg-ice-500 hover:bg-ice-600 text-white shadow-lg shadow-ice-500/30'
+                            : 'bg-navy-900 hover:bg-navy-800 text-white'
+                          }`}
+            >
+              הזמינו עכשיו
+            </Link>
+            <span className={`text-[10px] ${highlight ? 'text-slate-500' : 'text-slate-400'}`}>
+              תועברו לתיאום מועד
+            </span>
+          </div>
         </div>
       </div>
     </div>

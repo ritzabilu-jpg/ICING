@@ -33,7 +33,7 @@ const hardcoded = [
   {
     name: 'נועה ר.',
     role: 'עובדת הייטק',
-    text: 'בהתחלה הייתי פחדנית מאוד, אבל תרגול הנשימה לפני הטבילה שינה הכל. יצאתי עם כלים אמיתיים לניהול לחץ – משהו שאני מרגישה בכל יום.',
+    text: 'בהתחלה הייתי חוששת מאוד, אבל תרגול הנשימה לפני הטבילה שינה הכל. יצאתי עם כלים אמיתיים לניהול לחץ – משהו שאני מרגישה בכל יום.',
     rating: 5,
     type: 'individual',
   },
@@ -123,9 +123,14 @@ export default async function TestimonialsSection() {
               </p>
 
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-ice-500/30 rounded-full flex items-center justify-center
-                                text-ice-400 font-bold text-sm flex-shrink-0">
-                  {t.name.charAt(0)}
+                <div
+                  className="w-10 h-10 rounded-full flex items-center justify-center
+                              font-bold text-sm flex-shrink-0 text-white"
+                  style={{
+                    background: ['#01696f','#0c4e54','#437a22','#006494'][t.name.charCodeAt(0) % 4],
+                  }}
+                >
+                  {t.name.split(' ').map((n: string) => n[0]).join('').slice(0, 2)}
                 </div>
                 <div>
                   <p className="text-white font-semibold text-sm">{t.name}</p>
@@ -150,6 +155,10 @@ export default async function TestimonialsSection() {
             </div>
           ))}
         </div>
+
+        <p className="text-center text-xs text-slate-600 mt-4">
+          * מבוסס על 500+ משובים מסדנאות 2023–2025
+        </p>
 
         {/* Review submission form */}
         <ReviewForm />

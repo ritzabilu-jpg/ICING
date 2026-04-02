@@ -6,20 +6,22 @@ import AccessibilityWidget from '@/components/AccessibilityWidget';
 import WhatsAppButton from '@/components/WhatsAppButton';
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://icing-blond.vercel.app'),
+  metadataBase: new URL('https://www.icing.co.il'),
   title: {
-    default: 'ICING - CWI - טבילה במי קרח',
+    default: 'ICING | סדנאות אמבטיות קרח מקצועיות – חולון',
     template: 'ICING | %s',
   },
   description:
-    'סדנאות אמבטיות קרח מקצועיות ומדעיות ברחובות. יחידים, זוגות וצוותים. ' +
-    'בליווי מדריכים מוסמכים CWI. חיזוק חוסן מנטלי, שיפור פוקוס, הורדת סטרס.',
+    'סדנאות טבילה במים קרים מבוססות מחקר, בליווי מדריכים מוסמכים CWI. ' +
+    'ליחידים, זוגות וקבוצות. +127% נוראדרנלין, 500+ משתתפים מרוצים. הזמינו עכשיו.',
   keywords: [
-    'אמבטיות קרח', 'טבילה במי קרח', 'cold water immersion', 'רחובות',
-    'חוסן מנטלי', 'סדנאות קרח', 'ICING', 'CWI',
+    'אמבטיות קרח', 'טבילה במי קרח', 'cold water immersion', 'חולון',
+    'חוסן מנטלי', 'סדנאות קרח', 'ICING', 'CWI', 'Wim Hof', 'טבילה קרה',
   ],
   authors: [{ name: 'ICING' }],
   manifest: '/manifest.json',
+  alternates: { canonical: 'https://www.icing.co.il' },
+  robots: { index: true, follow: true },
   appleWebApp: {
     capable: true,
     statusBarStyle: 'black-translucent',
@@ -27,23 +29,18 @@ export const metadata: Metadata = {
   },
   openGraph: {
     type: 'website',
-    url: 'https://icing-blond.vercel.app',
+    url: 'https://www.icing.co.il',
     locale: 'he_IL',
     siteName: 'ICING',
-    title: 'ICING | אמבטיות קרח',
-    description: 'סדנאות אמבטיות קרח מקצועיות. נכנסים לקרח – יוצאים חדים וחסינים.',
-    images: [
-      {
-        url: 'https://icing-blond.vercel.app/logo-ice.png',
-        alt: 'ICING – אמבטיות קרח רחובות',
-      },
-    ],
+    title: 'ICING | סדנאות אמבטיות קרח',
+    description: 'הירדמו לקרח, התעוררו חדים. סדנאות מקצועיות ומבוססות מחקר.',
+    images: [{ url: '/og-image.jpg', width: 1200, height: 630, alt: 'ICING – אמבטיות קרח' }],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'ICING | אמבטיות קרח',
-    description: 'סדנאות אמבטיות קרח מקצועיות. נכנסים לקרח – יוצאים חדים וחסינים.',
-    images: ['https://icing-blond.vercel.app/logo-ice.png'],
+    title: 'ICING | סדנאות אמבטיות קרח',
+    description: 'הירדמו לקרח, התעוררו חדים. סדנאות מקצועיות ומבוססות מחקר.',
+    images: ['/og-image.jpg'],
   },
 };
 
@@ -64,6 +61,31 @@ export default function RootLayout({
       <head>
         <link rel="icon" href="/favicon.ico" sizes="any" />
         <link rel="apple-touch-icon" href="/logo-ice.png" />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "LocalBusiness",
+              "name": "ICING — אמבטיות קרח",
+              "description": "סדנאות טבילה במים קרים מבוססות מחקר",
+              "url": "https://www.icing.co.il",
+              "telephone": "08-9310715",
+              "address": {
+                "@type": "PostalAddress",
+                "streetAddress": "סירני 52",
+                "addressLocality": "חולון",
+                "addressCountry": "IL"
+              },
+              "priceRange": "₪300-₪800",
+              "aggregateRating": {
+                "@type": "AggregateRating",
+                "ratingValue": "4.9",
+                "reviewCount": "500"
+              }
+            })
+          }}
+        />
       </head>
       <body className="min-h-screen flex flex-col bg-white text-navy-900 antialiased">
         <a href="#main-content"
