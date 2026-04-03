@@ -175,11 +175,11 @@ export default function InstructorDashboard() {
   }, [visitorId, tab]);
 
   useEffect(() => {
-    if (tab !== 'payments' || !instructor) return;
-    fetch(`/api/admin/payments?instructorId=${instructor.id}`)
+    if (tab !== 'payments' || !visitorId) return;
+    fetch('/api/instructor/payments', { headers: { 'x-visitor-id': visitorId } })
       .then(r => r.json())
       .then(d => setPayments(d.bookings ?? []));
-  }, [tab, instructor]);
+  }, [tab, visitorId]);
 
   function selectJournalTarget(id: string, tname: string) {
     setJournalTargetId(id);
