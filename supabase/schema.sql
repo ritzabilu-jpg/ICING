@@ -454,3 +454,9 @@ ALTER TABLE instructor_workshops
 --   FROM instructors i
 --   WHERE iw.instructor_name = i.name
 --   AND iw.immersion_guide_id IS NULL;
+
+-- ============================================================
+-- Migration: Immersion slots — 1 participant per slot (no double booking)
+-- ============================================================
+ALTER TABLE immersion_slots ALTER COLUMN max_participants SET DEFAULT 1;
+UPDATE immersion_slots SET max_participants = 1 WHERE max_participants != 1;

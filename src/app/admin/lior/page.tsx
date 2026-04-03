@@ -104,7 +104,7 @@ function AdminContent() {
   const [toDate, setToDate]         = useState('');
   const [fromTime, setFromTime]     = useState('');
   const [toTime, setToTime]         = useState('');
-  const [newMax, setNewMax]         = useState(10);
+  const [newMax, setNewMax]         = useState(1);
   const [newNotes, setNewNotes]     = useState('');
   const [newLocation, setNewLocation] = useState('');
   const [newInstructorId, setNewInstructorId] = useState('');
@@ -640,8 +640,9 @@ function AdminContent() {
               <div className="grid sm:grid-cols-2 gap-3">
                 <div>
                   <label className="block text-xs font-semibold text-slate-600 mb-1">מקס׳ משתתפים לכל מועד</label>
-                  <input type="number" min={1} max={20} value={newMax} onChange={e => setNewMax(Number(e.target.value))}
+                  <input type="number" min={1} max={1} value={newMax} onChange={e => setNewMax(Number(e.target.value))}
                     className="w-full border-2 border-slate-200 focus:border-ice-400 rounded-xl px-3 py-2 text-sm focus:outline-none" />
+                  <p className="text-xs text-slate-400 mt-0.5">טבילה אישית — מקום אחד בלבד</p>
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-slate-600 mb-1">הערה (אופציונלי)</label>

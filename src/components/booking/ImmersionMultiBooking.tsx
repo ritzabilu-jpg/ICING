@@ -286,7 +286,7 @@ export default function ImmersionMultiBooking({ onBack }: ImmersionMultiBookingP
                   <option value="">בחר שעה</option>
                   {slotsForDate.map(s => (
                     <option key={s.id} value={s.id}>
-                      {s.slot_time.slice(0, 5)} ({s.available} מקומות פנויים)
+                      {s.slot_time.slice(0, 5)} — פנוי
                     </option>
                   ))}
                 </select>
