@@ -2021,20 +2021,39 @@ function AdminContent() {
                         onClick={async () => {
                           setCreatingSlots(true); setCreateSlotsMsg('');
                           const selected = proposed.filter(p => selectedProposed.has(p.key));
-                          const res = await fetch(`/api/admin/immersion-slots?key=${encodeURIComponent(key)}`, {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({
-                              max_participants: 10,
-                              slots: selected.map(p => ({ slot_date: p.date, slot_time: p.time, instructor_id: p.instructor_id })),
-                            }),
-                          });
-                          if (res.ok) {
-                            const d = await res.json();
-                            setCreateSlotsMsg(`✅ נוצרו ${d.count ?? selected.length} סלוטים`);
+                          let ok = false;
+                          if (genType === 'workshop') {
+                            // Save each workshop slot to instructor_workshops table
+                            const results = await Promise.all(selected.map(p => {
+                              const instrName = dbInstructors.find(i => i.id === p.instructor_id)?.name ?? p.instructor_name;
+                              return fetch(`/api/admin/instructor-workshops?key=${encodeURIComponent(key)}`, {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ workshop_date: p.date, workshop_time: p.time, instructor_name: instrName, max_participants: 10 }),
+                              });
+                            }));
+                            const failed = results.filter(r => !r.ok).length;
+                            ok = failed === 0;
+                            setCreateSlotsMsg(ok
+                              ? `✅ נוצרו ${selected.length} סדנאות`
+                              : `❌ ${failed} סדנאות נכשלו`);
                           } else {
-                            const d = await res.json().catch(() => ({}));
-                            setCreateSlotsMsg(`❌ שגיאה: ${d.error ?? 'לא ידועה'}`);
+                            const res = await fetch(`/api/admin/immersion-slots?key=${encodeURIComponent(key)}`, {
+                              method: 'POST',
+                              headers: { 'Content-Type': 'application/json' },
+                              body: JSON.stringify({
+                                max_participants: 10,
+                                slots: selected.map(p => ({ slot_date: p.date, slot_time: p.time, instructor_id: p.instructor_id })),
+                              }),
+                            });
+                            ok = res.ok;
+                            if (res.ok) {
+                              const d = await res.json();
+                              setCreateSlotsMsg(`✅ נוצרו ${d.count ?? selected.length} סלוטים`);
+                            } else {
+                              const d = await res.json().catch(() => ({}));
+                              setCreateSlotsMsg(`❌ שגיאה: ${d.error ?? 'לא ידועה'}`);
+                            }
                           }
                           setProposed([]); setSelectedProposed(new Set());
                           setCreatingSlots(false);

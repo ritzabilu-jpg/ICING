@@ -4,7 +4,7 @@ import { useState, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import type { Workshop, WorkshopType } from '@/types';
 import WorkshopTypeSelector from '@/components/booking/WorkshopTypeSelector';
-import CalendarView from '@/components/booking/CalendarView';
+import WorkshopCalendar from '@/components/booking/WorkshopCalendar';
 import StepIndicator from '@/components/booking/StepIndicator';
 import OneOnOneContactForm from '@/components/booking/OneOnOneContactForm';
 import ImmersionMultiBooking from '@/components/booking/ImmersionMultiBooking';
@@ -113,9 +113,8 @@ function BookingContent() {
       )}
 
       {step === 2 && selectedType && !isOneOnOne && (
-        <CalendarView
+        <WorkshopCalendar
           type={selectedType}
-          instructorId={instructorId}
           onSelect={(workshop: Workshop) => {
             router.push(`/checkout/workshop-${workshop.id}?wtype=${workshop.type}`);
           }}
