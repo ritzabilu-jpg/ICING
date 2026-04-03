@@ -83,6 +83,7 @@ export default function CheckoutPage() {
   const [phoneSubmitting, setPhoneSubmitting] = useState(false);
   const [phoneSubmitted, setPhoneSubmitted] = useState(false);
   const [callbackDeadlineStr, setCallbackDeadlineStr] = useState('');
+  const [bitClicked, setBitClicked] = useState(false);
 
   // OTP countdown timer
   useEffect(() => {
@@ -673,17 +674,75 @@ export default function CheckoutPage() {
                   <span className="text-xs font-bold bg-slate-200 text-slate-500 px-2 py-0.5 rounded-full">בקרוב</span>
                 </div>
 
-                {/* Bit – coming soon */}
-                <div className="w-full border-2 border-slate-100 rounded-2xl p-4 flex items-center justify-between opacity-25 cursor-not-allowed bg-slate-50">
-                  <div className="flex items-center gap-3">
-                    <Image src="/Bit logo ביט.png" alt="Bit" width={40} height={24} className="object-contain grayscale" unoptimized />
-                    <div>
-                      <div className="font-black text-slate-400">Bit</div>
-                      <div className="text-xs text-slate-300">העברה מהירה</div>
+                {/* Bit – ACTIVE */}
+                {state.paymentMethod !== 'bit' ? (
+                  <button
+                    onClick={() => save({ paymentMethod: 'bit' })}
+                    className="w-full border-2 border-slate-200 hover:border-blue-400 rounded-2xl p-4 flex items-center justify-between transition-colors"
+                  >
+                    <div className="flex items-center gap-3">
+                      <Image src="/Bit logo ביט.png" alt="Bit" width={40} height={24} className="object-contain" unoptimized />
+                      <div className="text-right">
+                        <div className="font-black text-navy-900">Bit</div>
+                        <div className="text-xs text-slate-500">העברה מהירה ממש עכשיו</div>
+                      </div>
                     </div>
+                    <span className="text-ice-600 text-lg">›</span>
+                  </button>
+                ) : (
+                  <div className="border-2 border-blue-400 bg-blue-50 rounded-2xl p-4">
+                    <div className="flex items-center gap-2 mb-3">
+                      <Image src="/Bit logo ביט.png" alt="Bit" width={40} height={24} className="object-contain" unoptimized />
+                      <div>
+                        <div className="font-black text-navy-900">תשלום בביט</div>
+                        <div className="text-xs text-slate-500">העברה ישירה לעסק</div>
+                      </div>
+                    </div>
+                    <div className="bg-white border border-blue-200 rounded-xl px-4 py-3 mb-3 text-center">
+                      <div className="text-xs text-slate-500 mb-0.5">סכום לתשלום</div>
+                      <div className="text-3xl font-black text-blue-700">₪{total}</div>
+                      <div className="text-xs text-slate-400 mt-1">לחשבון: 052-4500825</div>
+                    </div>
+                    {!bitClicked ? (
+                      <a
+                        href={`https://www.bitpay.co.il/app/transfer?phone=0524500825&amount=${total}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={() => setBitClicked(true)}
+                        className="block w-full bg-blue-600 hover:bg-blue-700 text-white font-black text-center py-3 rounded-xl text-sm transition-colors mb-2"
+                      >
+                        פתח את אפליקציית Bit לתשלום ›
+                      </a>
+                    ) : (
+                      <div className="space-y-2">
+                        <div className="bg-amber-50 border border-amber-200 rounded-xl px-3 py-2 text-xs text-amber-800 text-center">
+                          ⏳ לאחר ביצוע התשלום בביט, לחץ/י על הכפתור למטה
+                        </div>
+                        <button
+                          onClick={() => confirmPayment('bit')}
+                          disabled={loading}
+                          className="w-full bg-green-600 hover:bg-green-700 disabled:opacity-50 text-white font-black py-3 rounded-xl text-sm transition-colors"
+                        >
+                          {loading ? 'שומר...' : 'שילמתי בביט ✓'}
+                        </button>
+                        <a
+                          href={`https://www.bitpay.co.il/app/transfer?phone=0524500825&amount=${total}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="block text-center text-blue-600 text-xs underline"
+                        >
+                          פתח שוב את Bit
+                        </a>
+                      </div>
+                    )}
+                    <button
+                      onClick={() => { save({ paymentMethod: '' }); setBitClicked(false); }}
+                      className="w-full text-slate-400 hover:text-slate-600 text-xs mt-2"
+                    >
+                      ← חזרה לבחירת תשלום
+                    </button>
                   </div>
-                  <span className="text-xs font-bold bg-slate-200 text-slate-500 px-2 py-0.5 rounded-full">בקרוב</span>
-                </div>
+                )}
 
                 {/* Paybox – coming soon */}
                 <div className="w-full border-2 border-slate-100 rounded-2xl p-4 flex items-center justify-between opacity-25 cursor-not-allowed bg-slate-50">
