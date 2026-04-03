@@ -44,6 +44,8 @@ export async function GET(req: NextRequest) {
     notes: s.notes || '',
     max_participants: s.max_participants,
     participant_count: slotCount[s.id] || 0,
+    status: 'confirmed' as const,
+    instructor_role: 'immersion_guide' as const,
   }));
 
   const workshopItems = (workshops || []).map(w => {
@@ -58,6 +60,8 @@ export async function GET(req: NextRequest) {
       title: w.title,
       max_participants: w.capacity,
       participant_count: w.seats_taken || 0,
+      status: (w.status || 'confirmed') as 'confirmed' | 'pending' | 'cancelled',
+      instructor_role: 'workshop_facilitator' as const,
     };
   });
 

@@ -14,6 +14,8 @@ interface Session {
   title?: string;
   max_participants: number;
   participant_count: number;
+  status?: 'confirmed' | 'pending' | 'cancelled';
+  instructor_role?: 'immersion_guide' | 'workshop_facilitator' | 'both';
 }
 
 interface Client {
@@ -268,6 +270,7 @@ export default function InstructorDashboard() {
 
   const future = sessions.filter(s => s.date >= today).reverse();
   const past = sessions.filter(s => s.date < today);
+  const pendingCount = sessions.filter(s => s.status === 'pending').length;
 
   const thisMonth = new Date().toISOString().slice(0, 7);
   const monthSessions = sessions.filter(s => s.date.startsWith(thisMonth));
@@ -287,14 +290,37 @@ export default function InstructorDashboard() {
     return `/instructor/session/${s.id}?kind=${s.kind}`;
   }
 
+  const STATUS_BADGE: Record<string, { label: string; className: string }> = {
+    confirmed: { label: '✅ מאושר',  className: 'bg-green-100 text-green-700' },
+    pending:   { label: '⏳ ממתין',  className: 'bg-amber-100 text-amber-700' },
+    cancelled: { label: '❌ בוטל',   className: 'bg-red-100 text-red-600' },
+  };
+  const ROLE_BADGE: Record<string, string> = {
+    immersion_guide:      '🏊 מטביל',
+    workshop_facilitator: '🎤 מנחה סדנה',
+    both:                 '🏊🎤 שניהם',
+  };
+
   function SessionCard({ s }: { s: Session }) {
+    const status = s.status ? STATUS_BADGE[s.status] : null;
+    const roleLabel = s.instructor_role ? ROLE_BADGE[s.instructor_role] : null;
     return (
       <Link href={sessionHref(s)}
         className="block bg-white rounded-2xl border border-slate-100 p-4 hover:border-[#7dd8f8] transition-colors">
         <div className="flex items-center justify-between gap-3 flex-wrap">
           <div>
-            <div className="flex items-center gap-2 mb-1">
+            <div className="flex items-center gap-2 mb-1 flex-wrap">
               <KindBadge kind={s.kind} />
+              {status && (
+                <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${status.className}`}>
+                  {status.label}
+                </span>
+              )}
+              {roleLabel && (
+                <span className="text-xs text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">
+                  {roleLabel}
+                </span>
+              )}
               {s.title && <span className="text-sm font-semibold text-[#0f2942]">{s.title}</span>}
             </div>
             <p className="font-bold text-[#0f2942]">{formatDate(s.date)}</p>
@@ -322,7 +348,7 @@ export default function InstructorDashboard() {
             <h1 className="text-2xl font-bold">שלום {name}!</h1>
             <p className="text-[#7dd8f8] text-sm">{instructor?.name ? `מדריך: ${instructor.name}` : 'דשבורד מדריך'}</p>
           </div>
-          <div className="flex gap-3 text-center">
+          <div className="flex gap-3 text-center flex-wrap">
             <div className="bg-[#1a3a5c] rounded-xl px-4 py-2">
               <p className="text-[#7dd8f8] text-xs">סדנאות קרובות</p>
               <p className="text-white font-bold text-xl">{future.length}</p>
@@ -330,6 +356,12 @@ export default function InstructorDashboard() {
             <div className="bg-[#1a3a5c] rounded-xl px-4 py-2">
               <p className="text-[#7dd8f8] text-xs">השתתפו החודש</p>
               <p className="text-white font-bold text-xl">{totalParticipantsMonth}</p>
+            </div>
+            <div className={`bg-[#1a3a5c] rounded-xl px-4 py-2 ${pendingCount > 0 ? 'ring-2 ring-red-400' : ''}`}>
+              <p className="text-[#7dd8f8] text-xs">ממתינות לאישור</p>
+              <p className={`font-bold text-xl ${pendingCount > 0 ? 'text-red-400' : 'text-white'}`}>
+                {pendingCount > 0 ? `🔴 ${pendingCount}` : pendingCount}
+              </p>
             </div>
           </div>
         </div>
