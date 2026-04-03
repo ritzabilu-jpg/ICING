@@ -698,25 +698,33 @@ export default function CheckoutPage() {
                         <div className="text-xs text-slate-500">העברה ישירה לעסק</div>
                       </div>
                     </div>
-                    <div className="bg-white border border-blue-200 rounded-xl px-4 py-3 mb-3 text-center">
-                      <div className="text-xs text-slate-500 mb-0.5">סכום לתשלום</div>
-                      <div className="text-3xl font-black text-blue-700">₪{total}</div>
-                      <div className="text-xs text-slate-400 mt-1">לחשבון: 052-4500825</div>
+                      <div className="bg-white border border-blue-200 rounded-xl px-4 py-3 mb-3">
+                      <div className="text-center mb-2">
+                        <div className="text-xs text-slate-500 mb-0.5">סכום לתשלום</div>
+                        <div className="text-3xl font-black text-blue-700">₪{total}</div>
+                      </div>
+                      <div className="flex items-center justify-between bg-slate-50 rounded-lg px-3 py-2">
+                        <span className="text-xs text-slate-500">מספר הביט לתשלום</span>
+                        <span className="font-black text-navy-900 text-lg tracking-wide" dir="ltr">052-4500825</span>
+                      </div>
+                    </div>
+                    <div className="bg-blue-100 rounded-xl px-3 py-2 mb-3 text-xs text-blue-900 space-y-1">
+                      <p className="font-bold">שלבים לתשלום:</p>
+                      <p>1. פתח את אפליקציית Bit בנייד</p>
+                      <p>2. שלח ₪{total} למספר <span className="font-bold" dir="ltr">052-4500825</span></p>
+                      <p>3. חזור לכאן ולחץ "שילמתי" ↓</p>
                     </div>
                     {!bitClicked ? (
-                      <a
-                        href={`https://www.bitpay.co.il/app/transfer?phone=0524500825&amount=${total}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
+                      <button
                         onClick={() => setBitClicked(true)}
-                        className="block w-full bg-blue-600 hover:bg-blue-700 text-white font-black text-center py-3 rounded-xl text-sm transition-colors mb-2"
+                        className="w-full bg-blue-600 hover:bg-blue-700 text-white font-black text-center py-3 rounded-xl text-sm transition-colors mb-2"
                       >
-                        פתח את אפליקציית Bit לתשלום ›
-                      </a>
+                        פתחתי את Bit — עברתי לשלם ›
+                      </button>
                     ) : (
                       <div className="space-y-2">
                         <div className="bg-amber-50 border border-amber-200 rounded-xl px-3 py-2 text-xs text-amber-800 text-center">
-                          ⏳ לאחר ביצוע התשלום בביט, לחץ/י על הכפתור למטה
+                          ⏳ לאחר שביצעת את ההעברה בביט, לחץ/י למטה
                         </div>
                         <button
                           onClick={() => confirmPayment('bit')}
@@ -725,14 +733,12 @@ export default function CheckoutPage() {
                         >
                           {loading ? 'שומר...' : 'שילמתי בביט ✓'}
                         </button>
-                        <a
-                          href={`https://www.bitpay.co.il/app/transfer?phone=0524500825&amount=${total}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="block text-center text-blue-600 text-xs underline"
+                        <button
+                          onClick={() => setBitClicked(false)}
+                          className="w-full text-blue-600 text-xs"
                         >
-                          פתח שוב את Bit
-                        </a>
+                          עוד לא שילמתי — חזרה להוראות
+                        </button>
                       </div>
                     )}
                     <button
