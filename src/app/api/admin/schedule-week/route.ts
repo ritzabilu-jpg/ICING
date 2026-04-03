@@ -47,7 +47,7 @@ export async function GET(req: NextRequest) {
       .select('id, name'),
     supabase
       .from('instructor_workshops')
-      .select('id, workshop_date, workshop_time, instructor_name, status, max_participants, notes')
+      .select('id, workshop_date, workshop_time, instructor_name, status, max_participants, notes, immersion_guide_id, workshop_facilitator_id')
       .gte('workshop_date', weekStart)
       .lte('workshop_date', weekEnd)
       .order('workshop_date', { ascending: true })
@@ -85,24 +85,35 @@ export async function GET(req: NextRequest) {
     };
   });
 
-  // Build cross-conflict map: "date|HH:MM|instructor_name" → true (immersion has this instructor)
-  const immersionInstructorKeys = new Set<string>();
+  // Build cross-conflict maps keyed by "date|HH:MM"
+  const immersionInstructorKeys = new Set<string>(); // by name (legacy)
+  const immersionByDateTime = new Map<string, Set<string>>(); // by instructor_id
   for (const s of slotsRes.data ?? []) {
     const name = (s as any).instructor?.name;
     const time = (s.slot_time as string).slice(0, 5);
     if (name) immersionInstructorKeys.add(`${s.slot_date}|${time}|${name}`);
+    if (s.instructor_id) {
+      const dtKey = `${s.slot_date}|${time}`;
+      if (!immersionByDateTime.has(dtKey)) immersionByDateTime.set(dtKey, new Set());
+      immersionByDateTime.get(dtKey)!.add(s.instructor_id);
+    }
   }
 
   const workshopSlots = (workshopsRes.data ?? []).map((w: any) => {
     const time = (w.workshop_time as string).slice(0, 5);
-    const hasConflict = w.instructor_name
-      ? immersionInstructorKeys.has(`${w.workshop_date}|${time}|${w.instructor_name}`)
-      : false;
+    const dtKey = `${w.workshop_date}|${time}`;
+    const slotIds = immersionByDateTime.get(dtKey);
+    const hasConflict =
+      (w.immersion_guide_id   && slotIds?.has(w.immersion_guide_id))   ? true :
+      (w.workshop_facilitator_id && slotIds?.has(w.workshop_facilitator_id)) ? true :
+      (w.instructor_name ? immersionInstructorKeys.has(`${w.workshop_date}|${time}|${w.instructor_name}`) : false);
     return {
       id: w.id,
       date: w.workshop_date,
       time,
       instructor_name: w.instructor_name ?? null,
+      immersion_guide_id: w.immersion_guide_id ?? null,
+      workshop_facilitator_id: w.workshop_facilitator_id ?? null,
       status: w.status,
       notes: w.notes ?? null,
       hasConflict,

@@ -50,7 +50,8 @@ export async function PUT(req: NextRequest) {
   if (!checkKey(key)) return NextResponse.json({ error: 'לא מורשה' }, { status: 401 });
 
   const body = await req.json();
-  const { id, instructor_name, workshop_date, workshop_time, max_participants, notes, status } = body;
+  const { id, instructor_name, workshop_date, workshop_time, max_participants, notes, status,
+          immersion_guide_id, workshop_facilitator_id } = body;
   if (!id) return NextResponse.json({ error: 'חסר id' }, { status: 400 });
 
   const updates: Record<string, unknown> = {};
@@ -60,6 +61,8 @@ export async function PUT(req: NextRequest) {
   if (max_participants !== undefined) updates.max_participants = Number(max_participants);
   if (notes !== undefined) updates.notes = notes;
   if (status !== undefined) updates.status = status;
+  if (immersion_guide_id !== undefined) updates.immersion_guide_id = immersion_guide_id;
+  if (workshop_facilitator_id !== undefined) updates.workshop_facilitator_id = workshop_facilitator_id;
 
   const supabase = createAdminClient();
   const { data, error } = await supabase

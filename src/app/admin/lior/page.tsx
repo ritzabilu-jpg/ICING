@@ -7,6 +7,7 @@ import type { ClientEntry } from '@/app/api/admin/clients/route';
 import AvailabilityTable, { AvailabilitySlot } from '@/components/AvailabilityTable';
 import AvailabilitySummaryGrid, { SummaryInstructor } from '@/components/AvailabilitySummaryGrid';
 import ConflictGrid, { ConflictItem, CleanSlot } from '@/components/admin/ConflictGrid';
+import InstructorAssignmentPanel from '@/components/admin/InstructorAssignmentPanel';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -138,7 +139,7 @@ function AdminContent() {
   const [wMsg, setWMsg]                 = useState('');
 
   // ── Instructor CRUD ──
-  interface DbInstructor { id: string; name: string; slug: string | null; bio: string; photo_url: string | null; specialties: string[]; certifications: string[]; quote: string | null; facebook_url: string | null; phone: string | null; email_contact: string | null; female: boolean; sort_order: number; is_active: boolean; }
+  interface DbInstructor { id: string; name: string; slug: string | null; bio: string; photo_url: string | null; specialties: string[]; certifications: string[]; quote: string | null; facebook_url: string | null; phone: string | null; email_contact: string | null; female: boolean; sort_order: number; is_active: boolean; roles?: string[]; }
   const [dbInstructors, setDbInstructors] = useState<DbInstructor[]>([]);
   const [loadingDbI, setLoadingDbI] = useState(false);
   const [editingInstructor, setEditingInstructor] = useState<DbInstructor | null>(null);
@@ -179,7 +180,7 @@ function AdminContent() {
   const [conflictConfirming, setConflictConfirming] = useState(false);
   // ── Weekly schedule ──
   interface ScheduleSlot { id: string; date: string; time: string; instructor_id: string | null; instructor_name: string | null; available_instructors: { id: string; name: string }[] }
-  interface WorkshopScheduleSlot { id: string; date: string; time: string; instructor_name: string | null; status: string; notes: string | null; hasConflict: boolean; }
+  interface WorkshopScheduleSlot { id: string; date: string; time: string; instructor_name: string | null; immersion_guide_id: string | null; workshop_facilitator_id: string | null; status: string; notes: string | null; hasConflict: boolean; }
   const [scheduleDate, setScheduleDate] = useState(() => {
     const d = new Date();
     return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
@@ -1108,6 +1109,12 @@ function AdminContent() {
                 );
               }
 
+              function handleRoleUpdate(wsId: string, field: 'immersion_guide_id' | 'workshop_facilitator_id', value: string | null) {
+                setWorkshopScheduleSlots(prev =>
+                  prev.map(s => s.id === wsId ? { ...s, [field]: value } : s)
+                );
+              }
+
               if (wSlots.length === 0) return (
                 <div className="bg-white rounded-3xl border border-slate-200 p-4">
                   <h3 className="font-black text-navy-900 mb-2">🏊 לוח סדנאות שבועי</h3>
@@ -1192,28 +1199,20 @@ function AdminContent() {
                               const noInstructor = !ws.instructor_name;
                               const conflict = ws.hasConflict;
                               return (
-                                <td key={d} className={`border px-1 py-0.5 text-center text-xs ${
+                                <td key={d} className={`border px-1 py-1 text-xs min-w-[120px] ${
                                   conflict ? 'border-red-300 bg-red-50'
                                   : noInstructor ? 'border-yellow-300 bg-yellow-50'
                                   : 'border-green-200 bg-green-50'
                                 }`}>
-                                  <select
-                                    value={ws.instructor_name ?? ''}
-                                    onChange={async e => {
-                                      const newName = e.target.value;
-                                      if (!newName) return;
-                                      await assignWorkshop(ws.id, newName);
-                                    }}
-                                    className={`text-xs border rounded p-0.5 w-full font-semibold ${
-                                      conflict ? 'border-red-300 bg-white text-red-700'
-                                      : noInstructor ? 'border-yellow-400 bg-white text-yellow-800'
-                                      : 'border-green-300 bg-white text-green-700'
-                                    }`}
-                                  >
-                                    <option value="">{noInstructor ? '— בחר מדריך —' : '—'}</option>
-                                    {instrNames.map(n => <option key={n} value={n}>{n}</option>)}
-                                  </select>
-                                  {conflict && <div className="text-[9px] text-red-500 font-bold mt-0.5">⚠ גם מטביל</div>}
+                                  <InstructorAssignmentPanel
+                                    workshopId={ws.id}
+                                    immersionGuideId={ws.immersion_guide_id}
+                                    workshopFacilitatorId={ws.workshop_facilitator_id}
+                                    instructors={dbInstructors}
+                                    adminKey={key}
+                                    onUpdate={handleRoleUpdate}
+                                    hasConflict={ws.hasConflict}
+                                  />
                                   {ws.notes && <div className="text-[9px] text-slate-400 truncate mt-0.5">{ws.notes}</div>}
                                 </td>
                               );

@@ -433,3 +433,24 @@ UPDATE instructors SET facebook_url = 'https://www.facebook.com/share/1KpjfpeyKV
 WHERE slug = 'guy-ravnbach';
 
 UPDATE instructors SET email_contact = 'vered79@gmail.com' WHERE slug = 'vered-factor';
+
+-- ============================================================
+-- Migration: Dual-role instructor assignment for workshops
+-- ============================================================
+
+-- Add roles column to instructors
+ALTER TABLE instructors
+  ADD COLUMN IF NOT EXISTS roles text[] DEFAULT ARRAY['immersion_guide', 'workshop_facilitator'];
+
+-- Add dual-role columns to instructor_workshops
+ALTER TABLE instructor_workshops
+  ADD COLUMN IF NOT EXISTS immersion_guide_id UUID REFERENCES instructors(id) ON DELETE SET NULL,
+  ADD COLUMN IF NOT EXISTS workshop_facilitator_id UUID REFERENCES instructors(id) ON DELETE SET NULL;
+
+-- Backfill: if existing instructor_name matches a known instructor, set both IDs
+-- (run manually after adding columns if needed)
+-- UPDATE instructor_workshops iw
+--   SET immersion_guide_id = i.id, workshop_facilitator_id = i.id
+--   FROM instructors i
+--   WHERE iw.instructor_name = i.name
+--   AND iw.immersion_guide_id IS NULL;
