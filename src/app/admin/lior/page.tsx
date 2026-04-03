@@ -192,6 +192,7 @@ function AdminContent() {
   const [resolvedSlots, setResolvedSlots] = useState<Set<string>>(new Set());
   const [rangeFrom, setRangeFrom] = useState('');
   const [rangeTo, setRangeTo] = useState('');
+  const [rangeDate, setRangeDate] = useState('');
   const [rangeInstrId, setRangeInstrId] = useState('');
   // ── Bulk delete immersion ──
   const [bulkDelFrom, setBulkDelFrom]   = useState('');
@@ -932,7 +933,8 @@ function AdminContent() {
                     const to   = rangeTo   || conflictTimes[conflictTimes.length - 1];
                     const targets = scheduleSlots.filter(s => {
                       const t = s.time;
-                      return (s.available_instructors ?? []).length > 1 && t >= from && t <= to;
+                      const dateMatch = rangeDate ? s.date === rangeDate : true;
+                      return (s.available_instructors ?? []).length > 1 && t >= from && t <= to && dateMatch;
                     });
                     if (targets.length === 0) return;
                     await Promise.all(targets.map(s =>
@@ -957,7 +959,22 @@ function AdminContent() {
                   return (
                     <div className="bg-red-50 border border-red-200 rounded-xl p-3">
                       <div className="text-xs font-bold text-red-700 mb-2">⚠ {totalConflicts} קונפליקטים — שייך מדריך לטווח שעות:</div>
+                      {(() => {
+                        const conflictDates = Array.from(new Set(
+                          scheduleSlots.filter(s => (s.available_instructors ?? []).length > 1).map(s => s.date)
+                        )).sort();
+                        return (
                       <div className="flex items-center gap-2 flex-wrap">
+                        <span className="text-xs text-slate-600">יום:</span>
+                        <select value={rangeDate} onChange={e => setRangeDate(e.target.value)}
+                          className="text-xs border border-slate-300 rounded px-1 py-1 bg-white">
+                          <option value="">כל הימים</option>
+                          {conflictDates.map(d => (
+                            <option key={d} value={d}>
+                              {new Date(d + 'T00:00:00').toLocaleDateString('he-IL', { weekday: 'short', day: 'numeric', month: 'numeric' })}
+                            </option>
+                          ))}
+                        </select>
                         <span className="text-xs text-slate-600">מ:</span>
                         <select value={rangeFrom} onChange={e => setRangeFrom(e.target.value)}
                           className="text-xs border border-slate-300 rounded px-1 py-1 bg-white">
@@ -985,6 +1002,8 @@ function AdminContent() {
                           שייך לטווח
                         </button>
                       </div>
+                        );
+                      })()}
                     </div>
                   );
                 })()}
