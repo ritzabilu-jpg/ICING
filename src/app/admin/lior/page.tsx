@@ -910,6 +910,49 @@ function AdminContent() {
               </div>
             ) : (
               <div className="overflow-auto bg-white rounded-3xl border border-slate-200 p-4">
+                {/* Global batch: assign instructor to ALL unresolved conflicts */}
+                {(() => {
+                  const allConflictSlots = scheduleSlots.filter(s =>
+                    (s.available_instructors ?? []).length > 1 && !resolvedSlots.has(s.id)
+                  );
+                  if (allConflictSlots.length === 0) return null;
+                  const globalInstrMap = new Map<string, string>();
+                  for (const s of allConflictSlots) {
+                    for (const a of s.available_instructors ?? []) globalInstrMap.set(a.id, a.name);
+                  }
+                  return (
+                    <div className="flex items-center gap-2 mb-3 flex-wrap">
+                      <span className="text-xs font-bold text-red-700">⚠ {allConflictSlots.length} קונפליקטים לא פתורים —</span>
+                      <span className="text-xs text-slate-500">שייך מדריך לכולם:</span>
+                      <select
+                        defaultValue=""
+                        onChange={async e => {
+                          const newId = e.target.value;
+                          if (!newId) return;
+                          await Promise.all(allConflictSlots.map(s =>
+                            fetch(`/api/admin/schedule-week?key=${key}`, {
+                              method: 'PATCH',
+                              headers: { 'Content-Type': 'application/json' },
+                              body: JSON.stringify({ slot_id: s.id, instructor_id: newId }),
+                            })
+                          ));
+                          setResolvedSlots(prev => {
+                            const next = new Set(prev);
+                            for (const s of allConflictSlots) next.add(s.id);
+                            return next;
+                          });
+                          e.target.value = '';
+                        }}
+                        className="text-xs border border-red-300 rounded px-2 py-1 bg-white cursor-pointer"
+                      >
+                        <option value="">בחר מדריך לכולם…</option>
+                        {Array.from(globalInstrMap.entries()).map(([id, name]) => (
+                          <option key={id} value={id}>{name}</option>
+                        ))}
+                      </select>
+                    </div>
+                  );
+                })()}
                 <table className="text-xs border-collapse w-full">
                   <thead>
                     <tr>
@@ -923,10 +966,50 @@ function AdminContent() {
                     </tr>
                   </thead>
                   <tbody>
-                    {times.map(t => (
+                    {times.map(t => {
+                      // Collect all conflict slots in this time row
+                      const rowConflicts = dates
+                        .flatMap(d => cellMap.get(`${d}|${t}`) ?? [])
+                        .filter(s => (s.available_instructors ?? []).length > 1 && !resolvedSlots.has(s.id));
+                      const rowInstrMap = new Map<string, string>();
+                      for (const s of rowConflicts) {
+                        for (const a of s.available_instructors ?? []) rowInstrMap.set(a.id, a.name);
+                      }
+                      return (
                       <tr key={t}>
-                        <td className="border border-slate-200 px-2 py-1 font-mono font-bold text-slate-600 bg-slate-50 whitespace-nowrap sticky right-0">
-                          {t}
+                        <td className="border border-slate-200 px-1 py-1 font-mono font-bold text-slate-600 bg-slate-50 whitespace-nowrap sticky right-0">
+                          <div className="flex flex-col gap-0.5 items-start">
+                            <span>{t}</span>
+                            {rowConflicts.length > 0 && (
+                              <select
+                                defaultValue=""
+                                onChange={async e => {
+                                  const newId = e.target.value;
+                                  if (!newId) return;
+                                  await Promise.all(rowConflicts.map(s =>
+                                    fetch(`/api/admin/schedule-week?key=${key}`, {
+                                      method: 'PATCH',
+                                      headers: { 'Content-Type': 'application/json' },
+                                      body: JSON.stringify({ slot_id: s.id, instructor_id: newId }),
+                                    })
+                                  ));
+                                  setResolvedSlots(prev => {
+                                    const next = new Set(prev);
+                                    for (const s of rowConflicts) next.add(s.id);
+                                    return next;
+                                  });
+                                  e.target.value = '';
+                                }}
+                                className="text-[10px] border border-orange-300 rounded px-0.5 py-0.5 bg-orange-50 w-full cursor-pointer max-w-[72px]"
+                                title="שייך מדריך לכל השורה"
+                              >
+                                <option value="">לכל השורה ▾</option>
+                                {Array.from(rowInstrMap.entries()).map(([id, name]) => (
+                                  <option key={id} value={id}>{name}</option>
+                                ))}
+                              </select>
+                            )}
+                          </div>
                         </td>
                         {dates.map(d => {
                           const cell = cellMap.get(`${d}|${t}`) ?? [];
@@ -975,7 +1058,8 @@ function AdminContent() {
                           );
                         })}
                       </tr>
-                    ))}
+                      );
+                    })}
                   </tbody>
                 </table>
                 <div className="flex gap-4 mt-3 text-xs text-slate-500 flex-wrap">
