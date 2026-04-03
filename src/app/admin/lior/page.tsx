@@ -313,7 +313,7 @@ function AdminContent() {
   useEffect(() => { if (tab === 'manage-instructors') loadDbInstructors(); }, [tab, loadDbInstructors]);
   useEffect(() => { if (tab === 'users') loadUsers(); }, [tab, loadUsers]);
   useEffect(() => { if (tab === 'availability' || tab === 'immersion') loadDbInstructors(); }, [tab, loadDbInstructors]);
-  useEffect(() => { if (tab === 'schedule') loadSchedule(scheduleDate); }, [tab]);
+  useEffect(() => { if (tab === 'schedule') { loadSchedule(scheduleDate); loadDbInstructors(); } }, [tab]);
   useEffect(() => {
     if (tab !== 'phone-requests') return;
     setLoadingPR(true);
@@ -1070,9 +1070,22 @@ function AdminContent() {
               </div>
             )}
 
-            {/* ── Workshop schedule grid (always visible when not loading) ── */}
+            {/* ── Workshop schedule grid (editable) ── */}
             {!loadingSchedule && (() => {
               const wSlots = workshopScheduleSlots;
+              const instrNames = dbInstructors.map(i => i.name).sort();
+
+              async function assignWorkshop(wsId: string, newName: string) {
+                await fetch(`/api/admin/instructor-workshops?key=${encodeURIComponent(key)}`, {
+                  method: 'PUT',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ id: wsId, instructor_name: newName }),
+                });
+                setWorkshopScheduleSlots(prev =>
+                  prev.map(s => s.id === wsId ? { ...s, instructor_name: newName } : s)
+                );
+              }
+
               if (wSlots.length === 0) return (
                 <div className="bg-white rounded-3xl border border-slate-200 p-4">
                   <h3 className="font-black text-navy-900 mb-2">🏊 לוח סדנאות שבועי</h3>
@@ -1083,15 +1096,40 @@ function AdminContent() {
               const wTimes = Array.from(new Set(wSlots.map(s => s.time))).sort();
               const wMap = new Map<string, WorkshopScheduleSlot>();
               for (const s of wSlots) wMap.set(`${s.date}|${s.time}`, s);
+
+              // slots that need an instructor (no instructor or conflict)
+              const wNeedAssign = wSlots.filter(s => !s.instructor_name || s.hasConflict);
+
               return (
                 <div className="overflow-auto bg-white rounded-3xl border border-slate-200 p-4">
                   <h3 className="font-black text-navy-900 mb-3">🏊 לוח סדנאות שבועי</h3>
+
+                  {/* Global batch for workshops */}
+                  {wNeedAssign.length > 0 && (
+                    <div className="flex items-center gap-2 mb-3 flex-wrap">
+                      <span className="text-xs font-bold text-orange-700">⚠ {wNeedAssign.length} סדנאות ללא מדריך / עם קונפליקט —</span>
+                      <select
+                        defaultValue=""
+                        onChange={async e => {
+                          const newName = e.target.value;
+                          if (!newName) return;
+                          await Promise.all(wNeedAssign.map(s => assignWorkshop(s.id, newName)));
+                          e.target.value = '';
+                        }}
+                        className="text-xs border border-orange-300 rounded px-2 py-1 bg-white cursor-pointer"
+                      >
+                        <option value="">שייך מדריך לכולם…</option>
+                        {instrNames.map(n => <option key={n} value={n}>{n}</option>)}
+                      </select>
+                    </div>
+                  )}
+
                   <table className="text-xs border-collapse w-full">
                     <thead>
                       <tr>
                         <th className="border border-slate-200 px-2 py-1.5 bg-slate-100 text-right font-bold sticky right-0 z-10">שעה</th>
                         {wDates.map(d => (
-                          <th key={d} className="border border-slate-200 px-2 py-1.5 bg-slate-100 font-bold text-center min-w-[90px]">
+                          <th key={d} className="border border-slate-200 px-2 py-1.5 bg-slate-100 font-bold text-center min-w-[100px]">
                             <div className="font-black">{['א׳','ב׳','ג׳','ד׳','ה׳','ו׳','ש׳'][new Date(d+'T00:00:00').getDay()]}</div>
                             <div className="text-slate-500 font-normal">{d.split('-').slice(1).reverse().join('.')}</div>
                           </th>
@@ -1099,32 +1137,68 @@ function AdminContent() {
                       </tr>
                     </thead>
                     <tbody>
-                      {wTimes.map(t => (
-                        <tr key={t}>
-                          <td className="border border-slate-200 px-2 py-1 font-mono font-bold text-slate-600 bg-slate-50 whitespace-nowrap sticky right-0">{t}</td>
-                          {wDates.map(d => {
-                            const ws = wMap.get(`${d}|${t}`);
-                            if (!ws) return <td key={d} className="border border-slate-100 px-1 py-0.5" />;
-                            const noInstructor = !ws.instructor_name;
-                            const conflict = ws.hasConflict;
-                            return (
-                              <td key={d} className={`border px-1 py-0.5 text-center text-xs ${
-                                conflict
-                                  ? 'border-red-300 bg-red-50'
-                                  : noInstructor
-                                    ? 'border-yellow-300 bg-yellow-50'
-                                    : 'border-green-200 bg-green-50'
-                              }`}>
-                                <div className={`font-semibold truncate max-w-[80px] ${conflict ? 'text-red-700' : noInstructor ? 'text-yellow-700' : 'text-green-700'}`}>
-                                  {ws.instructor_name ?? '—'}
-                                </div>
-                                {conflict && <div className="text-[9px] text-red-500 font-bold">⚠ גם טובל</div>}
-                                {ws.notes && <div className="text-[9px] text-slate-400 truncate">{ws.notes}</div>}
-                              </td>
-                            );
-                          })}
-                        </tr>
-                      ))}
+                      {wTimes.map(t => {
+                        const rowSlots = wDates
+                          .map(d => wMap.get(`${d}|${t}`))
+                          .filter((s): s is WorkshopScheduleSlot => !!s);
+                        return (
+                          <tr key={t}>
+                            <td className="border border-slate-200 px-1 py-1 font-mono font-bold text-slate-600 bg-slate-50 whitespace-nowrap sticky right-0">
+                              <div className="flex flex-col gap-0.5 items-start">
+                                <span>{t}</span>
+                                {rowSlots.length > 0 && (
+                                  <select
+                                    defaultValue=""
+                                    onChange={async e => {
+                                      const newName = e.target.value;
+                                      if (!newName) return;
+                                      await Promise.all(rowSlots.map(s => assignWorkshop(s.id, newName)));
+                                      e.target.value = '';
+                                    }}
+                                    className="text-[10px] border border-orange-300 rounded px-0.5 py-0.5 bg-orange-50 w-full cursor-pointer max-w-[72px]"
+                                    title="שייך מדריך לכל השורה"
+                                  >
+                                    <option value="">לכל השורה ▾</option>
+                                    {instrNames.map(n => <option key={n} value={n}>{n}</option>)}
+                                  </select>
+                                )}
+                              </div>
+                            </td>
+                            {wDates.map(d => {
+                              const ws = wMap.get(`${d}|${t}`);
+                              if (!ws) return <td key={d} className="border border-slate-100 px-1 py-0.5" />;
+                              const noInstructor = !ws.instructor_name;
+                              const conflict = ws.hasConflict;
+                              return (
+                                <td key={d} className={`border px-1 py-0.5 text-center text-xs ${
+                                  conflict ? 'border-red-300 bg-red-50'
+                                  : noInstructor ? 'border-yellow-300 bg-yellow-50'
+                                  : 'border-green-200 bg-green-50'
+                                }`}>
+                                  <select
+                                    value={ws.instructor_name ?? ''}
+                                    onChange={async e => {
+                                      const newName = e.target.value;
+                                      if (!newName) return;
+                                      await assignWorkshop(ws.id, newName);
+                                    }}
+                                    className={`text-xs border rounded p-0.5 w-full font-semibold ${
+                                      conflict ? 'border-red-300 bg-white text-red-700'
+                                      : noInstructor ? 'border-yellow-400 bg-white text-yellow-800'
+                                      : 'border-green-300 bg-white text-green-700'
+                                    }`}
+                                  >
+                                    <option value="">{noInstructor ? '— בחר מדריך —' : '—'}</option>
+                                    {instrNames.map(n => <option key={n} value={n}>{n}</option>)}
+                                  </select>
+                                  {conflict && <div className="text-[9px] text-red-500 font-bold mt-0.5">⚠ גם מטביל</div>}
+                                  {ws.notes && <div className="text-[9px] text-slate-400 truncate mt-0.5">{ws.notes}</div>}
+                                </td>
+                              );
+                            })}
+                          </tr>
+                        );
+                      })}
                     </tbody>
                   </table>
                   <div className="flex gap-4 mt-3 text-xs text-slate-500 flex-wrap">
