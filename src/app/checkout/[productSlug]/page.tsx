@@ -56,7 +56,7 @@ const INITIAL_STATE: CheckoutState = {
   healthDone: false,
   paymentMethod: '',
   paymentConfirmed: false,
-  preferredHours: '',
+  preferredHours: 'בכל שעה',
 };
 
 // ── Main Page ──────────────────────────────────────────────────────────────
@@ -389,7 +389,7 @@ export default function CheckoutPage() {
   }
 
   async function submitPhoneRequest() {
-    if (!state.name || !state.phone || !state.preferredHours) return;
+    if (!state.name || !state.phone) return;
     setPhoneSubmitting(true);
     setMsg('');
     const deadlineStr = computeDeadlineStr();
@@ -740,11 +740,10 @@ export default function CheckoutPage() {
                         onChange={e => setState(p => ({ ...p, preferredHours: e.target.value }))}
                         className="w-full border border-slate-200 focus:border-ice-400 rounded-xl px-3 py-2 text-sm focus:outline-none bg-white"
                       >
-                        <option value="">באיזה שעות נוח לך? *</option>
+                        <option value="בכל שעה">באיזה שעות נוח לך? — בכל שעה</option>
                         <option value="בוקר 08:00-12:00">בוקר 08:00–12:00</option>
                         <option value="צהריים 12:00-16:00">צהריים 12:00–16:00</option>
                         <option value="אחה״צ 16:00-20:00">אחה״צ 16:00–20:00</option>
-                        <option value="כל שעה">כל שעה</option>
                       </select>
                       <div className="bg-amber-50 border border-amber-200 rounded-xl px-3 py-2 text-xs text-amber-800">
                         ⏰ {callbackDeadlineStr ? `נחזור אליך ${callbackDeadlineStr}` : 'נחזור אליך תוך 24 שעות'}
@@ -752,7 +751,7 @@ export default function CheckoutPage() {
                       {msg && <p className="text-red-500 text-xs">{msg}</p>}
                       <button
                         onClick={submitPhoneRequest}
-                        disabled={phoneSubmitting || !state.name || !state.phone || !state.preferredHours}
+                        disabled={phoneSubmitting || !state.name || !state.phone}
                         className="w-full bg-ice-600 hover:bg-ice-700 disabled:opacity-50 text-white font-black py-3 rounded-xl text-sm transition-colors"
                       >
                         {phoneSubmitting ? 'שולח...' : 'שלח פנייה — נחזור אליך ›'}
