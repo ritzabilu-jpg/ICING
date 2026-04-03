@@ -388,7 +388,7 @@ export default function InstructorDashboard() {
         </div>
       </div>
 
-      <div className="max-w-4xl mx-auto px-4 py-6">
+      <div className="max-w-4xl mx-auto px-4 py-6 pb-20 md:pb-6">
         {error && <div className="bg-red-50 border border-red-200 text-red-600 rounded-xl p-4 mb-4 text-sm">{error}</div>}
         {loading && <p className="text-slate-400 text-center py-12">טוען...</p>}
 
@@ -697,6 +697,7 @@ export default function InstructorDashboard() {
                             <input type="file" accept="image/*"
                               onChange={e => setEditPhotoFile(e.target.files?.[0] ?? null)}
                               className="text-xs w-24" />
+                            <p className="text-slate-400 text-xs mt-0.5">מקסימום 1MB</p>
                             {editPhotoFile && editPhotoFile.size > 1_048_576 && (
                               <p className="text-red-500 text-xs">גדול מדי</p>
                             )}
@@ -866,6 +867,27 @@ export default function InstructorDashboard() {
           </div>
         )}
       </div>
+
+      {/* Bottom nav — mobile only */}
+      <nav className="fixed bottom-0 right-0 left-0 md:hidden bg-white border-t border-slate-200 z-50 safe-area-bottom">
+        <div className="flex justify-around">
+          {([
+            { key: 'future',   icon: '📅', label: 'סדנאות' },
+            { key: 'schedule', icon: '📊', label: 'שעות' },
+            { key: 'clients',  icon: '👥', label: 'לקוחות' },
+            { key: 'payments', icon: '💳', label: 'תשלומים' },
+            { key: 'journal',  icon: '📖', label: 'יומן' },
+          ] as { key: Tab; icon: string; label: string }[]).map(t => (
+            <button key={t.key} onClick={() => setTab(t.key)}
+              className={`flex flex-col items-center py-2 px-3 text-xs transition-colors ${
+                tab === t.key ? 'text-[#0f2942] font-bold' : 'text-slate-400'
+              }`}>
+              <span className="text-xl leading-tight">{t.icon}</span>
+              {t.label}
+            </button>
+          ))}
+        </div>
+      </nav>
     </main>
   );
 }
