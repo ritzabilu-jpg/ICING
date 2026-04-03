@@ -283,7 +283,7 @@ export default function InstructorDashboard() {
     { key: 'clients', label: 'רשימת לקוחות' },
     { key: 'journal', label: '📖 יומן טבילות' },
     { key: 'payments', label: '💳 תשלומים' },
-    { key: 'future', label: 'זמינות שבועית', href: '/instructor/availability' },
+    { key: 'future', label: 'זמינות שבועית ↗', href: '/instructor/availability' },
   ];
 
   function sessionHref(s: Session) {
@@ -395,9 +395,17 @@ export default function InstructorDashboard() {
         {/* Future */}
         {!loading && tab === 'future' && (
           <div className="space-y-3">
-            {future.length === 0
-              ? <div className="bg-white rounded-2xl border border-slate-100 p-10 text-center text-slate-400">אין סדנאות מתוכננות</div>
-              : future.map(s => <SessionCard key={s.id} s={s} />)}
+            {future.length === 0 ? (
+              <div className="bg-white rounded-2xl border border-slate-100 p-10 text-center">
+                <div className="text-5xl mb-3">🧊</div>
+                <p className="text-slate-600 font-semibold mb-1">אין סדנאות מתוכננות</p>
+                <p className="text-slate-400 text-sm mb-4">כשישובצו אליך סדנאות, הן יופיעו כאן</p>
+                <a href="/instructor/availability"
+                   className="inline-flex items-center gap-2 bg-[#0f2942] text-white px-4 py-2 rounded-xl text-sm font-semibold">
+                  עדכן זמינות שבועית →
+                </a>
+              </div>
+            ) : future.map(s => <SessionCard key={s.id} s={s} />)}
           </div>
         )}
 
@@ -737,6 +745,31 @@ export default function InstructorDashboard() {
 
         {/* Payments */}
         {tab === 'payments' && (
+          <div className="space-y-4">
+          {payments.length > 0 && (() => {
+            const total = payments.reduce((sum, p) =>
+              p.status === 'confirmed' ? sum + 0 : sum, 0); // amount field TBD
+            const pendingPayments = payments.filter(p => p.status === 'pending').length;
+            const confirmedPayments = payments.filter(p => p.status === 'confirmed').length;
+            return (
+              <div className="bg-white rounded-2xl border border-slate-100 p-4 flex gap-6 flex-wrap">
+                <div className="text-center">
+                  <p className="text-2xl font-bold text-[#0f2942]">{confirmedPayments}</p>
+                  <p className="text-slate-500 text-xs">הזמנות מאושרות</p>
+                </div>
+                <div className="text-center">
+                  <p className={`text-2xl font-bold ${pendingPayments > 0 ? 'text-amber-600' : 'text-slate-400'}`}>
+                    {pendingPayments}
+                  </p>
+                  <p className="text-slate-500 text-xs">ממתינות לאישור</p>
+                </div>
+                <div className="text-center">
+                  <p className="text-2xl font-bold text-slate-500">{payments.length}</p>
+                  <p className="text-slate-500 text-xs">סה״כ הזמנות</p>
+                </div>
+              </div>
+            );
+          })()}
           <div className="bg-white rounded-2xl border border-slate-200 p-5">
             <h2 className="font-black text-navy-900 text-lg mb-4">💳 תשלומים שהתקבלו</h2>
             {payments.length === 0 ? (
@@ -783,6 +816,7 @@ export default function InstructorDashboard() {
               </div>
             )}
           </div>
+          </div>
         )}
 
         {/* Clients */}
@@ -801,6 +835,7 @@ export default function InstructorDashboard() {
                           <th className="text-right px-4 py-3 font-semibold text-slate-600">שם</th>
                           <th className="text-right px-4 py-3 font-semibold text-slate-600">טלפון</th>
                           <th className="text-right px-4 py-3 font-semibold text-slate-600">אימייל</th>
+                          <th className="px-4 py-3"></th>
                         </tr>
                       </thead>
                       <tbody>
@@ -810,6 +845,17 @@ export default function InstructorDashboard() {
                             <td className="px-4 py-3 font-medium">{c.name}</td>
                             <td className="px-4 py-3 text-slate-600 font-mono">{c.phone || '—'}</td>
                             <td className="px-4 py-3 text-slate-500">{c.email || '—'}</td>
+                            <td className="px-4 py-3">
+                              {c.phone && (
+                                <a
+                                  href={`https://wa.me/972${c.phone.replace(/^0/, '').replace(/[-\s]/g, '')}?text=${encodeURIComponent('שלום מ-ICING!')}`}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="text-green-600 hover:text-green-700 text-sm font-semibold whitespace-nowrap">
+                                  💬 WhatsApp
+                                </a>
+                              )}
+                            </td>
                           </tr>
                         ))}
                       </tbody>
