@@ -1,0 +1,27 @@
+{
+  "name": "icing-marketing-agent",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "agent:process": "npx tsx scripts/classify_lead.ts",
+    "agent:digest": "npx tsx scripts/daily_digest.ts",
+    "agent:send": "npx tsx scripts/send_approved.ts",
+    "db:push": "npx supabase db push"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.40.0",
+    "@supabase/supabase-js": "^2.49.0",
+    "next": "^15.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "@types/react": "^19.0.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.8.0"
+  }
+}
