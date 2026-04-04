@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 interface Props {
   title: string;
@@ -8,6 +8,8 @@ interface Props {
   dark?: boolean;
   /** Tailwind bg class of the parent section, used to match the fade colour */
   fadeColor?: string; // e.g. '#ffffff', '#f0f9ff'
+  /** If window.location.hash matches this value, open automatically */
+  openOnHash?: string;
   children: React.ReactNode;
 }
 
@@ -36,8 +38,14 @@ function OpenPill({ open, dark }: { open: boolean; dark: boolean }) {
   );
 }
 
-export default function AccordionSection({ title, subtitle, dark = false, fadeColor, children }: Props) {
+export default function AccordionSection({ title, subtitle, dark = false, fadeColor, openOnHash, children }: Props) {
   const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    if (openOnHash && window.location.hash === `#${openOnHash}`) {
+      setOpen(true);
+    }
+  }, [openOnHash]);
 
   // Gradient from transparent → section background colour
   const gradientEnd = fadeColor ?? (dark ? '#0f172a' : '#ffffff');

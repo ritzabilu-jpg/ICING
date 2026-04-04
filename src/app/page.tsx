@@ -221,7 +221,7 @@ export default function HomePage() {
 
       {/* Agenda Section */}
       <section id="agenda" className="bg-white border-b border-slate-100">
-        <AccordionSection title="מה מחכה לכם בסדנה?" subtitle="סדנה בת כ-90 דקות מתוכננת ומבוצעת בקפידה" fadeColor="#ffffff">
+        <AccordionSection title="מה מחכה לכם בסדנה?" subtitle="סדנה בת כ-90 דקות מתוכננת ומבוצעת בקפידה" fadeColor="#ffffff" openOnHash="agenda">
           <div className="pb-16 px-6 max-w-4xl mx-auto">
             <div className="relative">
               <div className="absolute right-8 top-0 bottom-0 w-0.5 bg-ice-200 hidden sm:block" />
