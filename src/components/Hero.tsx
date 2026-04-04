@@ -98,14 +98,13 @@ export default function Hero() {
 
         {/* Stats row */}
         <div className="mt-16 grid grid-cols-3 gap-6 max-w-2xl mx-auto">
-          <div className="text-center">
-            <div className="text-2xl md:text-3xl font-black text-ice-400 mb-1">+127%</div>
-            <div className="text-xs md:text-sm text-slate-500">עלייה בנוראדרנלין</div>
-            <a href="https://www.icing.co.il/noradrenaline" target="_blank" rel="noopener noreferrer"
-               className="text-[10px] text-slate-600 hover:text-ice-400 border-b border-dashed border-slate-600 transition-colors mt-1 inline-block">
+          <a href="/#agenda" className="text-center block cursor-pointer group">
+            <div className="text-2xl md:text-3xl font-black text-ice-400 mb-1 group-hover:text-ice-300 transition-colors">+127%</div>
+            <div className="text-xs md:text-sm text-slate-500 group-hover:text-slate-300 transition-colors">עלייה בנוראדרנלין</div>
+            <span className="text-[10px] text-slate-600 hover:text-ice-400 border-b border-dashed border-slate-600 group-hover:border-ice-400 group-hover:text-ice-400 transition-colors mt-1 inline-block">
               קרא עוד ↗
-            </a>
-          </div>
+            </span>
+          </a>
           <div className="text-center">
             <div className="text-2xl md:text-3xl font-black text-ice-400 mb-1">5°C</div>
             <div className="text-xs md:text-sm text-slate-500">טמפרטורת מים</div>
