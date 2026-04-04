@@ -101,9 +101,9 @@ export default function Hero() {
           <div className="text-center">
             <div className="text-2xl md:text-3xl font-black text-ice-400 mb-1">+127%</div>
             <div className="text-xs md:text-sm text-slate-500">עלייה בנוראדרנלין</div>
-            <a href="https://pubmed.ncbi.nlm.nih.gov/23633908" target="_blank" rel="noopener noreferrer"
+            <a href="https://www.icing.co.il/noradrenaline" target="_blank" rel="noopener noreferrer"
                className="text-[10px] text-slate-600 hover:text-ice-400 border-b border-dashed border-slate-600 transition-colors mt-1 inline-block">
-              Janssen et al., 2016 ↗
+              קרא עוד ↗
             </a>
           </div>
           <div className="text-center">
