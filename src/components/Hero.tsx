@@ -110,11 +110,11 @@ export default function Hero() {
             <div className="text-xs md:text-sm text-slate-500">טמפרטורת מים</div>
             <span className="text-[10px] text-slate-600 mt-1 inline-block">פרוטוקול CWI מוסמך</span>
           </div>
-          <div className="text-center">
-            <div className="text-2xl md:text-3xl font-black text-ice-400 mb-1">90 דק&apos;</div>
-            <div className="text-xs md:text-sm text-slate-500">משך הסדנה</div>
-            <span className="text-[10px] text-slate-600 mt-1 inline-block">כולל תרגול ושיתוף</span>
-          </div>
+          <a href="/#agenda" className="text-center block cursor-pointer group">
+            <div className="text-2xl md:text-3xl font-black text-ice-400 mb-1 group-hover:text-ice-300 transition-colors">90 דק&apos;</div>
+            <div className="text-xs md:text-sm text-slate-500 group-hover:text-slate-300 transition-colors">משך הסדנה</div>
+            <span className="text-[10px] text-slate-600 border-b border-dashed border-slate-600 group-hover:border-ice-400 group-hover:text-ice-400 transition-colors mt-1 inline-block">כולל תרגול ושיתוף ↓</span>
+          </a>
         </div>
       </div>
 
