@@ -15,8 +15,8 @@ export default function Footer() {
               <Image
                 src="/ICINGLOGO-icon.png"
                 alt="ICING"
-                width={64}
-                height={64}
+                width={109}
+                height={109}
                 className="object-contain rounded-full"
               />
             </div>
