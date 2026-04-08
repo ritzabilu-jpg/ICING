@@ -88,7 +88,7 @@ export default function Header() {
 
             {/* RIGHT – CWI Ice logo */}
             <Link href="/" className="flex items-center gap-2 flex-shrink-0">
-              <Image src="/ICINGLOGO.png" alt="ICING" width={52} height={52}
+              <Image src="/ICINGLOGO-icon.png" alt="ICING" width={52} height={52}
                 className="object-contain h-10 md:h-12 w-auto rounded-full" priority />
             </Link>
 

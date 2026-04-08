@@ -13,7 +13,7 @@ export default function Footer() {
           <div className="lg:col-span-2">
             <div className="flex items-center gap-4 mb-6">
               <Image
-                src="/ICINGLOGO.png"
+                src="/ICINGLOGO-icon.png"
                 alt="ICING"
                 width={64}
                 height={64}
