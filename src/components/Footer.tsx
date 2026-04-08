@@ -13,11 +13,11 @@ export default function Footer() {
           <div className="lg:col-span-2">
             <div className="flex items-center gap-4 mb-6">
               <Image
-                src="/logo-ice.png"
-                alt="Cold Water Immersion – CWI"
-                width={80}
+                src="/ICINGLOGO.png"
+                alt="ICING"
+                width={64}
                 height={64}
-                className="object-contain"
+                className="object-contain rounded-full"
               />
             </div>
             <p className="text-slate-400 leading-relaxed mb-6 max-w-sm">
