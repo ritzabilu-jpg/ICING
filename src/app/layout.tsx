@@ -4,6 +4,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import AccessibilityWidget from '@/components/AccessibilityWidget';
 import WhatsAppButton from '@/components/WhatsAppButton';
+import SplashScreen from '@/components/SplashScreen';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://www.icing.co.il'),
@@ -103,6 +104,7 @@ export default function RootLayout({
            className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:right-4 focus:z-[100] focus:bg-ice-600 focus:text-white focus:px-4 focus:py-2 focus:rounded-xl focus:font-bold focus:shadow-lg">
           דלג לתוכן הראשי
         </a>
+        <SplashScreen />
         <Header />
         <main id="main-content" className="flex-1">
           {children}
