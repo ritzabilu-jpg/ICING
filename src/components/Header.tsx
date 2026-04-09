@@ -185,7 +185,7 @@ export default function Header() {
               {/* WhatsApp icon */}
               <a href="https://wa.me/972524500825" target="_blank" rel="noopener noreferrer"
                 aria-label="וואטסאפ"
-                className="flex items-center justify-center w-9 h-9 rounded-xl bg-green-600 hover:bg-green-500 text-white transition-colors shadow-md shadow-green-900/40">
+                className="flex items-center justify-center w-9 h-9 rounded-xl bg-slate-600 hover:bg-slate-500 text-white transition-colors shadow-md shadow-slate-900/40">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" className="w-4 h-4 fill-white">
                   <path d="M16 2C8.268 2 2 8.268 2 16c0 2.478.67 4.797 1.836 6.789L2 30l7.418-1.812A13.94 13.94 0 0 0 16 30c7.732 0 14-6.268 14-14S23.732 2 16 2zm0 25.6a11.54 11.54 0 0 1-5.88-1.608l-.422-.25-4.402 1.074 1.115-4.29-.276-.44A11.56 11.56 0 0 1 4.4 16C4.4 9.593 9.593 4.4 16 4.4S27.6 9.593 27.6 16 22.407 27.6 16 27.6zm6.338-8.655c-.347-.174-2.055-1.013-2.374-1.129-.32-.116-.552-.174-.784.174-.232.347-.9 1.129-1.103 1.361-.202.232-.405.26-.752.087-.347-.174-1.466-.54-2.791-1.722-1.032-.92-1.728-2.056-1.93-2.403-.203-.347-.022-.534.152-.707.157-.155.347-.405.52-.608.174-.202.232-.347.347-.578.116-.232.058-.434-.029-.608-.087-.174-.784-1.89-1.074-2.588-.283-.679-.57-.587-.784-.598l-.668-.011c-.232 0-.608.087-.926.434-.319.347-1.218 1.19-1.218 2.9s1.247 3.363 1.42 3.595c.174.232 2.455 3.748 5.949 5.256.831.359 1.48.573 1.985.734.834.266 1.594.228 2.194.138.669-.1 2.055-.84 2.345-1.652.29-.811.29-1.507.203-1.652-.087-.144-.319-.232-.666-.405z"/>
                 </svg>
@@ -200,8 +200,8 @@ export default function Header() {
                   className="flex items-center justify-center w-9 h-9 rounded-xl bg-blue-700 hover:bg-blue-600 text-white transition-colors shadow-md shadow-blue-900/40"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4" aria-hidden="true">
-                    <circle cx="12" cy="4" r="2"/>
-                    <path d="M19 9.5l-4-.5-1-3h-4l-1 3-4 .5.5 2 3.5-.5v3l-2 5h2l1.5-4h1l1.5 4h2l-2-5V11l3.5.5.5-2z"/>
+                    <circle cx="12" cy="3.5" r="1.75"/>
+                    <path d="M9 7h4.5l.75 4H17v2h-4.5l-.25-1.5H9.5v5.25A3.75 3.75 0 1 1 7 13V9.5A2.5 2.5 0 0 0 9 7zm-1.5 6a1.75 1.75 0 1 0 0 3.5 1.75 1.75 0 0 0 0-3.5z"/>
                   </svg>
                 </button>
 
