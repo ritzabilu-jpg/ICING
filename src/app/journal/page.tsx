@@ -7,7 +7,7 @@ import { useSearchParams } from 'next/navigation';
 
 const INSTRUCTORS = [
   'ליאור כ"ץ',
-  'אורן אלון',
+  'אורן אלוק',
   'איתמר מאיירס',
   'גולן בר נוי',
   'גיא רייבנבך',

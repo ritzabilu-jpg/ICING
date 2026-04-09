@@ -24,7 +24,7 @@ const PKG_LABELS: Record<string, string> = {
 
 const DEMO_INSTRUCTORS = [
   { name: 'ליאור כ"ץ',        phone: null,          facebook: null,                                         email: null },
-  { name: 'אורן אלון',        phone: null,          facebook: null,                                         email: null },
+  { name: 'אורן אלוק',        phone: null,          facebook: null,                                         email: null },
   { name: 'איתמר מאיירס',     phone: null,          facebook: null,                                         email: null },
   { name: 'גולן בר נוי',      phone: null,          facebook: null,                                         email: null },
   { name: 'גיא רייבנבך',      phone: '052-8761110', facebook: 'https://www.facebook.com/share/1KpjfpeyKV/', email: null },

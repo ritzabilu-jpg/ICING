@@ -2,8 +2,6 @@ import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import AccessibilityWidget from '@/components/AccessibilityWidget';
-import WhatsAppButton from '@/components/WhatsAppButton';
 import SplashScreen from '@/components/SplashScreen';
 import StickyCTA from '@/components/StickyCTA';
 
@@ -111,8 +109,6 @@ export default function RootLayout({
           {children}
         </main>
         <Footer />
-        <AccessibilityWidget />
-        <WhatsAppButton />
         <StickyCTA />
       </body>
     </html>
