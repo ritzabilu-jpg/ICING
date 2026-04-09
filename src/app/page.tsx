@@ -184,7 +184,7 @@ export default function HomePage() {
         <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-4">
           {[
             { quote: 'חוויה שלא אשכח לעולם. יצאתי עם אנרגיה של שלושה ימים', name: 'גולן בר נוי', stars: 5 },
-            { quote: 'מדריכים מדהימים, אווירה תומכת. חזרתי כבר 4 פעמים', name: 'אורן אלון', stars: 5 },
+            { quote: 'מדריכים מדהימים, אווירה תומכת. טבלתי כבר 4 פעמים אחרי הסדנה. ב\'חופשי חודשי\' אפשר לטבול כל יום!', name: 'אורן אלוק', stars: 5 },
             { quote: 'הפחד לפני, האדרנלין אחרי — שווה כל שקל', name: 'שיר ממן', stars: 5 },
           ].map((t, i) => (
             <div key={i} className="flex items-start gap-3 bg-white/5 rounded-2xl px-4 py-3">
