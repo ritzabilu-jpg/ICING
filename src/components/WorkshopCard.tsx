@@ -33,9 +33,9 @@ export default function WorkshopCard({
                      }`}>
       <div className="p-8 flex flex-col flex-1">
         {popular && (
-          <div className="flex justify-center mb-4 -mt-2">
-            <span className="bg-ice-500 text-white text-xs font-bold px-4 py-1.5 rounded-full shadow-lg">
-              הכי פופולרי
+          <div className="flex justify-center mb-4 -mt-4">
+            <span className="bg-orange-500 text-white text-sm font-black px-6 py-2 rounded-full shadow-lg shadow-orange-500/40 animate-pulse-slow">
+              🔥 הכי פופולרי
             </span>
           </div>
         )}
@@ -96,7 +96,7 @@ export default function WorkshopCard({
               className={`font-bold px-5 py-2.5 rounded-xl text-sm transition-all
                           hover:scale-105 whitespace-nowrap
                           ${highlight
-                            ? 'bg-ice-500 hover:bg-ice-600 text-white shadow-lg shadow-ice-500/30'
+                            ? 'bg-orange-500 hover:bg-orange-600 text-white shadow-lg shadow-orange-500/40'
                             : 'bg-navy-900 hover:bg-navy-800 text-white'
                           }`}
             >

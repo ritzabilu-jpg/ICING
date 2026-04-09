@@ -2,6 +2,9 @@
  * daily_digest.ts — דוח יומי מ-Supabase
  * הרצה: npm run agent:digest
  */
+import { config } from 'dotenv';
+import { resolve } from 'path';
+config({ path: resolve(__dirname, '../.env.local') });
 import { createClient } from '@supabase/supabase-js';
 
 const supabase = createClient(

@@ -5,6 +5,7 @@ import Footer from '@/components/Footer';
 import AccessibilityWidget from '@/components/AccessibilityWidget';
 import WhatsAppButton from '@/components/WhatsAppButton';
 import SplashScreen from '@/components/SplashScreen';
+import StickyCTA from '@/components/StickyCTA';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://www.icing.co.il'),
@@ -112,6 +113,7 @@ export default function RootLayout({
         <Footer />
         <AccessibilityWidget />
         <WhatsAppButton />
+        <StickyCTA />
       </body>
     </html>
   );

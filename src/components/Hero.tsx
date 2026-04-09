@@ -78,9 +78,9 @@ export default function Hero() {
           <div className="flex flex-col items-center gap-1">
             <Link
               href="/booking"
-              className="w-full sm:w-auto bg-ice-500 hover:bg-ice-600 text-white font-bold
+              className="w-full sm:w-auto bg-orange-500 hover:bg-orange-600 text-white font-bold
                          px-10 py-4 rounded-2xl text-xl transition-all duration-200
-                         hover:scale-105 shadow-xl shadow-ice-500/30 active:scale-100"
+                         hover:scale-105 shadow-xl shadow-orange-500/40 active:scale-100"
             >
               הזמינו מקום בסדנה הקרובה
             </Link>

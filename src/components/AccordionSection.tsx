@@ -10,6 +10,8 @@ interface Props {
   fadeColor?: string; // e.g. '#ffffff', '#f0f9ff'
   /** If window.location.hash matches this value, open automatically */
   openOnHash?: string;
+  /** Open by default without user interaction */
+  defaultOpen?: boolean;
   children: React.ReactNode;
 }
 
@@ -38,8 +40,8 @@ function OpenPill({ open, dark }: { open: boolean; dark: boolean }) {
   );
 }
 
-export default function AccordionSection({ title, subtitle, dark = false, fadeColor, openOnHash, children }: Props) {
-  const [open, setOpen] = useState(false);
+export default function AccordionSection({ title, subtitle, dark = false, fadeColor, openOnHash, defaultOpen = false, children }: Props) {
+  const [open, setOpen] = useState(defaultOpen);
 
   useEffect(() => {
     if (openOnHash && window.location.hash === `#${openOnHash}`) {

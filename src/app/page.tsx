@@ -179,6 +179,28 @@ export default function HomePage() {
       <WelcomeGreeting />
       <Hero />
 
+      {/* Social Proof Strip */}
+      <section className="bg-navy-900 border-b border-ice-500/20 py-6 px-6">
+        <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-4">
+          {[
+            { quote: 'חוויה שלא אשכח לעולם. יצאתי עם אנרגיה של שלושה ימים', name: 'גולן בר נוי', stars: 5 },
+            { quote: 'מדריכים מדהימים, אווירה תומכת. חזרתי כבר 4 פעמים', name: 'אורן אלון', stars: 5 },
+            { quote: 'הפחד לפני, האדרנלין אחרי — שווה כל שקל', name: 'שיר ממן', stars: 5 },
+          ].map((t, i) => (
+            <div key={i} className="flex items-start gap-3 bg-white/5 rounded-2xl px-4 py-3">
+              <span className="text-orange-400 text-lg flex-shrink-0">❝</span>
+              <div>
+                <p className="text-slate-200 text-sm leading-relaxed mb-1">{t.quote}</p>
+                <div className="flex items-center gap-2">
+                  <span className="text-yellow-400 text-xs">{'★'.repeat(t.stars)}</span>
+                  <span className="text-slate-400 text-xs">{t.name}</span>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
       {/* Benefits Section */}
       <section id="benefits" className="bg-white border-b border-slate-100">
         <AccordionSection title="למה אמבטיות קרח?" subtitle="שינויים ביוכימיים מוכחים מדעית שמתרחשים בגופך בכל טבילה" fadeColor="#ffffff">
@@ -208,10 +230,13 @@ export default function HomePage() {
 
       {/* Workshop Types */}
       <section id="workshop-types" className="bg-ice-50 border-b border-slate-100">
-        <AccordionSection title="סוגי הסדנאות" subtitle="בחרו את הפורמט המתאים לכם" fadeColor="#f0f9ff">
+        <AccordionSection title="סוגי הסדנאות" subtitle="בחרו את הפורמט המתאים לכם" fadeColor="#f0f9ff" defaultOpen>
           <div className="pb-16 px-6 max-w-7xl mx-auto">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 items-stretch">
-              {workshopTypes.map(w => (
+              {[...workshopTypes].sort((a, b) => {
+                const order = ['couple', 'one-on-one', 'individual', 'team'];
+                return order.indexOf(a.type) - order.indexOf(b.type);
+              }).map(w => (
                 <WorkshopCard key={w.type} {...w} />
               ))}
             </div>
@@ -293,6 +318,22 @@ export default function HomePage() {
           </div>
         </AccordionSection>
       </section>
+
+      {/* FAQ Schema */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            "mainEntity": faqs.map(f => ({
+              "@type": "Question",
+              "name": f.q,
+              "acceptedAnswer": { "@type": "Answer", "text": f.a }
+            }))
+          })
+        }}
+      />
 
       {/* Contact & Location */}
       <section id="contact" className="bg-navy-900">

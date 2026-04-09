@@ -8,8 +8,8 @@ export default function SplashScreen() {
   const [fading, setFading] = useState(false);
 
   useEffect(() => {
-    const fadeTimer = setTimeout(() => setFading(true), 2800);
-    const hideTimer = setTimeout(() => setVisible(false), 3200);
+    const fadeTimer = setTimeout(() => setFading(true), 1200);
+    const hideTimer = setTimeout(() => setVisible(false), 1600);
     return () => { clearTimeout(fadeTimer); clearTimeout(hideTimer); };
   }, []);
 
