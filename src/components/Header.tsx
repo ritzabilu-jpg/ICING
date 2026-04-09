@@ -199,9 +199,10 @@ export default function Header() {
                   aria-expanded={a11yOpen}
                   className="flex items-center justify-center w-9 h-9 rounded-xl bg-blue-700 hover:bg-blue-600 text-white transition-colors shadow-md shadow-blue-900/40"
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4" aria-hidden="true">
-                    <circle cx="12" cy="3.5" r="1.75"/>
-                    <path d="M9 7h4.5l.75 4H17v2h-4.5l-.25-1.5H9.5v5.25A3.75 3.75 0 1 1 7 13V9.5A2.5 2.5 0 0 0 9 7zm-1.5 6a1.75 1.75 0 1 0 0 3.5 1.75 1.75 0 0 0 0-3.5z"/>
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="white" className="w-4 h-4" aria-hidden="true">
+                    <circle cx="60" cy="12" r="10"/>
+                    <path d="M83 64H69L63 41a5 5 0 0 0-5-4H40a5 5 0 0 0-5 5v20a5 5 0 0 0 10 0V47h9l6 23a5 5 0 0 0 5 4h18a5 5 0 0 0 0-10z"/>
+                    <path d="M51 68a18 18 0 1 1-18-18v-10a28 28 0 1 0 28 28h-10z"/>
                   </svg>
                 </button>
 
