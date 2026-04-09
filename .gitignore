@@ -42,3 +42,5 @@ public/workbox-*.js.map
 
 .vercel
 .env*.local
+marketing-agent/node_modules/
+marketing-agent/.next/
