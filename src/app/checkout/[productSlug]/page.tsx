@@ -351,7 +351,7 @@ export default function CheckoutPage() {
       if (res.ok) {
         setCallbackDeadlineStr(d.deadline_str ?? deadlineStr);
         setPhoneSubmitted(true);
-        save({ confirmationCode: d.confirmation_code, paymentMethod: 'phone' });
+        save({ confirmationCode: d.confirmation_code, paymentMethod: 'phone', step: 6 });
       } else {
         setMsg(d.error ?? 'שגיאה בשליחת הפנייה');
       }
@@ -557,17 +557,15 @@ export default function CheckoutPage() {
                 ) : (
                   <div className="border-2 border-orange-300 bg-orange-50 rounded-2xl p-4">
                     <div className="font-black text-navy-900 mb-3">💳 כרטיס אשראי</div>
-                    <div className="bg-white border border-orange-200 rounded-xl px-4 py-3 mb-3 text-sm space-y-1">
-                      <p className="font-bold text-orange-700">⚠️ כרגע יש בעיה בגביה באשראי</p>
-                      <p className="font-bold text-green-700">אל דאגה!</p>
-                      <p className="text-slate-600">המקום נשמר עבורך וניצור איתך קשר לגביית התשלום בטלפון.</p>
+                    <div className="bg-white border border-orange-200 rounded-xl px-4 py-3 mb-3 text-sm">
+                      <p className="text-slate-700">שיטת התשלום הזו לא מחוברת כרגע אבל <span className="font-bold text-green-700">אל דאגה!</span> המקום נשמר עבורך וניצור קשר כדי לגבות תשלום טלפוני באשראי.</p>
                     </div>
                     <button
-                      onClick={() => confirmPayment('phone')}
-                      disabled={loading}
+                      onClick={submitPhoneRequest}
+                      disabled={phoneSubmitting || !state.name || !state.phone}
                       className="w-full bg-green-600 hover:bg-green-700 disabled:opacity-50 text-white font-black py-3 rounded-xl text-sm transition-colors"
                     >
-                      {loading ? 'שומר...' : 'שמור מקום עבורי ✓'}
+                      {phoneSubmitting ? 'שומר...' : 'שמור מקום עבורי ✓'}
                     </button>
                     <button
                       onClick={() => save({ paymentMethod: '' })}
@@ -675,17 +673,15 @@ export default function CheckoutPage() {
                       <Image src="/PAYBOX LOGO פייבוקס.jpg" alt="Paybox" width={50} height={24} className="object-contain" unoptimized />
                       <div className="font-black text-navy-900">Paybox</div>
                     </div>
-                    <div className="bg-white border border-orange-200 rounded-xl px-4 py-3 mb-3 text-sm space-y-1">
-                      <p className="font-bold text-orange-700">⚠️ כרגע יש בעיה בגביה בפייבוקס</p>
-                      <p className="font-bold text-green-700">אל דאגה!</p>
-                      <p className="text-slate-600">המקום נשמר עבורך וניצור איתך קשר לגביית התשלום בטלפון.</p>
+                    <div className="bg-white border border-orange-200 rounded-xl px-4 py-3 mb-3 text-sm">
+                      <p className="text-slate-700">שיטת התשלום הזו לא מחוברת כרגע אבל <span className="font-bold text-green-700">אל דאגה!</span> המקום נשמר עבורך וניצור קשר כדי לגבות תשלום טלפוני באשראי.</p>
                     </div>
                     <button
-                      onClick={() => confirmPayment('phone')}
-                      disabled={loading}
+                      onClick={submitPhoneRequest}
+                      disabled={phoneSubmitting || !state.name || !state.phone}
                       className="w-full bg-green-600 hover:bg-green-700 disabled:opacity-50 text-white font-black py-3 rounded-xl text-sm transition-colors"
                     >
-                      {loading ? 'שומר...' : 'שמור מקום עבורי ✓'}
+                      {phoneSubmitting ? 'שומר...' : 'שמור מקום עבורי ✓'}
                     </button>
                     <button
                       onClick={() => save({ paymentMethod: '' })}
