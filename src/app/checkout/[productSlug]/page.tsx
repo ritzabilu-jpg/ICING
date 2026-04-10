@@ -640,6 +640,7 @@ export default function CheckoutPage() {
           {state.step === 4 && (
             <HealthStep
               bookingId={state.bookingId ?? ''}
+              participantName={state.name}
               onDone={() => save({ healthDone: true, step: 5 })}
               onSkip={() => save({ step: 5 })}
             />
@@ -942,10 +943,12 @@ export default function CheckoutPage() {
 
 function HealthStep({
   bookingId,
+  participantName,
   onDone,
   onSkip,
 }: {
   bookingId: string;
+  participantName: string;
   onDone: () => void;
   onSkip: () => void;
 }) {
@@ -956,7 +959,7 @@ function HealthStep({
     has_raynauds: false,
     has_open_wounds: false,
     other_conditions: '',
-    participant_name: '',
+    participant_name: participantName,
   });
   const [agreed, setAgreed] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -1020,6 +1023,7 @@ function HealthStep({
         ))}
       </div>
 
+      <label className="block text-sm font-semibold text-slate-700 mb-1">שם מלא</label>
       <input
         value={form.participant_name}
         onChange={e => setForm(p => ({ ...p, participant_name: e.target.value }))}

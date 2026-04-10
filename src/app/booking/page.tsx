@@ -90,7 +90,7 @@ function BookingContent() {
           onClick={resetMode}
           className="text-sm text-ice-600 hover:text-ice-700 font-semibold border border-ice-200 rounded-xl px-3 py-1.5 hover:bg-ice-50 transition-colors"
         >
-          ← שנה סוג
+          🧊 קבע טבילה/ות
         </button>
       </div>
 
