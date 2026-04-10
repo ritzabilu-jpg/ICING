@@ -18,7 +18,7 @@ function BookingContent() {
   const initialType = searchParams.get('type') as WorkshopType | null;
   const instructorId = searchParams.get('instructorId') ?? undefined;
 
-  const [mode, setMode] = useState<BookingMode>(null);
+  const [mode, setMode] = useState<BookingMode>('workshops');
   const [step, setStep] = useState<BookingStep>(initialType ? 2 : 1);
   const [selectedType, setSelectedType] = useState<WorkshopType | null>(initialType);
 

@@ -102,8 +102,8 @@ export default function WorkshopCard({
             >
               הזמינו עכשיו
             </Link>
-            <span className={`text-[10px] ${highlight ? 'text-slate-500' : 'text-slate-400'}`}>
-              תועברו לתיאום מועד
+            <span className={`text-[10px] ${highlight ? 'text-orange-400 font-bold' : 'text-orange-500 font-bold'}`}>
+              ⏰ מקומות מוגבלים
             </span>
           </div>
         </div>

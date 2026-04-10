@@ -257,6 +257,12 @@ export default function Header() {
                 )}
               </div>
 
+              {/* Mobile CTA */}
+              <Link href="/booking"
+                className="lg:hidden bg-orange-500 hover:bg-orange-600 text-white font-black px-4 py-2 rounded-xl text-sm transition-colors shadow-lg shadow-orange-500/30">
+                הזמן עכשיו
+              </Link>
+
               {/* Mobile hamburger */}
               <button className="lg:hidden text-white p-2 rounded-lg hover:bg-navy-700 transition-colors"
                 onClick={() => setMenuOpen(!menuOpen)}

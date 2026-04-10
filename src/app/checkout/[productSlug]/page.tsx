@@ -1,9 +1,8 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import Image from 'next/image';
-import SignatureCanvas from 'react-signature-canvas';
 
 // ── Types ──────────────────────────────────────────────────────────────────
 
@@ -248,7 +247,7 @@ export default function CheckoutPage() {
       });
       const d = await res.json();
       if (d.booking_id) {
-        save({ bookingId: d.booking_id, sessionToken: d.session_token, step: 2 });
+        save({ bookingId: d.booking_id, sessionToken: d.session_token, step: 3 });
       } else {
         setMsg(d.error ?? 'שגיאה ביצירת הזמנה');
       }
@@ -665,14 +664,41 @@ export default function CheckoutPage() {
 
               <div className="space-y-3">
 
-                {/* Credit card – coming soon */}
-                <div className="w-full border-2 border-slate-100 rounded-2xl p-4 flex items-center justify-between opacity-25 cursor-not-allowed bg-slate-50">
-                  <div>
-                    <div className="font-black text-slate-400">💳 כרטיס אשראי</div>
-                    <div className="text-xs text-slate-300">מאובטח על-ידי טרנזילה</div>
+                {/* Credit card */}
+                {state.paymentMethod !== 'credit' ? (
+                  <button
+                    onClick={() => save({ paymentMethod: 'credit' })}
+                    className="w-full border-2 border-slate-200 hover:border-slate-400 rounded-2xl p-4 flex items-center justify-between transition-colors"
+                  >
+                    <div>
+                      <div className="font-black text-navy-900">💳 כרטיס אשראי</div>
+                      <div className="text-xs text-slate-500">מאובטח על-ידי טרנזילה</div>
+                    </div>
+                    <span className="text-ice-600 text-lg">›</span>
+                  </button>
+                ) : (
+                  <div className="border-2 border-orange-300 bg-orange-50 rounded-2xl p-4">
+                    <div className="font-black text-navy-900 mb-3">💳 כרטיס אשראי</div>
+                    <div className="bg-white border border-orange-200 rounded-xl px-4 py-3 mb-3 text-sm space-y-1">
+                      <p className="font-bold text-orange-700">⚠️ כרגע יש בעיה בגביה באשראי</p>
+                      <p className="font-bold text-green-700">אל דאגה!</p>
+                      <p className="text-slate-600">המקום נשמר עבורך וניצור איתך קשר לגביית התשלום בטלפון.</p>
+                    </div>
+                    <button
+                      onClick={() => confirmPayment('phone')}
+                      disabled={loading}
+                      className="w-full bg-green-600 hover:bg-green-700 disabled:opacity-50 text-white font-black py-3 rounded-xl text-sm transition-colors"
+                    >
+                      {loading ? 'שומר...' : 'שמור מקום עבורי ✓'}
+                    </button>
+                    <button
+                      onClick={() => save({ paymentMethod: '' })}
+                      className="w-full text-slate-400 hover:text-slate-600 text-xs mt-2"
+                    >
+                      ← חזרה לבחירת תשלום
+                    </button>
                   </div>
-                  <span className="text-xs font-bold bg-slate-200 text-slate-500 px-2 py-0.5 rounded-full">בקרוב</span>
-                </div>
+                )}
 
                 {/* Bit – ACTIVE */}
                 {state.paymentMethod !== 'bit' ? (
@@ -750,17 +776,47 @@ export default function CheckoutPage() {
                   </div>
                 )}
 
-                {/* Paybox – coming soon */}
-                <div className="w-full border-2 border-slate-100 rounded-2xl p-4 flex items-center justify-between opacity-25 cursor-not-allowed bg-slate-50">
-                  <div className="flex items-center gap-3">
-                    <Image src="/PAYBOX LOGO פייבוקס.jpg" alt="Paybox" width={50} height={24} className="object-contain grayscale" unoptimized />
-                    <div>
-                      <div className="font-black text-slate-400">Paybox</div>
-                      <div className="text-xs text-slate-300">תשלום דיגיטלי</div>
+                {/* Paybox */}
+                {state.paymentMethod !== 'paybox' ? (
+                  <button
+                    onClick={() => save({ paymentMethod: 'paybox' })}
+                    className="w-full border-2 border-slate-200 hover:border-slate-400 rounded-2xl p-4 flex items-center justify-between transition-colors"
+                  >
+                    <div className="flex items-center gap-3">
+                      <Image src="/PAYBOX LOGO פייבוקס.jpg" alt="Paybox" width={50} height={24} className="object-contain" unoptimized />
+                      <div>
+                        <div className="font-black text-navy-900">Paybox</div>
+                        <div className="text-xs text-slate-500">תשלום דיגיטלי</div>
+                      </div>
                     </div>
+                    <span className="text-ice-600 text-lg">›</span>
+                  </button>
+                ) : (
+                  <div className="border-2 border-orange-300 bg-orange-50 rounded-2xl p-4">
+                    <div className="flex items-center gap-2 mb-3">
+                      <Image src="/PAYBOX LOGO פייבוקס.jpg" alt="Paybox" width={50} height={24} className="object-contain" unoptimized />
+                      <div className="font-black text-navy-900">Paybox</div>
+                    </div>
+                    <div className="bg-white border border-orange-200 rounded-xl px-4 py-3 mb-3 text-sm space-y-1">
+                      <p className="font-bold text-orange-700">⚠️ כרגע יש בעיה בגביה בפייבוקס</p>
+                      <p className="font-bold text-green-700">אל דאגה!</p>
+                      <p className="text-slate-600">המקום נשמר עבורך וניצור איתך קשר לגביית התשלום בטלפון.</p>
+                    </div>
+                    <button
+                      onClick={() => confirmPayment('phone')}
+                      disabled={loading}
+                      className="w-full bg-green-600 hover:bg-green-700 disabled:opacity-50 text-white font-black py-3 rounded-xl text-sm transition-colors"
+                    >
+                      {loading ? 'שומר...' : 'שמור מקום עבורי ✓'}
+                    </button>
+                    <button
+                      onClick={() => save({ paymentMethod: '' })}
+                      className="w-full text-slate-400 hover:text-slate-600 text-xs mt-2"
+                    >
+                      ← חזרה לבחירת תשלום
+                    </button>
                   </div>
-                  <span className="text-xs font-bold bg-slate-200 text-slate-500 px-2 py-0.5 rounded-full">בקרוב</span>
-                </div>
+                )}
 
                 {/* Phone callback – ACTIVE */}
                 <div className="border-2 border-ice-400 bg-ice-50 rounded-2xl p-4">
@@ -893,7 +949,6 @@ function HealthStep({
   onDone: () => void;
   onSkip: () => void;
 }) {
-  const sigRef = useRef<SignatureCanvas>(null);
   const [form, setForm] = useState({
     has_heart_condition: false,
     has_hypertension: false,
@@ -903,19 +958,13 @@ function HealthStep({
     other_conditions: '',
     participant_name: '',
   });
+  const [agreed, setAgreed] = useState(false);
   const [loading, setLoading] = useState(false);
   const [msg, setMsg] = useState('');
 
   async function submit() {
-    const sig = sigRef.current;
-    if (!sig || sig.isEmpty()) {
-      setMsg('נדרשת חתימה');
-      return;
-    }
-    if (!form.participant_name) {
-      setMsg('יש למלא שם משתתף');
-      return;
-    }
+    if (!agreed) { setMsg('יש לאשר את ההצהרה'); return; }
+    if (!form.participant_name) { setMsg('יש למלא שם משתתף'); return; }
     setLoading(true);
     setMsg('');
     try {
@@ -925,16 +974,14 @@ function HealthStep({
         body: JSON.stringify({
           ...form,
           booking_id: bookingId,
-          signature: sig.toDataURL(),
+          signature: 'checkbox-approved',
         }),
       });
       const d = await res.json();
       if (res.ok) {
         onDone();
       } else if (res.status === 422 && d.requiresDoctorApproval) {
-        setMsg(
-          `⚠️ ${d.message ?? 'נמצאו מצבים המצריכים אישור רופא לפני השתתפות.'}`
-        );
+        setMsg(`⚠️ ${d.message ?? 'נמצאו מצבים המצריכים אישור רופא לפני השתתפות.'}`);
       } else {
         setMsg(d.error ?? 'שגיאה בשמירת ההצהרה');
       }
@@ -956,7 +1003,7 @@ function HealthStep({
     <div>
       <h2 className="text-2xl font-black text-navy-900 mb-1">הצהרת בריאות</h2>
       <p className="text-slate-500 text-xs mb-4">
-        נדרש לפני כל השתתפות. מסמן/ת אמצעי זהירות בטיחותיים.
+        נדרש לפני כל השתתפות. סמן/י את הפריטים הרלוונטיים אליך.
       </p>
 
       <div className="space-y-2 text-sm mb-4">
@@ -977,29 +1024,27 @@ function HealthStep({
         value={form.participant_name}
         onChange={e => setForm(p => ({ ...p, participant_name: e.target.value }))}
         placeholder="שם המשתתף"
-        className="w-full border-2 border-slate-200 rounded-xl px-4 py-2 text-sm mb-3 focus:outline-none focus:border-ice-400"
+        className="w-full border-2 border-slate-200 rounded-xl px-4 py-2 text-sm mb-4 focus:outline-none focus:border-ice-400"
       />
 
-      <label className="block text-sm font-semibold text-slate-600 mb-1">חתימה</label>
-      <div className="border-2 border-slate-200 rounded-xl overflow-hidden mb-2 bg-white">
-        <SignatureCanvas
-          ref={sigRef}
-          canvasProps={{ width: 400, height: 120, className: 'w-full' }}
+      <label className="flex items-start gap-3 cursor-pointer mb-4 bg-ice-50 border border-ice-200 rounded-xl p-3">
+        <input
+          type="checkbox"
+          checked={agreed}
+          onChange={e => setAgreed(e.target.checked)}
+          className="w-5 h-5 mt-0.5 accent-ice-500 flex-shrink-0"
         />
-      </div>
-      <button
-        onClick={() => sigRef.current?.clear()}
-        className="text-xs text-slate-400 hover:text-slate-600 mb-3 block"
-      >
-        מחק חתימה
-      </button>
+        <span className="text-sm text-slate-700 leading-relaxed">
+          אני מאשר/ת שקראתי את ההצהרה לעיל, המידע שמסרתי מדויק, ואני מסכים/ה לתנאי ההשתתפות.
+        </span>
+      </label>
 
       {msg && <p className="text-red-500 text-sm mb-2">{msg}</p>}
 
       <div className="flex gap-2">
         <button
           onClick={submit}
-          disabled={loading}
+          disabled={loading || !agreed}
           className="flex-1 bg-ice-600 hover:bg-ice-700 disabled:opacity-50 text-white font-bold py-3 rounded-2xl text-sm"
         >
           {loading ? 'שומר...' : 'אשר הצהרה ✓'}

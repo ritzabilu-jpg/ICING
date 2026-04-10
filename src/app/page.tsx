@@ -203,7 +203,7 @@ export default function HomePage() {
 
       {/* Benefits Section */}
       <section id="benefits" className="bg-white border-b border-slate-100">
-        <AccordionSection title="למה אמבטיות קרח?" subtitle="שינויים ביוכימיים מוכחים מדעית שמתרחשים בגופך בכל טבילה" fadeColor="#ffffff">
+        <AccordionSection title="למה אמבטיות קרח?" subtitle="שינויים ביוכימיים מוכחים מדעית שמתרחשים בגופך בכל טבילה" fadeColor="#ffffff" defaultOpen>
           <div className="pb-16 px-6 max-w-7xl mx-auto">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {benefits.map(b => (
@@ -283,7 +283,7 @@ export default function HomePage() {
 
       {/* Testimonials */}
       <section id="testimonials" className="bg-ice-50 border-b border-slate-100">
-        <AccordionSection title="מה אומרים המשתתפים" fadeColor="#f0f9ff">
+        <AccordionSection title="מה אומרים המשתתפים" fadeColor="#f0f9ff" defaultOpen>
           <div className="pb-4">
             <TestimonialsSection />
           </div>
