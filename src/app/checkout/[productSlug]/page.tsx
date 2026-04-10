@@ -558,7 +558,7 @@ export default function CheckoutPage() {
                   <div className="border-2 border-orange-300 bg-orange-50 rounded-2xl p-4">
                     <div className="font-black text-navy-900 mb-3">💳 כרטיס אשראי</div>
                     <div className="bg-white border border-orange-200 rounded-xl px-4 py-3 mb-3 text-sm">
-                      <p className="text-slate-700">שיטת התשלום הזו לא מחוברת כרגע אבל <span className="font-bold text-green-700">אל דאגה!</span> המקום נשמר עבורך וניצור קשר כדי לגבות תשלום טלפוני באשראי.</p>
+                      <p className="text-slate-700">שיטת התשלום הזו לא מחוברת כרגע אבל <span className="font-bold text-green-700">אל דאגה!</span> המקום ישמר לך באישור קבלת שיחת טלפון מאיתנו על מנת לקבל תשלום טלפוני.</p>
                     </div>
                     <button
                       onClick={submitPhoneRequest}
@@ -674,7 +674,7 @@ export default function CheckoutPage() {
                       <div className="font-black text-navy-900">Paybox</div>
                     </div>
                     <div className="bg-white border border-orange-200 rounded-xl px-4 py-3 mb-3 text-sm">
-                      <p className="text-slate-700">שיטת התשלום הזו לא מחוברת כרגע אבל <span className="font-bold text-green-700">אל דאגה!</span> המקום נשמר עבורך וניצור קשר כדי לגבות תשלום טלפוני באשראי.</p>
+                      <p className="text-slate-700">שיטת התשלום הזו לא מחוברת כרגע אבל <span className="font-bold text-green-700">אל דאגה!</span> המקום ישמר לך באישור קבלת שיחת טלפון מאיתנו על מנת לקבל תשלום טלפוני.</p>
                     </div>
                     <button
                       onClick={submitPhoneRequest}
