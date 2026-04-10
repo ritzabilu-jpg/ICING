@@ -77,28 +77,18 @@ export default function CheckoutPage() {
   const [loading, setLoading] = useState(false);
   const [msg, setMsg] = useState('');
   const [product, setProduct] = useState<ProductInfo | null>(null);
-  const [otpCode, setOtpCode] = useState('');
-  const [otpTimer, setOtpTimer] = useState(0);
   const [phoneSubmitting, setPhoneSubmitting] = useState(false);
   const [phoneSubmitted, setPhoneSubmitted] = useState(false);
   const [callbackDeadlineStr, setCallbackDeadlineStr] = useState('');
   const [bitClicked, setBitClicked] = useState(false);
 
-  // OTP countdown timer
+  // Auto-advance if stuck at step 2 (OTP/registration removed)
   useEffect(() => {
-    if (otpTimer <= 0) return;
-    const t = setTimeout(() => setOtpTimer(s => s - 1), 1000);
-    return () => clearTimeout(t);
-  }, [otpTimer]);
-
-  // Auto-advance if otpVerified is true but stuck at step 2 (stale localStorage)
-  useEffect(() => {
-    if (state.step === 2 && state.otpVerified) {
-      const t = setTimeout(() => save({ step: 3 }), 800);
-      return () => clearTimeout(t);
+    if (state.step === 2) {
+      save({ step: 3 });
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state.step, state.otpVerified]);
+  }, [state.step]);
 
   // Compute callback deadline string on load
   useEffect(() => {
@@ -250,59 +240,6 @@ export default function CheckoutPage() {
         save({ bookingId: d.booking_id, sessionToken: d.session_token, step: 3 });
       } else {
         setMsg(d.error ?? 'שגיאה ביצירת הזמנה');
-      }
-    } catch {
-      setMsg('שגיאת רשת — נסה שנית');
-    }
-    setLoading(false);
-  }
-
-  async function sendOtp() {
-    if (!state.email) { setMsg('יש להזין אימייל'); return; }
-    setLoading(true);
-    setMsg('');
-    try {
-      const res = await fetch('/api/auth/send-otp', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: state.email, name: state.name || 'משתמש' }),
-      });
-      const d = await res.json();
-      if (res.ok) {
-        save({ otpSent: true });
-        setOtpTimer(60);
-      } else {
-        setMsg(d.error ?? 'שגיאה בשליחת קוד');
-      }
-    } catch {
-      setMsg('שגיאת רשת — נסה שנית');
-    }
-    setLoading(false);
-  }
-
-  async function verifyOtp() {
-    if (!otpCode) return;
-    setLoading(true);
-    setMsg('');
-    try {
-      const res = await fetch('/api/auth/verify-otp', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: state.email, code: otpCode }),
-      });
-      const d = await res.json();
-      if (res.ok) {
-        try {
-          localStorage.setItem(
-            'client_profile_v1',
-            JSON.stringify({ name: state.name, email: state.email, phone: state.phone, city: state.city })
-          );
-        } catch {
-          // ignore
-        }
-        save({ otpVerified: true, visitorId: d.id, step: 3 });
-      } else {
-        setMsg(d.error ?? 'קוד שגוי');
       }
     } catch {
       setMsg('שגיאת רשת — נסה שנית');
@@ -517,66 +454,6 @@ export default function CheckoutPage() {
                     {loading ? 'טוען...' : 'המשך לרכישה ›'}
                   </button>
                 </>
-              )}
-            </div>
-          )}
-
-          {/* ── STEP 2: Auth (OTP) ── */}
-          {state.step === 2 && (
-            <div>
-              <h2 className="text-2xl font-black text-navy-900 mb-1">{stepTitles[2]}</h2>
-              <p className="text-slate-500 text-sm mb-4">נשלח קוד חד-פעמי למייל שלך</p>
-
-              {state.otpVerified ? (
-                <div className="bg-green-50 border border-green-200 rounded-xl p-4 text-center text-green-700 font-bold">
-                  ✅ אומת בהצלחה! מעביר לשלב הבא...
-                </div>
-              ) : (
-                <div className="space-y-3">
-                  <input
-                    value={state.name}
-                    onChange={e => setState(p => ({ ...p, name: e.target.value }))}
-                    placeholder="שם מלא"
-                    className="w-full border-2 border-slate-200 focus:border-ice-400 rounded-xl px-4 py-3 text-sm focus:outline-none"
-                  />
-                  <div className="flex gap-2">
-                    <input
-                      value={state.email}
-                      onChange={e => setState(p => ({ ...p, email: e.target.value }))}
-                      placeholder="כתובת אימייל"
-                      type="email"
-                      className="flex-1 border-2 border-slate-200 focus:border-ice-400 rounded-xl px-4 py-3 text-sm focus:outline-none"
-                    />
-                    <button
-                      onClick={sendOtp}
-                      disabled={loading || !state.email || otpTimer > 0}
-                      className="bg-navy-800 text-white font-bold px-4 py-3 rounded-xl text-sm disabled:opacity-50 whitespace-nowrap"
-                    >
-                      {otpTimer > 0 ? `${otpTimer}ש׳` : 'שלח קוד'}
-                    </button>
-                  </div>
-
-                  {state.otpSent && (
-                    <div className="flex gap-2">
-                      <input
-                        value={otpCode}
-                        onChange={e => setOtpCode(e.target.value)}
-                        maxLength={6}
-                        placeholder="קוד 6 ספרות"
-                        className="flex-1 border-2 border-slate-200 focus:border-ice-400 rounded-xl px-4 py-3 text-sm focus:outline-none text-center font-mono text-xl tracking-widest"
-                      />
-                      <button
-                        onClick={verifyOtp}
-                        disabled={loading || otpCode.length !== 6}
-                        className="bg-ice-600 text-white font-bold px-4 py-3 rounded-xl text-sm disabled:opacity-50"
-                      >
-                        אמת ✓
-                      </button>
-                    </div>
-                  )}
-
-                  {msg && <p className="text-red-500 text-sm">{msg}</p>}
-                </div>
               )}
             </div>
           )}
