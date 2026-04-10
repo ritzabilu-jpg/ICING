@@ -4,6 +4,111 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
+// ─── Booking types ────────────────────────────────────────────────────────
+interface MyBooking {
+  id: string;
+  event_type: string;
+  title: string;
+  status: string;
+  payment_status: string;
+  confirmation_code: string;
+  amount: number | null;
+  health_form_id: string | null;
+  created_at: string;
+}
+
+const STATUS_LABELS: Record<string, { label: string; cls: string }> = {
+  confirmed: { label: 'מאושר', cls: 'bg-green-100 text-green-700' },
+  pending:   { label: 'ממתין', cls: 'bg-amber-100 text-amber-700' },
+  cancelled: { label: 'בוטל',  cls: 'bg-red-100 text-red-600'   },
+};
+const PAY_LABELS: Record<string, { label: string; cls: string }> = {
+  paid:     { label: '✅ שולם',    cls: 'bg-green-100 text-green-700' },
+  unpaid:   { label: '⏳ לא שולם', cls: 'bg-amber-100 text-amber-700' },
+  refunded: { label: '↩ הוחזר',   cls: 'bg-slate-100 text-slate-500' },
+};
+
+function BookingsTab({ phone }: { phone: string }) {
+  const [bookings, setBookings] = useState<MyBooking[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!phone) { setLoading(false); return; }
+    fetch(`/api/bookings/my?phone=${encodeURIComponent(phone)}`)
+      .then(r => r.json())
+      .then(d => { setBookings(Array.isArray(d.bookings) ? d.bookings : []); setLoading(false); })
+      .catch(() => setLoading(false));
+  }, [phone]);
+
+  if (loading) return <div className="py-8 text-center text-slate-400">טוען...</div>;
+  if (!bookings.length) return (
+    <div className="py-10 text-center text-slate-400">
+      <p className="text-4xl mb-2">📋</p>
+      <p>לא נמצאו הזמנות</p>
+    </div>
+  );
+
+  const totalPaid    = bookings.filter(b => b.payment_status === 'paid').reduce((s, b) => s + (b.amount ?? 0), 0);
+  const totalPending = bookings.filter(b => b.payment_status === 'unpaid').reduce((s, b) => s + (b.amount ?? 0), 0);
+
+  return (
+    <div dir="rtl">
+      <div className="grid grid-cols-3 gap-3 mb-5">
+        <div className="bg-green-50 border border-green-100 rounded-xl px-4 py-3 text-center">
+          <p className="text-xs text-slate-500 mb-0.5">שולם</p>
+          <p className="font-black text-green-700 text-lg">₪{totalPaid}</p>
+        </div>
+        <div className="bg-amber-50 border border-amber-100 rounded-xl px-4 py-3 text-center">
+          <p className="text-xs text-slate-500 mb-0.5">ממתין</p>
+          <p className="font-black text-amber-700 text-lg">₪{totalPending}</p>
+        </div>
+        <div className="bg-ice-50 border border-ice-100 rounded-xl px-4 py-3 text-center">
+          <p className="text-xs text-slate-500 mb-0.5">סה&quot;כ הזמנות</p>
+          <p className="font-black text-navy-900 text-lg">{bookings.length}</p>
+        </div>
+      </div>
+      <div className="overflow-x-auto">
+        <table className="w-full text-sm" dir="rtl">
+          <thead>
+            <tr className="border-b border-slate-100 bg-slate-50 text-xs text-slate-500">
+              <th className="text-right px-3 py-2 font-semibold">סוג</th>
+              <th className="text-right px-3 py-2 font-semibold">אירוע</th>
+              <th className="text-right px-3 py-2 font-semibold">תאריך</th>
+              <th className="text-right px-3 py-2 font-semibold">סטטוס</th>
+              <th className="text-right px-3 py-2 font-semibold">תשלום</th>
+              <th className="text-right px-3 py-2 font-semibold">סכום</th>
+              <th className="text-right px-3 py-2 font-semibold">קוד</th>
+              <th className="text-right px-3 py-2 font-semibold">הצהרה</th>
+            </tr>
+          </thead>
+          <tbody>
+            {bookings.map(b => {
+              const st = STATUS_LABELS[b.status]        ?? { label: b.status,         cls: 'bg-slate-100 text-slate-500' };
+              const py = PAY_LABELS[b.payment_status]   ?? { label: b.payment_status, cls: 'bg-slate-100 text-slate-500' };
+              return (
+                <tr key={b.id} className="border-b border-slate-50 hover:bg-slate-50">
+                  <td className="px-3 py-2.5 text-right text-sm">{b.event_type}</td>
+                  <td className="px-3 py-2.5 text-right font-semibold text-navy-900 max-w-[120px] truncate">{b.title}</td>
+                  <td className="px-3 py-2.5 text-right text-slate-500 text-xs">
+                    {new Date(b.created_at).toLocaleDateString('he-IL', { day: '2-digit', month: '2-digit', year: '2-digit' })}
+                  </td>
+                  <td className="px-3 py-2.5"><span className={`text-xs px-2 py-0.5 rounded-full font-semibold ${st.cls}`}>{st.label}</span></td>
+                  <td className="px-3 py-2.5"><span className={`text-xs px-2 py-0.5 rounded-full font-semibold ${py.cls}`}>{py.label}</span></td>
+                  <td className="px-3 py-2.5 text-right font-bold text-ice-700">{b.amount != null ? `₪${b.amount}` : '—'}</td>
+                  <td className="px-3 py-2.5 font-mono text-xs text-slate-600">{b.confirmation_code}</td>
+                  <td className="px-3 py-2.5 text-center">
+                    {b.health_form_id ? <span className="text-green-600">✅</span> : <span className="text-slate-300">—</span>}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
 interface Session {
   id: string;
   session_date: string;
@@ -231,9 +336,10 @@ export default function DashboardPage() {
   const [visitorId, setVisitorId] = useState<string | null>(null);
   const [visitorName, setVisitorName] = useState('');
   const [visitorRole, setVisitorRole] = useState('user');
+  const [visitorPhone, setVisitorPhone] = useState('');
   const [sessions, setSessions] = useState<Session[]>([]);
   const [healthFilled, setHealthFilled] = useState(false);
-  const [tab, setTab] = useState<'journal' | 'clients'>('journal');
+  const [tab, setTab] = useState<'journal' | 'bookings' | 'clients'>('bookings');
   const [showAddForm, setShowAddForm] = useState(false);
   const router = useRouter();
   const today = new Date().toISOString().split('T')[0];
@@ -246,6 +352,10 @@ export default function DashboardPage() {
     setVisitorId(id);
     setVisitorName(name);
     setVisitorRole(role);
+    try {
+      const profile = JSON.parse(localStorage.getItem('client_profile_v1') || '{}');
+      setVisitorPhone(profile.phone || '');
+    } catch { /* ignore */ }
 
     Promise.all([
       fetch(`/api/immersion-sessions?visitor_id=${id}`, { headers: { 'x-visitor-id': id } }).then(r => r.json()),
@@ -319,21 +429,28 @@ export default function DashboardPage() {
 
       {/* Tabs */}
       <div className="max-w-4xl mx-auto px-4 mt-6">
-        {isStaff && (
-          <div className="flex gap-2 mb-6">
-            {[{ key: 'journal', label: '📖 יומן הטבילות שלי' }, { key: 'clients', label: '👥 לקוחות' }].map(t => (
-              <button key={t.key} onClick={() => setTab(t.key as 'journal' | 'clients')}
-                className={`px-5 py-2 rounded-xl font-semibold text-sm transition-colors
-                  ${tab === t.key ? 'bg-ice-600 text-white' : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'}`}>
-                {t.label}
-              </button>
-            ))}
-          </div>
-        )}
+        <div className="flex gap-2 mb-6 flex-wrap">
+          {[
+            { key: 'bookings', label: '📋 הזמנות' },
+            { key: 'journal',  label: '📖 יומן טבילות' },
+            ...(isStaff ? [{ key: 'clients', label: '👥 לקוחות' }] : []),
+          ].map(t => (
+            <button key={t.key} onClick={() => setTab(t.key as 'journal' | 'bookings' | 'clients')}
+              className={`px-5 py-2 rounded-xl font-semibold text-sm transition-colors
+                ${tab === t.key ? 'bg-ice-600 text-white' : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'}`}>
+              {t.label}
+            </button>
+          ))}
+        </div>
 
         {tab === 'clients' && isStaff ? (
           <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
             <ClientsTab myId={visitorId} />
+          </div>
+        ) : tab === 'bookings' ? (
+          <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
+            <h2 className="text-lg font-bold text-navy-900 mb-4">📋 הזמנות שלי</h2>
+            <BookingsTab phone={visitorPhone} />
           </div>
         ) : (
           <div className="space-y-6">

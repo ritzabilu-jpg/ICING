@@ -32,6 +32,19 @@ interface InstructorInfo {
 
 type Tab = 'future' | 'past' | 'schedule' | 'clients' | 'journal' | 'payments';
 
+interface SlotParticipant {
+  booking_id: string;
+  name: string;
+  phone: string;
+  payment_status: string;
+  payment_method: string | null;
+  confirmation_code: string;
+  booking_status: string;
+  has_annual_health: boolean;
+  annual_health_date: string | null;
+  has_daily_health: boolean;
+}
+
 interface PaymentBooking {
   id: string;
   user_name: string;
@@ -108,6 +121,9 @@ export default function InstructorDashboard() {
   const [journalDropdownOpen, setJournalDropdownOpen] = useState(false);
   const journalSearchRef = useRef<HTMLDivElement>(null);
   const [payments, setPayments] = useState<PaymentBooking[]>([]);
+  const [slotParticipants, setSlotParticipants] = useState<Record<string, SlotParticipant[]>>({});
+  const [expandedSlots, setExpandedSlots] = useState<Set<string>>(new Set());
+  const [loadingSlots, setLoadingSlots] = useState<Set<string>>(new Set());
 
   const today = new Date().toISOString().split('T')[0];
 
@@ -268,6 +284,20 @@ export default function InstructorDashboard() {
     return () => document.removeEventListener('mousedown', handleClick);
   }, []);
 
+  async function toggleSlotParticipants(slotId: string) {
+    if (expandedSlots.has(slotId)) {
+      setExpandedSlots(prev => { const s = new Set(prev); s.delete(slotId); return s; });
+      return;
+    }
+    setExpandedSlots(prev => new Set(prev).add(slotId));
+    if (slotParticipants[slotId]) return; // already loaded
+    setLoadingSlots(prev => new Set(prev).add(slotId));
+    const res = await fetch(`/api/instructor/slot-participants/${slotId}`, { headers: { 'x-visitor-id': visitorId } });
+    const d = await res.json();
+    setSlotParticipants(prev => ({ ...prev, [slotId]: d.participants ?? [] }));
+    setLoadingSlots(prev => { const s = new Set(prev); s.delete(slotId); return s; });
+  }
+
   const future = sessions.filter(s => s.date >= today).reverse();
   const past = sessions.filter(s => s.date < today);
   const pendingCount = sessions.filter(s => s.status === 'pending').length;
@@ -405,7 +435,75 @@ export default function InstructorDashboard() {
                   עדכן זמינות שבועית →
                 </a>
               </div>
-            ) : future.map(s => <SessionCard key={s.id} s={s} />)}
+            ) : future.map(s => (
+              <div key={s.id} className="bg-white rounded-2xl border border-slate-100 overflow-hidden">
+                <div className="flex items-center justify-between gap-2 p-4">
+                  <Link href={sessionHref(s)} className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-1 flex-wrap">
+                      <KindBadge kind={s.kind} />
+                      {s.status && STATUS_BADGE[s.status] && (
+                        <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${STATUS_BADGE[s.status].className}`}>
+                          {STATUS_BADGE[s.status].label}
+                        </span>
+                      )}
+                      {s.instructor_role && ROLE_BADGE[s.instructor_role] && (
+                        <span className="text-xs text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">
+                          {ROLE_BADGE[s.instructor_role]}
+                        </span>
+                      )}
+                      {s.title && <span className="text-sm font-semibold text-[#0f2942]">{s.title}</span>}
+                    </div>
+                    <p className="font-bold text-[#0f2942]">{formatDate(s.date)}</p>
+                    <p className="text-slate-500 text-sm mt-0.5">
+                      🕐 {s.time}{s.location && <> · 📍 {s.location}</>}
+                    </p>
+                  </Link>
+                  <div className="flex items-center gap-2 flex-shrink-0">
+                    <span className="text-sm font-semibold text-slate-600">👥 {s.participant_count}/{s.max_participants}</span>
+                    {s.kind === 'slot' && (
+                      <button onClick={() => toggleSlotParticipants(s.id)}
+                        className={`text-xs font-semibold px-2 py-1 rounded-lg transition-colors ${expandedSlots.has(s.id) ? 'bg-[#7dd8f8] text-[#0f2942]' : 'bg-slate-100 hover:bg-slate-200 text-slate-600'}`}>
+                        👤 משתתפים
+                      </button>
+                    )}
+                  </div>
+                </div>
+
+                {/* Participants list for immersion slots */}
+                {s.kind === 'slot' && expandedSlots.has(s.id) && (
+                  <div className="border-t border-slate-100 px-4 py-3 bg-slate-50" dir="rtl">
+                    {loadingSlots.has(s.id) ? (
+                      <p className="text-slate-400 text-sm text-center py-2">טוען...</p>
+                    ) : !slotParticipants[s.id]?.length ? (
+                      <p className="text-slate-400 text-sm text-center py-2">אין משתתפים רשומים</p>
+                    ) : (
+                      <div className="space-y-2">
+                        {slotParticipants[s.id].map(p => (
+                          <div key={p.booking_id} className="flex items-center justify-between gap-2 bg-white rounded-xl px-3 py-2 text-sm flex-wrap">
+                            <div className="flex items-center gap-2">
+                              <span className="font-semibold text-[#0f2942]">{p.name}</span>
+                              <a href={`tel:${p.phone}`} className="text-slate-400 text-xs hover:text-ice-600">{p.phone}</a>
+                            </div>
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <span className={`text-xs px-2 py-0.5 rounded-full font-semibold ${p.payment_status === 'paid' ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'}`}>
+                                {p.payment_status === 'paid' ? '✅ שולם' : '⏳ ממתין'}
+                              </span>
+                              <span className={`text-xs px-2 py-0.5 rounded-full ${p.has_daily_health ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-600'}`}>
+                                {p.has_daily_health ? '✅ יומי' : '❌ יומי'}
+                              </span>
+                              <span className={`text-xs px-2 py-0.5 rounded-full ${p.has_annual_health ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'}`}>
+                                {p.has_annual_health ? '✅ שנתי' : '⚠️ שנתי'}
+                              </span>
+                              <span className="text-xs font-mono text-slate-400">{p.confirmation_code}</span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            ))}
           </div>
         )}
 

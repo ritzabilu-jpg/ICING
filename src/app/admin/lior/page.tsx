@@ -123,6 +123,43 @@ function AdminContent() {
   const [loadingC, setLoadingC]   = useState(false);
   const [errorC, setErrorC]       = useState('');
   const [clientSearch, setClientSearch] = useState('');
+  // ── Client Bookings Panel ──
+  interface AdminBooking {
+    id: string; user_name: string; phone: string; type: string;
+    event_type: string; title: string; date: string | null;
+    participants: number; status: string; payment_status: string;
+    payment_method: string | null; confirmation_code: string;
+    amount: number | null; health_form_id: string | null;
+    notes: string | null; created_at: string;
+  }
+  const [selectedClientForBookings, setSelectedClientForBookings] = useState<ClientEntry | null>(null);
+  const [clientBookings, setClientBookings] = useState<AdminBooking[]>([]);
+  const [loadingCB, setLoadingCB] = useState(false);
+  const [editingBookingId, setEditingBookingId] = useState<string | null>(null);
+  const [editBooking, setEditBooking] = useState<{ status?: string; payment_status?: string; notes?: string }>({});
+  const [savingBooking, setSavingBooking] = useState(false);
+
+  async function loadClientBookings(client: ClientEntry) {
+    setSelectedClientForBookings(client);
+    setLoadingCB(true);
+    setClientBookings([]);
+    const res = await fetch(`/api/admin/bookings?phone=${encodeURIComponent(client.phone)}`, { headers: adminHeaders() });
+    const d = await res.json();
+    setClientBookings(d.bookings ?? []);
+    setLoadingCB(false);
+  }
+
+  async function saveBookingEdit(id: string) {
+    setSavingBooking(true);
+    await fetch(`/api/admin/bookings/${id}`, {
+      method: 'PATCH',
+      headers: adminHeaders({ 'Content-Type': 'application/json' }),
+      body: JSON.stringify(editBooking),
+    });
+    setSavingBooking(false);
+    setEditingBookingId(null);
+    if (selectedClientForBookings) loadClientBookings(selectedClientForBookings);
+  }
 
   // ── Instructors ──
   const [inviteEmail, setInviteEmail] = useState<string | null>(null);
@@ -1289,13 +1326,14 @@ function AdminContent() {
                     <th className="text-right px-4 py-3 font-semibold text-slate-600">תאריך</th>
                     <th className="text-center px-4 py-3 font-semibold text-slate-600">🧊 יומית</th>
                     <th className="text-center px-4 py-3 font-semibold text-slate-600">📋 כללית</th>
+                    <th className="px-4 py-3"></th>
                   </tr>
                 </thead>
                 <tbody>
                   {filteredClients.map((c, i) => {
                     const hc = healthChecks[c.id] ?? { daily: false, general: false };
                     return (
-                      <tr key={c.id} className={`border-b border-slate-50 hover:bg-slate-50 transition-colors`}>
+                      <tr key={c.id} className={`border-b border-slate-50 hover:bg-slate-50 transition-colors ${selectedClientForBookings?.id === c.id ? 'bg-ice-50' : ''}`}>
                         <td className="px-4 py-3 text-slate-400 font-mono text-right">{i + 1}</td>
                         <td className="px-4 py-3 font-semibold text-navy-900 text-right">{c.name}</td>
                         <td className="px-4 py-3 text-slate-600 font-mono text-right">
@@ -1315,11 +1353,123 @@ function AdminContent() {
                             onChange={() => toggleHealth(c.id, 'general')}
                             className="w-4 h-4 accent-green-500 cursor-pointer" />
                         </td>
+                        <td className="px-4 py-3 text-center">
+                          <button onClick={() => selectedClientForBookings?.id === c.id ? setSelectedClientForBookings(null) : loadClientBookings(c)}
+                            className="text-xs bg-ice-100 hover:bg-ice-200 text-ice-700 font-semibold px-2 py-1 rounded-lg">
+                            📋 הזמנות
+                          </button>
+                        </td>
                       </tr>
                     );
                   })}
                 </tbody>
               </table>
+            </div>
+          )}
+
+          {/* ── Client Bookings Panel ── */}
+          {selectedClientForBookings && (
+            <div className="mt-6 bg-white rounded-3xl border-2 border-ice-200 shadow-sm p-6" dir="rtl">
+              <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
+                <div>
+                  <h3 className="text-lg font-black text-navy-900">📋 הזמנות — {selectedClientForBookings.name}</h3>
+                  <p className="text-sm text-slate-500">{selectedClientForBookings.phone}</p>
+                </div>
+                <button onClick={() => setSelectedClientForBookings(null)} className="text-slate-400 hover:text-slate-700 text-xl">✕</button>
+              </div>
+              {loadingCB ? (
+                <div className="py-8 text-center text-slate-400">טוען...</div>
+              ) : clientBookings.length === 0 ? (
+                <div className="py-8 text-center text-slate-400">לא נמצאו הזמנות</div>
+              ) : (
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm" dir="rtl">
+                    <thead>
+                      <tr className="border-b border-slate-100 bg-slate-50 text-xs text-slate-500">
+                        <th className="text-right px-3 py-2 font-semibold">אירוע</th>
+                        <th className="text-right px-3 py-2 font-semibold">תאריך</th>
+                        <th className="text-right px-3 py-2 font-semibold">סטטוס</th>
+                        <th className="text-right px-3 py-2 font-semibold">תשלום</th>
+                        <th className="text-right px-3 py-2 font-semibold">סכום</th>
+                        <th className="text-right px-3 py-2 font-semibold">קוד</th>
+                        <th className="text-right px-3 py-2 font-semibold">הצהרה</th>
+                        <th className="px-3 py-2"></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {clientBookings.map(b => (
+                        <tr key={b.id} className="border-b border-slate-50 hover:bg-slate-50">
+                          {editingBookingId === b.id ? (
+                            <>
+                              <td colSpan={4} className="px-3 py-2">
+                                <div className="flex gap-2 flex-wrap items-center">
+                                  <select value={editBooking.status ?? b.status}
+                                    onChange={e => setEditBooking(p => ({ ...p, status: e.target.value }))}
+                                    className="border rounded-lg px-2 py-1 text-xs">
+                                    <option value="confirmed">מאושר</option>
+                                    <option value="pending">ממתין</option>
+                                    <option value="cancelled">בוטל</option>
+                                  </select>
+                                  <select value={editBooking.payment_status ?? b.payment_status}
+                                    onChange={e => setEditBooking(p => ({ ...p, payment_status: e.target.value }))}
+                                    className="border rounded-lg px-2 py-1 text-xs">
+                                    <option value="paid">שולם</option>
+                                    <option value="unpaid">לא שולם</option>
+                                    <option value="refunded">הוחזר</option>
+                                  </select>
+                                  <input value={editBooking.notes ?? (b.notes ?? '')}
+                                    onChange={e => setEditBooking(p => ({ ...p, notes: e.target.value }))}
+                                    placeholder="הערות..."
+                                    className="border rounded-lg px-2 py-1 text-xs flex-1 min-w-[120px]" />
+                                </div>
+                              </td>
+                              <td className="px-3 py-2 font-mono text-xs">{b.confirmation_code}</td>
+                              <td className="px-3 py-2 text-center">{b.health_form_id ? '✅' : '—'}</td>
+                              <td className="px-3 py-2">
+                                <div className="flex gap-1">
+                                  <button onClick={() => saveBookingEdit(b.id)} disabled={savingBooking}
+                                    className="text-xs bg-green-600 hover:bg-green-700 text-white px-2 py-1 rounded-lg font-semibold disabled:opacity-50">
+                                    {savingBooking ? '...' : '✓'}
+                                  </button>
+                                  <button onClick={() => { setEditingBookingId(null); setEditBooking({}); }}
+                                    className="text-xs bg-slate-200 hover:bg-slate-300 text-slate-700 px-2 py-1 rounded-lg">✕</button>
+                                </div>
+                              </td>
+                            </>
+                          ) : (
+                            <>
+                              <td className="px-3 py-2 text-right">
+                                <div className="font-semibold text-navy-900 text-xs">{b.event_type}</div>
+                                <div className="text-slate-500 text-xs truncate max-w-[120px]">{b.title}</div>
+                              </td>
+                              <td className="px-3 py-2 text-right text-xs text-slate-500">
+                                {new Date(b.created_at).toLocaleDateString('he-IL', { day: '2-digit', month: '2-digit', year: '2-digit' })}
+                              </td>
+                              <td className="px-3 py-2">
+                                <span className={`text-xs px-2 py-0.5 rounded-full font-semibold ${b.status === 'confirmed' ? 'bg-green-100 text-green-700' : b.status === 'cancelled' ? 'bg-red-100 text-red-600' : 'bg-amber-100 text-amber-700'}`}>
+                                  {b.status === 'confirmed' ? 'מאושר' : b.status === 'cancelled' ? 'בוטל' : 'ממתין'}
+                                </span>
+                              </td>
+                              <td className="px-3 py-2">
+                                <span className={`text-xs px-2 py-0.5 rounded-full font-semibold ${b.payment_status === 'paid' ? 'bg-green-100 text-green-700' : b.payment_status === 'refunded' ? 'bg-slate-100 text-slate-500' : 'bg-amber-100 text-amber-700'}`}>
+                                  {b.payment_status === 'paid' ? '✅ שולם' : b.payment_status === 'refunded' ? '↩ הוחזר' : '⏳ לא שולם'}
+                                </span>
+                              </td>
+                              <td className="px-3 py-2 text-right font-bold text-ice-700 text-xs">{b.amount != null ? `₪${b.amount}` : '—'}</td>
+                              <td className="px-3 py-2 font-mono text-xs text-slate-600">{b.confirmation_code}</td>
+                              <td className="px-3 py-2 text-center">{b.health_form_id ? <span className="text-green-600">✅</span> : <span className="text-slate-300">—</span>}</td>
+                              <td className="px-3 py-2">
+                                <button onClick={() => { setEditingBookingId(b.id); setEditBooking({ status: b.status, payment_status: b.payment_status, notes: b.notes ?? '' }); }}
+                                  className="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 px-2 py-1 rounded-lg font-semibold">✏️</button>
+                              </td>
+                            </>
+                          )}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
             </div>
           )}
         </div>
