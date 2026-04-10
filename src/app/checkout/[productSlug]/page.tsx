@@ -801,6 +801,12 @@ export default function CheckoutPage() {
                 >
                   🔬 המדע שמאחורי הטבילה במי קרח
                 </button>
+                <button
+                  onClick={() => router.push('/dashboard')}
+                  className="border-2 border-navy-300 text-navy-700 hover:bg-navy-50 font-bold px-8 py-3 rounded-2xl transition-colors text-sm"
+                >
+                  📋 צפייה בהזמנות שלי
+                </button>
               </div>
             </div>
           )}

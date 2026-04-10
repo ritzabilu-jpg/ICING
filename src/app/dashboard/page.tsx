@@ -28,13 +28,16 @@ const PAY_LABELS: Record<string, { label: string; cls: string }> = {
   refunded: { label: '↩ הוחזר',   cls: 'bg-slate-100 text-slate-500' },
 };
 
-function BookingsTab({ phone }: { phone: string }) {
+function BookingsTab({ phone, email }: { phone: string; email: string }) {
   const [bookings, setBookings] = useState<MyBooking[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!phone) { setLoading(false); return; }
-    fetch(`/api/bookings/my?phone=${encodeURIComponent(phone)}`)
+    if (!phone && !email) { setLoading(false); return; }
+    const params = new URLSearchParams();
+    if (phone) params.set('phone', phone);
+    if (email) params.set('email', email);
+    fetch(`/api/bookings/my?${params.toString()}`)
       .then(r => r.json())
       .then(d => { setBookings(Array.isArray(d.bookings) ? d.bookings : []); setLoading(false); })
       .catch(() => setLoading(false));
@@ -337,6 +340,7 @@ export default function DashboardPage() {
   const [visitorName, setVisitorName] = useState('');
   const [visitorRole, setVisitorRole] = useState('user');
   const [visitorPhone, setVisitorPhone] = useState('');
+  const [visitorEmail, setVisitorEmail] = useState('');
   const [sessions, setSessions] = useState<Session[]>([]);
   const [healthFilled, setHealthFilled] = useState(false);
   const [tab, setTab] = useState<'journal' | 'bookings' | 'clients'>('bookings');
@@ -356,6 +360,7 @@ export default function DashboardPage() {
       const profile = JSON.parse(localStorage.getItem('client_profile_v1') || '{}');
       setVisitorPhone(profile.phone || '');
     } catch { /* ignore */ }
+    setVisitorEmail(localStorage.getItem('visitor_email') || '');
 
     Promise.all([
       fetch(`/api/immersion-sessions?visitor_id=${id}`, { headers: { 'x-visitor-id': id } }).then(r => r.json()),
@@ -450,7 +455,7 @@ export default function DashboardPage() {
         ) : tab === 'bookings' ? (
           <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
             <h2 className="text-lg font-bold text-navy-900 mb-4">📋 הזמנות שלי</h2>
-            <BookingsTab phone={visitorPhone} />
+            <BookingsTab phone={visitorPhone} email={visitorEmail} />
           </div>
         ) : (
           <div className="space-y-6">

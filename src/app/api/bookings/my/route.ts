@@ -4,17 +4,19 @@ import { createAdminClient } from '@/lib/supabase';
 export const dynamic = 'force-dynamic';
 
 export async function GET(req: NextRequest) {
-  const phone = req.nextUrl.searchParams.get('phone');
-  if (!phone) return NextResponse.json({ bookings: [] }, { status: 400 });
+  const phone = req.nextUrl.searchParams.get('phone') ?? '';
+  const email = req.nextUrl.searchParams.get('email') ?? '';
+  if (!phone && !email) return NextResponse.json({ bookings: [] }, { status: 400 });
 
   const supabase = createAdminClient();
 
-  const { data, error } = await supabase
+  let query = supabase
     .from('bookings')
     .select(`
       id,
       user_name,
       phone,
+      email,
       participants,
       status,
       payment_status,
@@ -32,9 +34,16 @@ export async function GET(req: NextRequest) {
         price
       )
     `)
-    .eq('phone', phone)
     .neq('email', 'pending@checkout.tmp')
     .order('created_at', { ascending: false });
+
+  // Build OR filter: match by phone OR email (whichever are provided)
+  const orParts: string[] = [];
+  if (phone) orParts.push(`phone.eq.${phone}`);
+  if (email) orParts.push(`email.eq.${email}`);
+  query = query.or(orParts.join(','));
+
+  const { data, error } = await query;
 
   if (error) {
     console.error('bookings/my error:', error);
