@@ -13,7 +13,7 @@ const healthSchema = z.object({
   has_open_wounds: z.boolean(),
   other_conditions: z.string().max(500).default(''),
   participant_name: z.string().min(2, 'שם חייב להכיל לפחות 2 תווים').max(100),
-  signature: z.string().min(50, 'נדרשת חתימה'), // base64 data URL minimum length
+  signature: z.string().min(1, 'נדרשת אישור'),
 });
 
 // Conditions that require doctor approval before participation
