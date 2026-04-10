@@ -785,15 +785,23 @@ export default function CheckoutPage() {
                 </div>
               )}
 
-              <button
-                onClick={() => {
-                  try { localStorage.removeItem(STORAGE_KEY); } catch { /* ignore */ }
-                  router.push('/');
-                }}
-                className="bg-ice-600 hover:bg-ice-700 text-white font-bold px-8 py-3 rounded-2xl"
-              >
-                חזרה לדף הבית
-              </button>
+              <div className="flex flex-col gap-3 items-center">
+                <button
+                  onClick={() => {
+                    try { localStorage.removeItem(STORAGE_KEY); } catch { /* ignore */ }
+                    router.push('/');
+                  }}
+                  className="bg-ice-600 hover:bg-ice-700 text-white font-bold px-8 py-3 rounded-2xl"
+                >
+                  חזרה לדף הבית
+                </button>
+                <button
+                  onClick={() => router.push('/science')}
+                  className="border-2 border-ice-400 text-ice-700 hover:bg-ice-50 font-bold px-8 py-3 rounded-2xl transition-colors text-sm"
+                >
+                  🔬 המדע שמאחורי הטבילה במי קרח
+                </button>
+              </div>
             </div>
           )}
         </div>
