@@ -40,7 +40,7 @@ const PACKAGES = [
     title: 'חבילת 10 טבילות',
     price: 550,
     sessions: 10,
-    badge: '🔥 הכי משתלם',
+    badge: undefined,
     description: '10 טבילות בהדרכה מקצועית. חבילת השגרה המומלצת להתקדמות ממשית.',
   },
   {
