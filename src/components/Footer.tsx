@@ -29,7 +29,7 @@ export default function Footer() {
                  className="w-10 h-10 overflow-hidden rounded-full hover:scale-110 transition-transform" aria-label="טיקטוק">
                 <img src="/logo-tiktok.jpg" alt="TikTok" className="w-full h-full object-cover" />
               </a>
-              <a href="https://www.facebook.com/groups/1581316102106335" target="_blank" rel="noopener noreferrer"
+              <a href="https://www.facebook.com/profile.php?id=61572032967869" target="_blank" rel="noopener noreferrer"
                  className="w-10 h-10 overflow-hidden rounded-full hover:scale-110 transition-transform" aria-label="פייסבוק">
                 <img src="/logo-facebook.png" alt="Facebook" className="w-full h-full object-cover" />
               </a>
