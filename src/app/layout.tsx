@@ -34,13 +34,13 @@ export const metadata: Metadata = {
     siteName: 'ICING',
     title: 'ICING | סדנאות אמבטיות קרח',
     description: 'הירדמו לקרח, התעוררו חדים. סדנאות מקצועיות ומבוססות מחקר.',
-    images: [{ url: '/og-image.jpg', width: 1200, height: 630, alt: 'ICING – אמבטיות קרח' }],
+    images: [{ url: '/icing-logo-clean.png', width: 1200, height: 630, alt: 'ICING – אמבטיות קרח' }],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'ICING | סדנאות אמבטיות קרח',
     description: 'הירדמו לקרח, התעוררו חדים. סדנאות מקצועיות ומבוססות מחקר.',
-    images: ['/og-image.jpg'],
+    images: ['/icing-logo-clean.png'],
   },
 };
 
@@ -60,7 +60,7 @@ export default function RootLayout({
     <html lang="he" dir="rtl">
       <head>
         <link rel="icon" href="/favicon.ico" sizes="any" />
-        <link rel="apple-touch-icon" href="/logo-ice.png" />
+        <link rel="apple-touch-icon" href="/icing-logo-clean.png" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
