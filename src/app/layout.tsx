@@ -33,13 +33,13 @@ export const metadata: Metadata = {
     locale: 'he_IL',
     siteName: 'ICING',
     title: 'ICING | סדנאות אמבטיות קרח',
-    description: 'הירדמו לקרח, התעוררו חדים. סדנאות מקצועיות ומבוססות מחקר.',
+    description: 'לטבול במי קרח, להתעורר, להתחדד, להרגע. סדנאות מקצועיות ומבוססות מחקר.',
     images: [{ url: '/icing-logo-clean.png', width: 1200, height: 630, alt: 'ICING – אמבטיות קרח' }],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'ICING | סדנאות אמבטיות קרח',
-    description: 'הירדמו לקרח, התעוררו חדים. סדנאות מקצועיות ומבוססות מחקר.',
+    description: 'לטבול במי קרח, להתעורר, להתחדד, להרגע. סדנאות מקצועיות ומבוססות מחקר.',
     images: ['/icing-logo-clean.png'],
   },
 };
