@@ -92,6 +92,7 @@ const workshopTypes = [
       { icon: '🛡️', text: 'חוסן מנטלי קבוצתי' },
       { icon: '✨', text: 'Tailor made workshop' },
       { icon: '🌍', text: 'אפשרות לסדנאות בשפות שונות' },
+      { icon: '🏢', text: 'אפשרות לביצוע הסדנאות במקום העבודה / בטבע' },
     ],
   },
 ];
