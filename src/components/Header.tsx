@@ -24,7 +24,7 @@ const navLinks = [
   { href: '/instructors', label: 'המדריכים שלנו' },
   { href: '/science', label: 'המדע' },
   { href: '/reviews', label: 'חוות דעת' },
-  { href: '/#contact', label: 'צור קשר' },
+  { href: '/contact', label: 'צור קשר' },
 ];
 
 export default function Header() {
