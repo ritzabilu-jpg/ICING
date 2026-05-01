@@ -37,10 +37,14 @@ export default function WorkshopCard({
     <div className={`relative flex flex-col rounded-3xl transition-all duration-300
                      hover:shadow-2xl hover:-translate-y-2 group overflow-hidden
                      ${highlight
-                       ? `border-2 border-white/10 shadow-2xl ${theme.shadow}`
+                       ? `border-2 shadow-2xl ${theme.shadow}`
                        : 'border border-slate-200 hover:border-slate-300 shadow-md bg-white'
                      }`}
-         style={highlight ? { background: 'linear-gradient(160deg, #0f172a 0%, #0c1a2e 100%)' } : undefined}
+         style={highlight ? {
+           background: 'linear-gradient(160deg, #0f172a 0%, #0c1a2e 100%)',
+           borderColor: theme.from + '60',
+           boxShadow: `0 0 0 1px ${theme.from}30, 0 25px 50px -12px ${theme.from}25`,
+         } : undefined}
     >
       {/* Coloured header banner */}
       <div className="relative h-28 flex items-end justify-between px-6 pb-4 overflow-hidden"

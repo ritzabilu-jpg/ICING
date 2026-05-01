@@ -279,7 +279,7 @@ export default function Header() {
 
         {/* Mobile dropdown */}
         {menuOpen && (
-          <nav className="lg:hidden bg-navy-800 border-t border-navy-700 px-4 py-4">
+          <nav className="lg:hidden bg-navy-800 border-t border-navy-700 px-4 py-4 animate-fade-in-up">
             <div className="flex flex-col gap-1">
               {navLinks.map(link => (
                 <Link key={link.href} href={link.href} onClick={() => setMenuOpen(false)}

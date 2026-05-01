@@ -61,14 +61,19 @@ export default function ContactPage() {
   }
 
   const inputClass =
-    'w-full rounded-xl bg-[#0f172a] border border-slate-700 text-slate-100 placeholder-slate-500 px-4 py-3 text-base focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition';
+    'w-full rounded-xl bg-navy-900/60 border border-navy-700 text-slate-100 placeholder-slate-500 px-4 py-3 text-base focus:outline-none focus:border-ice-500 focus:ring-1 focus:ring-ice-500/30 transition';
 
   return (
-    <main className="min-h-screen bg-[#0f172a] flex flex-col items-center justify-center px-4 py-16">
-      <div className="w-full max-w-lg bg-[#1e293b] rounded-3xl shadow-2xl p-8 md:p-10">
+    <main className="min-h-screen bg-navy-900 flex flex-col items-center justify-center px-4 py-16"
+          style={{ background: 'linear-gradient(160deg, #060d1a 0%, #0a1929 50%, #0f172a 100%)' }}>
+      <div className="w-full max-w-lg bg-navy-800/80 backdrop-blur-sm rounded-3xl shadow-2xl border border-white/10 p-8 md:p-10">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-cyan-400 mb-2">צור קשר</h1>
+          <div className="w-16 h-16 rounded-2xl bg-ice-500/15 border border-ice-500/30
+                          flex items-center justify-center text-3xl mx-auto mb-4">
+            ✉️
+          </div>
+          <h1 className="text-3xl font-black text-white mb-2">צור קשר</h1>
           <p className="text-slate-400 text-sm leading-relaxed">
             נשמח לענות על כל שאלה – מלאו את הטופס ונחזור אליכם בהקדם.
           </p>
@@ -77,12 +82,13 @@ export default function ContactPage() {
         {/* Success state */}
         {success ? (
           <div className="flex flex-col items-center justify-center gap-4 py-10 text-center">
-            <span className="text-5xl">✅</span>
-            <p className="text-xl font-semibold text-cyan-400">ההודעה נשלחה בהצלחה!</p>
+            <div className="w-20 h-20 rounded-full bg-green-500/15 border border-green-500/30
+                            flex items-center justify-center text-4xl">✅</div>
+            <p className="text-xl font-bold text-white">ההודעה נשלחה בהצלחה!</p>
             <p className="text-slate-400 text-sm">ניצור איתך קשר בהקדם.</p>
             <button
               onClick={() => setSuccess(false)}
-              className="mt-4 text-sm text-slate-500 hover:text-cyan-400 underline transition"
+              className="mt-4 text-sm text-slate-500 hover:text-ice-400 underline transition"
             >
               שלח הודעה נוספת
             </button>
@@ -92,7 +98,7 @@ export default function ContactPage() {
             {/* שם מלא */}
             <div className="flex flex-col gap-1.5">
               <label htmlFor="name" className="text-slate-300 text-sm font-medium">
-                שם מלא <span className="text-cyan-500">*</span>
+                שם מלא <span className="text-ice-400">*</span>
               </label>
               <input
                 id="name"
@@ -110,7 +116,7 @@ export default function ContactPage() {
             {/* טלפון */}
             <div className="flex flex-col gap-1.5">
               <label htmlFor="phone" className="text-slate-300 text-sm font-medium">
-                טלפון <span className="text-cyan-500">*</span>
+                טלפון <span className="text-ice-400">*</span>
               </label>
               <input
                 id="phone"
@@ -147,7 +153,7 @@ export default function ContactPage() {
             {/* הודעה */}
             <div className="flex flex-col gap-1.5">
               <label htmlFor="message" className="text-slate-300 text-sm font-medium">
-                הודעה <span className="text-cyan-500">*</span>
+                הודעה <span className="text-ice-400">*</span>
               </label>
               <textarea
                 id="message"
@@ -172,16 +178,19 @@ export default function ContactPage() {
             <button
               type="submit"
               disabled={submitting}
-              className="w-full mt-1 py-3.5 rounded-2xl bg-cyan-500 hover:bg-cyan-400 active:bg-cyan-600 disabled:opacity-50 disabled:cursor-not-allowed text-[#0f172a] font-bold text-base transition-colors duration-200 shadow-lg shadow-cyan-900/40"
+              className="w-full mt-1 py-3.5 rounded-2xl bg-gradient-to-l from-ice-600 to-ice-500
+                         hover:from-ice-500 hover:to-ice-400 disabled:opacity-50 disabled:cursor-not-allowed
+                         text-white font-bold text-base transition-all duration-200 shadow-lg shadow-ice-900/40
+                         hover:shadow-ice-500/30 hover:scale-[1.02] active:scale-100"
             >
-              {submitting ? 'שולח...' : 'שליחה'}
+              {submitting ? 'שולח...' : 'שלח הודעה'}
             </button>
 
             {/* Contact info */}
-            <div className="mt-2 pt-5 border-t border-slate-700 text-center text-slate-500 text-sm space-y-1">
+            <div className="mt-2 pt-5 border-t border-white/10 text-center text-slate-500 text-sm space-y-1">
               <p>
                 טלפון:{' '}
-                <a href="tel:089310715" className="text-cyan-500 hover:text-cyan-400 transition">
+                <a href="tel:089310715" className="text-ice-400 hover:text-ice-300 transition">
                   08-9310715
                 </a>
               </p>
