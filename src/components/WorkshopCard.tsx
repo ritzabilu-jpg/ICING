@@ -20,65 +20,75 @@ interface WorkshopCardProps {
   popular?: boolean;
 }
 
+const TYPE_THEME = {
+  individual:  { from: '#0ea5e9', to: '#0284c7', shadow: 'shadow-sky-500/30',    text: 'text-sky-400',    badge: 'bg-sky-500/20 text-sky-300 border-sky-500/30' },
+  couple:      { from: '#8b5cf6', to: '#6d28d9', shadow: 'shadow-violet-500/30', text: 'text-violet-400', badge: 'bg-violet-500/20 text-violet-300 border-violet-500/30' },
+  'one-on-one':{ from: '#f59e0b', to: '#d97706', shadow: 'shadow-amber-500/30',  text: 'text-amber-400',  badge: 'bg-amber-500/20 text-amber-300 border-amber-500/30' },
+  team:        { from: '#10b981', to: '#059669', shadow: 'shadow-emerald-500/30', text: 'text-emerald-400',badge: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30' },
+};
+
 export default function WorkshopCard({
   type, title, subtitle, description, price, priceNote,
   duration, capacity, icon, features, highlight = false, popular = false,
 }: WorkshopCardProps) {
+  const theme = TYPE_THEME[type];
+
   return (
-    <div className={`relative flex flex-col rounded-3xl border-2 transition-all duration-300
+    <div className={`relative flex flex-col rounded-3xl transition-all duration-300
                      hover:shadow-2xl hover:-translate-y-2 group overflow-hidden
                      ${highlight
-                       ? 'border-ice-500/60 shadow-2xl shadow-ice-500/25'
-                       : 'bg-white border-ice-100 hover:border-ice-300 shadow-lg'
+                       ? `border-2 border-white/10 shadow-2xl ${theme.shadow}`
+                       : 'border border-slate-200 hover:border-slate-300 shadow-md bg-white'
                      }`}
-         style={highlight ? {
-           background: 'linear-gradient(145deg, #0f172a 0%, #0c1a2e 50%, #0f172a 100%)',
-         } : undefined}
+         style={highlight ? { background: 'linear-gradient(160deg, #0f172a 0%, #0c1a2e 100%)' } : undefined}
     >
-      {/* Glow accent bar at top for highlight cards */}
-      {highlight && (
-        <div className="absolute top-0 inset-x-0 h-0.5 bg-gradient-to-r from-transparent via-ice-400 to-transparent" />
-      )}
+      {/* Coloured header banner */}
+      <div className="relative h-28 flex items-end justify-between px-6 pb-4 overflow-hidden"
+           style={{ background: `linear-gradient(135deg, ${theme.from}, ${theme.to})` }}>
+        {/* Subtle pattern overlay */}
+        <div className="absolute inset-0 opacity-20"
+             style={{ backgroundImage: 'radial-gradient(circle at 80% 20%, rgba(255,255,255,0.4) 0%, transparent 50%)' }} />
 
-      <div className="p-7 flex flex-col flex-1">
+        {/* Large icon */}
+        <div className="relative z-10 w-16 h-16 rounded-2xl bg-white/20 backdrop-blur-sm
+                        border border-white/30 flex items-center justify-center text-4xl
+                        shadow-lg group-hover:scale-110 transition-transform duration-300">
+          {icon}
+        </div>
+
+        {/* Popular badge */}
         {popular && (
-          <div className="flex justify-center mb-4 -mt-3">
-            <span className="bg-gradient-to-r from-orange-500 to-orange-400 text-white text-sm font-black px-6 py-1.5 rounded-full shadow-lg shadow-orange-500/40">
-              🔥 הכי פופולרי
-            </span>
-          </div>
+          <span className="relative z-10 bg-white/95 text-orange-600 text-xs font-black
+                           px-3 py-1.5 rounded-full shadow-lg">
+            🔥 הכי פופולרי
+          </span>
         )}
+      </div>
 
-        {/* Icon + Title */}
-        <div className="flex items-start gap-4 mb-5">
-          <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-3xl flex-shrink-0 border
-                           ${highlight
-                             ? 'bg-ice-500/15 border-ice-500/30'
-                             : 'bg-gradient-to-br from-ice-50 to-white border-ice-100'}`}>
-            {icon}
-          </div>
-          <div>
-            <h3 className={`text-xl font-black leading-tight ${highlight ? 'text-white' : 'text-navy-900'}`}>
-              {title}
-            </h3>
-            <p className={`text-sm font-medium mt-0.5 ${highlight ? 'text-ice-400' : 'text-ice-600'}`}>
-              {subtitle}
-            </p>
-          </div>
+      {/* Body */}
+      <div className="p-6 flex flex-col flex-1">
+        {/* Title */}
+        <div className="mb-4">
+          <h3 className={`text-lg font-black leading-tight ${highlight ? 'text-white' : 'text-navy-900'}`}>
+            {title}
+          </h3>
+          <p className={`text-sm font-medium mt-0.5 ${theme.text}`}>
+            {subtitle}
+          </p>
         </div>
 
         {/* Description */}
-        <p className={`mb-5 text-sm leading-relaxed ${highlight ? 'text-slate-300' : 'text-slate-500'}`}>
+        <p className={`mb-5 text-sm leading-relaxed ${highlight ? 'text-slate-400' : 'text-slate-500'}`}>
           {description}
         </p>
 
         {/* Features */}
         <ul className="space-y-2 mb-5 flex-1">
           {features.map((f, i) => (
-            <li key={i} className={`flex items-center gap-2.5 text-sm
+            <li key={i} className={`flex items-start gap-2.5 text-sm
                                     ${highlight ? 'text-slate-300' : 'text-slate-600'}`}>
-              <span className={`w-5 h-5 rounded-md flex items-center justify-center text-xs flex-shrink-0
-                                ${highlight ? 'bg-ice-500/15' : 'bg-ice-50'}`}>
+              <span className={`mt-0.5 w-5 h-5 rounded-md flex items-center justify-center text-xs flex-shrink-0 border
+                                ${highlight ? 'bg-white/8 border-white/10' : 'bg-slate-50 border-slate-100'}`}>
                 {f.icon}
               </span>
               {f.text}
@@ -86,24 +96,21 @@ export default function WorkshopCard({
           ))}
         </ul>
 
-        {/* Meta info */}
-        <div className={`flex items-center gap-3 text-xs pb-5 mb-5 border-b flex-wrap
-                         ${highlight ? 'text-slate-400 border-white/10' : 'text-slate-400 border-slate-100'}`}>
-          <span className={`flex items-center gap-1 px-2 py-1 rounded-full
-                            ${highlight ? 'bg-white/5' : 'bg-slate-50'}`}>
+        {/* Meta pills */}
+        <div className="flex flex-wrap gap-2 mb-5">
+          <span className={`text-xs px-3 py-1 rounded-full border ${highlight ? 'bg-white/5 border-white/10 text-slate-400' : 'bg-slate-50 border-slate-100 text-slate-500'}`}>
             ⏱ {duration}
           </span>
-          <span className={`flex items-center gap-1 px-2 py-1 rounded-full
-                            ${highlight ? 'bg-white/5' : 'bg-slate-50'}`}>
+          <span className={`text-xs px-3 py-1 rounded-full border ${highlight ? 'bg-white/5 border-white/10 text-slate-400' : 'bg-slate-50 border-slate-100 text-slate-500'}`}>
             👥 {capacity}
           </span>
         </div>
 
         {/* Price + CTA */}
-        <div className="flex items-end justify-between gap-4">
+        <div className={`flex items-center justify-between pt-4 border-t
+                         ${highlight ? 'border-white/10' : 'border-slate-100'}`}>
           <div>
-            <div className={`text-3xl font-black tracking-tight
-                             ${highlight ? 'text-ice-300' : 'text-ice-600'}`}>
+            <div className={`text-2xl font-black ${highlight ? 'text-white' : 'text-navy-900'}`}>
               {price}
             </div>
             {priceNote && (
@@ -114,14 +121,12 @@ export default function WorkshopCard({
           </div>
           <Link
             href={`/booking?type=${type}`}
-            className={`font-bold px-5 py-2.5 rounded-xl text-sm transition-all
-                        hover:scale-105 active:scale-100 whitespace-nowrap
-                        ${highlight
-                          ? 'bg-gradient-to-r from-orange-500 to-orange-400 text-white shadow-lg shadow-orange-500/40 hover:shadow-orange-500/60'
-                          : 'bg-navy-900 hover:bg-navy-800 text-white shadow-md shadow-navy-900/20'
-                        }`}
+            className="font-bold px-5 py-2.5 rounded-xl text-sm transition-all
+                       hover:scale-105 active:scale-100 whitespace-nowrap text-white
+                       shadow-lg hover:shadow-xl"
+            style={{ background: `linear-gradient(135deg, ${theme.from}, ${theme.to})` }}
           >
-            הזמינו עכשיו
+            הזמינו עכשיו ←
           </Link>
         </div>
       </div>
