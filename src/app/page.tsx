@@ -181,21 +181,23 @@ export default function HomePage() {
       <Hero />
 
       {/* Social Proof Strip */}
-      <section className="bg-navy-900 border-b border-ice-500/20 py-6 px-6">
+      <section className="bg-navy-900 border-b border-ice-500/20 py-8 px-6">
         <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-4">
           {[
             { quote: 'חוויה שלא אשכח לעולם. יצאתי עם אנרגיה של שלושה ימים', name: 'גולן בר נוי', stars: 5 },
             { quote: 'מדריכים מדהימים, אווירה תומכת. טבלתי כבר 4 פעמים אחרי הסדנה. ב\'חופשי חודשי\' אפשר לטבול כל יום!', name: 'אורן אלוק', stars: 5 },
             { quote: 'הפחד לפני, האדרנלין אחרי — שווה כל שקל', name: 'שיר ממן', stars: 5 },
           ].map((t, i) => (
-            <div key={i} className="flex items-start gap-3 bg-white/5 rounded-2xl px-4 py-3">
-              <span className="text-orange-400 text-lg flex-shrink-0">❝</span>
-              <div>
-                <p className="text-slate-200 text-sm leading-relaxed mb-1">{t.quote}</p>
-                <div className="flex items-center gap-2">
-                  <span className="text-yellow-400 text-xs">{'★'.repeat(t.stars)}</span>
-                  <span className="text-slate-400 text-xs">{t.name}</span>
-                </div>
+            <div key={i} className="flex flex-col gap-3 bg-white/[0.06] hover:bg-white/10 border border-white/10
+                                    rounded-2xl px-5 py-4 transition-colors duration-200">
+              <p className="text-slate-200 text-sm leading-relaxed flex-1">
+                <span className="text-ice-400 font-black text-base ml-1">❝</span>
+                {t.quote}
+                <span className="text-ice-400 font-black text-base mr-1">❞</span>
+              </p>
+              <div className="flex items-center justify-between border-t border-white/10 pt-3">
+                <span className="text-slate-300 text-xs font-semibold">{t.name}</span>
+                <span className="text-yellow-400 text-sm tracking-wider">{'★'.repeat(t.stars)}</span>
               </div>
             </div>
           ))}
@@ -209,17 +211,22 @@ export default function HomePage() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {benefits.map(b => (
                 <Link key={b.title} href={b.link || '#'}
-                     className="rounded-3xl bg-gradient-to-b from-ice-50 to-white
-                                border-2 border-ice-100 p-8 hover:border-ice-300
-                                hover:shadow-lg transition-all duration-300 group block">
-                  <div className="text-5xl mb-5">{b.icon}</div>
-                  <h3 className="text-xl font-black text-navy-900 mb-3 group-hover:text-ice-700 transition-colors">{b.title}</h3>
-                  <p className="text-slate-600 text-sm leading-relaxed mb-5">{b.description}</p>
-                  <div className="border-t border-ice-100 pt-4">
-                    <div className="text-2xl font-black text-ice-600">{b.stat}</div>
-                    <div className="text-xs text-slate-500 flex items-center gap-1">
-                      {b.statLabel}
-                      <span className="text-ice-400 group-hover:translate-x-[-3px] transition-transform">← קרא עוד</span>
+                     className="rounded-3xl bg-white border-2 border-ice-100
+                                hover:border-ice-300 hover:shadow-xl hover:-translate-y-1
+                                transition-all duration-300 group block overflow-hidden">
+                  <div className="p-8 pb-5">
+                    <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-ice-50 to-white border border-ice-100
+                                    flex items-center justify-center text-3xl mb-5 group-hover:scale-110 transition-transform duration-300">
+                      {b.icon}
+                    </div>
+                    <h3 className="text-xl font-black text-navy-900 mb-3 group-hover:text-ice-700 transition-colors">{b.title}</h3>
+                    <p className="text-slate-500 text-sm leading-relaxed">{b.description}</p>
+                  </div>
+                  <div className="mx-8 mb-8 rounded-2xl bg-gradient-to-br from-ice-600 to-ice-500 p-4 text-white">
+                    <div className="text-2xl font-black">{b.stat}</div>
+                    <div className="text-xs text-ice-100 flex items-center justify-between mt-0.5">
+                      <span>{b.statLabel}</span>
+                      <span className="group-hover:translate-x-[-3px] transition-transform">← קרא עוד</span>
                     </div>
                   </div>
                 </Link>

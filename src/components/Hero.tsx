@@ -97,24 +97,32 @@ export default function Hero() {
         </div>
 
         {/* Stats row */}
-        <div className="mt-16 grid grid-cols-3 gap-6 max-w-2xl mx-auto">
-          <a href="/#agenda" className="text-center block cursor-pointer group">
-            <div className="text-2xl md:text-3xl font-black text-ice-400 mb-1 group-hover:text-ice-300 transition-colors">+127%</div>
-            <div className="text-xs md:text-sm text-slate-500 group-hover:text-slate-300 transition-colors">עלייה בנוראדרנלין</div>
-            <span className="text-[10px] text-slate-600 hover:text-ice-400 border-b border-dashed border-slate-600 group-hover:border-ice-400 group-hover:text-ice-400 transition-colors mt-1 inline-block">
-              קרא עוד ↗
-            </span>
-          </a>
-          <div className="text-center">
-            <div className="text-2xl md:text-3xl font-black text-ice-400 mb-1">5°C</div>
-            <div className="text-xs md:text-sm text-slate-500">טמפרטורת מים</div>
-            <span className="text-[10px] text-slate-600 mt-1 inline-block">פרוטוקול CWI מוסמך</span>
-          </div>
-          <a href="/#agenda" className="text-center block cursor-pointer group">
-            <div className="text-2xl md:text-3xl font-black text-ice-400 mb-1 group-hover:text-ice-300 transition-colors">90 דק&apos;</div>
-            <div className="text-xs md:text-sm text-slate-500 group-hover:text-slate-300 transition-colors">משך הסדנה</div>
-            <span className="text-[10px] text-slate-600 border-b border-dashed border-slate-600 group-hover:border-ice-400 group-hover:text-ice-400 transition-colors mt-1 inline-block">סדנה מקיפה ומלמדת ↓</span>
-          </a>
+        <div className="mt-14 grid grid-cols-3 gap-3 max-w-2xl mx-auto">
+          {[
+            { href: '/#agenda', value: '+127%', label: 'עלייה בנוראדרנלין', sub: 'קרא עוד ↗' },
+            { href: null,       value: '5°C',   label: 'טמפרטורת מים',     sub: 'פרוטוקול CWI' },
+            { href: '/#agenda', value: "90 דק'", label: 'משך הסדנה',       sub: 'מבנה מלא ↓' },
+          ].map((s, i) => {
+            const cls = `group text-center px-4 py-4 rounded-2xl border border-white/10
+                         bg-white/5 backdrop-blur-sm transition-all duration-300
+                         ${s.href ? 'hover:bg-white/10 hover:border-ice-400/30 cursor-pointer' : ''}`;
+            const inner = (
+              <>
+                <div className="text-2xl md:text-3xl font-black text-ice-300 mb-1 group-hover:text-ice-200 transition-colors">
+                  {s.value}
+                </div>
+                <div className="text-xs text-slate-400 group-hover:text-slate-300 transition-colors leading-tight">
+                  {s.label}
+                </div>
+                <div className="text-[10px] text-slate-600 group-hover:text-ice-400 transition-colors mt-1">
+                  {s.sub}
+                </div>
+              </>
+            );
+            return s.href
+              ? <a key={i} href={s.href} className={cls}>{inner}</a>
+              : <div key={i} className={cls}>{inner}</div>;
+          })}
         </div>
       </div>
 
