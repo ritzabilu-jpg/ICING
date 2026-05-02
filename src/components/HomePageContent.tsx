@@ -1,11 +1,11 @@
 'use client';
 import Link from 'next/link';
+import { ReactNode } from 'react';
 import { useLanguage } from '@/lib/i18n/LanguageContext';
 import WorkshopCard from './WorkshopCard';
-import TestimonialsSection from './TestimonialsSection';
 import AccordionSection from './AccordionSection';
 
-export default function HomePageContent() {
+export default function HomePageContent({ testimonialsSlot }: { testimonialsSlot: ReactNode }) {
   const { t, dir } = useLanguage();
 
   const benefits = [
@@ -178,12 +178,8 @@ export default function HomePageContent() {
         </AccordionSection>
       </section>
 
-      {/* Testimonials */}
-      <section id="testimonials" className="bg-ice-50 border-b border-slate-100">
-        <AccordionSection title={t('sec_testimonials_title')} fadeColor="#f0f9ff" defaultOpen>
-          <div className="pb-4"><TestimonialsSection /></div>
-        </AccordionSection>
-      </section>
+      {/* Testimonials – rendered as server slot from page.tsx */}
+      {testimonialsSlot}
 
       {/* FAQ */}
       <section id="faq" className="bg-white border-b border-slate-100">
