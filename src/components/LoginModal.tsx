@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useLanguage } from '@/lib/i18n/LanguageContext';
 
 interface Props {
   initialName?: string;
@@ -9,6 +10,7 @@ interface Props {
 }
 
 export default function LoginModal({ initialName = '', onClose, onLogin }: Props) {
+  const { t } = useLanguage();
   const [step, setStep] = useState<'email' | 'otp'>('email');
   const [name, setName] = useState(initialName);
   const [email, setEmail] = useState('');
@@ -26,7 +28,7 @@ export default function LoginModal({ initialName = '', onClose, onLogin }: Props
     });
     const data = await res.json();
     setLoading(false);
-    if (!res.ok) { setError(data.error || 'שגיאה בשליחת הקוד'); return; }
+    if (!res.ok) { setError(data.error || t('login_error_send')); return; }
     setStep('otp');
   }
 
@@ -40,7 +42,7 @@ export default function LoginModal({ initialName = '', onClose, onLogin }: Props
     });
     const data = await res.json();
     setLoading(false);
-    if (!res.ok) { setError(data.error || 'קוד שגוי'); return; }
+    if (!res.ok) { setError(data.error || t('login_error_code')); return; }
     localStorage.setItem('visitor_id', data.id);
     localStorage.setItem('visitor_name', data.name);
     localStorage.setItem('visitor_role', data.role);
@@ -65,26 +67,26 @@ export default function LoginModal({ initialName = '', onClose, onLogin }: Props
       <div className="bg-white rounded-2xl shadow-2xl p-6 w-full max-w-sm" dir="rtl">
         <div className="flex justify-between items-center mb-5">
           <h2 className="text-xl font-bold text-navy-900">
-            {step === 'email' ? 'כניסה / הרשמה' : 'אמת את האימייל'}
+            {step === 'email' ? t('login_title') : t('login_otp_title')}
           </h2>
-          <button onClick={onClose} className="text-slate-400 hover:text-slate-600 text-xl leading-none">X</button>
+          <button onClick={onClose} className="text-slate-400 hover:text-slate-600 text-xl leading-none">✕</button>
         </div>
 
         {step === 'email' ? (
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-semibold text-slate-700 mb-1">שם מלא</label>
+              <label className="block text-sm font-semibold text-slate-700 mb-1">{t('login_name_label')}</label>
               <input
                 type="text"
                 value={name}
                 onChange={e => setName(e.target.value)}
-                placeholder="הכנס שמך"
+                placeholder={t('login_name_placeholder')}
                 autoFocus
                 className="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-right focus:outline-none focus:ring-2 focus:ring-ice-400"
               />
             </div>
             <div>
-              <label className="block text-sm font-semibold text-slate-700 mb-1">אימייל</label>
+              <label className="block text-sm font-semibold text-slate-700 mb-1">{t('login_email_label')}</label>
               <input
                 type="email"
                 value={email}
@@ -94,24 +96,24 @@ export default function LoginModal({ initialName = '', onClose, onLogin }: Props
                 className="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-right focus:outline-none focus:ring-2 focus:ring-ice-400"
               />
             </div>
-            <p className="text-xs text-slate-400 text-center">נשלח אליך קוד אימות חד-פעמי באימייל</p>
+            <p className="text-xs text-slate-400 text-center">{t('login_otp_hint')}</p>
             {error && <p className="text-red-500 text-sm text-center bg-red-50 rounded-lg py-2">{error}</p>}
             <button
               onClick={sendOtp}
               disabled={!email.trim() || loading}
               className="w-full bg-ice-600 hover:bg-ice-700 disabled:opacity-40 text-white font-bold py-3 rounded-xl transition-colors"
             >
-              {loading ? 'שולח קוד...' : 'שלח קוד לאימייל'}
+              {loading ? t('login_sending_btn') : t('login_send_btn')}
             </button>
           </div>
         ) : (
           <div className="space-y-4">
             <p className="text-sm text-slate-500 text-center">
-              שלחנו קוד 6 ספרות לכתובת<br />
+              {t('login_otp_sent')}<br />
               <strong className="text-navy-900">{email}</strong>
             </p>
             <div>
-              <label className="block text-sm font-semibold text-slate-700 mb-1">קוד אימות</label>
+              <label className="block text-sm font-semibold text-slate-700 mb-1">{t('login_code_label')}</label>
               <input
                 type="text"
                 inputMode="numeric"
@@ -130,13 +132,13 @@ export default function LoginModal({ initialName = '', onClose, onLogin }: Props
               disabled={otp.length < 6 || loading}
               className="w-full bg-ice-600 hover:bg-ice-700 disabled:opacity-40 text-white font-bold py-3 rounded-xl transition-colors"
             >
-              {loading ? 'מאמת...' : 'כניסה'}
+              {loading ? t('login_verifying_btn') : t('login_enter_btn')}
             </button>
             <button
               onClick={() => { setStep('email'); setOtp(''); setError(''); }}
               className="w-full text-sm text-slate-400 hover:text-slate-600"
             >
-              חזור / שלח קוד חדש
+              {t('login_back_btn')}
             </button>
           </div>
         )}

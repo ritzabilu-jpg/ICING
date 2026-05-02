@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useLanguage } from '@/lib/i18n/LanguageContext';
 
 interface FormState {
   name: string;
@@ -17,6 +18,7 @@ const initialForm: FormState = {
 };
 
 export default function ContactPage() {
+  const { t } = useLanguage();
   const [form, setForm] = useState<FormState>(initialForm);
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -48,13 +50,13 @@ export default function ContactPage() {
       const data = await res.json();
 
       if (!res.ok || !data.ok) {
-        setErrorMsg(data.error || 'שגיאה בשליחה, נסה שוב');
+        setErrorMsg(data.error || t('contact_error_general'));
       } else {
         setSuccess(true);
         setForm(initialForm);
       }
     } catch {
-      setErrorMsg('שגיאת רשת, בדוק את החיבור ונסה שוב');
+      setErrorMsg(t('contact_error_network'));
     } finally {
       setSubmitting(false);
     }
@@ -73,9 +75,9 @@ export default function ContactPage() {
                           flex items-center justify-center text-3xl mx-auto mb-4">
             ✉️
           </div>
-          <h1 className="text-3xl font-black text-white mb-2">צור קשר</h1>
+          <h1 className="text-3xl font-black text-white mb-2">{t('contact_page_title')}</h1>
           <p className="text-slate-400 text-sm leading-relaxed">
-            נשמח לענות על כל שאלה – מלאו את הטופס ונחזור אליכם בהקדם.
+            {t('contact_page_sub')}
           </p>
         </div>
 
@@ -84,13 +86,13 @@ export default function ContactPage() {
           <div className="flex flex-col items-center justify-center gap-4 py-10 text-center">
             <div className="w-20 h-20 rounded-full bg-green-500/15 border border-green-500/30
                             flex items-center justify-center text-4xl">✅</div>
-            <p className="text-xl font-bold text-white">ההודעה נשלחה בהצלחה!</p>
-            <p className="text-slate-400 text-sm">ניצור איתך קשר בהקדם.</p>
+            <p className="text-xl font-bold text-white">{t('contact_success_title')}</p>
+            <p className="text-slate-400 text-sm">{t('contact_success_sub')}</p>
             <button
               onClick={() => setSuccess(false)}
               className="mt-4 text-sm text-slate-500 hover:text-ice-400 underline transition"
             >
-              שלח הודעה נוספת
+              {t('contact_send_another')}
             </button>
           </div>
         ) : (
@@ -98,7 +100,7 @@ export default function ContactPage() {
             {/* שם מלא */}
             <div className="flex flex-col gap-1.5">
               <label htmlFor="name" className="text-slate-300 text-sm font-medium">
-                שם מלא <span className="text-ice-400">*</span>
+                {t('contact_field_name')} <span className="text-ice-400">*</span>
               </label>
               <input
                 id="name"
@@ -116,7 +118,7 @@ export default function ContactPage() {
             {/* טלפון */}
             <div className="flex flex-col gap-1.5">
               <label htmlFor="phone" className="text-slate-300 text-sm font-medium">
-                טלפון <span className="text-ice-400">*</span>
+                {t('contact_field_phone')} <span className="text-ice-400">*</span>
               </label>
               <input
                 id="phone"
@@ -135,7 +137,7 @@ export default function ContactPage() {
             {/* מייל */}
             <div className="flex flex-col gap-1.5">
               <label htmlFor="email" className="text-slate-300 text-sm font-medium">
-                מייל <span className="text-slate-500 font-normal text-xs">(אופציונלי)</span>
+                {t('contact_field_email')} <span className="text-slate-500 font-normal text-xs">({t('contact_required')})</span>
               </label>
               <input
                 id="email"
@@ -153,7 +155,7 @@ export default function ContactPage() {
             {/* הודעה */}
             <div className="flex flex-col gap-1.5">
               <label htmlFor="message" className="text-slate-300 text-sm font-medium">
-                הודעה <span className="text-ice-400">*</span>
+                {t('contact_field_message')} <span className="text-ice-400">*</span>
               </label>
               <textarea
                 id="message"
@@ -183,7 +185,7 @@ export default function ContactPage() {
                          text-white font-bold text-base transition-all duration-200 shadow-lg shadow-ice-900/40
                          hover:shadow-ice-500/30 hover:scale-[1.02] active:scale-100"
             >
-              {submitting ? 'שולח...' : 'שלח הודעה'}
+              {submitting ? t('contact_sending_btn') : t('contact_send_btn')}
             </button>
 
             {/* Contact info */}

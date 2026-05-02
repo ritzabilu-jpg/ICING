@@ -12,6 +12,7 @@ export type Translations = {
   nav_science: string; nav_reviews: string; nav_contact: string;
   nav_login: string; nav_logout: string; nav_myarea: string;
   nav_book_immersion: string; nav_book_workshop: string; nav_book_now: string;
+  nav_admin: string; nav_instructor_role: string; nav_sessions_left: string;
 
   // Hero
   hero_badge: string; hero_h1_line1: string; hero_h1_line2: string;
@@ -79,6 +80,81 @@ export type Translations = {
 
   // CTA
   cta_book_now: string; cta_explore: string;
+
+  // A11y menu (Header)
+  a11y_title: string; a11y_font_size: string; a11y_normal: string; a11y_large: string; a11y_xlarge: string;
+  a11y_contrast: string; a11y_underline: string; a11y_reset: string; a11y_statement: string; a11y_contact: string;
+  a11y_open: string; a11y_close: string;
+
+  // Footer
+  footer_desc: string; footer_quick_nav: string;
+  footer_home: string; footer_booking: string; footer_team: string;
+  footer_workshop_types: string; footer_agenda: string; footer_faq: string;
+  footer_contact_title: string; footer_address: string; footer_complex: string;
+  footer_maps: string; footer_copyright: string; footer_privacy: string;
+  footer_terms: string; footer_accessibility: string;
+
+  // StickyCTA
+  sticky_book: string; sticky_whatsapp: string;
+
+  // WelcomeGreeting
+  greeting_mandatory_title: string; greeting_mandatory_desc: string; greeting_mandatory_btn: string;
+  greeting_return_text: string; greeting_book_btn: string; greeting_journal_btn: string; greeting_health_btn: string;
+
+  // LoginModal
+  login_title: string; login_otp_title: string; login_name_label: string; login_name_placeholder: string;
+  login_email_label: string; login_otp_hint: string; login_send_btn: string; login_sending_btn: string;
+  login_otp_sent: string; login_code_label: string; login_enter_btn: string; login_verifying_btn: string;
+  login_back_btn: string; login_error_send: string; login_error_code: string;
+
+  // Contact page
+  contact_page_title: string; contact_page_sub: string;
+  contact_field_name: string; contact_field_phone: string; contact_field_email: string; contact_field_message: string;
+  contact_send_btn: string; contact_sending_btn: string;
+  contact_success_title: string; contact_success_sub: string; contact_send_another: string;
+  contact_error_general: string; contact_error_network: string;
+  contact_required: string;
+
+  // Science page
+  science_badge: string; science_title: string; science_sub: string;
+  science_topic1_title: string; science_topic1_desc: string; science_topic1_stat: string;
+  science_topic2_title: string; science_topic2_desc: string; science_topic2_stat: string;
+  science_topic3_title: string; science_topic3_desc: string; science_topic3_stat: string;
+  science_topic4_title: string; science_topic4_desc: string; science_topic4_stat: string;
+  science_studies_title: string; science_topics_title: string; science_book_cta: string;
+  science_stat1_sub: string; science_stat2_sub: string;
+  science_stat3_val: string; science_stat3_label: string; science_stat3_sub: string;
+  science_stat4_label: string; science_stat4_sub: string;
+  science_topics_sub: string; science_read_more: string; science_coming_soon: string;
+  science_cta_title: string; science_cta_sub: string;
+  science_topic5_title: string; science_topic5_desc: string;
+  science_topic6_title: string; science_topic6_desc: string;
+
+  // Booking page
+  booking_title: string; booking_sub: string;
+  booking_tab_immersions: string; booking_tab_workshops: string;
+  booking_step_type: string; booking_step_date: string; booking_step_payment: string;
+  booking_choose_workshop: string; booking_choose_package: string;
+  booking_choose_immersion: string; booking_loading: string;
+  booking_immersions_desc: string; booking_workshops_desc: string;
+
+  // Instructors page
+  instructors_title: string; instructors_sub: string; instructors_cert_title: string;
+  instructors_cert_desc: string; instructors_theory: string; instructors_practice: string;
+  instructors_exam: string; instructors_contact_cta: string; instructors_book_cta: string;
+  instructors_theory_desc: string; instructors_practice_desc: string; instructors_exam_desc: string;
+
+  // Reviews page
+  reviews_title: string; reviews_sub: string;
+  reviews_stat1_label: string; reviews_stat2_label: string; reviews_stat3_label: string; reviews_stat4_label: string;
+  reviews_share_title: string; reviews_type_individual: string; reviews_type_couple: string;
+  reviews_type_group: string; reviews_type_immersion: string;
+
+  // Payment page
+  payment_title: string; payment_amount: string; payment_back: string;
+  payment_credit: string; payment_bit: string; payment_paybox: string; payment_phone: string;
+  payment_secured: string; payment_bit_desc: string; payment_paybox_desc: string;
+  failed_title: string; failed_desc: string; failed_retry: string; failed_call: string;
 };
 
 const he: Translations = {
@@ -86,6 +162,7 @@ const he: Translations = {
   nav_science: 'המדע', nav_reviews: 'חוות דעת', nav_contact: 'צור קשר',
   nav_login: 'כניסה', nav_logout: 'יציאה', nav_myarea: 'האזור האישי שלי',
   nav_book_immersion: 'קבע טבילה', nav_book_workshop: 'קבע סדנה', nav_book_now: 'הזמן עכשיו',
+  nav_admin: 'מנהל', nav_instructor_role: 'מדריך', nav_sessions_left: 'נשארו {n}',
 
   hero_badge: 'רחובות | רחוב סירני 52 | מתחם הבריכה הטיפולית',
   hero_h1_line1: 'נכנסים לקרח', hero_h1_line2: 'יוצאים חדים וחסינים',
@@ -164,6 +241,102 @@ const he: Translations = {
   contact_complex: 'מתחם הבריכה הטיפולית', contact_whatsapp: 'וואטסאפ',
   contact_send_msg: 'שלח לנו הודעה', contact_book_now: 'הזמינו מקום עכשיו',
   cta_book_now: 'הזמינו מקום עכשיו', cta_explore: 'גלו עוד',
+
+  a11y_title: 'אפשרויות נגישות', a11y_font_size: 'גודל טקסט',
+  a11y_normal: 'רגיל', a11y_large: 'גדול', a11y_xlarge: 'גדול מאוד',
+  a11y_contrast: 'ניגודיות גבוהה', a11y_underline: 'הדגשת קישורים',
+  a11y_reset: 'איפוס הגדרות', a11y_statement: 'הצהרת נגישות',
+  a11y_contact: 'פנייה בנושא נגישות: 08-9310715',
+  a11y_open: 'פתח תפריט נגישות', a11y_close: 'סגור',
+
+  footer_desc: 'מרכז הטבילה במי קרח. סדנאות מקצועיות ומדעיות לחיזוק חוסן מנטלי, שיפור פוקוס והורדת סטרס. בליווי מדריכים מוסמכים CWI.',
+  footer_quick_nav: 'ניווט מהיר', footer_home: 'דף הבית', footer_booking: 'הזמנת מקום',
+  footer_team: 'הצוות שלנו', footer_workshop_types: 'סוגי הסדנאות',
+  footer_agenda: 'מה מחכה לכם', footer_faq: 'שאלות נפוצות',
+  footer_contact_title: 'פרטי קשר', footer_address: 'רחוב סירני 52, רחובות',
+  footer_complex: 'מתחם הבריכה הטיפולית', footer_maps: 'פתח ב-Google Maps',
+  footer_copyright: 'חוויות שוויץ המדע. כל הזכויות שמורות.',
+  footer_privacy: 'מדיניות פרטיות', footer_terms: 'תנאי שימוש', footer_accessibility: 'נגישות',
+
+  sticky_book: 'הזמן מקום', sticky_whatsapp: 'וואטסאפ',
+
+  greeting_mandatory_title: '⚠️ שלום {name}! יש לך טבילה היום.',
+  greeting_mandatory_desc: 'חובה למלא הצהרת בריאות לפני הטבילה',
+  greeting_mandatory_btn: '📋 מלא הצהרת בריאות עכשיו',
+  greeting_return_text: 'שלום {name}! ברוך שובך',
+  greeting_book_btn: '📅 קבע טבילה / סדנה',
+  greeting_journal_btn: '📖 יומן טבילות',
+  greeting_health_btn: '✅ הצהרת בריאות',
+
+  login_title: 'כניסה / הרשמה', login_otp_title: 'אמת את האימייל',
+  login_name_label: 'שם מלא', login_name_placeholder: 'הכנס שמך',
+  login_email_label: 'אימייל', login_otp_hint: 'נשלח אליך קוד אימות חד-פעמי באימייל',
+  login_send_btn: 'שלח קוד לאימייל', login_sending_btn: 'שולח קוד...',
+  login_otp_sent: 'שלחנו קוד 6 ספרות לכתובת',
+  login_code_label: 'קוד אימות', login_enter_btn: 'כניסה', login_verifying_btn: 'מאמת...',
+  login_back_btn: 'חזור / שלח קוד חדש',
+  login_error_send: 'שגיאה בשליחת הקוד', login_error_code: 'קוד שגוי',
+
+  contact_page_title: 'צור קשר', contact_page_sub: 'נשמח לענות על כל שאלה – מלאו את הטופס ונחזור אליכם בהקדם.',
+  contact_field_name: 'שם מלא', contact_field_phone: 'טלפון',
+  contact_field_email: 'מייל (אופציונלי)', contact_field_message: 'הודעה',
+  contact_send_btn: 'שלח הודעה', contact_sending_btn: 'שולח...',
+  contact_success_title: 'ההודעה נשלחה בהצלחה!', contact_success_sub: 'ניצור איתך קשר בהקדם.',
+  contact_send_another: 'שלח הודעה נוספת',
+  contact_error_general: 'שגיאה בשליחה, נסה שוב', contact_error_network: 'שגיאת רשת, בדוק את החיבור ונסה שוב',
+  contact_required: '*',
+
+  science_badge: 'מדע הטבילה', science_title: 'המדע מאחורי טבילת מי קרח', science_sub: 'מה שקורה בגוף שלך בכל טבילה',
+  science_topic1_title: 'נוראדרנלין', science_topic1_stat: '+127%',
+  science_topic1_desc: 'טבילה במים קרים מגבירה את הנוראדרנלין עד פי 3 מהרמה הבסיסית. זה מוביל לעירנות, ריכוז ותחושת עוצמה.',
+  science_topic2_title: 'קורטיזול וסטרס', science_topic2_stat: '↓ קורטיזול',
+  science_topic2_desc: 'חשיפה מבוקרת לקור מאמנת את ציר HPA. הגוף לומד לווסת את תגובת הסטרס ולהתמודד ביעילות רבה יותר.',
+  science_topic3_title: 'דופמין ומוטיבציה', science_topic3_stat: '+250%',
+  science_topic3_desc: 'עלייה חדה ברמות הדופמין לאחר טבילה קרה — בדומה לאפקט של פעילות גופנית אינטנסיבית, אך במשך ממושך יותר.',
+  science_topic4_title: 'מערכת חיסון ודלקת', science_topic4_stat: '↓ IL-6',
+  science_topic4_desc: 'מחקרים מראים ירידה במדדי דלקת ושיפור בתפקוד מערכת החיסון עם חשיפה קבועה למים קרים.',
+  science_studies_title: 'מחקרי מפתח', science_topics_title: 'נושאים מדעיים',
+  science_book_cta: 'הזמינו מקום בסדנה — חוו בעצמכם',
+  science_stat1_sub: 'טבילה ב-5°C', science_stat2_sub: 'לאחר הטבילה',
+  science_stat3_val: '↓ קורטיזול', science_stat3_label: 'סטרס', science_stat3_sub: 'בחשיפה חוזרת',
+  science_stat4_label: 'ירידה ב-IL-6', science_stat4_sub: 'מדדי דלקת',
+  science_topics_sub: 'לחץ על נושא לקריאה מפורטת עם סימוכין',
+  science_read_more: 'קרא עוד', science_coming_soon: 'בקרוב',
+  science_cta_title: 'רוצה לחוות את המדע בגוף?',
+  science_cta_sub: 'הצטרף לסדנת טבילה מודרכת ותרגיש את ההשפעות בעצמך',
+  science_topic5_title: 'שריפת שומן חום', science_topic5_desc: 'הפעלת רקמת שומן חום (BAT) ועלייה בשריפת קלוריות.',
+  science_topic6_title: 'מערכת העצבים הווגאלית', science_topic6_desc: 'חיזוק עצב הוואגוס, שיפור ויסות עצמי ורגיעה לאחר סטרס.',
+
+  booking_title: 'הזמינו חוויה', booking_sub: 'בחרו את סוג הפעילות שמתאים לכם',
+  booking_tab_immersions: 'טבילות', booking_tab_workshops: 'סדנאות',
+  booking_step_type: 'בחרו סדנה', booking_step_date: 'בחרו תאריך', booking_step_payment: 'פרטים ותשלום',
+  booking_choose_workshop: 'בחר סדנה ›', booking_choose_package: 'בחר חבילה ›',
+  booking_choose_immersion: '🧊 קבע טבילה/ות', booking_loading: 'טוען...',
+  booking_immersions_desc: 'בחר תאריכים עתידיים לטבילות במי הקרח',
+  booking_workshops_desc: 'בחר מתוך סוגי הסדנאות השונים',
+
+  instructors_title: 'הצוות שלנו', instructors_sub: 'מדריכים מוסמכים CWI עם ניסיון וידע',
+  instructors_cert_title: '🎓 הסמכת CWI Instructor',
+  instructors_cert_desc: 'כל המדריכים שלנו עברו הכשרה מקיפה בפרוטוקולי טבילה קרה, בטיחות ואנטומיה.',
+  instructors_theory: 'תיאוריה רפואית', instructors_practice: 'תרגול מעשי', instructors_exam: 'מבחן מסכם',
+  instructors_contact_cta: 'רוצה לשמוע פרטים על קורס מדריכי CWI? פנה אלינו',
+  instructors_book_cta: 'הזמינו סדנה עם הצוות שלנו',
+  instructors_theory_desc: 'Cold Shock Response, תרמורגולציה, הורמזיס, פרוטוקולי בטיחות',
+  instructors_practice_desc: 'הדרכת קבוצות, ניהול סיכונים, טיפול בחירום',
+  instructors_exam_desc: 'מבחנים מסכמים וסטאז׳ כדרישה להסמכה',
+
+  reviews_title: 'מה אומרים המשתתפים?', reviews_sub: 'חוויות אמיתיות מאנשים שהיו בטבילה',
+  reviews_stat1_label: 'שביעות רצון', reviews_stat2_label: 'משתתפים', reviews_stat3_label: 'דירוג ממוצע', reviews_stat4_label: 'חוזרים לסדנה',
+  reviews_share_title: 'שתף את החוויה שלך',
+  reviews_type_individual: 'סדנת יחידים', reviews_type_couple: 'סדנת זוגות',
+  reviews_type_group: 'סדנת קבוצות', reviews_type_immersion: 'טבילה אישית',
+
+  payment_title: 'בחרו אמצעי תשלום', payment_amount: 'סכום לתשלום', payment_back: '← חזרה להזמנה',
+  payment_credit: 'תשלום בכרטיס אשראי', payment_bit: 'תשלום ב-Bit',
+  payment_paybox: 'תשלום ב-Paybox', payment_phone: 'תשלום בטלפון', payment_secured: 'מאובטח דרך Tranzila',
+  payment_bit_desc: 'העברה מהירה בביט', payment_paybox_desc: 'העברה מהירה בפייבוקס',
+  failed_title: 'התשלום לא הצליח', failed_desc: 'לצערנו, עיבוד התשלום נכשל. ניתן לנסות שנית או לצור קשר:',
+  failed_retry: 'נסו שנית', failed_call: 'התקשרו אלינו',
 };
 
 const en: Translations = {
@@ -171,6 +344,7 @@ const en: Translations = {
   nav_science: 'Science', nav_reviews: 'Reviews', nav_contact: 'Contact',
   nav_login: 'Login', nav_logout: 'Logout', nav_myarea: 'My Dashboard',
   nav_book_immersion: 'Book Immersion', nav_book_workshop: 'Book Workshop', nav_book_now: 'Book Now',
+  nav_admin: 'Admin', nav_instructor_role: 'Instructor', nav_sessions_left: '{n} left',
 
   hero_badge: 'Rehovot | 52 Sireni St. | Therapeutic Pool Complex',
   hero_h1_line1: 'Enter the Ice', hero_h1_line2: 'Come Out Sharp & Resilient',
@@ -240,6 +414,102 @@ const en: Translations = {
   contact_complex: 'Therapeutic Pool Complex', contact_whatsapp: 'WhatsApp',
   contact_send_msg: 'Send us a message', contact_book_now: 'Book Your Spot Now',
   cta_book_now: 'Book Your Spot', cta_explore: 'Explore',
+
+  a11y_title: 'Accessibility Options', a11y_font_size: 'Font size',
+  a11y_normal: 'Normal', a11y_large: 'Large', a11y_xlarge: 'Extra large',
+  a11y_contrast: 'High contrast', a11y_underline: 'Underline links',
+  a11y_reset: 'Reset settings', a11y_statement: 'Accessibility statement',
+  a11y_contact: 'Accessibility contact: 08-9310715',
+  a11y_open: 'Open accessibility menu', a11y_close: 'Close',
+
+  footer_desc: 'Ice bath immersion centre. Professional, research-based workshops for mental resilience, focus and stress reduction. Led by certified CWI instructors.',
+  footer_quick_nav: 'Quick navigation', footer_home: 'Home', footer_booking: 'Book a session',
+  footer_team: 'Our team', footer_workshop_types: 'Workshop types',
+  footer_agenda: 'What awaits you', footer_faq: 'FAQs',
+  footer_contact_title: 'Contact', footer_address: '52 Sireni St., Rehovot',
+  footer_complex: 'Therapeutic Pool Complex', footer_maps: 'Open in Google Maps',
+  footer_copyright: 'ICING. All rights reserved.',
+  footer_privacy: 'Privacy policy', footer_terms: 'Terms of use', footer_accessibility: 'Accessibility',
+
+  sticky_book: 'Book Now', sticky_whatsapp: 'WhatsApp',
+
+  greeting_mandatory_title: '⚠️ Hi {name}! You have an immersion today.',
+  greeting_mandatory_desc: 'You must complete the health declaration before your immersion',
+  greeting_mandatory_btn: '📋 Complete health declaration now',
+  greeting_return_text: 'Hello {name}! Welcome back',
+  greeting_book_btn: '📅 Book immersion / workshop',
+  greeting_journal_btn: '📖 Immersion journal',
+  greeting_health_btn: '✅ Health declaration',
+
+  login_title: 'Login / Register', login_otp_title: 'Verify your email',
+  login_name_label: 'Full name', login_name_placeholder: 'Enter your name',
+  login_email_label: 'Email', login_otp_hint: 'We will send you a one-time verification code by email',
+  login_send_btn: 'Send code to email', login_sending_btn: 'Sending code...',
+  login_otp_sent: 'We sent a 6-digit code to',
+  login_code_label: 'Verification code', login_enter_btn: 'Login', login_verifying_btn: 'Verifying...',
+  login_back_btn: 'Back / Send new code',
+  login_error_send: 'Error sending code', login_error_code: 'Incorrect code',
+
+  contact_page_title: 'Contact Us', contact_page_sub: 'Happy to answer any question – fill in the form and we will get back to you.',
+  contact_field_name: 'Full name', contact_field_phone: 'Phone',
+  contact_field_email: 'Email (optional)', contact_field_message: 'Message',
+  contact_send_btn: 'Send message', contact_sending_btn: 'Sending...',
+  contact_success_title: 'Message sent successfully!', contact_success_sub: 'We will get back to you soon.',
+  contact_send_another: 'Send another message',
+  contact_error_general: 'Error sending, please try again', contact_error_network: 'Network error, check your connection',
+  contact_required: '*',
+
+  science_badge: 'The Science', science_title: 'The Science Behind Ice Water Immersion', science_sub: 'What happens in your body with every plunge',
+  science_topic1_title: 'Noradrenaline', science_topic1_stat: '+127%',
+  science_topic1_desc: 'Cold water immersion raises noradrenaline up to 3× baseline. This leads to increased alertness, focus and a sense of power.',
+  science_topic2_title: 'Cortisol & Stress', science_topic2_stat: '↓ Cortisol',
+  science_topic2_desc: 'Controlled cold exposure trains the HPA axis. The body learns to regulate its stress response and cope more efficiently.',
+  science_topic3_title: 'Dopamine & Motivation', science_topic3_stat: '+250%',
+  science_topic3_desc: 'Sharp rise in dopamine levels after a cold plunge — similar to intense exercise but lasting longer.',
+  science_topic4_title: 'Immune System & Inflammation', science_topic4_stat: '↓ IL-6',
+  science_topic4_desc: 'Studies show reduced inflammatory markers and improved immune function with regular cold water exposure.',
+  science_studies_title: 'Key Studies', science_topics_title: 'Scientific Topics',
+  science_book_cta: 'Book your spot — experience it yourself',
+  science_stat1_sub: 'immersion at 5°C', science_stat2_sub: 'after plunge',
+  science_stat3_val: '↓ Cortisol', science_stat3_label: 'Stress', science_stat3_sub: 'repeated exposure',
+  science_stat4_label: '↓ IL-6', science_stat4_sub: 'inflammation markers',
+  science_topics_sub: 'Click a topic for detailed reading with references',
+  science_read_more: 'Read more', science_coming_soon: 'Coming soon',
+  science_cta_title: 'Want to experience the science yourself?',
+  science_cta_sub: 'Join a guided immersion session and feel the effects firsthand',
+  science_topic5_title: 'Brown fat burning', science_topic5_desc: 'Activation of brown adipose tissue (BAT) and increased calorie burning.',
+  science_topic6_title: 'Vagal nervous system', science_topic6_desc: 'Strengthening the vagus nerve, improving self-regulation and recovery after stress.',
+
+  booking_title: 'Book an Experience', booking_sub: 'Choose the type of activity that suits you',
+  booking_tab_immersions: 'Immersions', booking_tab_workshops: 'Workshops',
+  booking_step_type: 'Choose workshop', booking_step_date: 'Choose date', booking_step_payment: 'Details & payment',
+  booking_choose_workshop: 'Choose workshop ›', booking_choose_package: 'Choose package ›',
+  booking_choose_immersion: '🧊 Book immersion(s)', booking_loading: 'Loading...',
+  booking_immersions_desc: 'Choose future dates for ice water immersions',
+  booking_workshops_desc: 'Choose from the different workshop types',
+
+  instructors_title: 'Our Team', instructors_sub: 'Certified CWI instructors with experience and knowledge',
+  instructors_cert_title: '🎓 CWI Instructor Certification',
+  instructors_cert_desc: 'All our instructors completed comprehensive training in cold immersion protocols, safety and anatomy.',
+  instructors_theory: 'Medical theory', instructors_practice: 'Practical training', instructors_exam: 'Final exam',
+  instructors_contact_cta: 'Want to know about CWI instructor courses? Contact us',
+  instructors_book_cta: 'Book a session with our team',
+  instructors_theory_desc: 'Cold Shock Response, thermoregulation, hormesis, safety protocols',
+  instructors_practice_desc: 'Group instruction, risk management, emergency response',
+  instructors_exam_desc: 'Final exams and internship as certification requirements',
+
+  reviews_title: 'What Participants Say', reviews_sub: 'Real experiences from people who took the plunge',
+  reviews_stat1_label: 'Satisfaction', reviews_stat2_label: 'Participants', reviews_stat3_label: 'Average rating', reviews_stat4_label: 'Return for more',
+  reviews_share_title: 'Share your experience',
+  reviews_type_individual: 'Individual workshop', reviews_type_couple: 'Couples workshop',
+  reviews_type_group: 'Group workshop', reviews_type_immersion: 'Personal immersion',
+
+  payment_title: 'Choose payment method', payment_amount: 'Amount to pay', payment_back: '← Back to booking',
+  payment_credit: 'Credit card payment', payment_bit: 'Pay with Bit',
+  payment_paybox: 'Pay with Paybox', payment_phone: 'Phone payment', payment_secured: 'Secured via Tranzila',
+  payment_bit_desc: 'Quick transfer via Bit', payment_paybox_desc: 'Quick transfer via Paybox',
+  failed_title: 'Payment failed', failed_desc: 'Unfortunately the payment could not be processed. Try again or contact us:',
+  failed_retry: 'Try again', failed_call: 'Call us',
 };
 
 const ar: Translations = {
@@ -247,6 +517,7 @@ const ar: Translations = {
   nav_science: 'العلم', nav_reviews: 'آراء العملاء', nav_contact: 'تواصل معنا',
   nav_login: 'دخول', nav_logout: 'خروج', nav_myarea: 'لوحتي الشخصية',
   nav_book_immersion: 'احجز غطسًا', nav_book_workshop: 'احجز ورشة', nav_book_now: 'احجز الآن',
+  nav_admin: 'مدير', nav_instructor_role: 'مدرب', nav_sessions_left: 'تبقّى {n}',
 
   hero_badge: 'رحوفوت | شارع سيريني 52 | مجمع المسبح العلاجي',
   hero_h1_line1: 'ادخل الثلج', hero_h1_line2: 'واخرج أقوى وأكثر مرونة',
@@ -317,6 +588,102 @@ const ar: Translations = {
   contact_complex: 'مجمع المسبح العلاجي', contact_whatsapp: 'واتساب',
   contact_send_msg: 'أرسل لنا رسالة', contact_book_now: 'احجز مكانك الآن',
   cta_book_now: 'احجز مكانك الآن', cta_explore: 'اكتشف',
+
+  a11y_title: 'خيارات إمكانية الوصول', a11y_font_size: 'حجم الخط',
+  a11y_normal: 'عادي', a11y_large: 'كبير', a11y_xlarge: 'كبير جداً',
+  a11y_contrast: 'تباين عالٍ', a11y_underline: 'تسطير الروابط',
+  a11y_reset: 'إعادة الضبط', a11y_statement: 'بيان إمكانية الوصول',
+  a11y_contact: 'تواصل بشأن إمكانية الوصول: 08-9310715',
+  a11y_open: 'فتح قائمة إمكانية الوصول', a11y_close: 'إغلاق',
+
+  footer_desc: 'مركز غمر في الماء البارد. ورش احترافية مبنية على الأبحاث لتعزيز الصمود النفسي، التركيز، وتقليل التوتر. بإشراف مدربين معتمدين CWI.',
+  footer_quick_nav: 'روابط سريعة', footer_home: 'الرئيسية', footer_booking: 'احجز مكانًا',
+  footer_team: 'فريقنا', footer_workshop_types: 'أنواع الورش',
+  footer_agenda: 'ما ينتظرك', footer_faq: 'الأسئلة الشائعة',
+  footer_contact_title: 'تواصل معنا', footer_address: 'شارع سيريني 52، رحوفوت',
+  footer_complex: 'مجمع المسبح العلاجي', footer_maps: 'فتح في Google Maps',
+  footer_copyright: 'ICING. جميع الحقوق محفوظة.',
+  footer_privacy: 'سياسة الخصوصية', footer_terms: 'شروط الاستخدام', footer_accessibility: 'إمكانية الوصول',
+
+  sticky_book: 'احجز الآن', sticky_whatsapp: 'واتساب',
+
+  greeting_mandatory_title: '⚠️ مرحباً {name}! لديك غطسة اليوم.',
+  greeting_mandatory_desc: 'يجب إكمال تصريح الصحة قبل الغطسة',
+  greeting_mandatory_btn: '📋 أكمل تصريح الصحة الآن',
+  greeting_return_text: 'مرحباً {name}! أهلاً بعودتك',
+  greeting_book_btn: '📅 احجز غطسة / ورشة',
+  greeting_journal_btn: '📖 سجل الغطسات',
+  greeting_health_btn: '✅ تصريح صحي',
+
+  login_title: 'دخول / تسجيل', login_otp_title: 'تحقق من بريدك الإلكتروني',
+  login_name_label: 'الاسم الكامل', login_name_placeholder: 'أدخل اسمك',
+  login_email_label: 'البريد الإلكتروني', login_otp_hint: 'سنرسل لك رمز تحقق لمرة واحدة عبر البريد الإلكتروني',
+  login_send_btn: 'إرسال الرمز إلى البريد', login_sending_btn: 'جارٍ الإرسال...',
+  login_otp_sent: 'أرسلنا رمزاً من 6 أرقام إلى',
+  login_code_label: 'رمز التحقق', login_enter_btn: 'دخول', login_verifying_btn: 'جارٍ التحقق...',
+  login_back_btn: 'رجوع / إرسال رمز جديد',
+  login_error_send: 'خطأ في إرسال الرمز', login_error_code: 'رمز غير صحيح',
+
+  contact_page_title: 'تواصل معنا', contact_page_sub: 'يسعدنا الإجابة على أي سؤال – املأ النموذج وسنتواصل معك قريباً.',
+  contact_field_name: 'الاسم الكامل', contact_field_phone: 'الهاتف',
+  contact_field_email: 'البريد الإلكتروني (اختياري)', contact_field_message: 'الرسالة',
+  contact_send_btn: 'إرسال الرسالة', contact_sending_btn: 'جارٍ الإرسال...',
+  contact_success_title: 'تم إرسال الرسالة بنجاح!', contact_success_sub: 'سنتواصل معك قريباً.',
+  contact_send_another: 'إرسال رسالة أخرى',
+  contact_error_general: 'خطأ في الإرسال، حاول مرة أخرى', contact_error_network: 'خطأ في الشبكة، تحقق من الاتصال',
+  contact_required: '*',
+
+  science_badge: 'العلم', science_title: 'العلم وراء الغمر في الماء البارد', science_sub: 'ما يحدث في جسمك عند كل غطسة',
+  science_topic1_title: 'النورأدرينالين', science_topic1_stat: '+127%',
+  science_topic1_desc: 'يرفع الغمر في الماء البارد النورأدرينالين حتى 3 أضعاف مستواه الأساسي، مما يعزز اليقظة والتركيز وشعور بالقوة.',
+  science_topic2_title: 'الكورتيزول والتوتر', science_topic2_stat: '↓ كورتيزول',
+  science_topic2_desc: 'يُدرّب التعرض المبكر للبرد محور HPA، ويتعلم الجسم تنظيم استجابة التوتر بكفاءة أعلى.',
+  science_topic3_title: 'الدوبامين والتحفيز', science_topic3_stat: '+250%',
+  science_topic3_desc: 'ارتفاع حاد في مستويات الدوبامين بعد الغطسة — مشابه للتمرين المكثف لكن لفترة أطول.',
+  science_topic4_title: 'الجهاز المناعي والالتهاب', science_topic4_stat: '↓ IL-6',
+  science_topic4_desc: 'تُظهر الدراسات انخفاضاً في مؤشرات الالتهاب وتحسناً في وظيفة الجهاز المناعي مع التعرض المنتظم للماء البارد.',
+  science_studies_title: 'الدراسات الرئيسية', science_topics_title: 'المواضيع العلمية',
+  science_book_cta: 'احجز مكانك — اختبره بنفسك',
+  science_stat1_sub: 'غطس عند 5°C', science_stat2_sub: 'بعد الغطسة',
+  science_stat3_val: '↓ كورتيزول', science_stat3_label: 'التوتر', science_stat3_sub: 'تعرض متكرر',
+  science_stat4_label: '↓ IL-6', science_stat4_sub: 'مؤشرات الالتهاب',
+  science_topics_sub: 'انقر على موضوع للقراءة التفصيلية مع المراجع',
+  science_read_more: 'اقرأ المزيد', science_coming_soon: 'قريباً',
+  science_cta_title: 'هل تريد تجربة العلم بجسدك؟',
+  science_cta_sub: 'انضم إلى جلسة غمر إرشادية وشعر بالتأثيرات بنفسك',
+  science_topic5_title: 'حرق الدهون البنية', science_topic5_desc: 'تفعيل نسيج الدهون البنية (BAT) وزيادة حرق السعرات الحرارية.',
+  science_topic6_title: 'الجهاز العصبي المبهمي', science_topic6_desc: 'تقوية العصب المبهم وتحسين التنظيم الذاتي والتعافي من التوتر.',
+
+  booking_title: 'احجز تجربة', booking_sub: 'اختر نوع النشاط المناسب لك',
+  booking_tab_immersions: 'غطسات', booking_tab_workshops: 'ورش عمل',
+  booking_step_type: 'اختر ورشة', booking_step_date: 'اختر تاريخاً', booking_step_payment: 'التفاصيل والدفع',
+  booking_choose_workshop: 'اختر ورشة ›', booking_choose_package: 'اختر باقة ›',
+  booking_choose_immersion: '🧊 احجز غطسة/ات', booking_loading: 'جارٍ التحميل...',
+  booking_immersions_desc: 'اختر تواريخ مستقبلية للغطسات في الماء البارد',
+  booking_workshops_desc: 'اختر من بين أنواع ورش العمل المختلفة',
+
+  instructors_title: 'فريقنا', instructors_sub: 'مدربون معتمدون CWI ذوو خبرة ومعرفة',
+  instructors_cert_title: '🎓 شهادة CWI Instructor',
+  instructors_cert_desc: 'اجتاز جميع مدربينا تدريباً شاملاً في بروتوكولات الغمر البارد والسلامة والتشريح.',
+  instructors_theory: 'النظرية الطبية', instructors_practice: 'التدريب العملي', instructors_exam: 'الامتحان النهائي',
+  instructors_contact_cta: 'تريد معرفة تفاصيل دورة مدربي CWI؟ تواصل معنا',
+  instructors_book_cta: 'احجز ورشة مع فريقنا',
+  instructors_theory_desc: 'استجابة الصدمة الباردة، التنظيم الحراري، الهرميسيس، بروتوكولات السلامة',
+  instructors_practice_desc: 'توجيه المجموعات، إدارة المخاطر، التعامل مع الطوارئ',
+  instructors_exam_desc: 'امتحانات ختامية وتدريب عملي كمتطلبات للشهادة',
+
+  reviews_title: 'ماذا يقول المشاركون؟', reviews_sub: 'تجارب حقيقية من أشخاص خاضوا الغمر',
+  reviews_stat1_label: 'الرضا', reviews_stat2_label: 'المشاركون', reviews_stat3_label: 'متوسط التقييم', reviews_stat4_label: 'يعودون للمزيد',
+  reviews_share_title: 'شارك تجربتك',
+  reviews_type_individual: 'ورشة فردية', reviews_type_couple: 'ورشة للأزواج',
+  reviews_type_group: 'ورشة جماعية', reviews_type_immersion: 'غمر شخصي',
+
+  payment_title: 'اختر طريقة الدفع', payment_amount: 'المبلغ المستحق', payment_back: '← العودة للحجز',
+  payment_credit: 'الدفع ببطاقة الائتمان', payment_bit: 'الدفع بـ Bit',
+  payment_paybox: 'الدفع بـ Paybox', payment_phone: 'الدفع هاتفياً', payment_secured: 'مؤمَّن عبر Tranzila',
+  payment_bit_desc: 'تحويل سريع عبر Bit', payment_paybox_desc: 'تحويل سريع عبر Paybox',
+  failed_title: 'فشل الدفع', failed_desc: 'للأسف لم تتم معالجة الدفع. حاول مجدداً أو تواصل معنا:',
+  failed_retry: 'حاول مجدداً', failed_call: 'اتصل بنا',
 };
 
 const ru: Translations = {
@@ -324,6 +691,7 @@ const ru: Translations = {
   nav_science: 'Наука', nav_reviews: 'Отзывы', nav_contact: 'Контакты',
   nav_login: 'Войти', nav_logout: 'Выйти', nav_myarea: 'Мой кабинет',
   nav_book_immersion: 'Забронировать погружение', nav_book_workshop: 'Забронировать воркшоп', nav_book_now: 'Забронировать',
+  nav_admin: 'Админ', nav_instructor_role: 'Инструктор', nav_sessions_left: 'осталось {n}',
 
   hero_badge: 'Реховот | ул. Сирени 52 | Комплекс терапевтического бассейна',
   hero_h1_line1: 'Войди в лёд', hero_h1_line2: 'Выйди сильным и стойким',
@@ -393,6 +761,102 @@ const ru: Translations = {
   contact_complex: 'Комплекс терапевтического бассейна', contact_whatsapp: 'WhatsApp',
   contact_send_msg: 'Написать нам', contact_book_now: 'Забронировать место',
   cta_book_now: 'Забронировать место', cta_explore: 'Узнать больше',
+
+  a11y_title: 'Параметры доступности', a11y_font_size: 'Размер шрифта',
+  a11y_normal: 'Обычный', a11y_large: 'Большой', a11y_xlarge: 'Очень большой',
+  a11y_contrast: 'Высокий контраст', a11y_underline: 'Подчёркивать ссылки',
+  a11y_reset: 'Сбросить настройки', a11y_statement: 'Заявление о доступности',
+  a11y_contact: 'Связь по вопросам доступности: 08-9310715',
+  a11y_open: 'Открыть меню доступности', a11y_close: 'Закрыть',
+
+  footer_desc: 'Центр погружения в ледяную воду. Профессиональные, научно обоснованные воркшопы для психостойкости, концентрации и снятия стресса. Под руководством сертифицированных инструкторов CWI.',
+  footer_quick_nav: 'Навигация', footer_home: 'Главная', footer_booking: 'Забронировать',
+  footer_team: 'Наша команда', footer_workshop_types: 'Виды воркшопов',
+  footer_agenda: 'Что вас ждёт', footer_faq: 'Частые вопросы',
+  footer_contact_title: 'Контакты', footer_address: 'ул. Сирени 52, Реховот',
+  footer_complex: 'Комплекс терапевтического бассейна', footer_maps: 'Открыть в Google Maps',
+  footer_copyright: 'ICING. Все права защищены.',
+  footer_privacy: 'Политика конфиденциальности', footer_terms: 'Условия использования', footer_accessibility: 'Доступность',
+
+  sticky_book: 'Забронировать', sticky_whatsapp: 'WhatsApp',
+
+  greeting_mandatory_title: '⚠️ Привет, {name}! Сегодня у вас погружение.',
+  greeting_mandatory_desc: 'Необходимо заполнить медицинскую декларацию перед погружением',
+  greeting_mandatory_btn: '📋 Заполнить декларацию сейчас',
+  greeting_return_text: 'Привет, {name}! Добро пожаловать обратно',
+  greeting_book_btn: '📅 Забронировать погружение / воркшоп',
+  greeting_journal_btn: '📖 Журнал погружений',
+  greeting_health_btn: '✅ Медицинская декларация',
+
+  login_title: 'Вход / Регистрация', login_otp_title: 'Подтвердите email',
+  login_name_label: 'Полное имя', login_name_placeholder: 'Введите ваше имя',
+  login_email_label: 'Email', login_otp_hint: 'Мы отправим вам одноразовый код подтверждения на email',
+  login_send_btn: 'Отправить код на email', login_sending_btn: 'Отправка...',
+  login_otp_sent: 'Мы отправили 6-значный код на',
+  login_code_label: 'Код подтверждения', login_enter_btn: 'Войти', login_verifying_btn: 'Проверка...',
+  login_back_btn: 'Назад / Отправить новый код',
+  login_error_send: 'Ошибка отправки кода', login_error_code: 'Неверный код',
+
+  contact_page_title: 'Контакты', contact_page_sub: 'Рады ответить на любой вопрос – заполните форму и мы свяжемся с вами.',
+  contact_field_name: 'Полное имя', contact_field_phone: 'Телефон',
+  contact_field_email: 'Email (необязательно)', contact_field_message: 'Сообщение',
+  contact_send_btn: 'Отправить сообщение', contact_sending_btn: 'Отправка...',
+  contact_success_title: 'Сообщение отправлено!', contact_success_sub: 'Мы свяжемся с вами в ближайшее время.',
+  contact_send_another: 'Отправить ещё одно сообщение',
+  contact_error_general: 'Ошибка отправки, попробуйте снова', contact_error_network: 'Ошибка сети, проверьте подключение',
+  contact_required: '*',
+
+  science_badge: 'Наука', science_title: 'Наука за ледяными ваннами', science_sub: 'Что происходит в вашем теле при каждом погружении',
+  science_topic1_title: 'Норадреналин', science_topic1_stat: '+127%',
+  science_topic1_desc: 'Погружение в холодную воду повышает норадреналин до 3× от базового уровня. Это приводит к бдительности, концентрации и ощущению силы.',
+  science_topic2_title: 'Кортизол и стресс', science_topic2_stat: '↓ Кортизол',
+  science_topic2_desc: 'Контролируемое воздействие холода тренирует ось HPA. Тело учится регулировать реакцию на стресс более эффективно.',
+  science_topic3_title: 'Дофамин и мотивация', science_topic3_stat: '+250%',
+  science_topic3_desc: 'Резкий рост уровня дофамина после холодного погружения — похожий на интенсивные упражнения, но более продолжительный.',
+  science_topic4_title: 'Иммунитет и воспаление', science_topic4_stat: '↓ IL-6',
+  science_topic4_desc: 'Исследования показывают снижение воспалительных маркеров и улучшение иммунной функции при регулярном воздействии холодной воды.',
+  science_studies_title: 'Ключевые исследования', science_topics_title: 'Научные темы',
+  science_book_cta: 'Забронируйте место — испытайте сами',
+  science_stat1_sub: 'погружение при 5°C', science_stat2_sub: 'после погружения',
+  science_stat3_val: '↓ Кортизол', science_stat3_label: 'Стресс', science_stat3_sub: 'повторное воздействие',
+  science_stat4_label: '↓ IL-6', science_stat4_sub: 'маркеры воспаления',
+  science_topics_sub: 'Нажмите на тему для подробного чтения со ссылками',
+  science_read_more: 'Читать далее', science_coming_soon: 'Скоро',
+  science_cta_title: 'Хотите испытать науку на себе?',
+  science_cta_sub: 'Присоединитесь к управляемому погружению и почувствуйте эффекты',
+  science_topic5_title: 'Сжигание бурого жира', science_topic5_desc: 'Активация бурой жировой ткани (BAT) и усиление сжигания калорий.',
+  science_topic6_title: 'Блуждающая нервная система', science_topic6_desc: 'Укрепление блуждающего нерва, улучшение саморегуляции и восстановления после стресса.',
+
+  booking_title: 'Забронировать опыт', booking_sub: 'Выберите тип активности, который вам подходит',
+  booking_tab_immersions: 'Погружения', booking_tab_workshops: 'Воркшопы',
+  booking_step_type: 'Выбрать воркшоп', booking_step_date: 'Выбрать дату', booking_step_payment: 'Детали и оплата',
+  booking_choose_workshop: 'Выбрать воркшоп ›', booking_choose_package: 'Выбрать пакет ›',
+  booking_choose_immersion: '🧊 Забронировать погружение', booking_loading: 'Загрузка...',
+  booking_immersions_desc: 'Выберите даты для погружений в ледяную воду',
+  booking_workshops_desc: 'Выберите из различных типов воркшопов',
+
+  instructors_title: 'Наша команда', instructors_sub: 'Сертифицированные инструкторы CWI с опытом и знаниями',
+  instructors_cert_title: '🎓 Сертификат CWI Instructor',
+  instructors_cert_desc: 'Все наши инструкторы прошли комплексную подготовку по протоколам холодного погружения, безопасности и анатомии.',
+  instructors_theory: 'Медицинская теория', instructors_practice: 'Практическая подготовка', instructors_exam: 'Финальный экзамен',
+  instructors_contact_cta: 'Хотите узнать о курсах инструкторов CWI? Свяжитесь с нами',
+  instructors_book_cta: 'Забронируйте воркшоп с нашей командой',
+  instructors_theory_desc: 'Реакция на холодовой шок, терморегуляция, гормезис, протоколы безопасности',
+  instructors_practice_desc: 'Инструктаж группы, управление рисками, экстренная помощь',
+  instructors_exam_desc: 'Финальные экзамены и стажировка как требования сертификации',
+
+  reviews_title: 'Что говорят участники?', reviews_sub: 'Реальный опыт людей, прошедших погружение',
+  reviews_stat1_label: 'Удовлетворённость', reviews_stat2_label: 'Участники', reviews_stat3_label: 'Средний рейтинг', reviews_stat4_label: 'Возвращаются снова',
+  reviews_share_title: 'Поделитесь своим опытом',
+  reviews_type_individual: 'Индивидуальный воркшоп', reviews_type_couple: 'Воркшоп для пар',
+  reviews_type_group: 'Групповой воркшоп', reviews_type_immersion: 'Личное погружение',
+
+  payment_title: 'Выберите способ оплаты', payment_amount: 'Сумма к оплате', payment_back: '← Вернуться к бронированию',
+  payment_credit: 'Оплата картой', payment_bit: 'Оплата Bit',
+  payment_paybox: 'Оплата Paybox', payment_phone: 'Оплата по телефону', payment_secured: 'Защищено через Tranzila',
+  payment_bit_desc: 'Быстрый перевод через Bit', payment_paybox_desc: 'Быстрый перевод через Paybox',
+  failed_title: 'Платёж не прошёл', failed_desc: 'К сожалению, обработка платежа не удалась. Попробуйте снова или свяжитесь с нами:',
+  failed_retry: 'Попробовать снова', failed_call: 'Позвонить нам',
 };
 
 export const translations: Record<Lang, Translations> = { he, en, ar, ru };

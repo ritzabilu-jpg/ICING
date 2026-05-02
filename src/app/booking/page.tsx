@@ -2,6 +2,7 @@
 
 import { useState, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
+import { useLanguage } from '@/lib/i18n/LanguageContext';
 import type { Workshop, WorkshopType } from '@/types';
 import WorkshopTypeSelector from '@/components/booking/WorkshopTypeSelector';
 import WorkshopCalendar from '@/components/booking/WorkshopCalendar';
@@ -13,6 +14,7 @@ type BookingMode = 'immersions' | 'workshops' | null;
 type BookingStep = 1 | 2;
 
 function BookingContent() {
+  const { t } = useLanguage();
   const searchParams = useSearchParams();
   const router = useRouter();
   const initialType = searchParams.get('type') as WorkshopType | null;
@@ -34,8 +36,8 @@ function BookingContent() {
   if (mode === null) {
     return (
       <div className="max-w-5xl mx-auto px-4 sm:px-6 py-12">
-        <h1 className="text-3xl font-black text-navy-900 text-center mb-2">הזמינו חוויה</h1>
-        <p className="text-slate-500 text-center mb-10">בחרו את סוג הפעילות שמתאים לכם</p>
+        <h1 className="text-3xl font-black text-navy-900 text-center mb-2">{t('booking_title')}</h1>
+        <p className="text-slate-500 text-center mb-10">{t('booking_sub')}</p>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl mx-auto">
           {/* Immersions card */}
           <button
@@ -45,11 +47,11 @@ function BookingContent() {
                        focus:outline-none focus:ring-4 focus:ring-ice-300"
           >
             <div className="text-5xl mb-4">🧊</div>
-            <h2 className="text-xl font-black text-navy-900 mb-2">טבילות</h2>
-            <p className="text-slate-500 text-sm">בחר תאריכים עתידיים לטבילות במי הקרח</p>
+            <h2 className="text-xl font-black text-navy-900 mb-2">{t('booking_tab_immersions')}</h2>
+            <p className="text-slate-500 text-sm">{t('booking_immersions_desc')}</p>
             <div className="mt-6 bg-navy-900 text-white font-bold text-sm px-5 py-2.5 rounded-xl
                             group-hover:bg-navy-700 transition-colors">
-              בחר חבילה ותאריכים ›
+              {t('booking_choose_package')}
             </div>
           </button>
 
@@ -61,11 +63,11 @@ function BookingContent() {
                        focus:outline-none focus:ring-4 focus:ring-ice-300"
           >
             <div className="text-5xl mb-4">🏔️</div>
-            <h2 className="text-xl font-black text-navy-900 mb-2">סדנאות</h2>
-            <p className="text-slate-500 text-sm">בחר מתוך סוגי הסדנאות השונים</p>
+            <h2 className="text-xl font-black text-navy-900 mb-2">{t('booking_tab_workshops')}</h2>
+            <p className="text-slate-500 text-sm">{t('booking_workshops_desc')}</p>
             <div className="mt-6 bg-navy-900 text-white font-bold text-sm px-5 py-2.5 rounded-xl
                             group-hover:bg-navy-700 transition-colors">
-              בחר סדנה ›
+              {t('booking_choose_workshop')}
             </div>
           </button>
         </div>
@@ -90,13 +92,13 @@ function BookingContent() {
           onClick={resetMode}
           className="text-sm text-ice-600 hover:text-ice-700 font-semibold border border-ice-200 rounded-xl px-3 py-1.5 hover:bg-ice-50 transition-colors"
         >
-          🧊 קבע טבילה/ות
+          {t('booking_choose_immersion')}
         </button>
       </div>
 
       <StepIndicator
         current={isOneOnOne ? 2 : step}
-        labels={['בחרו סדנה', 'בחרו תאריך', 'פרטים ותשלום']}
+        labels={[t('booking_step_type'), t('booking_step_date'), t('booking_step_payment')]}
       />
 
       {step === 1 && (
@@ -129,6 +131,7 @@ function BookingContent() {
 }
 
 export default function BookingPage() {
+  const { t } = useLanguage();
   return (
     <Suspense
       fallback={
@@ -136,7 +139,7 @@ export default function BookingPage() {
           <div className="text-center text-slate-400">
             <div className="w-10 h-10 border-2 border-ice-500 border-t-transparent
                             rounded-full animate-spin mx-auto mb-4" />
-            <p>טוען...</p>
+            <p>{t('booking_loading')}</p>
           </div>
         </div>
       }

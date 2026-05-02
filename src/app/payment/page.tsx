@@ -4,10 +4,12 @@ import { Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useLanguage } from '@/lib/i18n/LanguageContext';
 
 const PHONE = '089310715';
 
 function PaymentContent() {
+  const { t } = useLanguage();
   const sp = useSearchParams();
   const bookingId = sp.get('bookingId') ?? '';
   const total     = sp.get('total')     ?? '0';
@@ -41,13 +43,13 @@ function PaymentContent() {
         {/* Header */}
         <div className="text-center mb-8">
           <div className="text-5xl mb-3">💳</div>
-          <h1 className="text-3xl font-black text-[#0f2942]">בחרו אמצעי תשלום</h1>
+          <h1 className="text-3xl font-black text-[#0f2942]">{t('payment_title')}</h1>
           {date && <p className="text-slate-500 mt-1 text-sm">{type} · {date}</p>}
         </div>
 
         {/* Total badge */}
         <div className="bg-[#0f2942] text-white rounded-2xl px-6 py-4 text-center mb-8 shadow-lg">
-          <p className="text-slate-400 text-sm mb-1">סכום לתשלום</p>
+          <p className="text-slate-400 text-sm mb-1">{t('payment_amount')}</p>
           <p className="text-4xl font-black text-cyan-400">₪{total}</p>
           {name && <p className="text-slate-300 text-sm mt-1">{name}</p>}
         </div>
@@ -62,8 +64,8 @@ function PaymentContent() {
               💳
             </div>
             <div className="flex-1">
-              <p className="font-black text-[#0f2942] text-lg">תשלום בכרטיס אשראי</p>
-              <p className="text-slate-400 text-sm">מאובטח דרך Tranzila</p>
+              <p className="font-black text-[#0f2942] text-lg">{t('payment_credit')}</p>
+              <p className="text-slate-400 text-sm">{t('payment_secured')}</p>
             </div>
             <span className="text-slate-300 group-hover:text-[#0f2942] text-xl transition-colors">←</span>
           </a>
@@ -77,8 +79,8 @@ function PaymentContent() {
               <Image src="/Bit logo ביט.png" alt="Bit" width={56} height={56} className="object-contain w-full h-full" unoptimized />
             </div>
             <div className="flex-1">
-              <p className="font-black text-[#0f2942] text-lg">תשלום ב-Bit</p>
-              <p className="text-slate-400 text-sm">העברה מהירה בביט</p>
+              <p className="font-black text-[#0f2942] text-lg">{t('payment_bit')}</p>
+              <p className="text-slate-400 text-sm">{t('payment_bit_desc')}</p>
             </div>
             <span className="text-slate-300 group-hover:text-[#e8170b] text-xl transition-colors">←</span>
           </a>
@@ -92,8 +94,8 @@ function PaymentContent() {
               <Image src="/PAYBOX LOGO פייבוקס.jpg" alt="Paybox" width={56} height={56} className="object-contain w-full h-full" unoptimized />
             </div>
             <div className="flex-1">
-              <p className="font-black text-[#0f2942] text-lg">תשלום ב-Paybox</p>
-              <p className="text-slate-400 text-sm">העברה מהירה בפייבוקס</p>
+              <p className="font-black text-[#0f2942] text-lg">{t('payment_paybox')}</p>
+              <p className="text-slate-400 text-sm">{t('payment_paybox_desc')}</p>
             </div>
             <span className="text-slate-300 group-hover:text-[#7b2d8b] text-xl transition-colors">←</span>
           </a>
@@ -105,7 +107,7 @@ function PaymentContent() {
               📞
             </div>
             <div className="flex-1">
-              <p className="font-black text-[#0f2942] text-lg">תשלום בטלפון</p>
+              <p className="font-black text-[#0f2942] text-lg">{t('payment_phone')}</p>
               <p className="text-slate-400 text-sm">{PHONE.replace(/(\d{2})(\d{3})(\d{4})/, '$1-$2-$3')}</p>
             </div>
             <span className="text-slate-300 group-hover:text-green-500 text-xl transition-colors">←</span>
@@ -116,7 +118,7 @@ function PaymentContent() {
         {/* Back link */}
         <div className="text-center mt-8">
           <Link href="/booking" className="text-slate-400 hover:text-slate-600 text-sm underline">
-            ← חזרה להזמנה
+            {t('payment_back')}
           </Link>
         </div>
 

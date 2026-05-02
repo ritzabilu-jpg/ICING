@@ -10,23 +10,25 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { useLanguage } from '@/lib/i18n/LanguageContext';
 
 // ─── Mandatory banner (booking today, health check not yet filled) ────────────
 
 function MandatoryHealthBanner({ name }: { name: string }) {
   const router = useRouter();
+  const { t } = useLanguage();
   return (
     <div className="bg-amber-50 border-b-2 border-amber-400 py-4 px-4" dir="rtl">
       <div className="max-w-5xl mx-auto flex flex-wrap items-center justify-between gap-3">
         <div>
-          <p className="text-amber-900 font-black text-sm">⚠️ שלום {name}! יש לך טבילה היום.</p>
-          <p className="text-amber-700 text-xs mt-0.5">חובה למלא הצהרת בריאות לפני הטבילה</p>
+          <p className="text-amber-900 font-black text-sm">⚠️ {t('greeting_mandatory_title').replace('{name}', name)}</p>
+          <p className="text-amber-700 text-xs mt-0.5">{t('greeting_mandatory_desc')}</p>
         </div>
         <button
           onClick={() => router.push('/health-check')}
           className="bg-amber-500 hover:bg-amber-600 text-white text-sm font-black px-5 py-2 rounded-xl transition-colors animate-pulse"
         >
-          📋 מלא הצהרת בריאות עכשיו
+          📋 {t('greeting_mandatory_btn')}
         </button>
       </div>
     </div>
@@ -44,31 +46,31 @@ function ReturnBanner({
   hasBookingToday: boolean;
   onClose: () => void;
 }) {
+  const { t } = useLanguage();
   return (
     <div className="bg-ice-50 border-b border-ice-200 py-3 px-4" dir="rtl">
       <div className="max-w-5xl mx-auto flex flex-wrap items-center justify-between gap-3">
         <p className="text-navy-900 font-semibold text-sm">
-          שלום <span className="text-ice-700 font-black">{name}</span>! ברוך שובך 👋
+          {t('greeting_return_text').replace('{name}', name)}
         </p>
         <div className="flex items-center gap-2 flex-wrap">
           <Link href="/booking"
             className="bg-ice-600 hover:bg-ice-700 text-white text-xs font-bold px-4 py-1.5 rounded-lg transition-colors">
-            📅 קבע טבילה / סדנה
+            📅 {t('greeting_book_btn')}
           </Link>
           <Link href="/journal"
             className="bg-navy-800 hover:bg-navy-700 text-white text-xs font-bold px-4 py-1.5 rounded-lg transition-colors">
-            📖 יומן טבילות
+            📖 {t('greeting_journal_btn')}
           </Link>
-          {/* Optional link – shown only if they have a booking today (health check already filled) */}
           {hasBookingToday && (
             <Link href="/health-check"
               className="bg-green-600 hover:bg-green-700 text-white text-xs font-bold px-4 py-1.5 rounded-lg transition-colors">
-              ✅ הצהרת בריאות
+              ✅ {t('greeting_health_btn')}
             </Link>
           )}
           <button onClick={onClose}
             className="text-slate-400 hover:text-slate-600 text-lg leading-none pr-1"
-            aria-label="סגור">
+            aria-label={t('a11y_close')}>
             ✕
           </button>
         </div>

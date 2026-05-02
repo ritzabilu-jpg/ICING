@@ -1,7 +1,11 @@
+'use client';
+
 import Image from 'next/image';
 import Link from 'next/link';
+import { useLanguage } from '@/lib/i18n/LanguageContext';
 
 export default function Footer() {
+  const { t } = useLanguage();
   const currentYear = new Date().getFullYear();
 
   return (
@@ -21,24 +25,23 @@ export default function Footer() {
               />
             </div>
             <p className="text-slate-400 leading-relaxed mb-6 max-w-sm">
-              מרכז הטבילה במי קרח. סדנאות מקצועיות ומדעיות לחיזוק חוסן מנטלי,
-              שיפור פוקוס והורדת סטרס. בליווי מדריכים מוסמכים CWI.
+              {t('footer_desc')}
             </p>
             <div className="flex items-center gap-4">
               <a href="https://www.tiktok.com/@kallklarhet" target="_blank" rel="noopener noreferrer"
-                 className="w-10 h-10 overflow-hidden rounded-full hover:scale-110 transition-transform" aria-label="טיקטוק">
+                 className="w-10 h-10 overflow-hidden rounded-full hover:scale-110 transition-transform" aria-label="TikTok">
                 <img src="/logo-tiktok.jpg" alt="TikTok" className="w-full h-full object-cover" />
               </a>
               <a href="https://www.facebook.com/profile.php?id=61572032967869" target="_blank" rel="noopener noreferrer"
-                 className="w-10 h-10 overflow-hidden rounded-full hover:scale-110 transition-transform" aria-label="פייסבוק">
+                 className="w-10 h-10 overflow-hidden rounded-full hover:scale-110 transition-transform" aria-label="Facebook">
                 <img src="/logo-facebook.png" alt="Facebook" className="w-full h-full object-cover" />
               </a>
               <a href="https://www.instagram.com/cwirehovot/" target="_blank" rel="noopener noreferrer"
-                 className="w-10 h-10 overflow-hidden rounded-full hover:scale-110 transition-transform" aria-label="אינסטגרם">
+                 className="w-10 h-10 overflow-hidden rounded-full hover:scale-110 transition-transform" aria-label="Instagram">
                 <img src="/logo-instagram.jpg" alt="Instagram" className="w-full h-full object-cover" />
               </a>
               <a href="https://wa.me/972524500825" target="_blank" rel="noopener noreferrer"
-                 className="w-10 h-10 overflow-hidden rounded-full hover:scale-110 transition-transform" aria-label="וואטסאפ">
+                 className="w-10 h-10 overflow-hidden rounded-full hover:scale-110 transition-transform" aria-label="WhatsApp">
                 <img src="/logo-whatsapp.jpg" alt="WhatsApp" className="w-full h-full object-cover" />
               </a>
             </div>
@@ -46,15 +49,15 @@ export default function Footer() {
 
           {/* Quick links */}
           <div>
-            <h3 className="text-white font-bold text-lg mb-5">ניווט מהיר</h3>
+            <h3 className="text-white font-bold text-lg mb-5">{t('footer_quick_nav')}</h3>
             <ul className="space-y-3">
               {[
-                { href: '/', label: 'דף הבית' },
-                { href: '/booking', label: 'הזמנת מקום' },
-                { href: '/instructors', label: 'הצוות שלנו' },
-                { href: '/#workshop-types', label: 'סוגי הסדנאות' },
-                { href: '/#agenda', label: 'מה מחכה לכם' },
-                { href: '/#faq', label: 'שאלות נפוצות' },
+                { href: '/', label: t('footer_home') },
+                { href: '/booking', label: t('footer_booking') },
+                { href: '/instructors', label: t('footer_team') },
+                { href: '/#workshop-types', label: t('footer_workshop_types') },
+                { href: '/#agenda', label: t('footer_agenda') },
+                { href: '/#faq', label: t('footer_faq') },
               ].map(link => (
                 <li key={link.href}>
                   <Link href={link.href}
@@ -68,13 +71,13 @@ export default function Footer() {
 
           {/* Contact */}
           <div>
-            <h3 className="text-white font-bold text-lg mb-5">פרטי קשר</h3>
+            <h3 className="text-white font-bold text-lg mb-5">{t('footer_contact_title')}</h3>
             <ul className="space-y-4">
               <li className="flex items-start gap-3">
                 <span className="text-ice-400 mt-0.5">📍</span>
                 <div>
-                  <p className="text-slate-300">רחוב סירני 52, רחובות</p>
-                  <p className="text-slate-500 text-sm">מתחם הבריכה הטיפולית</p>
+                  <p className="text-slate-300">{t('footer_address')}</p>
+                  <p className="text-slate-500 text-sm">{t('footer_complex')}</p>
                 </div>
               </li>
               <li>
@@ -95,7 +98,7 @@ export default function Footer() {
                 <a href="https://maps.app.goo.gl/c5DjBoYrSFTZnYwF8" target="_blank"
                    rel="noopener noreferrer"
                    className="text-ice-400 hover:text-ice-300 text-sm underline transition-colors">
-                  פתח ב-Google Maps
+                  {t('footer_maps')}
                 </a>
               </li>
             </ul>
@@ -106,17 +109,17 @@ export default function Footer() {
         <div className="border-t border-navy-700 mt-12 pt-8 flex flex-col md:flex-row
                         items-center justify-between gap-4">
           <p className="text-slate-500 text-sm">
-            © {currentYear} חוויות שוויץ המדע. כל הזכויות שמורות.
+            © {currentYear} {t('footer_copyright')}
           </p>
           <div className="flex items-center gap-6 text-sm text-slate-500">
             <Link href="/privacy" className="hover:text-slate-300 transition-colors">
-              מדיניות פרטיות
+              {t('footer_privacy')}
             </Link>
             <Link href="/terms" className="hover:text-slate-300 transition-colors">
-              תנאי שימוש
+              {t('footer_terms')}
             </Link>
             <Link href="/accessibility" className="hover:text-slate-300 transition-colors">
-              נגישות
+              {t('footer_accessibility')}
             </Link>
           </div>
         </div>

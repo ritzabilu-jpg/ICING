@@ -2,8 +2,10 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useLanguage } from '@/lib/i18n/LanguageContext';
 
 export default function StickyCTA() {
+  const { t } = useLanguage();
   const [show, setShow] = useState(false);
 
   useEffect(() => {
@@ -23,7 +25,7 @@ export default function StickyCTA() {
         className="flex-1 bg-orange-500 hover:bg-orange-600 text-white font-black
                    text-center py-3 rounded-xl text-base transition-colors shadow-lg shadow-orange-500/30"
       >
-        הזמן מקום
+        {t('sticky_book')}
       </Link>
       <a
         href="https://wa.me/972524500825"
@@ -31,7 +33,7 @@ export default function StickyCTA() {
         rel="noopener noreferrer"
         className="flex-shrink-0 bg-slate-700 text-white px-4 py-3 rounded-xl text-sm font-bold"
       >
-        💬 וואטסאפ
+        💬 {t('sticky_whatsapp')}
       </a>
     </div>
   );
