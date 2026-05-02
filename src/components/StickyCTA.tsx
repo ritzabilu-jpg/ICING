@@ -23,7 +23,7 @@ export default function StickyCTA() {
         className="flex-1 bg-orange-500 hover:bg-orange-600 text-white font-black
                    text-center py-3 rounded-xl text-base transition-colors shadow-lg shadow-orange-500/30"
       >
-        קבע מקום — ₪300
+        הזמן מקום
       </Link>
       <a
         href="https://wa.me/972524500825"
