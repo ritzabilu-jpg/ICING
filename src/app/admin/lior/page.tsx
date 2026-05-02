@@ -70,6 +70,16 @@ function ConfirmDialog({ open, title, message, onConfirm, onCancel }: ConfirmDia
   );
 }
 
+// ─── Auto-delete helper ───────────────────────────────────────────────────────
+
+/** Returns yesterday's date as YYYY-MM-DD in Israel timezone (Asia/Jerusalem = GMT+2/+3). */
+function getYesterdayIsrael(): string {
+  const todayIsrael = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Jerusalem' });
+  const d = new Date(todayIsrael + 'T12:00:00');
+  d.setDate(d.getDate() - 1);
+  return d.toISOString().split('T')[0];
+}
+
 // ─── Admin Content ────────────────────────────────────────────────────────────
 
 type TabType = 'immersion' | 'clients' | 'instructors' | 'workshops' | 'reviews' | 'manage-instructors' | 'users' | 'availability' | 'vacations' | 'schedule' | 'phone-requests';
@@ -285,6 +295,12 @@ function AdminContent() {
 
   const loadSlots = useCallback(async () => {
     setLoadingS(true); setErrorS('');
+    // Auto-delete past immersion slots (dates before today, Israel time)
+    try {
+      const yesterday = getYesterdayIsrael();
+      const params = new URLSearchParams({ key, from_date: '2000-01-01', to_date: yesterday });
+      await fetch(`/api/admin/immersion-slots?${params}`, { method: 'DELETE' });
+    } catch { /* silent */ }
     try {
       const res = await fetch(`/api/admin/immersion-slots?key=${encodeURIComponent(key)}`);
       const data = await res.json() as { slots?: ImmersionSlot[]; error?: string };
@@ -307,6 +323,12 @@ function AdminContent() {
 
   const loadWorkshops = useCallback(async () => {
     setLoadingW(true);
+    // Auto-delete past workshops (dates before today, Israel time)
+    try {
+      const yesterday = getYesterdayIsrael();
+      const params = new URLSearchParams({ key, from_date: '2000-01-01', to_date: yesterday });
+      await fetch(`/api/admin/instructor-workshops?${params}`, { method: 'DELETE' });
+    } catch { /* silent */ }
     try {
       const res = await fetch(`/api/admin/instructor-workshops?key=${encodeURIComponent(key)}`);
       const data = await res.json();
