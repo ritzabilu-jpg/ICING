@@ -192,6 +192,14 @@ function AdminContent() {
   const [wMax, setWMax]                 = useState(10);
   const [addingW, setAddingW]           = useState(false);
   const [wMsg, setWMsg]                 = useState('');
+  const [showRepeatWeeklyW, setShowRepeatWeeklyW] = useState(false);
+  const [repeatWeeklyUntilW, setRepeatWeeklyUntilW] = useState(() => {
+    const d = new Date();
+    const last = new Date(d.getFullYear(), d.getMonth() + 1, 0);
+    return `${last.getFullYear()}-${String(last.getMonth()+1).padStart(2,'0')}-${String(last.getDate()).padStart(2,'0')}`;
+  });
+  const [repeatingWeeklyW, setRepeatingWeeklyW] = useState(false);
+  const [repeatWeeklyMsgW, setRepeatWeeklyMsgW] = useState('');
 
   // ── Instructor CRUD ──
   interface DbInstructor { id: string; name: string; slug: string | null; bio: string; photo_url: string | null; specialties: string[]; certifications: string[]; quote: string | null; facebook_url: string | null; phone: string | null; email_contact: string | null; female: boolean; sort_order: number; is_active: boolean; roles?: string[]; }
@@ -540,6 +548,32 @@ function AdminContent() {
     setAddingW(false);
   }
 
+  async function handleRepeatWeeklyWorkshop() {
+    if (!wDate || !wTime || !wInstructor || !repeatWeeklyUntilW) return;
+    setRepeatingWeeklyW(true);
+    setRepeatWeeklyMsgW('');
+    const start = new Date(wDate + 'T12:00:00');
+    const until = new Date(repeatWeeklyUntilW + 'T12:00:00');
+    let createdCount = 0;
+    let weekCount = 0;
+    const cur = new Date(start);
+    while (cur <= until) {
+      const dateStr = cur.toISOString().split('T')[0];
+      const res = await fetch(`/api/admin/instructor-workshops?key=${encodeURIComponent(key)}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ workshop_date: dateStr, workshop_time: wTime, instructor_name: wInstructor, notes: wNotes, max_participants: wMax }),
+      });
+      if (res.ok) createdCount++;
+      weekCount++;
+      cur.setDate(cur.getDate() + 7);
+    }
+    setRepeatWeeklyMsgW(`✅ נשלחו ${createdCount} הזמנות ב-${weekCount} שבועות`);
+    setRepeatingWeeklyW(false);
+    setShowRepeatWeeklyW(false);
+    await loadWorkshops();
+  }
+
   function deleteWorkshop(id: string) {
     openConfirm('מחיקת סדנה', 'למחוק סדנה זו?', async () => {
       setConfirmDialog(d => ({ ...d, open: false }));
@@ -716,12 +750,14 @@ function AdminContent() {
               <div className="grid sm:grid-cols-2 gap-3">
                 <div>
                   <label className="block text-xs font-semibold text-slate-600 mb-1">משעה</label>
-                  <input type="time" required dir="ltr" value={fromTime} onChange={e => setFromTime(e.target.value)}
+                  <input type="text" required dir="ltr" value={fromTime} onChange={e => setFromTime(e.target.value)}
+                    placeholder="09:00" pattern="[0-2][0-9]:[0-5][0-9]"
                     className="w-full border-2 border-slate-200 focus:border-ice-400 rounded-xl px-3 py-2 text-sm focus:outline-none" />
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-slate-600 mb-1">עד שעה</label>
-                  <input type="time" required dir="ltr" value={toTime} onChange={e => setToTime(e.target.value)}
+                  <input type="text" required dir="ltr" value={toTime} onChange={e => setToTime(e.target.value)}
+                    placeholder="17:00" pattern="[0-2][0-9]:[0-5][0-9]"
                     className="w-full border-2 border-slate-200 focus:border-ice-400 rounded-xl px-3 py-2 text-sm focus:outline-none" />
                 </div>
               </div>
@@ -1587,8 +1623,9 @@ function AdminContent() {
                   className="w-full border-2 border-slate-200 rounded-xl px-3 py-2 focus:outline-none focus:border-ice-400" />
               </div>
               <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-1 text-right">שעה *</label>
-                <input type="time" value={wTime} onChange={e => setWTime(e.target.value)} required
+                <label className="block text-sm font-semibold text-slate-700 mb-1 text-right">שעה * (HH:MM, 24 שעות)</label>
+                <input type="text" value={wTime} onChange={e => setWTime(e.target.value)} required
+                  placeholder="09:00" pattern="[0-2][0-9]:[0-5][0-9]" dir="ltr"
                   className="w-full border-2 border-slate-200 rounded-xl px-3 py-2 focus:outline-none focus:border-ice-400" />
               </div>
               <div>
@@ -1609,6 +1646,41 @@ function AdminContent() {
                   className="w-full border-2 border-slate-200 rounded-xl px-3 py-2 focus:outline-none focus:border-ice-400" />
               </div>
               <div className="col-span-2">
+                {/* Repeat weekly */}
+                <div className="border-2 border-dashed border-slate-200 rounded-xl p-3 space-y-2 mb-3">
+                  {!showRepeatWeeklyW ? (
+                    <button type="button"
+                      disabled={!wDate || !wTime || !wInstructor}
+                      onClick={() => { setShowRepeatWeeklyW(true); setRepeatWeeklyMsgW(''); }}
+                      className="w-full border-2 border-ice-300 text-ice-700 hover:bg-ice-50 font-bold py-2 rounded-xl transition-colors disabled:opacity-40 text-sm">
+                      🔁 שכפל כל שבוע
+                    </button>
+                  ) : (
+                    <>
+                      <div className="flex items-end gap-3">
+                        <div className="flex-1">
+                          <label className="block text-xs font-semibold text-slate-600 mb-1">שכפל כל שבוע עד תאריך</label>
+                          <input type="date" value={repeatWeeklyUntilW} onChange={e => setRepeatWeeklyUntilW(e.target.value)}
+                            className="w-full border-2 border-slate-200 focus:border-ice-400 rounded-xl px-3 py-2 text-sm focus:outline-none" />
+                        </div>
+                        <button type="button" onClick={handleRepeatWeeklyWorkshop}
+                          disabled={repeatingWeeklyW || !repeatWeeklyUntilW}
+                          className="bg-ice-600 hover:bg-ice-700 text-white font-bold px-4 py-2 rounded-xl transition-colors disabled:opacity-50 text-sm whitespace-nowrap">
+                          {repeatingWeeklyW ? 'שולח...' : '✓ אשר'}
+                        </button>
+                        <button type="button" onClick={() => setShowRepeatWeeklyW(false)}
+                          className="border-2 border-slate-200 text-slate-500 hover:text-slate-700 font-bold px-3 py-2 rounded-xl transition-colors text-sm">
+                          ביטול
+                        </button>
+                      </div>
+                      {repeatWeeklyMsgW && (
+                        <p className={`text-sm font-semibold text-center ${repeatWeeklyMsgW.startsWith('✅') ? 'text-green-600' : 'text-amber-600'}`}>
+                          {repeatWeeklyMsgW}
+                        </p>
+                      )}
+                    </>
+                  )}
+                </div>
                 <button type="submit" disabled={addingW || !wDate || !wTime}
                   className="w-full bg-navy-900 hover:bg-navy-700 disabled:opacity-40 text-white font-black py-3 rounded-xl text-sm transition-colors">
                   {addingW ? 'שולח...' : '📨 שלח הזמנה למדריך'}
