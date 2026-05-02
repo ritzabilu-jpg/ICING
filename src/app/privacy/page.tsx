@@ -54,7 +54,7 @@ export default function PrivacyPage() {
           <h2 className="text-xl font-bold text-navy-900 mb-3">3. כשירות לשימוש</h2>
           <p className="text-slate-600 leading-relaxed">
             השימוש באתר ורכישת שירותים מותרת לבני <strong>18 ומעלה</strong> בלבד.
-            בני 16–17 רשאים להשתתף בסדנאות בליווי הורה ובאישור מפורש של הנהלת המרכז.
+            בני 15–17 רשאים להשתתף בסדנאות באישור וחתימת הורים.
           </p>
           <p className="text-slate-600 leading-relaxed mt-3">
             בהגשת בקשת הזמנה, המשתמש/ת מצהיר/ה כי הוא/היא כשיר/ה לבצע פעולות משפטיות מחייבות.
