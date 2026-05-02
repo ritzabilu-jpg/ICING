@@ -120,6 +120,14 @@ function AdminContent() {
   const [newInstructorId, setNewInstructorId] = useState('');
   const [addingSlot, setAddingSlot] = useState(false);
   const [addSlotMsg, setAddSlotMsg] = useState('');
+  const [showRepeatWeekly, setShowRepeatWeekly] = useState(false);
+  const [repeatWeeklyUntil, setRepeatWeeklyUntil] = useState(() => {
+    const d = new Date();
+    const last = new Date(d.getFullYear(), d.getMonth() + 1, 0);
+    return `${last.getFullYear()}-${String(last.getMonth()+1).padStart(2,'0')}-${String(last.getDate()).padStart(2,'0')}`;
+  });
+  const [repeatingWeekly, setRepeatingWeekly] = useState(false);
+  const [repeatWeeklyMsg, setRepeatWeeklyMsg] = useState('');
   const [expandedSlot, setExpandedSlot] = useState<string | null>(null);
   const [addingBookingSlotId, setAddingBookingSlotId] = useState<string | null>(null);
   const [newClientName, setNewClientName] = useState('');
@@ -443,6 +451,39 @@ function AdminContent() {
     setAddingSlot(false);
   }
 
+  async function handleRepeatWeekly() {
+    if (!fromDate || !fromTime || !toTime || !repeatWeeklyUntil) return;
+    setRepeatingWeekly(true);
+    setRepeatWeeklyMsg('');
+    const start = new Date(fromDate + 'T12:00:00');
+    const until = new Date(repeatWeeklyUntil + 'T12:00:00');
+    const rangeDays = toDate
+      ? Math.round((new Date(toDate + 'T12:00:00').getTime() - start.getTime()) / 86400000)
+      : 0;
+    let createdTotal = 0;
+    let weekCount = 0;
+    const cur = new Date(start);
+    while (cur <= until) {
+      const fd = cur.toISOString().split('T')[0];
+      const tdDate = new Date(cur);
+      tdDate.setDate(tdDate.getDate() + rangeDays);
+      const td = tdDate.toISOString().split('T')[0];
+      const res = await fetch(`/api/admin/immersion-slots?key=${encodeURIComponent(key)}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ from_date: fd, to_date: td, from_time: fromTime, to_time: toTime, max_participants: newMax, notes: newNotes, location: newLocation, instructor_id: newInstructorId || undefined, interval: slotInterval }),
+      });
+      const data = await res.json() as { status?: string; count?: number };
+      if (res.ok && data.count) createdTotal += data.count;
+      weekCount++;
+      cur.setDate(cur.getDate() + 7);
+    }
+    setRepeatWeeklyMsg(`✅ נוצרו ${createdTotal} מועדים ב-${weekCount} שבועות`);
+    setRepeatingWeekly(false);
+    setShowRepeatWeekly(false);
+    await loadSlots();
+  }
+
   async function handleConfirmSlots(
     decisions: { existingId: string; keepExisting: boolean; newSlot?: Record<string, unknown> }[],
     clean: CleanSlot[],
@@ -662,7 +703,7 @@ function AdminContent() {
               <div className="grid sm:grid-cols-2 gap-3">
                 <div>
                   <label className="block text-xs font-semibold text-slate-600 mb-1">מתאריך</label>
-                  <input type="date" required value={fromDate} onChange={e => setFromDate(e.target.value)}
+                  <input type="date" required value={fromDate} onChange={e => { setFromDate(e.target.value); if (!toDate || toDate === fromDate) setToDate(e.target.value); }}
                     className="w-full border-2 border-slate-200 focus:border-ice-400 rounded-xl px-3 py-2 text-sm focus:outline-none" />
                 </div>
                 <div>
@@ -733,6 +774,41 @@ function AdminContent() {
                   יוצרו <strong>{previewSlotCount()}</strong> מועדים (כל {slotInterval} דקות, {fromTime}–{toTime}, {fromDate} עד {toDate})
                 </div>
               )}
+              {/* Repeat weekly */}
+              <div className="border-2 border-dashed border-slate-200 rounded-xl p-3 space-y-2">
+                {!showRepeatWeekly ? (
+                  <button type="button"
+                    disabled={!fromDate || !fromTime || !toTime}
+                    onClick={() => { setShowRepeatWeekly(true); setRepeatWeeklyMsg(''); }}
+                    className="w-full border-2 border-ice-300 text-ice-700 hover:bg-ice-50 font-bold py-2 rounded-xl transition-colors disabled:opacity-40 text-sm">
+                    🔁 שכפל כל שבוע
+                  </button>
+                ) : (
+                  <>
+                    <div className="flex items-end gap-3">
+                      <div className="flex-1">
+                        <label className="block text-xs font-semibold text-slate-600 mb-1">שכפל כל שבוע עד תאריך</label>
+                        <input type="date" value={repeatWeeklyUntil} onChange={e => setRepeatWeeklyUntil(e.target.value)}
+                          className="w-full border-2 border-slate-200 focus:border-ice-400 rounded-xl px-3 py-2 text-sm focus:outline-none" />
+                      </div>
+                      <button type="button" onClick={handleRepeatWeekly}
+                        disabled={repeatingWeekly || !repeatWeeklyUntil}
+                        className="bg-ice-600 hover:bg-ice-700 text-white font-bold px-4 py-2 rounded-xl transition-colors disabled:opacity-50 text-sm whitespace-nowrap">
+                        {repeatingWeekly ? 'יוצר...' : '✓ אשר'}
+                      </button>
+                      <button type="button" onClick={() => setShowRepeatWeekly(false)}
+                        className="border-2 border-slate-200 text-slate-500 hover:text-slate-700 font-bold px-3 py-2 rounded-xl transition-colors text-sm">
+                        ביטול
+                      </button>
+                    </div>
+                    {repeatWeeklyMsg && (
+                      <p className={`text-sm font-semibold text-center ${repeatWeeklyMsg.startsWith('✅') ? 'text-green-600' : 'text-amber-600'}`}>
+                        {repeatWeeklyMsg}
+                      </p>
+                    )}
+                  </>
+                )}
+              </div>
               <button type="submit" disabled={addingSlot || previewSlotCount() === 0}
                 className="w-full bg-ice-600 hover:bg-ice-700 text-white font-bold py-2.5 rounded-xl transition-colors disabled:opacity-50 text-sm">
                 {addingSlot ? 'יוצר מועדים...' : `+ צור ${previewSlotCount() > 0 ? previewSlotCount() + ' ' : ''}מועדים`}
