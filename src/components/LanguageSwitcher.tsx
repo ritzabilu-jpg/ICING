@@ -42,7 +42,6 @@ export default function LanguageSwitcher() {
                           transition-colors hover:bg-ice-50
                           ${lang === l.code ? 'bg-ice-50 text-ice-700 font-bold' : 'text-slate-700'}`}
             >
-              <span className="text-base">{l.flag}</span>
               <span>{l.label}</span>
               {lang === l.code && <span className="mr-auto text-ice-500 text-xs">✓</span>}
             </button>
