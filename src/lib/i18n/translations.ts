@@ -326,7 +326,7 @@ const he: Translations = {
   footer_agenda: 'מה מחכה לכם', footer_faq: 'שאלות נפוצות',
   footer_contact_title: 'פרטי קשר', footer_address: 'רחוב סירני 52, רחובות',
   footer_complex: 'מתחם הבריכה הטיפולית', footer_maps: 'פתח ב-Google Maps',
-  footer_copyright: 'חוויות שוויץ המדע. כל הזכויות שמורות.',
+  footer_copyright: 'ליאור כ"ץ. כל הזכויות שמורות.',
   footer_privacy: 'מדיניות פרטיות', footer_terms: 'תנאי שימוש', footer_accessibility: 'נגישות',
 
   sticky_book: 'הזמן מקום', sticky_whatsapp: 'וואטסאפ',
