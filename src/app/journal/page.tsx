@@ -2,6 +2,7 @@
 
 import { useEffect, useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
+import { useLanguage } from '@/lib/i18n/LanguageContext';
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -88,14 +89,15 @@ function computeAnalytics(sessions: Session[]): Analytics {
 }
 
 function AnalyticsBar({ a }: { a: Analytics }) {
+  const { t } = useLanguage();
   const diff = a.curMin - a.prevMin;
   return (
     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
       {[
-        { icon:'🧊', label:'שבוע נוכחי',     value:`${a.curMin} דק'`,  sub: diff===0?'כמו שבוע שעבר':`${diff>0?'+':''}${diff} משבוע שעבר`, c:diff>0?'text-green-400':diff<0?'text-red-400':'text-slate-400' },
-        { icon:'📅', label:'שבוע שעבר',       value:`${a.prevMin} דק'`, sub:'סה"כ דקות טבילה', c:'text-slate-400' },
-        { icon:'🌡️',label:'ממוצע טמפרטורה', value:a.avgTemp!==null?`${a.avgTemp}°C`:'—', sub:'שבוע נוכחי', c:'text-slate-400' },
-        { icon:'🏊', label:'סה"כ טבילות',    value:String(a.total),    sub:'כל הזמן', c:'text-slate-400' },
+        { icon:'🧊', label: t('journal_stat_cur_week'),  value:`${a.curMin} ${t('journal_minutes')}`,  sub: diff===0 ? t('journal_upd_same') : `${diff>0?'+':''}${diff} ${t('journal_upd_sub')}`, c:diff>0?'text-green-400':diff<0?'text-red-400':'text-slate-400' },
+        { icon:'📅', label: t('journal_stat_prev_week'), value:`${a.prevMin} ${t('journal_minutes')}`, sub: t('journal_upd_sub'), c:'text-slate-400' },
+        { icon:'🌡️',label: t('journal_stat_avg_temp'),  value:a.avgTemp!==null?`${a.avgTemp}°C`:'—', sub: t('journal_cur_week'), c:'text-slate-400' },
+        { icon:'🏊', label: t('journal_stat_total'),      value:String(a.total),                        sub: t('journal_all_time'), c:'text-slate-400' },
       ].map(c => (
         <div key={c.label} className="bg-navy-800 rounded-2xl px-5 py-4 text-right border border-navy-700">
           <div className="flex items-center justify-between mb-1">
@@ -128,6 +130,7 @@ function emptyForm(): FormState {
 }
 
 function AddForm({ onAdd }: { onAdd: (s: Session) => void }) {
+  const { t } = useLanguage();
   const [form, setForm] = useState<FormState>(emptyForm());
   const [error, setError] = useState('');
 
@@ -140,7 +143,7 @@ function AddForm({ onAdd }: { onAdd: (s: Session) => void }) {
 
   function submit(e: React.FormEvent) {
     e.preventDefault();
-    if (!isFuture && !form.duration_minutes) { setError('יש להזין משך טבילה'); return; }
+    if (!isFuture && !form.duration_minutes) { setError(t('journal_duration_required')); return; }
     onAdd({
       id: crypto.randomUUID(),
       session_date: form.session_date,
@@ -159,46 +162,46 @@ function AddForm({ onAdd }: { onAdd: (s: Session) => void }) {
   return (
     <form onSubmit={submit} dir="rtl" className="bg-navy-900 border border-navy-700 rounded-3xl p-6 mb-8">
       <h2 className="text-white font-black text-lg mb-5">
-        {isFuture ? '📅 קבע טבילה עתידית' : '+ הוסף טבילה'}
+        {isFuture ? t('journal_schedule_title') : t('journal_add_title')}
       </h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
         <div>
-          <label className="block text-slate-400 text-xs font-semibold mb-1.5">תאריך</label>
+          <label className="block text-slate-400 text-xs font-semibold mb-1.5">{t('journal_date')}</label>
           <input type="date" value={form.session_date} onChange={set('session_date')} required className={inp} />
         </div>
         <div>
-          <label className="block text-slate-400 text-xs font-semibold mb-1.5">שעה</label>
+          <label className="block text-slate-400 text-xs font-semibold mb-1.5">{t('journal_time')}</label>
           <input type="time" value={form.session_time} onChange={set('session_time')} required className={inp} />
         </div>
         <div>
           <label className="block text-slate-400 text-xs font-semibold mb-1.5">
-            משך (דקות){isFuture ? ' — אופציונלי' : ' *'}
+            {t('journal_duration')}{isFuture ? '' : ' *'}
           </label>
           <input type="number" min="1" max="120" value={form.duration_minutes} onChange={set('duration_minutes')}
-            placeholder={isFuture ? 'יתעדכן לאחר הטבילה' : '15'} className={inp} />
+            placeholder={isFuture ? t('journal_duration_future') : '15'} className={inp} />
         </div>
         <div>
-          <label className="block text-slate-400 text-xs font-semibold mb-1.5">טמפרטורה ממוצעת (°C)</label>
+          <label className="block text-slate-400 text-xs font-semibold mb-1.5">{t('journal_temp')}</label>
           <input type="number" step="0.1" min="-5" max="25" value={form.temperature_celsius}
             onChange={set('temperature_celsius')} placeholder="5.0" className={inp} />
         </div>
         <div className="sm:col-span-2">
-          <label className="block text-slate-400 text-xs font-semibold mb-1.5">מדריך אחראי</label>
+          <label className="block text-slate-400 text-xs font-semibold mb-1.5">{t('journal_instructor')}</label>
           <select value={form.instructor} onChange={set('instructor')} className={inp}>
             {INSTRUCTORS.map(i => <option key={i} value={i}>{i}</option>)}
           </select>
         </div>
       </div>
       <div className="mb-4">
-        <label className="block text-slate-400 text-xs font-semibold mb-1.5">הערות (אופציונלי)</label>
+        <label className="block text-slate-400 text-xs font-semibold mb-1.5">{t('journal_notes')}</label>
         <textarea value={form.notes} onChange={set('notes')} rows={2}
-          placeholder="הרגשתי טוב, מעט סחרחורת בסוף..."
+          placeholder={t('journal_notes_ph')}
           className={`${inp} resize-none`} />
       </div>
       {error && <p className="text-red-400 text-sm mb-3">{error}</p>}
       <button type="submit"
         className="bg-ice-600 hover:bg-ice-700 text-white font-black px-8 py-3 rounded-xl transition-colors">
-        {isFuture ? '📅 שמור תאריך טבילה' : '💾 שמור טבילה'}
+        {isFuture ? t('journal_save_future') : t('journal_save')}
       </button>
     </form>
   );
@@ -207,11 +210,12 @@ function AddForm({ onAdd }: { onAdd: (s: Session) => void }) {
 // ─── Upcoming sessions ────────────────────────────────────────────────────────
 
 function UpcomingList({ sessions }: { sessions: Session[] }) {
+  const { t } = useLanguage();
   if (!sessions.length) return null;
   return (
     <div className="mb-8">
       <h2 className="text-white font-black text-lg mb-4">
-        📅 טבילות קרובות
+        {t('journal_upcoming')}
         <span className="text-slate-500 font-normal text-sm mr-2">({sessions.length})</span>
       </h2>
       <div className="grid gap-3">
@@ -221,22 +225,22 @@ function UpcomingList({ sessions }: { sessions: Session[] }) {
             dir="rtl">
             <div className="flex gap-6 flex-wrap items-start">
               <div>
-                <div className="text-xs text-slate-400 mb-0.5">תאריך</div>
+                <div className="text-xs text-slate-400 mb-0.5">{t('journal_date')}</div>
                 <div className="text-white font-black text-sm">
                   {new Date(s.session_date+'T12:00:00').toLocaleDateString('he-IL', { weekday:'long', day:'2-digit', month:'2-digit' })}
                 </div>
               </div>
               <div>
-                <div className="text-xs text-slate-400 mb-0.5">שעה</div>
+                <div className="text-xs text-slate-400 mb-0.5">{t('journal_time')}</div>
                 <div className="text-white font-semibold text-sm">{s.session_time}</div>
               </div>
               <div>
-                <div className="text-xs text-slate-400 mb-0.5">מדריך</div>
+                <div className="text-xs text-slate-400 mb-0.5">{t('journal_instructor')}</div>
                 <div className="text-ice-400 font-semibold text-sm">{s.instructor || '—'}</div>
               </div>
               {s.notes && (
                 <div>
-                  <div className="text-xs text-slate-400 mb-0.5">הערה</div>
+                  <div className="text-xs text-slate-400 mb-0.5">{t('journal_notes')}</div>
                   <div className="text-slate-300 text-sm">{s.notes}</div>
                 </div>
               )}
@@ -264,6 +268,7 @@ interface PastTableProps {
 }
 
 function PastTable({ sessions, expandedId, onExpand, onCollapse, editNotes, setEditNotes, savingNote, uploadingPhoto, onSave, readOnly }: PastTableProps) {
+  const { t } = useLanguage();
   const last10 = sessions.slice(0, 10);
   const totalMin = last10.reduce((a, s) => a + (s.duration_minutes ?? 0), 0);
   const [photoFile1, setPhotoFile1] = useState<File | null>(null);
@@ -272,8 +277,8 @@ function PastTable({ sessions, expandedId, onExpand, onCollapse, editNotes, setE
   if (!last10.length) return (
     <div className="text-center py-16 text-slate-500">
       <p className="text-5xl mb-3">🏊</p>
-      <p className="font-semibold">עדיין אין טבילות מתועדות</p>
-      <p className="text-sm mt-1">הוסף את הטבילה הראשונה שלך למעלה</p>
+      <p className="font-semibold">{t('journal_no_sessions')}</p>
+      <p className="text-sm mt-1">{t('journal_no_sessions_sub')}</p>
     </div>
   );
 
@@ -282,11 +287,11 @@ function PastTable({ sessions, expandedId, onExpand, onCollapse, editNotes, setE
       <table className="w-full text-sm" dir="rtl">
         <thead>
           <tr className="bg-navy-800 border-b border-navy-700">
-            <th className="text-right px-4 py-3 text-slate-400 font-semibold">תאריך</th>
-            <th className="text-right px-4 py-3 text-slate-400 font-semibold">טמפ׳</th>
-            <th className="text-right px-4 py-3 text-slate-400 font-semibold">משך</th>
-            <th className="text-right px-4 py-3 text-slate-400 font-semibold">מדריך</th>
-            <th className="text-right px-4 py-3 text-slate-400 font-semibold">הערות</th>
+            <th className="text-right px-4 py-3 text-slate-400 font-semibold">{t('journal_col_date')}</th>
+            <th className="text-right px-4 py-3 text-slate-400 font-semibold">{t('journal_col_temp')}</th>
+            <th className="text-right px-4 py-3 text-slate-400 font-semibold">{t('journal_col_duration')}</th>
+            <th className="text-right px-4 py-3 text-slate-400 font-semibold">{t('journal_col_instructor')}</th>
+            <th className="text-right px-4 py-3 text-slate-400 font-semibold">{t('journal_col_notes')}</th>
             <th className="px-4 py-3 w-8"></th>
           </tr>
         </thead>
@@ -390,10 +395,10 @@ function PastTable({ sessions, expandedId, onExpand, onCollapse, editNotes, setE
                               || (!!photoFile1 && photoFile1.size > 1_048_576)
                               || (!!photoFile2 && photoFile2.size > 1_048_576)}
                             className="bg-[#7dd8f8] hover:bg-[#5ec5ef] disabled:opacity-40 text-[#0f2942] font-bold px-5 py-2 rounded-xl text-sm transition-colors">
-                            {uploadingPhoto ? 'מעלה תמונה...' : savingNote ? 'שומר...' : '💾 שמור'}
+                            {uploadingPhoto ? t('hc_sending') : savingNote ? t('health_saving') : t('journal_save')}
                           </button>
                           <button onClick={e => { e.stopPropagation(); onCollapse(); setPhotoFile1(null); setPhotoFile2(null); }}
-                            className="text-slate-400 hover:text-white text-sm transition-colors">ביטול</button>
+                            className="text-slate-400 hover:text-white text-sm transition-colors">{t('dash_close')}</button>
                         </div>
                       )}
                     </div>
@@ -443,6 +448,7 @@ function apiEntryToSession(e: Record<string, unknown>): Session {
 }
 
 function JournalContent() {
+  const { t } = useLanguage();
   const searchParams = useSearchParams();
   const viewVid = searchParams.get('vid'); // instructor viewing another user's journal
   const [sessions, setSessions] = useState<Session[]>([]);
@@ -608,9 +614,9 @@ function JournalContent() {
         <div className="text-center mb-8" dir="rtl">
           <div className="text-5xl mb-3">🧊</div>
           <h1 className="text-3xl font-black text-white mb-1">
-            {viewName ? `יומן טבילות — ${viewName}` : 'יומן טבילות קרח'}
+            {viewName ? `${t('journal_title')} — ${viewName}` : t('journal_title')}
           </h1>
-          <p className="text-slate-400 text-sm">עקוב, נתח והשתפר</p>
+          <p className="text-slate-400 text-sm">{t('journal_no_sessions_sub')}</p>
         </div>
 
         {/* Analytics */}
@@ -625,7 +631,7 @@ function JournalContent() {
 
           {/* Past — last 10 */}
           <h2 className="text-white font-black text-lg mb-4">
-            📋 10 טבילות אחרונות
+            📋 {t('dash_bookings_title')}
             <span className="text-slate-500 font-normal text-sm mr-2">
               ({Math.min(past.length, 10)} מתוך {past.length})
             </span>
@@ -643,7 +649,7 @@ function JournalContent() {
                 onSave={handleUpdateSession}
                 readOnly={!!viewVid && !isStaff}
               />
-            : <div className="text-center py-16 text-slate-500">טוען...</div>}
+            : <div className="text-center py-16 text-slate-500">{t('dash_loading')}</div>}
         </div>
 
       </div>
@@ -653,7 +659,7 @@ function JournalContent() {
 
 export default function JournalPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#0a1628' }}><div className="text-white">טוען...</div></div>}>
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#0a1628' }}><div className="text-white">...</div></div>}>
       <JournalContent />
     </Suspense>
   );

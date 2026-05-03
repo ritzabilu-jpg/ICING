@@ -150,6 +150,77 @@ export type Translations = {
   reviews_share_title: string; reviews_type_individual: string; reviews_type_couple: string;
   reviews_type_group: string; reviews_type_immersion: string;
 
+  // Checkout flow
+  checkout_step1: string; checkout_step2: string; checkout_step3: string;
+  checkout_step4: string; checkout_step5: string; checkout_step6: string;
+  checkout_of5: string; checkout_loading: string; checkout_continue: string;
+  checkout_next: string; checkout_saving: string;
+  checkout_name_ph: string; checkout_phone_ph: string; checkout_city_ph: string;
+  checkout_participants_label: string; checkout_back: string; checkout_back_payment: string;
+  checkout_credit: string; checkout_credit_secured: string; checkout_unavailable: string;
+  checkout_reserve: string;
+  checkout_bit_quick: string; checkout_bit_title: string; checkout_bit_direct: string;
+  checkout_amount: string; checkout_bit_number_label: string; checkout_bit_steps: string;
+  checkout_bit_step1: string; checkout_bit_step3: string; checkout_bit_opened: string;
+  checkout_bit_wait: string; checkout_bit_paid: string; checkout_bit_not_yet: string;
+  checkout_paybox_digital: string;
+  checkout_phone_callback: string; checkout_phone_desc: string; checkout_phone_sent: string;
+  checkout_phone_email_ph: string;
+  checkout_hours_any: string; checkout_hours_any_label: string;
+  checkout_hours_morning: string; checkout_hours_noon: string; checkout_hours_afternoon: string;
+  checkout_phone_send: string; checkout_phone_24h: string;
+  checkout_confirmed_credit: string; checkout_confirmed_bit: string; checkout_confirmed_phone: string;
+  checkout_confirm_code: string; checkout_home: string; checkout_science_link: string; checkout_my_bookings: string;
+  // Health declaration (used in checkout)
+  health_before: string; health_condition: string; health_pregnant: string;
+  health_raynauds: string; health_hypertension: string; health_wounds: string;
+  health_full_name: string; health_participant_ph: string; health_agree: string;
+  health_submit: string; health_skip: string; health_saving: string;
+  health_confirm_required: string; health_name_required: string;
+  // Daily health check page
+  hc_title: string; hc_hello: string; hc_before: string;
+  hc_healthy: string; hc_no_fever: string; hc_feeling_good: string;
+  hc_submit: string; hc_sending: string; hc_warning: string;
+  hc_done_title: string; hc_done_sub: string; hc_back_dashboard: string;
+  // Dashboard
+  dash_hello: string; dash_role_admin: string; dash_role_instructor: string; dash_personal_area: string;
+  dash_health_alert: string; dash_health_done: string; dash_book_btn: string;
+  dash_stat_week: string; dash_stat_total_time: string; dash_stat_total: string;
+  dash_tab_bookings: string; dash_tab_journal: string; dash_tab_clients: string;
+  dash_bookings_title: string; dash_journal_title: string;
+  dash_future_title: string; dash_future_desc: string; dash_future_btn: string;
+  dash_loading: string; dash_no_bookings: string; dash_paid_label: string; dash_pending_label: string; dash_total_bookings: string;
+  dash_col_type: string; dash_col_event: string; dash_col_date: string;
+  dash_col_status: string; dash_col_payment: string; dash_col_amount: string; dash_col_code: string; dash_col_health: string;
+  dash_status_confirmed: string; dash_status_pending: string; dash_status_cancelled: string;
+  dash_pay_paid: string; dash_pay_unpaid: string; dash_pay_refunded: string;
+  dash_no_sessions: string; dash_clients_title: string; dash_no_clients: string;
+  dash_health_filled_today: string; dash_health_not_filled: string;
+  dash_health_checked: string; dash_health_not_checked: string;
+  dash_back_list: string; dash_add_session: string; dash_add_session_btn: string;
+  dash_add_open: string; dash_close_form: string; dash_close: string;
+  dash_session_date: string; dash_session_time: string; dash_session_status: string;
+  dash_session_temp: string; dash_session_duration: string; dash_session_instructor: string;
+  dash_session_done: string; dash_session_planned: string; dash_session_cancelled: string;
+  dash_form_date: string; dash_form_time: string; dash_form_temp: string;
+  dash_form_duration: string; dash_form_status: string; dash_form_photo: string;
+  dash_form_instructor: string; dash_form_visitor_notes: string; dash_form_instructor_notes: string;
+  dash_form_save: string; dash_form_saving: string;
+  dash_planned: string; dash_done: string; dash_cancelled: string;
+  // Journal page
+  journal_title: string; journal_add_title: string; journal_schedule_title: string; journal_upcoming: string;
+  journal_date: string; journal_time: string; journal_duration: string; journal_temp: string;
+  journal_instructor: string; journal_notes: string; journal_notes_ph: string;
+  journal_duration_future: string; journal_save: string; journal_save_future: string;
+  journal_duration_required: string;
+  journal_no_sessions: string; journal_no_sessions_sub: string;
+  journal_col_date: string; journal_col_temp: string; journal_col_duration: string;
+  journal_col_instructor: string; journal_col_notes: string;
+  journal_stat_cur_week: string; journal_stat_prev_week: string;
+  journal_stat_avg_temp: string; journal_stat_total: string;
+  journal_minutes: string; journal_upd_same: string; journal_upd_sub: string;
+  journal_cur_week: string; journal_all_time: string;
+
   // Payment page
   payment_title: string; payment_amount: string; payment_back: string;
   payment_credit: string; payment_bit: string; payment_paybox: string; payment_phone: string;
@@ -337,6 +408,92 @@ const he: Translations = {
   payment_bit_desc: 'העברה מהירה בביט', payment_paybox_desc: 'העברה מהירה בפייבוקס',
   failed_title: 'התשלום לא הצליח', failed_desc: 'לצערנו, עיבוד התשלום נכשל. ניתן לנסות שנית או לצור קשר:',
   failed_retry: 'נסו שנית', failed_call: 'התקשרו אלינו',
+
+  checkout_step1: 'סיכום ההזמנה', checkout_step2: 'כניסה / הרשמה', checkout_step3: 'פרטי משתתפים',
+  checkout_step4: 'הצהרת בריאות', checkout_step5: 'בחירת תשלום', checkout_step6: 'ההזמנה אושרה!',
+  checkout_of5: 'שלב {n} מתוך 5', checkout_loading: 'טוען...', checkout_continue: 'המשך לרכישה ›',
+  checkout_next: 'המשך ›', checkout_saving: 'שומר...',
+  checkout_name_ph: 'שם מלא', checkout_phone_ph: 'טלפון נייד', checkout_city_ph: 'עיר מגורים',
+  checkout_participants_label: 'מספר משתתפים', checkout_back: '← חזרה לשלב הקודם', checkout_back_payment: '← חזרה לבחירת תשלום',
+  checkout_credit: '💳 כרטיס אשראי', checkout_credit_secured: 'מאובטח על-ידי טרנזילה',
+  checkout_unavailable: 'שיטת התשלום הזו לא מחוברת כרגע אבל אל דאגה! המקום ישמר לך באישור קבלת שיחת טלפון.',
+  checkout_reserve: 'שמור מקום עבורי ✓',
+  checkout_bit_quick: 'העברה מהירה ממש עכשיו', checkout_bit_title: 'תשלום בביט', checkout_bit_direct: 'העברה ישירה לעסק',
+  checkout_amount: 'סכום לתשלום', checkout_bit_number_label: 'מספר הביט לתשלום', checkout_bit_steps: 'שלבים לתשלום:',
+  checkout_bit_step1: '1. פתח את אפליקציית Bit בנייד', checkout_bit_step3: '3. חזור לכאן ולחץ "שילמתי" ↓',
+  checkout_bit_opened: 'פתחתי את Bit — עברתי לשלם ›', checkout_bit_wait: '⏳ לאחר שביצעת את ההעברה בביט, לחץ/י למטה',
+  checkout_bit_paid: 'שילמתי בביט ✓', checkout_bit_not_yet: 'עוד לא שילמתי — חזרה להוראות',
+  checkout_paybox_digital: 'תשלום דיגיטלי',
+  checkout_phone_callback: 'תשלום טלפוני', checkout_phone_desc: 'ניצור קשר ונסגור את ההזמנה יחד',
+  checkout_phone_sent: 'הפנייה נשלחה!', checkout_phone_email_ph: 'כתובת אימייל (לקבלת אישור)',
+  checkout_hours_any: 'בכל שעה', checkout_hours_any_label: 'באיזה שעות נוח לך?',
+  checkout_hours_morning: 'בוקר 08:00–12:00', checkout_hours_noon: 'צהריים 12:00–16:00', checkout_hours_afternoon: 'אחה״צ 16:00–20:00',
+  checkout_phone_send: 'שלח פנייה — נחזור אליך ›', checkout_phone_24h: 'נחזור אליך תוך 24 שעות',
+  checkout_confirmed_credit: 'התשלום התקבל. נשלח אישור לאימייל שלך.',
+  checkout_confirmed_bit: 'קיבלנו את אישורך. נאמת ב-24 שעות ונשלח אישור למייל.',
+  checkout_confirmed_phone: 'נחזור אליך תוך 24 שעות לסיום התשלום.',
+  checkout_confirm_code: 'קוד אישור', checkout_home: 'חזרה לדף הבית',
+  checkout_science_link: '🔬 המדע שמאחורי הטבילה', checkout_my_bookings: '📋 צפייה בהזמנות שלי',
+
+  health_before: 'נדרש לפני כל השתתפות. סמן/י את הפריטים הרלוונטיים אליך.',
+  health_condition: 'אני סובל/ת ממצב לב', health_pregnant: 'אני בהריון',
+  health_raynauds: 'אני סובל/ת מתסמונת Raynaud', health_hypertension: 'יש לי לחץ דם גבוה',
+  health_wounds: 'יש לי פצעים פתוחים', health_full_name: 'שם מלא', health_participant_ph: 'שם המשתתף',
+  health_agree: 'אני מאשר/ת שקראתי את ההצהרה לעיל, המידע שמסרתי מדויק, ואני מסכים/ה לתנאי ההשתתפות.',
+  health_submit: 'אשר הצהרה ✓', health_skip: 'דלג', health_saving: 'שומר...',
+  health_confirm_required: 'יש לאשר את ההצהרה', health_name_required: 'יש למלא שם משתתף',
+
+  hc_title: 'הצהרת בריאות יומית', hc_hello: 'שלום {name}', hc_before: 'לפני כל טבילה יש לאשר את הדברים הבאים:',
+  hc_healthy: 'אני מרגיש/ה בריא/ה כיום', hc_no_fever: 'אין לי חום (מתחת ל-37.5°C)',
+  hc_feeling_good: 'אני מרגיש/ה טוב ומסוגל/ת לטבילה',
+  hc_submit: '✅ אני מצהיר/ה ומאשר/ת — קדימה לטבילה!', hc_sending: 'שולח...',
+  hc_warning: 'אם אינך מרגיש/ה טוב, אנא הימנע/י מהטבילה ופנה/י לצוות',
+  hc_done_title: 'הצהרת הבריאות הוגשה', hc_done_sub: 'תודה {name}! אתה מוכן לטבילה להיום.',
+  hc_back_dashboard: 'חזור לדשבורד',
+
+  dash_hello: 'שלום {name}! 👋', dash_role_admin: '👑 מנהל מערכת', dash_role_instructor: '🏊 מדריך',
+  dash_personal_area: 'האזור האישי שלך', dash_health_alert: '⚠️ מלא הצהרת בריאות',
+  dash_health_done: '✅ הצהרת בריאות מולאה', dash_book_btn: '📅 הזמן טבילה',
+  dash_stat_week: 'שבוע אחרון', dash_stat_total_time: 'סה"כ כל הזמן', dash_stat_total: 'סה"כ טבילות',
+  dash_tab_bookings: '📋 הזמנות', dash_tab_journal: '📖 יומן טבילות', dash_tab_clients: '👥 לקוחות',
+  dash_bookings_title: '📋 הזמנות שלי', dash_journal_title: '📖 יומן הטבילות',
+  dash_future_title: '📅 הזמנות עתידיות', dash_future_desc: 'להזמנת טבילה או סדנה הקלק/י על הכפתור:',
+  dash_future_btn: '📅 הזמן טבילה / סדנה', dash_loading: 'טוען...', dash_no_bookings: 'לא נמצאו הזמנות',
+  dash_paid_label: 'שולם', dash_pending_label: 'ממתין', dash_total_bookings: 'סה"כ הזמנות',
+  dash_col_type: 'סוג', dash_col_event: 'אירוע', dash_col_date: 'תאריך',
+  dash_col_status: 'סטטוס', dash_col_payment: 'תשלום', dash_col_amount: 'סכום', dash_col_code: 'קוד', dash_col_health: 'הצהרה',
+  dash_status_confirmed: 'מאושר', dash_status_pending: 'ממתין', dash_status_cancelled: 'בוטל',
+  dash_pay_paid: '✅ שולם', dash_pay_unpaid: '⏳ לא שולם', dash_pay_refunded: '↩ הוחזר',
+  dash_no_sessions: 'עדיין אין טבילות מתועדות', dash_clients_title: 'רשימת לקוחות',
+  dash_no_clients: 'אין לקוחות רשומים עדיין',
+  dash_health_filled_today: '✅ מילא הצהרת בריאות להיום', dash_health_not_filled: '⚠️ לא מילא הצהרת בריאות היום',
+  dash_health_checked: '✓ מילא היום', dash_health_not_checked: '⚠ לא מילא',
+  dash_back_list: '▶ חזור לרשימה', dash_add_session: 'הוסף כניסת טבילה',
+  dash_add_session_btn: '+ הוסף כניסת טבילה', dash_add_open: '+ הוסף כניסה',
+  dash_close_form: 'סגור טופס', dash_close: 'סגור',
+  dash_session_date: 'תאריך', dash_session_time: 'שעה', dash_session_status: 'סטטוס',
+  dash_session_temp: 'טמפרטורה', dash_session_duration: 'משך טבילה', dash_session_instructor: 'שם מדריך',
+  dash_session_done: 'בוצע', dash_session_planned: 'מתוכנן', dash_session_cancelled: 'בוטל',
+  dash_form_date: 'תאריך', dash_form_time: 'שעה', dash_form_temp: 'טמפרטורה (°C)',
+  dash_form_duration: 'משך (דקות) *', dash_form_status: 'סטטוס', dash_form_photo: 'תמונת טבילה (URL)',
+  dash_form_instructor: 'שם מדריך', dash_form_visitor_notes: 'הערות מטביל', dash_form_instructor_notes: 'הערות מדריך',
+  dash_form_save: '+ הוסף', dash_form_saving: 'שומר...',
+  dash_planned: 'מתוכנן', dash_done: 'בוצע', dash_cancelled: 'בוטל',
+
+  journal_title: '📖 יומן הטבילות', journal_add_title: '+ הוסף טבילה', journal_schedule_title: '📅 קבע טבילה עתידית',
+  journal_upcoming: '📅 טבילות קרובות',
+  journal_date: 'תאריך', journal_time: 'שעה', journal_duration: 'משך (דקות)', journal_temp: 'טמפרטורה ממוצעת (°C)',
+  journal_instructor: 'מדריך אחראי', journal_notes: 'הערות (אופציונלי)',
+  journal_notes_ph: 'הרגשתי טוב, מעט סחרחורת בסוף...',
+  journal_duration_future: 'יתעדכן לאחר הטבילה', journal_save: '💾 שמור טבילה',
+  journal_save_future: '📅 שמור תאריך טבילה', journal_duration_required: 'יש להזין משך טבילה',
+  journal_no_sessions: 'עדיין אין טבילות מתועדות', journal_no_sessions_sub: 'הוסף את הטבילה הראשונה שלך למעלה',
+  journal_col_date: 'תאריך', journal_col_temp: 'טמפ׳', journal_col_duration: 'משך',
+  journal_col_instructor: 'מדריך', journal_col_notes: 'הערות',
+  journal_stat_cur_week: 'שבוע נוכחי', journal_stat_prev_week: 'שבוע שעבר',
+  journal_stat_avg_temp: 'ממוצע טמפרטורה', journal_stat_total: 'סה"כ טבילות',
+  journal_minutes: "דק'", journal_upd_same: 'כמו שבוע שעבר', journal_upd_sub: 'סה"כ דקות טבילה',
+  journal_cur_week: 'שבוע נוכחי', journal_all_time: 'כל הזמן',
 };
 
 const en: Translations = {
@@ -510,6 +667,92 @@ const en: Translations = {
   payment_bit_desc: 'Quick transfer via Bit', payment_paybox_desc: 'Quick transfer via Paybox',
   failed_title: 'Payment failed', failed_desc: 'Unfortunately the payment could not be processed. Try again or contact us:',
   failed_retry: 'Try again', failed_call: 'Call us',
+
+  checkout_step1: 'Order Summary', checkout_step2: 'Login / Register', checkout_step3: 'Participant Details',
+  checkout_step4: 'Health Declaration', checkout_step5: 'Choose Payment', checkout_step6: 'Booking Confirmed!',
+  checkout_of5: 'Step {n} of 5', checkout_loading: 'Loading...', checkout_continue: 'Continue to purchase ›',
+  checkout_next: 'Continue ›', checkout_saving: 'Saving...',
+  checkout_name_ph: 'Full name', checkout_phone_ph: 'Mobile phone', checkout_city_ph: 'City',
+  checkout_participants_label: 'Number of participants', checkout_back: '← Back to previous step', checkout_back_payment: '← Back to payment options',
+  checkout_credit: '💳 Credit Card', checkout_credit_secured: 'Secured by Tranzila',
+  checkout_unavailable: "This payment method isn't connected yet, but don't worry! Your spot will be saved pending our confirmation call.",
+  checkout_reserve: 'Reserve my spot ✓',
+  checkout_bit_quick: 'Quick transfer right now', checkout_bit_title: 'Pay with Bit', checkout_bit_direct: 'Direct business transfer',
+  checkout_amount: 'Amount to pay', checkout_bit_number_label: 'Bit number for payment', checkout_bit_steps: 'Payment steps:',
+  checkout_bit_step1: '1. Open the Bit app on your phone', checkout_bit_step3: '3. Return here and click "I paid" ↓',
+  checkout_bit_opened: 'Opened Bit — going to pay ›', checkout_bit_wait: '⏳ After completing the Bit transfer, click below',
+  checkout_bit_paid: 'I paid with Bit ✓', checkout_bit_not_yet: 'Not yet paid — back to instructions',
+  checkout_paybox_digital: 'Digital payment',
+  checkout_phone_callback: 'Phone payment', checkout_phone_desc: "We'll contact you to complete the booking",
+  checkout_phone_sent: 'Request sent!', checkout_phone_email_ph: 'Email address (for confirmation)',
+  checkout_hours_any: 'Any time', checkout_hours_any_label: 'What hours suit you?',
+  checkout_hours_morning: 'Morning 08:00–12:00', checkout_hours_noon: 'Noon 12:00–16:00', checkout_hours_afternoon: 'Afternoon 16:00–20:00',
+  checkout_phone_send: "Send request — we'll call you ›", checkout_phone_24h: "We'll contact you within 24 hours",
+  checkout_confirmed_credit: "Payment received. We'll send a confirmation to your email.",
+  checkout_confirmed_bit: "We received your confirmation. We'll verify within 24 hours and send an email.",
+  checkout_confirmed_phone: "We'll contact you within 24 hours to complete payment.",
+  checkout_confirm_code: 'Confirmation code', checkout_home: 'Back to homepage',
+  checkout_science_link: '🔬 The science behind cold immersion', checkout_my_bookings: '📋 View my bookings',
+
+  health_before: 'Required before each session. Check all items that apply to you.',
+  health_condition: 'I have a heart condition', health_pregnant: 'I am pregnant',
+  health_raynauds: "I have Raynaud's syndrome", health_hypertension: 'I have high blood pressure',
+  health_wounds: 'I have open wounds', health_full_name: 'Full name', health_participant_ph: 'Participant name',
+  health_agree: "I confirm I've read the declaration above, the information I provided is accurate, and I agree to the participation terms.",
+  health_submit: 'Confirm declaration ✓', health_skip: 'Skip', health_saving: 'Saving...',
+  health_confirm_required: 'You must confirm the declaration', health_name_required: 'Please enter participant name',
+
+  hc_title: 'Daily Health Declaration', hc_hello: 'Hello {name}', hc_before: 'Before each immersion, please confirm the following:',
+  hc_healthy: 'I feel healthy today', hc_no_fever: 'I have no fever (below 37.5°C)',
+  hc_feeling_good: 'I feel well and ready for immersion',
+  hc_submit: "✅ I declare and confirm — let's go!", hc_sending: 'Sending...',
+  hc_warning: "If you don't feel well, please avoid the immersion and contact the team",
+  hc_done_title: 'Health declaration submitted', hc_done_sub: "Thank you {name}! You're ready for today's immersion.",
+  hc_back_dashboard: 'Back to dashboard',
+
+  dash_hello: 'Hello {name}! 👋', dash_role_admin: '👑 System Admin', dash_role_instructor: '🏊 Instructor',
+  dash_personal_area: 'Your personal area', dash_health_alert: '⚠️ Fill health declaration',
+  dash_health_done: '✅ Health declaration filled', dash_book_btn: '📅 Book immersion',
+  dash_stat_week: 'Last week', dash_stat_total_time: 'All time total', dash_stat_total: 'Total immersions',
+  dash_tab_bookings: '📋 Bookings', dash_tab_journal: '📖 Immersion journal', dash_tab_clients: '👥 Clients',
+  dash_bookings_title: '📋 My bookings', dash_journal_title: '📖 Immersion journal',
+  dash_future_title: '📅 Upcoming bookings', dash_future_desc: 'To book an immersion or workshop:',
+  dash_future_btn: '📅 Book immersion / workshop', dash_loading: 'Loading...', dash_no_bookings: 'No bookings found',
+  dash_paid_label: 'Paid', dash_pending_label: 'Pending', dash_total_bookings: 'Total bookings',
+  dash_col_type: 'Type', dash_col_event: 'Event', dash_col_date: 'Date',
+  dash_col_status: 'Status', dash_col_payment: 'Payment', dash_col_amount: 'Amount', dash_col_code: 'Code', dash_col_health: 'Health',
+  dash_status_confirmed: 'Confirmed', dash_status_pending: 'Pending', dash_status_cancelled: 'Cancelled',
+  dash_pay_paid: '✅ Paid', dash_pay_unpaid: '⏳ Unpaid', dash_pay_refunded: '↩ Refunded',
+  dash_no_sessions: 'No immersions recorded yet', dash_clients_title: 'Client list',
+  dash_no_clients: 'No clients registered yet',
+  dash_health_filled_today: "✅ Completed today's health declaration", dash_health_not_filled: "⚠️ Health declaration not filled today",
+  dash_health_checked: '✓ Filled today', dash_health_not_checked: '⚠ Not filled',
+  dash_back_list: '▶ Back to list', dash_add_session: 'Add immersion entry',
+  dash_add_session_btn: '+ Add immersion entry', dash_add_open: '+ Add entry',
+  dash_close_form: 'Close form', dash_close: 'Close',
+  dash_session_date: 'Date', dash_session_time: 'Time', dash_session_status: 'Status',
+  dash_session_temp: 'Temperature', dash_session_duration: 'Duration', dash_session_instructor: 'Instructor',
+  dash_session_done: 'Done', dash_session_planned: 'Planned', dash_session_cancelled: 'Cancelled',
+  dash_form_date: 'Date', dash_form_time: 'Time', dash_form_temp: 'Temperature (°C)',
+  dash_form_duration: 'Duration (min) *', dash_form_status: 'Status', dash_form_photo: 'Photo URL',
+  dash_form_instructor: 'Instructor', dash_form_visitor_notes: 'Participant notes', dash_form_instructor_notes: 'Instructor notes',
+  dash_form_save: '+ Add', dash_form_saving: 'Saving...',
+  dash_planned: 'Planned', dash_done: 'Done', dash_cancelled: 'Cancelled',
+
+  journal_title: '📖 Immersion Journal', journal_add_title: '+ Add immersion', journal_schedule_title: '📅 Schedule future immersion',
+  journal_upcoming: '📅 Upcoming immersions',
+  journal_date: 'Date', journal_time: 'Time', journal_duration: 'Duration (min)', journal_temp: 'Avg temperature (°C)',
+  journal_instructor: 'Instructor', journal_notes: 'Notes (optional)',
+  journal_notes_ph: 'I felt great, slight dizziness at the end...',
+  journal_duration_future: 'Will update after immersion', journal_save: '💾 Save immersion',
+  journal_save_future: '📅 Save immersion date', journal_duration_required: 'Please enter immersion duration',
+  journal_no_sessions: 'No immersions recorded yet', journal_no_sessions_sub: 'Add your first immersion above',
+  journal_col_date: 'Date', journal_col_temp: 'Temp', journal_col_duration: 'Duration',
+  journal_col_instructor: 'Instructor', journal_col_notes: 'Notes',
+  journal_stat_cur_week: 'This week', journal_stat_prev_week: 'Last week',
+  journal_stat_avg_temp: 'Avg temperature', journal_stat_total: 'Total immersions',
+  journal_minutes: 'min', journal_upd_same: 'Same as last week', journal_upd_sub: 'Total immersion minutes',
+  journal_cur_week: 'This week', journal_all_time: 'All time',
 };
 
 const ar: Translations = {
@@ -684,6 +927,92 @@ const ar: Translations = {
   payment_bit_desc: 'تحويل سريع عبر Bit', payment_paybox_desc: 'تحويل سريع عبر Paybox',
   failed_title: 'فشل الدفع', failed_desc: 'للأسف لم تتم معالجة الدفع. حاول مجدداً أو تواصل معنا:',
   failed_retry: 'حاول مجدداً', failed_call: 'اتصل بنا',
+
+  checkout_step1: 'ملخص الطلب', checkout_step2: 'تسجيل الدخول', checkout_step3: 'تفاصيل المشاركين',
+  checkout_step4: 'إقرار صحي', checkout_step5: 'اختيار الدفع', checkout_step6: 'تأكيد الحجز!',
+  checkout_of5: 'خطوة {n} من 5', checkout_loading: 'جارٍ التحميل...', checkout_continue: 'المتابعة للشراء ›',
+  checkout_next: 'المتابعة ›', checkout_saving: 'جارٍ الحفظ...',
+  checkout_name_ph: 'الاسم الكامل', checkout_phone_ph: 'الهاتف المحمول', checkout_city_ph: 'المدينة',
+  checkout_participants_label: 'عدد المشاركين', checkout_back: '→ العودة للخطوة السابقة', checkout_back_payment: '→ العودة لخيارات الدفع',
+  checkout_credit: '💳 بطاقة ائتمان', checkout_credit_secured: 'مؤمَّن عبر Tranzila',
+  checkout_unavailable: 'هذه الطريقة غير متاحة حالياً، لكن لا تقلق! سيُحفظ مكانك بانتظار اتصالنا.',
+  checkout_reserve: 'احجز مكاني ✓',
+  checkout_bit_quick: 'تحويل سريع الآن', checkout_bit_title: 'الدفع عبر Bit', checkout_bit_direct: 'تحويل مباشر',
+  checkout_amount: 'المبلغ للدفع', checkout_bit_number_label: 'رقم Bit للدفع', checkout_bit_steps: 'خطوات الدفع:',
+  checkout_bit_step1: '1. افتح تطبيق Bit', checkout_bit_step3: '3. عد وانقر "دفعت" ↓',
+  checkout_bit_opened: 'فتحت Bit — أذهب للدفع ›', checkout_bit_wait: '⏳ بعد إتمام التحويل، انقر أدناه',
+  checkout_bit_paid: 'دفعت عبر Bit ✓', checkout_bit_not_yet: 'لم أدفع بعد — عودة للتعليمات',
+  checkout_paybox_digital: 'دفع رقمي',
+  checkout_phone_callback: 'الدفع الهاتفي', checkout_phone_desc: 'سنتصل بك لإتمام الحجز',
+  checkout_phone_sent: 'تم إرسال الطلب!', checkout_phone_email_ph: 'البريد الإلكتروني (للتأكيد)',
+  checkout_hours_any: 'في أي وقت', checkout_hours_any_label: 'ما الأوقات المناسبة لك؟',
+  checkout_hours_morning: 'صباحاً 08:00–12:00', checkout_hours_noon: 'ظهراً 12:00–16:00', checkout_hours_afternoon: 'عصراً 16:00–20:00',
+  checkout_phone_send: 'أرسل الطلب ›', checkout_phone_24h: 'سنتصل بك خلال 24 ساعة',
+  checkout_confirmed_credit: 'تم استلام الدفع. سنرسل تأكيداً لبريدك الإلكتروني.',
+  checkout_confirmed_bit: 'تلقينا تأكيدك. سنتحقق خلال 24 ساعة ونرسل تأكيداً.',
+  checkout_confirmed_phone: 'سنتصل بك خلال 24 ساعة لإتمام الدفع.',
+  checkout_confirm_code: 'رمز التأكيد', checkout_home: 'العودة للصفحة الرئيسية',
+  checkout_science_link: '🔬 علم الغمر في الماء البارد', checkout_my_bookings: '📋 عرض حجوزاتي',
+
+  health_before: 'مطلوب قبل كل جلسة. علّم على البنود التي تنطبق عليك.',
+  health_condition: 'أعاني من مشكلة قلبية', health_pregnant: 'أنا حامل',
+  health_raynauds: 'أعاني من متلازمة رينو', health_hypertension: 'لديّ ضغط دم مرتفع',
+  health_wounds: 'لديّ جروح مفتوحة', health_full_name: 'الاسم الكامل', health_participant_ph: 'اسم المشارك',
+  health_agree: 'أؤكد أنني قرأت الإقرار، والمعلومات دقيقة، وأوافق على شروط المشاركة.',
+  health_submit: 'تأكيد الإقرار ✓', health_skip: 'تخطي', health_saving: 'جارٍ الحفظ...',
+  health_confirm_required: 'يجب تأكيد الإقرار', health_name_required: 'يرجى إدخال اسم المشارك',
+
+  hc_title: 'الإقرار الصحي اليومي', hc_hello: 'مرحباً {name}', hc_before: 'قبل كل غمر، يرجى تأكيد ما يلي:',
+  hc_healthy: 'أشعر بصحة جيدة اليوم', hc_no_fever: 'لا توجد لديّ حمى (أقل من 37.5°C)',
+  hc_feeling_good: 'أشعر بحالة جيدة وجاهز للغمر',
+  hc_submit: '✅ أُقرّ وأؤكد — هيا!', hc_sending: 'جارٍ الإرسال...',
+  hc_warning: 'إذا لم تشعر بتحسن، تجنب الغمر وتواصل مع الفريق',
+  hc_done_title: 'تم تقديم الإقرار الصحي', hc_done_sub: 'شكراً {name}! أنت جاهز لغمر اليوم.',
+  hc_back_dashboard: 'العودة للوحة التحكم',
+
+  dash_hello: 'مرحباً {name}! 👋', dash_role_admin: '👑 مدير النظام', dash_role_instructor: '🏊 مدرب',
+  dash_personal_area: 'منطقتك الشخصية', dash_health_alert: '⚠️ أكمل الإقرار الصحي',
+  dash_health_done: '✅ الإقرار الصحي مكتمل', dash_book_btn: '📅 احجز غمرًا',
+  dash_stat_week: 'الأسبوع الماضي', dash_stat_total_time: 'المجموع الكلي', dash_stat_total: 'إجمالي الغمرات',
+  dash_tab_bookings: '📋 الحجوزات', dash_tab_journal: '📖 سجل الغمرات', dash_tab_clients: '👥 العملاء',
+  dash_bookings_title: '📋 حجوزاتي', dash_journal_title: '📖 سجل الغمرات',
+  dash_future_title: '📅 الحجوزات القادمة', dash_future_desc: 'لحجز غمر أو ورشة:',
+  dash_future_btn: '📅 احجز غمرًا / ورشة', dash_loading: 'جارٍ التحميل...', dash_no_bookings: 'لا توجد حجوزات',
+  dash_paid_label: 'مدفوع', dash_pending_label: 'قيد الانتظار', dash_total_bookings: 'إجمالي الحجوزات',
+  dash_col_type: 'النوع', dash_col_event: 'الحدث', dash_col_date: 'التاريخ',
+  dash_col_status: 'الحالة', dash_col_payment: 'الدفع', dash_col_amount: 'المبلغ', dash_col_code: 'الكود', dash_col_health: 'الإقرار',
+  dash_status_confirmed: 'مؤكد', dash_status_pending: 'قيد الانتظار', dash_status_cancelled: 'ملغى',
+  dash_pay_paid: '✅ مدفوع', dash_pay_unpaid: '⏳ غير مدفوع', dash_pay_refunded: '↩ مسترد',
+  dash_no_sessions: 'لا توجد غمرات مسجلة بعد', dash_clients_title: 'قائمة العملاء',
+  dash_no_clients: 'لا يوجد عملاء مسجلون بعد',
+  dash_health_filled_today: '✅ أكمل إقرار الصحة اليوم', dash_health_not_filled: '⚠️ لم يُكمل إقرار الصحة اليوم',
+  dash_health_checked: '✓ ملّأ اليوم', dash_health_not_checked: '⚠ لم يملأ',
+  dash_back_list: '▶ العودة للقائمة', dash_add_session: 'إضافة غمرة',
+  dash_add_session_btn: '+ إضافة غمرة', dash_add_open: '+ إضافة',
+  dash_close_form: 'إغلاق النموذج', dash_close: 'إغلاق',
+  dash_session_date: 'التاريخ', dash_session_time: 'الوقت', dash_session_status: 'الحالة',
+  dash_session_temp: 'الحرارة', dash_session_duration: 'المدة', dash_session_instructor: 'المدرب',
+  dash_session_done: 'تمّ', dash_session_planned: 'مخطط', dash_session_cancelled: 'ملغى',
+  dash_form_date: 'التاريخ', dash_form_time: 'الوقت', dash_form_temp: 'الحرارة (°C)',
+  dash_form_duration: 'المدة (دقائق) *', dash_form_status: 'الحالة', dash_form_photo: 'رابط الصورة',
+  dash_form_instructor: 'المدرب', dash_form_visitor_notes: 'ملاحظات المشارك', dash_form_instructor_notes: 'ملاحظات المدرب',
+  dash_form_save: '+ إضافة', dash_form_saving: 'جارٍ الحفظ...',
+  dash_planned: 'مخطط', dash_done: 'تمّ', dash_cancelled: 'ملغى',
+
+  journal_title: '📖 سجل الغمرات', journal_add_title: '+ إضافة غمرة', journal_schedule_title: '📅 جدولة غمرة قادمة',
+  journal_upcoming: '📅 الغمرات القادمة',
+  journal_date: 'التاريخ', journal_time: 'الوقت', journal_duration: 'المدة (دقائق)', journal_temp: 'متوسط الحرارة (°C)',
+  journal_instructor: 'المدرب المسؤول', journal_notes: 'ملاحظات (اختياري)',
+  journal_notes_ph: 'شعرت بتحسن، دوخة خفيفة في النهاية...',
+  journal_duration_future: 'سيُحدَّث بعد الغمرة', journal_save: '💾 حفظ الغمرة',
+  journal_save_future: '📅 حفظ تاريخ الغمرة', journal_duration_required: 'يرجى إدخال مدة الغمرة',
+  journal_no_sessions: 'لا توجد غمرات مسجلة بعد', journal_no_sessions_sub: 'أضف غمرتك الأولى أعلاه',
+  journal_col_date: 'التاريخ', journal_col_temp: 'الحرارة', journal_col_duration: 'المدة',
+  journal_col_instructor: 'المدرب', journal_col_notes: 'الملاحظات',
+  journal_stat_cur_week: 'هذا الأسبوع', journal_stat_prev_week: 'الأسبوع الماضي',
+  journal_stat_avg_temp: 'متوسط الحرارة', journal_stat_total: 'إجمالي الغمرات',
+  journal_minutes: 'دقيقة', journal_upd_same: 'كما الأسبوع الماضي', journal_upd_sub: 'إجمالي دقائق الغمر',
+  journal_cur_week: 'هذا الأسبوع', journal_all_time: 'كل الوقت',
 };
 
 const ru: Translations = {
@@ -857,6 +1186,92 @@ const ru: Translations = {
   payment_bit_desc: 'Быстрый перевод через Bit', payment_paybox_desc: 'Быстрый перевод через Paybox',
   failed_title: 'Платёж не прошёл', failed_desc: 'К сожалению, обработка платежа не удалась. Попробуйте снова или свяжитесь с нами:',
   failed_retry: 'Попробовать снова', failed_call: 'Позвонить нам',
+
+  checkout_step1: 'Обзор заказа', checkout_step2: 'Вход / Регистрация', checkout_step3: 'Данные участников',
+  checkout_step4: 'Медзаявление', checkout_step5: 'Выбор оплаты', checkout_step6: 'Бронирование подтверждено!',
+  checkout_of5: 'Шаг {n} из 5', checkout_loading: 'Загрузка...', checkout_continue: 'Перейти к покупке ›',
+  checkout_next: 'Продолжить ›', checkout_saving: 'Сохранение...',
+  checkout_name_ph: 'Полное имя', checkout_phone_ph: 'Мобильный телефон', checkout_city_ph: 'Город',
+  checkout_participants_label: 'Количество участников', checkout_back: '← Назад к предыдущему шагу', checkout_back_payment: '← Назад к выбору оплаты',
+  checkout_credit: '💳 Кредитная карта', checkout_credit_secured: 'Защищено Tranzila',
+  checkout_unavailable: 'Этот способ оплаты временно недоступен, но не беспокойтесь! Ваше место будет сохранено.',
+  checkout_reserve: 'Зарезервировать место ✓',
+  checkout_bit_quick: 'Быстрый перевод прямо сейчас', checkout_bit_title: 'Оплата через Bit', checkout_bit_direct: 'Прямой перевод',
+  checkout_amount: 'Сумма к оплате', checkout_bit_number_label: 'Номер Bit для оплаты', checkout_bit_steps: 'Шаги оплаты:',
+  checkout_bit_step1: '1. Откройте приложение Bit', checkout_bit_step3: '3. Вернитесь и нажмите "Оплатил" ↓',
+  checkout_bit_opened: 'Открыл Bit — перехожу к оплате ›', checkout_bit_wait: '⏳ После перевода через Bit нажмите ниже',
+  checkout_bit_paid: 'Оплатил через Bit ✓', checkout_bit_not_yet: 'Ещё не оплатил — к инструкции',
+  checkout_paybox_digital: 'Цифровая оплата',
+  checkout_phone_callback: 'Оплата по телефону', checkout_phone_desc: 'Мы свяжемся для завершения бронирования',
+  checkout_phone_sent: 'Заявка отправлена!', checkout_phone_email_ph: 'Email (для подтверждения)',
+  checkout_hours_any: 'В любое время', checkout_hours_any_label: 'В какое время удобно?',
+  checkout_hours_morning: 'Утром 08:00–12:00', checkout_hours_noon: 'Днём 12:00–16:00', checkout_hours_afternoon: 'Вечером 16:00–20:00',
+  checkout_phone_send: 'Отправить заявку ›', checkout_phone_24h: 'Свяжемся в течение 24 часов',
+  checkout_confirmed_credit: 'Оплата получена. Подтверждение отправлено на email.',
+  checkout_confirmed_bit: 'Подтверждение получено. Проверим в течение 24 часов.',
+  checkout_confirmed_phone: 'Свяжемся в течение 24 часов для завершения оплаты.',
+  checkout_confirm_code: 'Код подтверждения', checkout_home: 'На главную',
+  checkout_science_link: '🔬 Наука о холодном погружении', checkout_my_bookings: '📋 Мои бронирования',
+
+  health_before: 'Требуется перед каждым занятием. Отметьте применимые пункты.',
+  health_condition: 'У меня заболевание сердца', health_pregnant: 'Я беременна',
+  health_raynauds: 'У меня синдром Рейно', health_hypertension: 'У меня высокое давление',
+  health_wounds: 'У меня открытые раны', health_full_name: 'Полное имя', health_participant_ph: 'Имя участника',
+  health_agree: 'Подтверждаю, что прочитал заявление выше, информация верна, согласен с условиями участия.',
+  health_submit: 'Подтвердить заявление ✓', health_skip: 'Пропустить', health_saving: 'Сохранение...',
+  health_confirm_required: 'Необходимо подтвердить заявление', health_name_required: 'Введите имя участника',
+
+  hc_title: 'Ежедневное медзаявление', hc_hello: 'Привет {name}', hc_before: 'Перед каждым погружением подтвердите:',
+  hc_healthy: 'Сегодня чувствую себя здоровым', hc_no_fever: 'Нет температуры (ниже 37.5°C)',
+  hc_feeling_good: 'Чувствую себя хорошо и готов к погружению',
+  hc_submit: '✅ Подтверждаю — поехали!', hc_sending: 'Отправка...',
+  hc_warning: 'Если нехорошо себя чувствуете, воздержитесь и свяжитесь с командой',
+  hc_done_title: 'Медзаявление подано', hc_done_sub: 'Спасибо {name}! Вы готовы к погружению.',
+  hc_back_dashboard: 'Вернуться в кабинет',
+
+  dash_hello: 'Привет {name}! 👋', dash_role_admin: '👑 Администратор', dash_role_instructor: '🏊 Инструктор',
+  dash_personal_area: 'Личный кабинет', dash_health_alert: '⚠️ Заполните медзаявление',
+  dash_health_done: '✅ Медзаявление заполнено', dash_book_btn: '📅 Записаться',
+  dash_stat_week: 'Последняя неделя', dash_stat_total_time: 'Всего времени', dash_stat_total: 'Всего погружений',
+  dash_tab_bookings: '📋 Бронирования', dash_tab_journal: '📖 Журнал', dash_tab_clients: '👥 Клиенты',
+  dash_bookings_title: '📋 Мои бронирования', dash_journal_title: '📖 Журнал погружений',
+  dash_future_title: '📅 Предстоящие', dash_future_desc: 'Для записи на погружение или воркшоп:',
+  dash_future_btn: '📅 Записаться', dash_loading: 'Загрузка...', dash_no_bookings: 'Нет бронирований',
+  dash_paid_label: 'Оплачено', dash_pending_label: 'Ожидает', dash_total_bookings: 'Всего',
+  dash_col_type: 'Тип', dash_col_event: 'Событие', dash_col_date: 'Дата',
+  dash_col_status: 'Статус', dash_col_payment: 'Оплата', dash_col_amount: 'Сумма', dash_col_code: 'Код', dash_col_health: 'Здоровье',
+  dash_status_confirmed: 'Подтверждено', dash_status_pending: 'Ожидает', dash_status_cancelled: 'Отменено',
+  dash_pay_paid: '✅ Оплачено', dash_pay_unpaid: '⏳ Не оплачено', dash_pay_refunded: '↩ Возвращено',
+  dash_no_sessions: 'Погружений пока нет', dash_clients_title: 'Клиенты',
+  dash_no_clients: 'Клиентов ещё нет',
+  dash_health_filled_today: '✅ Медзаявление заполнено', dash_health_not_filled: '⚠️ Медзаявление не заполнено',
+  dash_health_checked: '✓ Заполнено', dash_health_not_checked: '⚠ Нет',
+  dash_back_list: '▶ К списку', dash_add_session: 'Добавить погружение',
+  dash_add_session_btn: '+ Добавить', dash_add_open: '+ Добавить',
+  dash_close_form: 'Закрыть', dash_close: 'Закрыть',
+  dash_session_date: 'Дата', dash_session_time: 'Время', dash_session_status: 'Статус',
+  dash_session_temp: 'Температура', dash_session_duration: 'Длительность', dash_session_instructor: 'Инструктор',
+  dash_session_done: 'Выполнено', dash_session_planned: 'Запланировано', dash_session_cancelled: 'Отменено',
+  dash_form_date: 'Дата', dash_form_time: 'Время', dash_form_temp: 'Температура (°C)',
+  dash_form_duration: 'Длительность (мин) *', dash_form_status: 'Статус', dash_form_photo: 'Фото (URL)',
+  dash_form_instructor: 'Инструктор', dash_form_visitor_notes: 'Заметки участника', dash_form_instructor_notes: 'Заметки инструктора',
+  dash_form_save: '+ Добавить', dash_form_saving: 'Сохранение...',
+  dash_planned: 'Запланировано', dash_done: 'Выполнено', dash_cancelled: 'Отменено',
+
+  journal_title: '📖 Журнал погружений', journal_add_title: '+ Добавить', journal_schedule_title: '📅 Запланировать',
+  journal_upcoming: '📅 Предстоящие',
+  journal_date: 'Дата', journal_time: 'Время', journal_duration: 'Длительность (мин)', journal_temp: 'Средняя температура (°C)',
+  journal_instructor: 'Инструктор', journal_notes: 'Заметки (необязательно)',
+  journal_notes_ph: 'Чувствовал себя отлично, лёгкое головокружение...',
+  journal_duration_future: 'Обновится после погружения', journal_save: '💾 Сохранить',
+  journal_save_future: '📅 Сохранить дату', journal_duration_required: 'Введите длительность',
+  journal_no_sessions: 'Погружений пока нет', journal_no_sessions_sub: 'Добавьте первое погружение выше',
+  journal_col_date: 'Дата', journal_col_temp: 'Темп.', journal_col_duration: 'Длит.',
+  journal_col_instructor: 'Инструктор', journal_col_notes: 'Заметки',
+  journal_stat_cur_week: 'Эта неделя', journal_stat_prev_week: 'Прошлая неделя',
+  journal_stat_avg_temp: 'Средняя температура', journal_stat_total: 'Всего погружений',
+  journal_minutes: 'мин', journal_upd_same: 'Как на прошлой неделе', journal_upd_sub: 'Всего минут',
+  journal_cur_week: 'Эта неделя', journal_all_time: 'Всё время',
 };
 
 export const translations: Record<Lang, Translations> = { he, en, ar, ru };

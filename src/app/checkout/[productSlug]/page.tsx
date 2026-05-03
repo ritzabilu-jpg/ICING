@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import Image from 'next/image';
+import { useLanguage } from '@/lib/i18n/LanguageContext';
 
 // ── Types ──────────────────────────────────────────────────────────────────
 
@@ -61,6 +62,7 @@ const INITIAL_STATE: CheckoutState = {
 // ── Main Page ──────────────────────────────────────────────────────────────
 
 export default function CheckoutPage() {
+  const { t } = useLanguage();
   const params = useParams();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -384,12 +386,12 @@ export default function CheckoutPage() {
 
   const stepTitles = [
     '',
-    'סיכום ההזמנה',
-    'כניסה / הרשמה',
-    'פרטי משתתפים',
-    'הצהרת בריאות',
-    'בחירת תשלום',
-    'ההזמנה אושרה',
+    t('checkout_step1'),
+    t('checkout_step2'),
+    t('checkout_step3'),
+    t('checkout_step4'),
+    t('checkout_step5'),
+    t('checkout_step6'),
   ];
 
   // ── Render ───────────────────────────────────────────────────────────────
@@ -418,7 +420,7 @@ export default function CheckoutPage() {
             ))}
           </div>
           <p className="text-ice-300 text-sm text-center">
-            שלב {Math.min(state.step, 5)} מתוך 5 — {stepTitles[state.step] ?? ''}
+            {t('checkout_of5').replace('{n}', String(Math.min(state.step, 5)))} — {stepTitles[state.step] ?? ''}
           </p>
         </div>
 
@@ -432,7 +434,7 @@ export default function CheckoutPage() {
               {!product ? (
                 <div className="py-8 text-center text-slate-400">
                   <div className="w-6 h-6 border-2 border-ice-500 border-t-transparent rounded-full animate-spin mx-auto mb-2" />
-                  טוען...
+                  {t('checkout_loading')}
                 </div>
               ) : (
                 <>
@@ -451,7 +453,7 @@ export default function CheckoutPage() {
                     disabled={loading}
                     className="w-full bg-ice-600 hover:bg-ice-700 disabled:opacity-50 text-white font-black text-lg py-4 rounded-2xl transition-colors"
                   >
-                    {loading ? 'טוען...' : 'המשך לרכישה ›'}
+                    {loading ? t('checkout_loading') : t('checkout_continue')}
                   </button>
                 </>
               )}
@@ -466,14 +468,14 @@ export default function CheckoutPage() {
                 <input
                   value={state.name}
                   onChange={e => setState(p => ({ ...p, name: e.target.value }))}
-                  placeholder="שם מלא *"
+                  placeholder={t('checkout_name_ph') + ' *'}
                   required
                   className="w-full border-2 border-slate-200 focus:border-ice-400 rounded-xl px-4 py-3 text-sm focus:outline-none"
                 />
                 <input
                   value={state.phone}
                   onChange={e => setState(p => ({ ...p, phone: e.target.value }))}
-                  placeholder="טלפון נייד *"
+                  placeholder={t('checkout_phone_ph') + ' *'}
                   type="tel"
                   required
                   className="w-full border-2 border-slate-200 focus:border-ice-400 rounded-xl px-4 py-3 text-sm focus:outline-none"
@@ -481,14 +483,14 @@ export default function CheckoutPage() {
                 <input
                   value={state.city}
                   onChange={e => setState(p => ({ ...p, city: e.target.value }))}
-                  placeholder="עיר מגורים"
+                  placeholder={t('checkout_city_ph')}
                   className="w-full border-2 border-slate-200 focus:border-ice-400 rounded-xl px-4 py-3 text-sm focus:outline-none"
                 />
 
                 {product?.type === 'workshop' && (
                   <div>
                     <label className="block text-sm font-semibold text-slate-600 mb-1">
-                      מספר משתתפים
+                      {t('checkout_participants_label')}
                     </label>
                     <input
                       type="number"
@@ -507,7 +509,7 @@ export default function CheckoutPage() {
                   disabled={loading}
                   className="w-full bg-ice-600 hover:bg-ice-700 disabled:opacity-50 text-white font-black text-lg py-4 rounded-2xl transition-colors"
                 >
-                  {loading ? 'שומר...' : 'המשך ›'}
+                  {loading ? t('checkout_saving') : t('checkout_next')}
                 </button>
               </div>
             </div>
@@ -527,7 +529,7 @@ export default function CheckoutPage() {
           {state.step === 5 && !product && (
             <div className="py-8 text-center text-slate-400">
               <div className="w-6 h-6 border-2 border-ice-500 border-t-transparent rounded-full animate-spin mx-auto mb-2" />
-              טוען...
+              {t('checkout_loading')}
             </div>
           )}
           {state.step === 5 && product && (
@@ -549,29 +551,29 @@ export default function CheckoutPage() {
                     className="w-full border-2 border-slate-200 hover:border-slate-400 rounded-2xl p-4 flex items-center justify-between transition-colors"
                   >
                     <div>
-                      <div className="font-black text-navy-900">💳 כרטיס אשראי</div>
-                      <div className="text-xs text-slate-500">מאובטח על-ידי טרנזילה</div>
+                      <div className="font-black text-navy-900">{t('checkout_credit')}</div>
+                      <div className="text-xs text-slate-500">{t('checkout_credit_secured')}</div>
                     </div>
                     <span className="text-ice-600 text-lg">›</span>
                   </button>
                 ) : (
                   <div className="border-2 border-orange-300 bg-orange-50 rounded-2xl p-4">
-                    <div className="font-black text-navy-900 mb-3">💳 כרטיס אשראי</div>
+                    <div className="font-black text-navy-900 mb-3">{t('checkout_credit')}</div>
                     <div className="bg-white border border-orange-200 rounded-xl px-4 py-3 mb-3 text-sm">
-                      <p className="text-slate-700">שיטת התשלום הזו לא מחוברת כרגע אבל <span className="font-bold text-green-700">אל דאגה!</span> המקום ישמר לך באישור קבלת שיחת טלפון מאיתנו על מנת לקבל תשלום טלפוני.</p>
+                      <p className="text-slate-700">{t('checkout_unavailable')}</p>
                     </div>
                     <button
                       onClick={submitPhoneRequest}
                       disabled={phoneSubmitting || !state.name || !state.phone}
                       className="w-full bg-green-600 hover:bg-green-700 disabled:opacity-50 text-white font-black py-3 rounded-xl text-sm transition-colors"
                     >
-                      {phoneSubmitting ? 'שומר...' : 'שמור מקום עבורי ✓'}
+                      {phoneSubmitting ? t('health_saving') : t('checkout_reserve')}
                     </button>
                     <button
                       onClick={() => save({ paymentMethod: '' })}
                       className="w-full text-slate-400 hover:text-slate-600 text-xs mt-2"
                     >
-                      ← חזרה לבחירת תשלום
+                      {t('checkout_back_payment')}
                     </button>
                   </div>
                 )}
@@ -586,7 +588,7 @@ export default function CheckoutPage() {
                       <Image src="/Bit logo ביט.png" alt="Bit" width={40} height={24} className="object-contain" unoptimized />
                       <div className="text-right">
                         <div className="font-black text-navy-900">Bit</div>
-                        <div className="text-xs text-slate-500">העברה מהירה ממש עכשיו</div>
+                        <div className="text-xs text-slate-500">{t('checkout_bit_quick')}</div>
                       </div>
                     </div>
                     <span className="text-ice-600 text-lg">›</span>
@@ -596,50 +598,50 @@ export default function CheckoutPage() {
                     <div className="flex items-center gap-2 mb-3">
                       <Image src="/Bit logo ביט.png" alt="Bit" width={40} height={24} className="object-contain" unoptimized />
                       <div>
-                        <div className="font-black text-navy-900">תשלום בביט</div>
-                        <div className="text-xs text-slate-500">העברה ישירה לעסק</div>
+                        <div className="font-black text-navy-900">{t('checkout_bit_title')}</div>
+                        <div className="text-xs text-slate-500">{t('checkout_bit_direct')}</div>
                       </div>
                     </div>
                       <div className="bg-white border border-blue-200 rounded-xl px-4 py-3 mb-3">
                       <div className="text-center mb-2">
-                        <div className="text-xs text-slate-500 mb-0.5">סכום לתשלום</div>
+                        <div className="text-xs text-slate-500 mb-0.5">{t('checkout_amount')}</div>
                         <div className="text-3xl font-black text-blue-700">₪{total}</div>
                       </div>
                       <div className="flex items-center justify-between bg-slate-50 rounded-lg px-3 py-2">
-                        <span className="text-xs text-slate-500">מספר הביט לתשלום</span>
+                        <span className="text-xs text-slate-500">{t('checkout_bit_number_label')}</span>
                         <span className="font-black text-navy-900 text-lg tracking-wide" dir="ltr">052-4500825</span>
                       </div>
                     </div>
                     <div className="bg-blue-100 rounded-xl px-3 py-2 mb-3 text-xs text-blue-900 space-y-1">
-                      <p className="font-bold">שלבים לתשלום:</p>
-                      <p>1. פתח את אפליקציית Bit בנייד</p>
+                      <p className="font-bold">{t('checkout_bit_steps')}</p>
+                      <p>{t('checkout_bit_step1')}</p>
                       <p>2. שלח ₪{total} למספר <span className="font-bold" dir="ltr">052-4500825</span></p>
-                      <p>3. חזור לכאן ולחץ "שילמתי" ↓</p>
+                      <p>{t('checkout_bit_step3')}</p>
                     </div>
                     {!bitClicked ? (
                       <button
                         onClick={() => setBitClicked(true)}
                         className="w-full bg-blue-600 hover:bg-blue-700 text-white font-black text-center py-3 rounded-xl text-sm transition-colors mb-2"
                       >
-                        פתחתי את Bit — עברתי לשלם ›
+                        {t('checkout_bit_opened')}
                       </button>
                     ) : (
                       <div className="space-y-2">
                         <div className="bg-amber-50 border border-amber-200 rounded-xl px-3 py-2 text-xs text-amber-800 text-center">
-                          ⏳ לאחר שביצעת את ההעברה בביט, לחץ/י למטה
+                          {t('checkout_bit_wait')}
                         </div>
                         <button
                           onClick={() => confirmPayment('bit')}
                           disabled={loading}
                           className="w-full bg-green-600 hover:bg-green-700 disabled:opacity-50 text-white font-black py-3 rounded-xl text-sm transition-colors"
                         >
-                          {loading ? 'שומר...' : 'שילמתי בביט ✓'}
+                          {loading ? t('health_saving') : t('checkout_bit_paid')}
                         </button>
                         <button
                           onClick={() => setBitClicked(false)}
                           className="w-full text-blue-600 text-xs"
                         >
-                          עוד לא שילמתי — חזרה להוראות
+                          {t('checkout_bit_not_yet')}
                         </button>
                       </div>
                     )}
@@ -647,7 +649,7 @@ export default function CheckoutPage() {
                       onClick={() => { save({ paymentMethod: '' }); setBitClicked(false); }}
                       className="w-full text-slate-400 hover:text-slate-600 text-xs mt-2"
                     >
-                      ← חזרה לבחירת תשלום
+                      {t('checkout_back_payment')}
                     </button>
                   </div>
                 )}
@@ -662,7 +664,7 @@ export default function CheckoutPage() {
                       <Image src="/PAYBOX LOGO פייבוקס.jpg" alt="Paybox" width={50} height={24} className="object-contain" unoptimized />
                       <div>
                         <div className="font-black text-navy-900">Paybox</div>
-                        <div className="text-xs text-slate-500">תשלום דיגיטלי</div>
+                        <div className="text-xs text-slate-500">{t('checkout_paybox_digital')}</div>
                       </div>
                     </div>
                     <span className="text-ice-600 text-lg">›</span>
@@ -674,20 +676,20 @@ export default function CheckoutPage() {
                       <div className="font-black text-navy-900">Paybox</div>
                     </div>
                     <div className="bg-white border border-orange-200 rounded-xl px-4 py-3 mb-3 text-sm">
-                      <p className="text-slate-700">שיטת התשלום הזו לא מחוברת כרגע אבל <span className="font-bold text-green-700">אל דאגה!</span> המקום ישמר לך באישור קבלת שיחת טלפון מאיתנו על מנת לקבל תשלום טלפוני.</p>
+                      <p className="text-slate-700">{t('checkout_unavailable')}</p>
                     </div>
                     <button
                       onClick={submitPhoneRequest}
                       disabled={phoneSubmitting || !state.name || !state.phone}
                       className="w-full bg-green-600 hover:bg-green-700 disabled:opacity-50 text-white font-black py-3 rounded-xl text-sm transition-colors"
                     >
-                      {phoneSubmitting ? 'שומר...' : 'שמור מקום עבורי ✓'}
+                      {phoneSubmitting ? t('health_saving') : t('checkout_reserve')}
                     </button>
                     <button
                       onClick={() => save({ paymentMethod: '' })}
                       className="w-full text-slate-400 hover:text-slate-600 text-xs mt-2"
                     >
-                      ← חזרה לבחירת תשלום
+                      {t('checkout_back_payment')}
                     </button>
                   </div>
                 )}
@@ -697,15 +699,15 @@ export default function CheckoutPage() {
                   <div className="flex items-center gap-2 mb-3">
                     <span className="text-lg">📞</span>
                     <div>
-                      <div className="font-black text-navy-900">תשלום טלפוני</div>
-                      <div className="text-xs text-slate-500">ניצור קשר ונסגור את ההזמנה יחד</div>
+                      <div className="font-black text-navy-900">{t('checkout_phone_callback')}</div>
+                      <div className="text-xs text-slate-500">{t('checkout_phone_desc')}</div>
                     </div>
                   </div>
 
                   {phoneSubmitted ? (
                     <div className="bg-green-50 border border-green-200 rounded-xl p-4 text-center">
                       <div className="text-3xl mb-2">✅</div>
-                      <p className="font-bold text-green-800 text-sm">הפנייה נשלחה!</p>
+                      <p className="font-bold text-green-800 text-sm">{t('checkout_phone_sent')}</p>
                       <p className="text-green-700 text-xs mt-1">נחזור אליך {callbackDeadlineStr}</p>
                     </div>
                   ) : (
@@ -713,20 +715,20 @@ export default function CheckoutPage() {
                       <input
                         value={state.name}
                         onChange={e => setState(p => ({ ...p, name: e.target.value }))}
-                        placeholder="שם מלא"
+                        placeholder={t('checkout_name_ph')}
                         className="w-full border border-slate-200 focus:border-ice-400 rounded-xl px-3 py-2 text-sm focus:outline-none"
                       />
                       <input
                         value={state.phone}
                         onChange={e => setState(p => ({ ...p, phone: e.target.value }))}
-                        placeholder="מספר טלפון"
+                        placeholder={t('checkout_phone_ph')}
                         type="tel"
                         className="w-full border border-slate-200 focus:border-ice-400 rounded-xl px-3 py-2 text-sm focus:outline-none"
                       />
                       <input
                         value={state.email}
                         onChange={e => setState(p => ({ ...p, email: e.target.value }))}
-                        placeholder="כתובת אימייל (לקבלת אישור)"
+                        placeholder={t('checkout_phone_email_ph')}
                         type="email"
                         className="w-full border border-slate-200 focus:border-ice-400 rounded-xl px-3 py-2 text-sm focus:outline-none"
                       />
@@ -735,13 +737,13 @@ export default function CheckoutPage() {
                         onChange={e => setState(p => ({ ...p, preferredHours: e.target.value }))}
                         className="w-full border border-slate-200 focus:border-ice-400 rounded-xl px-3 py-2 text-sm focus:outline-none bg-white"
                       >
-                        <option value="בכל שעה">באיזה שעות נוח לך? — בכל שעה</option>
-                        <option value="בוקר 08:00-12:00">בוקר 08:00–12:00</option>
-                        <option value="צהריים 12:00-16:00">צהריים 12:00–16:00</option>
-                        <option value="אחה״צ 16:00-20:00">אחה״צ 16:00–20:00</option>
+                        <option value={t('checkout_hours_any')}>{t('checkout_hours_any_label')} — {t('checkout_hours_any')}</option>
+                        <option value={t('checkout_hours_morning')}>{t('checkout_hours_morning')}</option>
+                        <option value={t('checkout_hours_noon')}>{t('checkout_hours_noon')}</option>
+                        <option value={t('checkout_hours_afternoon')}>{t('checkout_hours_afternoon')}</option>
                       </select>
                       <div className="bg-amber-50 border border-amber-200 rounded-xl px-3 py-2 text-xs text-amber-800">
-                        ⏰ {callbackDeadlineStr ? `נחזור אליך ${callbackDeadlineStr}` : 'נחזור אליך תוך 24 שעות'}
+                        ⏰ {callbackDeadlineStr ? `נחזור אליך ${callbackDeadlineStr}` : t('checkout_phone_24h')}
                       </div>
                       {msg && <p className="text-red-500 text-xs">{msg}</p>}
                       <button
@@ -749,7 +751,7 @@ export default function CheckoutPage() {
                         disabled={phoneSubmitting || !state.name || !state.phone}
                         className="w-full bg-ice-600 hover:bg-ice-700 disabled:opacity-50 text-white font-black py-3 rounded-xl text-sm transition-colors"
                       >
-                        {phoneSubmitting ? 'שולח...' : 'שלח פנייה — נחזור אליך ›'}
+                        {phoneSubmitting ? t('hc_sending') : t('checkout_phone_send')}
                       </button>
                     </div>
                   )}
@@ -764,21 +766,21 @@ export default function CheckoutPage() {
           {state.step === 6 && (
             <div className="text-center py-4">
               <div className="text-6xl mb-4">🧊</div>
-              <h2 className="text-2xl font-black text-navy-900 mb-2">ההזמנה אושרה!</h2>
+              <h2 className="text-2xl font-black text-navy-900 mb-2">{t('checkout_step6')}</h2>
 
               {state.paymentMethod === 'credit' && (
-                <p className="text-slate-600 mb-4">התשלום התקבל. נשלח אישור לאימייל שלך.</p>
+                <p className="text-slate-600 mb-4">{t('checkout_confirmed_credit')}</p>
               )}
               {(state.paymentMethod === 'bit' || state.paymentMethod === 'paybox') && (
-                <p className="text-slate-600 mb-4">קיבלנו את אישורך. נאמת ב-24 שעות ונשלח אישור למייל.</p>
+                <p className="text-slate-600 mb-4">{t('checkout_confirmed_bit')}</p>
               )}
               {state.paymentMethod === 'phone' && (
-                <p className="text-slate-600 mb-4">נחזור אליך תוך 24 שעות לסיום התשלום.</p>
+                <p className="text-slate-600 mb-4">{t('checkout_confirmed_phone')}</p>
               )}
 
               {state.confirmationCode && (
                 <div className="bg-ice-50 border border-ice-200 rounded-2xl p-4 mb-4">
-                  <p className="text-xs text-slate-500 mb-1">קוד אישור</p>
+                  <p className="text-xs text-slate-500 mb-1">{t('checkout_confirm_code')}</p>
                   <p className="font-black text-navy-900 text-2xl font-mono tracking-wider">
                     {state.confirmationCode}
                   </p>
@@ -793,19 +795,19 @@ export default function CheckoutPage() {
                   }}
                   className="bg-ice-600 hover:bg-ice-700 text-white font-bold px-8 py-3 rounded-2xl"
                 >
-                  חזרה לדף הבית
+                  {t('checkout_home')}
                 </button>
                 <button
                   onClick={() => router.push('/science')}
                   className="border-2 border-ice-400 text-ice-700 hover:bg-ice-50 font-bold px-8 py-3 rounded-2xl transition-colors text-sm"
                 >
-                  🔬 המדע שמאחורי הטבילה במי קרח
+                  {t('checkout_science_link')}
                 </button>
                 <button
                   onClick={() => router.push('/dashboard')}
                   className="border-2 border-navy-300 text-navy-700 hover:bg-navy-50 font-bold px-8 py-3 rounded-2xl transition-colors text-sm"
                 >
-                  📋 צפייה בהזמנות שלי
+                  {t('checkout_my_bookings')}
                 </button>
               </div>
             </div>
@@ -818,7 +820,7 @@ export default function CheckoutPage() {
             onClick={() => { setMsg(''); save({ step: state.step - 1 }); }}
             className="mt-4 text-ice-300 hover:text-white text-sm font-semibold mx-auto block"
           >
-            ← חזרה לשלב הקודם
+            {t('checkout_back')}
           </button>
         )}
       </div>
@@ -839,6 +841,7 @@ function HealthStep({
   onDone: () => void;
   onSkip: () => void;
 }) {
+  const { t } = useLanguage();
   const [form, setForm] = useState({
     has_heart_condition: false,
     has_hypertension: false,
@@ -853,8 +856,8 @@ function HealthStep({
   const [msg, setMsg] = useState('');
 
   async function submit() {
-    if (!agreed) { setMsg('יש לאשר את ההצהרה'); return; }
-    if (!form.participant_name) { setMsg('יש למלא שם משתתף'); return; }
+    if (!agreed) { setMsg(t('health_confirm_required')); return; }
+    if (!form.participant_name) { setMsg(t('health_name_required')); return; }
     setLoading(true);
     setMsg('');
     try {
@@ -882,18 +885,18 @@ function HealthStep({
   }
 
   const CONDITIONS: [keyof typeof form, string][] = [
-    ['has_heart_condition', 'אני סובל/ת ממצב לב'],
-    ['is_pregnant', 'אני בהריון'],
-    ['has_raynauds', 'אני סובל/ת מתסמונת Raynaud'],
-    ['has_hypertension', 'יש לי לחץ דם גבוה'],
-    ['has_open_wounds', 'יש לי פצעים פתוחים'],
+    ['has_heart_condition', t('health_condition')],
+    ['is_pregnant', t('health_pregnant')],
+    ['has_raynauds', t('health_raynauds')],
+    ['has_hypertension', t('health_hypertension')],
+    ['has_open_wounds', t('health_wounds')],
   ];
 
   return (
     <div>
-      <h2 className="text-2xl font-black text-navy-900 mb-1">הצהרת בריאות</h2>
+      <h2 className="text-2xl font-black text-navy-900 mb-1">{t('checkout_step4')}</h2>
       <p className="text-slate-500 text-xs mb-4">
-        נדרש לפני כל השתתפות. סמן/י את הפריטים הרלוונטיים אליך.
+        {t('health_before')}
       </p>
 
       <div className="space-y-2 text-sm mb-4">
@@ -910,11 +913,11 @@ function HealthStep({
         ))}
       </div>
 
-      <label className="block text-sm font-semibold text-slate-700 mb-1">שם מלא</label>
+      <label className="block text-sm font-semibold text-slate-700 mb-1">{t('health_full_name')}</label>
       <input
         value={form.participant_name}
         onChange={e => setForm(p => ({ ...p, participant_name: e.target.value }))}
-        placeholder="שם המשתתף"
+        placeholder={t('health_participant_ph')}
         className="w-full border-2 border-slate-200 rounded-xl px-4 py-2 text-sm mb-4 focus:outline-none focus:border-ice-400"
       />
 
@@ -926,7 +929,7 @@ function HealthStep({
           className="w-5 h-5 mt-0.5 accent-ice-500 flex-shrink-0"
         />
         <span className="text-sm text-slate-700 leading-relaxed">
-          אני מאשר/ת שקראתי את ההצהרה לעיל, המידע שמסרתי מדויק, ואני מסכים/ה לתנאי ההשתתפות.
+          {t('health_agree')}
         </span>
       </label>
 
@@ -938,13 +941,13 @@ function HealthStep({
           disabled={loading || !agreed}
           className="flex-1 bg-ice-600 hover:bg-ice-700 disabled:opacity-50 text-white font-bold py-3 rounded-2xl text-sm"
         >
-          {loading ? 'שומר...' : 'אשר הצהרה ✓'}
+          {loading ? t('health_saving') : t('health_submit')}
         </button>
         <button
           onClick={onSkip}
           className="px-4 py-3 text-slate-400 hover:text-slate-600 text-sm"
         >
-          דלג
+          {t('health_skip')}
         </button>
       </div>
     </div>

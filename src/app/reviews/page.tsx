@@ -1,6 +1,6 @@
 import { createAdminClient } from '@/lib/supabase';
 import type { Metadata } from 'next';
-import ReviewForm from '@/components/ReviewForm';
+import ReviewsContent from '@/components/ReviewsContent';
 
 export const metadata: Metadata = {
   title: 'חוות דעת | חוויות שוויץ המדע',
@@ -8,13 +8,6 @@ export const metadata: Metadata = {
 };
 
 export const revalidate = 60;
-
-const typeLabel: Record<string, string> = {
-  individual: 'סדנת יחידים',
-  couple: 'סדנת זוגות',
-  team: 'סדנת קבוצות',
-  immersion: 'טבילה אישית',
-};
 
 const hardcoded = [
   { id: 'h1', name: 'מיכאל ל.', role: 'מנהל מכירות', text: 'חוויה שלא אשכח. הנשימה המנחה עזרה לי להישאר רגוע בתוך המים. יצאתי עם תחושת הישג וביטחון עצמי שלא הרגשתי כבר שנים.', rating: 5, type: 'individual' },
@@ -45,70 +38,5 @@ export default async function ReviewsPage() {
     ...approved.map(r => ({ ...r, role: r.role ?? '' })),
     ...hardcoded,
   ];
-
-  return (
-    <main id="main-content" className="min-h-screen bg-navy-950 py-16 px-4" dir="rtl">
-      <div className="max-w-6xl mx-auto">
-
-        <h1 className="text-4xl md:text-5xl font-black text-center text-white mb-4">
-          מה אומרים המשתתפים?
-        </h1>
-        <p className="text-xl text-center text-slate-400 mb-4 max-w-2xl mx-auto">
-          מאות משתתפים שינו את הדרך שבה הם מתמודדים עם אתגרים
-        </p>
-
-        {/* Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-3xl mx-auto mb-16">
-          {[
-            { value: '98%', label: 'שביעות רצון' },
-            { value: '500+', label: 'משתתפים' },
-            { value: '4.9/5', label: 'דירוג ממוצע' },
-            { value: '85%', label: 'חוזרים לסדנה' },
-          ].map(s => (
-            <div key={s.label} className="text-center bg-navy-800 rounded-2xl py-6 border border-navy-700">
-              <div className="text-3xl font-black text-ice-400 mb-1">{s.value}</div>
-              <div className="text-slate-400 text-sm">{s.label}</div>
-            </div>
-          ))}
-        </div>
-
-        {/* Reviews grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-20">
-          {all.map((r, i) => (
-            <div key={r.id ?? i}
-              className="bg-navy-800 rounded-2xl p-6 border border-navy-700 hover:border-ice-500/30 transition-all duration-300 flex flex-col">
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex gap-0.5">
-                  {[...Array(r.rating)].map((_, j) => (
-                    <span key={j} className="text-yellow-400 text-lg">★</span>
-                  ))}
-                </div>
-                <span className="text-xs bg-ice-500/20 text-ice-400 px-3 py-1 rounded-full font-medium">
-                  {typeLabel[r.type] ?? r.type}
-                </span>
-              </div>
-              <p className="text-slate-300 text-sm leading-relaxed flex-1 mb-5">
-                &ldquo;{r.text}&rdquo;
-              </p>
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-ice-500/30 rounded-full flex items-center justify-center text-ice-400 font-bold text-sm flex-shrink-0">
-                  {r.name.charAt(0)}
-                </div>
-                <div>
-                  <p className="text-white font-semibold text-sm">{r.name}</p>
-                  {r.role && <p className="text-slate-500 text-xs">{r.role}</p>}
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Submit form */}
-        <div className="max-w-2xl mx-auto">
-          <h2 className="text-2xl font-black text-center text-white mb-8">שתף את החוויה שלך</h2>
-          <ReviewForm />
-        </div>
-      </div>
-    </main>
-  );
+  return <ReviewsContent reviews={all} />;
 }

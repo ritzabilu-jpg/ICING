@@ -2,8 +2,10 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useLanguage } from '@/lib/i18n/LanguageContext';
 
 export default function HealthCheckPage() {
+  const { t } = useLanguage();
   const [visitorId, setVisitorId] = useState<string | null>(null);
   const [visitorName, setVisitorName] = useState('');
   const [feelsHealthy, setFeelsHealthy] = useState(false);
@@ -46,12 +48,12 @@ export default function HealthCheckPage() {
       <main className="min-h-screen bg-slate-50 flex items-center justify-center p-6" dir="rtl">
         <div className="bg-white rounded-3xl shadow-xl p-8 max-w-md w-full text-center">
           <div className="text-6xl mb-4">✅</div>
-          <h1 className="text-2xl font-bold text-navy-900 mb-2">הצהרת הבריאות הוגשה</h1>
-          <p className="text-slate-500 mb-6">תודה {visitorName}! אתה מוכן לטבילה להיום.</p>
+          <h1 className="text-2xl font-bold text-navy-900 mb-2">{t('hc_done_title')}</h1>
+          <p className="text-slate-500 mb-6">{t('hc_done_sub').replace('{name}', visitorName)}</p>
           <p className="text-sm text-slate-400 mb-6">{today}</p>
           <button onClick={() => router.push('/dashboard')}
             className="bg-ice-600 hover:bg-ice-700 text-white font-bold px-6 py-3 rounded-xl transition-colors">
-            חזור לדשבורד
+            {t('hc_back_dashboard')}
           </button>
         </div>
       </main>
@@ -63,20 +65,20 @@ export default function HealthCheckPage() {
       <div className="bg-white rounded-3xl shadow-2xl p-8 max-w-md w-full">
         <div className="text-center mb-6">
           <div className="text-5xl mb-3">🧊</div>
-          <h1 className="text-2xl font-bold text-navy-900">הצהרת בריאות יומית</h1>
+          <h1 className="text-2xl font-bold text-navy-900">{t('hc_title')}</h1>
           <p className="text-slate-500 text-sm mt-1">{today}</p>
-          {visitorName && <p className="text-ice-600 font-semibold mt-2">שלום {visitorName}</p>}
+          {visitorName && <p className="text-ice-600 font-semibold mt-2">{t('hc_hello').replace('{name}', visitorName)}</p>}
         </div>
 
         <div className="bg-ice-50 rounded-2xl p-5 mb-6 border border-ice-100">
           <p className="text-sm text-slate-600 mb-4 font-medium">
-            לפני כל טבילה יש לאשר את הדברים הבאים:
+            {t('hc_before')}
           </p>
           <div className="space-y-4">
             {[
-              { checked: feelsHealthy, set: setFeelsHealthy, label: 'אני מרגיש/ה בריא/ה כיום', icon: '💪' },
-              { checked: noFever, set: setNoFever, label: 'אין לי חום (מתחת ל-37.5°C)', icon: '🌡️' },
-              { checked: feelingGood, set: setFeelingGood, label: 'אני מרגיש/ה טוב ומסוגל/ת לטבילה', icon: '✨' },
+              { checked: feelsHealthy, set: setFeelsHealthy, label: t('hc_healthy'), icon: '💪' },
+              { checked: noFever, set: setNoFever, label: t('hc_no_fever'), icon: '🌡️' },
+              { checked: feelingGood, set: setFeelingGood, label: t('hc_feeling_good'), icon: '✨' },
             ].map(({ checked, set, label, icon }) => (
               <label key={label} className="flex items-center gap-3 cursor-pointer group">
                 <div onClick={() => set(!checked)}
@@ -97,11 +99,11 @@ export default function HealthCheckPage() {
           disabled={!feelsHealthy || !noFever || !feelingGood || loading}
           className="w-full bg-ice-600 hover:bg-ice-700 disabled:opacity-40 disabled:cursor-not-allowed
                      text-white font-bold py-4 rounded-2xl text-lg transition-all hover:scale-[1.02] shadow-lg shadow-ice-500/30">
-          {loading ? 'שולח...' : '✅ אני מצהיר/ה ומאשר/ת — קדימה לטבילה!'}
+          {loading ? t('hc_sending') : t('hc_submit')}
         </button>
 
         <p className="text-center text-xs text-slate-400 mt-4">
-          אם אינך מרגיש/ה טוב, אנא הימנע/י מהטבילה ופנה/י לצוות
+          {t('hc_warning')}
         </p>
       </div>
     </main>
