@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 import ReviewsContent from '@/components/ReviewsContent';
 
 export const metadata: Metadata = {
-  title: 'חוות דעת | חוויות שוויץ המדע',
+  title: 'חוות דעת | ICING',
   description: 'מה אומרים המשתתפים על חוויות הטבילה בקרח שלנו',
 };
 

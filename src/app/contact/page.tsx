@@ -108,7 +108,7 @@ export default function ContactPage() {
                 type="text"
                 autoComplete="name"
                 required
-                placeholder="ישראל ישראלי"
+                placeholder={t('contact_name_ph')}
                 value={form.name}
                 onChange={handleChange}
                 className={inputClass}
@@ -162,7 +162,7 @@ export default function ContactPage() {
                 name="message"
                 required
                 rows={5}
-                placeholder="כתבו את הודעתכם כאן..."
+                placeholder={t('contact_message_ph')}
                 value={form.message}
                 onChange={handleChange}
                 className={`${inputClass} resize-none`}
@@ -191,12 +191,12 @@ export default function ContactPage() {
             {/* Contact info */}
             <div className="mt-2 pt-5 border-t border-white/10 text-center text-slate-500 text-sm space-y-1">
               <p>
-                טלפון:{' '}
+                {t('contact_phone_label')}:{' '}
                 <a href="tel:089310715" className="text-ice-400 hover:text-ice-300 transition">
                   08-9310715
                 </a>
               </p>
-              <p>סירני 52, רחובות</p>
+              <p>{t('contact_address_info')}</p>
             </div>
           </form>
         )}

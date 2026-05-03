@@ -2,8 +2,8 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 
 export const metadata: Metadata = {
-  title: 'הצהרת נגישות – חוויות שוויץ המדע',
-  description: 'הצהרת נגישות של אתר חוויות שוויץ המדע בהתאם לתקנות שוויון זכויות לאנשים עם מוגבלות',
+  title: 'הצהרת נגישות – ICING',
+  description: 'הצהרת נגישות של אתר ICING בהתאם לתקנות שוויון זכויות לאנשים עם מוגבלות',
 };
 
 export default function AccessibilityPage() {
@@ -20,7 +20,7 @@ export default function AccessibilityPage() {
         <section className="mb-10">
           <h2 className="text-xl font-bold text-navy-900 mb-3">אודות הנגישות באתר</h2>
           <p className="text-slate-600 leading-relaxed">
-            חוויות שוויץ המדע מחויבת לנגישות דיגיטלית לאנשים עם מוגבלות.
+            ICING מחויבת לנגישות דיגיטלית לאנשים עם מוגבלות.
             אנו פועלים לעמוד בדרישות תקן ישראלי 5568 (המבוסס על WCAG 2.1 ברמה AA),
             בהתאם לתקנות שוויון זכויות לאנשים עם מוגבלות (התאמות נגישות לשירות), התשע"ג–2013.
           </p>

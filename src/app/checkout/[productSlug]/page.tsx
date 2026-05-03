@@ -56,7 +56,7 @@ const INITIAL_STATE: CheckoutState = {
   healthDone: false,
   paymentMethod: '',
   paymentConfirmed: false,
-  preferredHours: 'בכל שעה',
+  preferredHours: '',
 };
 
 // ── Main Page ──────────────────────────────────────────────────────────────
@@ -69,10 +69,10 @@ export default function CheckoutPage() {
   const slug = params.productSlug as string;
 
   const IMMERSION_PACKAGES: Record<string, { title: string; price: number }> = {
-    single:   { title: 'טבילה בודדת',     price: 80  },
-    '5pack':  { title: 'חבילת 5 טבילות',  price: 350 },
-    '10pack': { title: 'חבילת 10 טבילות', price: 550 },
-    monthly:  { title: 'חופשי חודשי',     price: 600 },
+    single:   { title: t('immersion_pkg_single_title'), price: 80  },
+    '5pack':  { title: t('immersion_pkg_5pack_title'),  price: 350 },
+    '10pack': { title: t('immersion_pkg_10pack_title'), price: 550 },
+    monthly:  { title: t('immersion_pkg_monthly_title'), price: 600 },
   };
 
   const [state, setState] = useState<CheckoutState>(INITIAL_STATE);
@@ -133,7 +133,7 @@ export default function CheckoutPage() {
             });
           }
         })
-        .catch(() => setMsg('שגיאה בטעינת הסדנה'));
+        .catch(() => setMsg(t('checkout_error_load_ws')));
     } else if (type === 'immersion') {
       const pkgKey = searchParams.get('pkg') ?? 'single';
       const pkgInfo = IMMERSION_PACKAGES[pkgKey] ?? IMMERSION_PACKAGES['single'];
@@ -158,7 +158,7 @@ export default function CheckoutPage() {
             });
           }
         })
-        .catch(() => setMsg('שגיאה בטעינת חלון הטבילה'));
+        .catch(() => setMsg(t('checkout_error_load_slot')));
     }
 
     // Restore saved checkout state — only if same product
@@ -241,16 +241,16 @@ export default function CheckoutPage() {
       if (d.booking_id) {
         save({ bookingId: d.booking_id, sessionToken: d.session_token, step: 3 });
       } else {
-        setMsg(d.error ?? 'שגיאה ביצירת הזמנה');
+        setMsg(d.error ?? t('checkout_error_draft'));
       }
     } catch {
-      setMsg('שגיאת רשת — נסה שנית');
+      setMsg(t('checkout_error_network'));
     }
     setLoading(false);
   }
 
   async function saveParticipants() {
-    if (!state.name || !state.phone) { setMsg('יש למלא שם וטלפון'); return; }
+    if (!state.name || !state.phone) { setMsg(t('checkout_error_fill')); return; }
     setLoading(true);
     setMsg('');
     try {
@@ -279,7 +279,7 @@ export default function CheckoutPage() {
       }
       save({ step: 4 });
     } catch {
-      setMsg('שגיאת רשת — נסה שנית');
+      setMsg(t('checkout_error_network'));
     }
     setLoading(false);
   }
@@ -303,10 +303,10 @@ export default function CheckoutPage() {
         try { localStorage.removeItem(STORAGE_KEY); } catch { /* ignore */ }
         save({ paymentMethod: method, confirmationCode: d.confirmation_code, step: 6, paymentConfirmed: true });
       } else {
-        setMsg(d.error ?? 'שגיאה באישור התשלום');
+        setMsg(d.error ?? t('checkout_error_confirm'));
       }
     } catch {
-      setMsg('שגיאת רשת — נסה שנית');
+      setMsg(t('checkout_error_network'));
     }
     setLoading(false);
   }
@@ -355,10 +355,10 @@ export default function CheckoutPage() {
         setPhoneSubmitted(true);
         save({ confirmationCode: d.confirmation_code, paymentMethod: 'phone', step: 6 });
       } else {
-        setMsg(d.error ?? 'שגיאה בשליחת הפנייה');
+        setMsg(d.error ?? t('checkout_error_phone_req'));
       }
     } catch {
-      setMsg('שגיאת רשת — נסה שנית');
+      setMsg(t('checkout_error_network'));
     }
     setPhoneSubmitting(false);
   }
@@ -615,7 +615,7 @@ export default function CheckoutPage() {
                     <div className="bg-blue-100 rounded-xl px-3 py-2 mb-3 text-xs text-blue-900 space-y-1">
                       <p className="font-bold">{t('checkout_bit_steps')}</p>
                       <p>{t('checkout_bit_step1')}</p>
-                      <p>2. שלח ₪{total} למספר <span className="font-bold" dir="ltr">052-4500825</span></p>
+                      <p>{t('checkout_bit_step2').replace('{amount}', String(total))} <span className="font-bold" dir="ltr">052-4500825</span></p>
                       <p>{t('checkout_bit_step3')}</p>
                     </div>
                     {!bitClicked ? (
@@ -708,7 +708,7 @@ export default function CheckoutPage() {
                     <div className="bg-green-50 border border-green-200 rounded-xl p-4 text-center">
                       <div className="text-3xl mb-2">✅</div>
                       <p className="font-bold text-green-800 text-sm">{t('checkout_phone_sent')}</p>
-                      <p className="text-green-700 text-xs mt-1">נחזור אליך {callbackDeadlineStr}</p>
+                      <p className="text-green-700 text-xs mt-1">{t('checkout_callback_by').replace('{deadline}', callbackDeadlineStr)}</p>
                     </div>
                   ) : (
                     <div className="space-y-2">
@@ -737,13 +737,13 @@ export default function CheckoutPage() {
                         onChange={e => setState(p => ({ ...p, preferredHours: e.target.value }))}
                         className="w-full border border-slate-200 focus:border-ice-400 rounded-xl px-3 py-2 text-sm focus:outline-none bg-white"
                       >
-                        <option value={t('checkout_hours_any')}>{t('checkout_hours_any_label')} — {t('checkout_hours_any')}</option>
+                        <option value="">{t('checkout_hours_any_label')} — {t('checkout_hours_any')}</option>
                         <option value={t('checkout_hours_morning')}>{t('checkout_hours_morning')}</option>
                         <option value={t('checkout_hours_noon')}>{t('checkout_hours_noon')}</option>
                         <option value={t('checkout_hours_afternoon')}>{t('checkout_hours_afternoon')}</option>
                       </select>
                       <div className="bg-amber-50 border border-amber-200 rounded-xl px-3 py-2 text-xs text-amber-800">
-                        ⏰ {callbackDeadlineStr ? `נחזור אליך ${callbackDeadlineStr}` : t('checkout_phone_24h')}
+                        ⏰ {callbackDeadlineStr ? t('checkout_callback_by').replace('{deadline}', callbackDeadlineStr) : t('checkout_phone_24h')}
                       </div>
                       {msg && <p className="text-red-500 text-xs">{msg}</p>}
                       <button
@@ -879,7 +879,7 @@ function HealthStep({
         setMsg(d.error ?? 'שגיאה בשמירת ההצהרה');
       }
     } catch {
-      setMsg('שגיאת רשת — נסה שנית');
+      setMsg(t('checkout_error_network'));
     }
     setLoading(false);
   }

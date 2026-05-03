@@ -125,8 +125,8 @@ export default function ScienceContent() {
             {t('science_badge')}
           </div>
           <h1 className="text-4xl md:text-5xl font-black mb-6 leading-tight">
-            {t('science_title').split(' ').slice(0, 2).join(' ')}<br />
-            <span className="text-ice-400">{t('science_title').split(' ').slice(2).join(' ')}</span>
+            {t('science_title_line1')}<br />
+            <span className="text-ice-400">{t('science_title_line2')}</span>
           </h1>
           <p className="text-slate-300 text-lg leading-relaxed max-w-2xl mx-auto">
             {t('science_sub')}

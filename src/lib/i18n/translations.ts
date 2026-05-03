@@ -226,6 +226,42 @@ export type Translations = {
   payment_credit: string; payment_bit: string; payment_paybox: string; payment_phone: string;
   payment_secured: string; payment_bit_desc: string; payment_paybox_desc: string;
   failed_title: string; failed_desc: string; failed_retry: string; failed_call: string;
+  // Immersion page
+  immersion_hero_title: string; immersion_hero_sub: string;
+  immersion_loading_slots: string; immersion_prev_month: string; immersion_next_month: string;
+  immersion_legend_free: string; immersion_legend_selected: string; immersion_legend_none: string;
+  immersion_slot_free: string; immersion_slot_taken: string; immersion_no_slots_date: string;
+  immersion_step1: string; immersion_step2: string; immersion_step3: string; immersion_step4: string;
+  immersion_summary_title: string; immersion_summary_date: string; immersion_summary_time: string;
+  immersion_summary_pkg: string; immersion_summary_total: string; immersion_proceed_btn: string;
+  immersion_error_no_slot: string; immersion_error_submit: string;
+  immersion_done_title: string; immersion_done_sub: string; immersion_home_btn: string;
+  immersion_sessions_unit: string; immersion_pkg_savings: string; immersion_pkg_unlimited: string;
+  immersion_pkg_single_title: string; immersion_pkg_single_desc: string;
+  immersion_pkg_5pack_title: string; immersion_pkg_5pack_desc: string;
+  immersion_pkg_10pack_title: string; immersion_pkg_10pack_desc: string;
+  immersion_pkg_monthly_title: string; immersion_pkg_monthly_desc: string;
+  // booking/success page
+  bsuccess_loading: string; bsuccess_title: string; bsuccess_paid_sub: string; bsuccess_pending_sub: string;
+  bsuccess_code_label: string; bsuccess_code_save: string;
+  bsuccess_details_title: string; bsuccess_workshop_col: string; bsuccess_datetime_col: string;
+  bsuccess_instructor_col: string; bsuccess_participants_col: string; bsuccess_total_col: string;
+  bsuccess_bring_title: string;
+  bsuccess_bring1: string; bsuccess_bring2: string; bsuccess_bring3: string; bsuccess_bring4: string; bsuccess_bring5: string;
+  bsuccess_location_title: string; bsuccess_address: string; bsuccess_complex: string; bsuccess_waze: string; bsuccess_gmaps: string;
+  bsuccess_load_error: string; bsuccess_check_email: string; bsuccess_book_another: string; bsuccess_home: string;
+  // checkout/success page
+  csuccess_paid_title: string; csuccess_pending_title: string;
+  csuccess_paid_desc: string; csuccess_pending_desc: string;
+  csuccess_order_num: string; csuccess_home: string; csuccess_book_more: string;
+  // checkout errors + misc
+  checkout_error_load_ws: string; checkout_error_load_slot: string; checkout_error_draft: string;
+  checkout_error_network: string; checkout_error_fill: string; checkout_error_confirm: string; checkout_error_phone_req: string;
+  checkout_callback_by: string; checkout_bit_step2: string;
+  // contact page additional
+  contact_name_ph: string; contact_message_ph: string; contact_phone_label: string; contact_address_info: string;
+  // science title lines
+  science_title_line1: string; science_title_line2: string;
 };
 
 const he: Translations = {
@@ -494,6 +530,56 @@ const he: Translations = {
   journal_stat_avg_temp: 'ממוצע טמפרטורה', journal_stat_total: 'סה"כ טבילות',
   journal_minutes: "דק'", journal_upd_same: 'כמו שבוע שעבר', journal_upd_sub: 'סה"כ דקות טבילה',
   journal_cur_week: 'שבוע נוכחי', journal_all_time: 'כל הזמן',
+
+  immersion_hero_title: 'קבע מועד לטבילה', immersion_hero_sub: 'בהדרכת מדריך מוסמך · רחובות',
+  immersion_loading_slots: 'טוען מועדים...', immersion_prev_month: 'חודש קודם', immersion_next_month: 'חודש הבא',
+  immersion_legend_free: 'פנוי', immersion_legend_selected: 'נבחר', immersion_legend_none: 'אין מועדים',
+  immersion_slot_free: 'פנוי', immersion_slot_taken: 'תפוס', immersion_no_slots_date: 'אין מועדים זמינים בתאריך זה.',
+  immersion_step1: 'בחר תאריך', immersion_step2: 'בחר שעה', immersion_step3: 'בחר חבילה', immersion_step4: 'סיכום והמשך לתשלום',
+  immersion_summary_title: 'סיכום הזמנה', immersion_summary_date: 'תאריך', immersion_summary_time: 'שעה',
+  immersion_summary_pkg: 'חבילה', immersion_summary_total: 'סה״כ לתשלום', immersion_proceed_btn: 'המשך לפרטים ותשלום →',
+  immersion_error_no_slot: 'יש לבחור מועד טבילה', immersion_error_submit: 'שגיאה בהרשמה',
+  immersion_done_title: 'הרשמה התקבלה!', immersion_done_sub: '{name}, נרשמת בהצלחה.', immersion_home_btn: 'חזרה לדף הבית',
+  immersion_sessions_unit: 'טבילות', immersion_pkg_savings: 'חיסכון של ₪50', immersion_pkg_unlimited: '∞ ללא הגבלה',
+  immersion_pkg_single_title: 'טבילה בודדת',
+  immersion_pkg_single_desc: 'טבילה באמבטיית קרח בהדרכת מדריך מוסמך. בסביבה מבוקרת ובטוחה, עד עשר דקות, תוך פיקוח מקצועי.',
+  immersion_pkg_5pack_title: 'חבילת 5 טבילות',
+  immersion_pkg_5pack_desc: '5 טבילות בהדרכה מקצועית. כל טבילה נקבעת בנפרד לפי לוח הזמנים הזמין.',
+  immersion_pkg_10pack_title: 'חבילת 10 טבילות',
+  immersion_pkg_10pack_desc: '10 טבילות בהדרכה מקצועית. חבילת השגרה המומלצת להתקדמות ממשית.',
+  immersion_pkg_monthly_title: 'חופשי חודשי',
+  immersion_pkg_monthly_desc: 'גישה חופשית לכל הטבילות במשך חודש קלנדרי אחד. ללא הגבלת מספר טבילות.',
+
+  bsuccess_loading: 'טוען פרטי הזמנה...', bsuccess_title: 'ההזמנה אושרה!',
+  bsuccess_paid_sub: 'התשלום התקבל בהצלחה. נשלח אישור למייל שלך.',
+  bsuccess_pending_sub: 'ההזמנה נקלטה בהצלחה. אישור נשלח למייל שלך.',
+  bsuccess_code_label: 'קוד אישור ההזמנה שלך', bsuccess_code_save: 'שמרו קוד זה לצורך כניסה לסדנה',
+  bsuccess_details_title: 'פרטי הסדנה', bsuccess_workshop_col: 'סדנה', bsuccess_datetime_col: 'תאריך ושעה',
+  bsuccess_instructor_col: 'מדריך', bsuccess_participants_col: 'משתתפים', bsuccess_total_col: 'סה"כ',
+  bsuccess_bring_title: 'מה להביא לסדנה?',
+  bsuccess_bring1: 'בגד ים או בגד ספורט צמוד', bsuccess_bring2: 'מגבת גדולה וחמה',
+  bsuccess_bring3: 'בגדים חמים להחלפה לאחר הסדנה', bsuccess_bring4: 'שתייה חמה בתרמוס (אופציונלי)',
+  bsuccess_bring5: 'להגיע 10 דקות לפני תחילת הסדנה',
+  bsuccess_location_title: 'מיקום', bsuccess_address: 'רחוב סירני 52, רחובות',
+  bsuccess_complex: 'מתחם הבריכה הטיפולית', bsuccess_waze: 'נווט בWaze', bsuccess_gmaps: 'Google Maps',
+  bsuccess_load_error: 'לא ניתן לטעון פרטי הזמנה', bsuccess_check_email: 'בדקו את תיבת המייל שלכם לאישור ההזמנה',
+  bsuccess_book_another: 'הזמינו סדנה נוספת', bsuccess_home: 'חזרה לדף הבית',
+
+  csuccess_paid_title: 'התשלום התקבל!', csuccess_pending_title: 'ההזמנה נרשמה',
+  csuccess_paid_desc: 'תודה! אישור ישלח לאימייל שלך בקרוב.',
+  csuccess_pending_desc: 'קיבלנו את פרטיך. נחזור אליך לאישור סופי.',
+  csuccess_order_num: 'מספר הזמנה', csuccess_home: 'חזרה לדף הבית', csuccess_book_more: 'הזמן טבילה נוספת',
+
+  checkout_error_load_ws: 'שגיאה בטעינת הסדנה', checkout_error_load_slot: 'שגיאה בטעינת חלון הטבילה',
+  checkout_error_draft: 'שגיאה ביצירת הזמנה', checkout_error_network: 'שגיאת רשת — נסה שנית',
+  checkout_error_fill: 'יש למלא שם וטלפון', checkout_error_confirm: 'שגיאה באישור התשלום',
+  checkout_error_phone_req: 'שגיאה בשליחת הפנייה',
+  checkout_callback_by: 'נחזור אליך {deadline}', checkout_bit_step2: 'שלח ₪{amount} למספר',
+
+  contact_name_ph: 'ישראל ישראלי', contact_message_ph: 'כתבו את הודעתכם כאן...',
+  contact_phone_label: 'טלפון', contact_address_info: 'סירני 52, רחובות',
+
+  science_title_line1: 'המדע מאחורי', science_title_line2: 'טבילת מי קרח',
 };
 
 const en: Translations = {
@@ -753,6 +839,56 @@ const en: Translations = {
   journal_stat_avg_temp: 'Avg temperature', journal_stat_total: 'Total immersions',
   journal_minutes: 'min', journal_upd_same: 'Same as last week', journal_upd_sub: 'Total immersion minutes',
   journal_cur_week: 'This week', journal_all_time: 'All time',
+
+  immersion_hero_title: 'Schedule a Plunge', immersion_hero_sub: 'With a certified instructor · Rehovot',
+  immersion_loading_slots: 'Loading slots...', immersion_prev_month: 'Previous month', immersion_next_month: 'Next month',
+  immersion_legend_free: 'Available', immersion_legend_selected: 'Selected', immersion_legend_none: 'No slots',
+  immersion_slot_free: 'Free', immersion_slot_taken: 'Full', immersion_no_slots_date: 'No available slots on this date.',
+  immersion_step1: 'Choose date', immersion_step2: 'Choose time', immersion_step3: 'Choose package', immersion_step4: 'Summary & payment',
+  immersion_summary_title: 'Order summary', immersion_summary_date: 'Date', immersion_summary_time: 'Time',
+  immersion_summary_pkg: 'Package', immersion_summary_total: 'Total to pay', immersion_proceed_btn: 'Continue to details & payment →',
+  immersion_error_no_slot: 'Please select a time slot', immersion_error_submit: 'Registration error',
+  immersion_done_title: 'Registration confirmed!', immersion_done_sub: '{name}, you are registered.', immersion_home_btn: 'Back to home',
+  immersion_sessions_unit: 'sessions', immersion_pkg_savings: 'Save ₪50', immersion_pkg_unlimited: '∞ Unlimited',
+  immersion_pkg_single_title: 'Single Plunge',
+  immersion_pkg_single_desc: 'Cold water immersion with a certified instructor. In a controlled, safe environment, up to ten minutes, with professional supervision.',
+  immersion_pkg_5pack_title: '5 Plunges Pack',
+  immersion_pkg_5pack_desc: '5 plunges with professional instruction. Each session is scheduled separately according to availability.',
+  immersion_pkg_10pack_title: '10 Plunges Pack',
+  immersion_pkg_10pack_desc: '10 plunges with professional instruction. The recommended routine package for real progress.',
+  immersion_pkg_monthly_title: 'Monthly Pass',
+  immersion_pkg_monthly_desc: 'Free access to all plunges for one calendar month. Unlimited number of sessions.',
+
+  bsuccess_loading: 'Loading booking details...', bsuccess_title: 'Booking confirmed!',
+  bsuccess_paid_sub: 'Payment received. A confirmation email has been sent.',
+  bsuccess_pending_sub: 'Booking received. A confirmation email has been sent.',
+  bsuccess_code_label: 'Your booking confirmation code', bsuccess_code_save: 'Keep this code for workshop entry',
+  bsuccess_details_title: 'Workshop details', bsuccess_workshop_col: 'Workshop', bsuccess_datetime_col: 'Date & time',
+  bsuccess_instructor_col: 'Instructor', bsuccess_participants_col: 'Participants', bsuccess_total_col: 'Total',
+  bsuccess_bring_title: 'What to bring to the workshop?',
+  bsuccess_bring1: 'Swimwear or tight sportswear', bsuccess_bring2: 'A large warm towel',
+  bsuccess_bring3: 'Warm clothes to change into after the workshop', bsuccess_bring4: 'Hot drink in a thermos (optional)',
+  bsuccess_bring5: 'Arrive 10 minutes before the workshop starts',
+  bsuccess_location_title: 'Location', bsuccess_address: '52 Sireni St, Rehovot',
+  bsuccess_complex: 'Therapeutic Pool Complex', bsuccess_waze: 'Navigate via Waze', bsuccess_gmaps: 'Google Maps',
+  bsuccess_load_error: 'Could not load booking details', bsuccess_check_email: 'Check your email for booking confirmation',
+  bsuccess_book_another: 'Book another workshop', bsuccess_home: 'Back to home',
+
+  csuccess_paid_title: 'Payment received!', csuccess_pending_title: 'Booking registered',
+  csuccess_paid_desc: 'Thank you! A confirmation will be sent to your email shortly.',
+  csuccess_pending_desc: 'We received your details. We will contact you for final confirmation.',
+  csuccess_order_num: 'Order number', csuccess_home: 'Back to home', csuccess_book_more: 'Book another plunge',
+
+  checkout_error_load_ws: 'Error loading workshop', checkout_error_load_slot: 'Error loading slot',
+  checkout_error_draft: 'Error creating booking', checkout_error_network: 'Network error — please try again',
+  checkout_error_fill: 'Please fill in name and phone', checkout_error_confirm: 'Error confirming payment',
+  checkout_error_phone_req: 'Error sending request',
+  checkout_callback_by: "We'll call you back {deadline}", checkout_bit_step2: 'Send ₪{amount} to',
+
+  contact_name_ph: 'John Smith', contact_message_ph: 'Write your message here...',
+  contact_phone_label: 'Phone', contact_address_info: '52 Sireni St, Rehovot',
+
+  science_title_line1: 'The science behind', science_title_line2: 'cold water immersion',
 };
 
 const ar: Translations = {
@@ -1013,6 +1149,56 @@ const ar: Translations = {
   journal_stat_avg_temp: 'متوسط الحرارة', journal_stat_total: 'إجمالي الغمرات',
   journal_minutes: 'دقيقة', journal_upd_same: 'كما الأسبوع الماضي', journal_upd_sub: 'إجمالي دقائق الغمر',
   journal_cur_week: 'هذا الأسبوع', journal_all_time: 'كل الوقت',
+
+  immersion_hero_title: 'احجز موعدًا للغمر', immersion_hero_sub: 'مع مدرب معتمد · ريحوفوت',
+  immersion_loading_slots: 'جارٍ تحميل المواعيد...', immersion_prev_month: 'الشهر السابق', immersion_next_month: 'الشهر التالي',
+  immersion_legend_free: 'متاح', immersion_legend_selected: 'محدد', immersion_legend_none: 'لا مواعيد',
+  immersion_slot_free: 'متاح', immersion_slot_taken: 'محجوز', immersion_no_slots_date: 'لا توجد مواعيد متاحة في هذا التاريخ.',
+  immersion_step1: 'اختر التاريخ', immersion_step2: 'اختر الوقت', immersion_step3: 'اختر الحزمة', immersion_step4: 'ملخص ومتابعة للدفع',
+  immersion_summary_title: 'ملخص الطلب', immersion_summary_date: 'التاريخ', immersion_summary_time: 'الوقت',
+  immersion_summary_pkg: 'الحزمة', immersion_summary_total: 'المجموع للدفع', immersion_proceed_btn: 'متابعة للتفاصيل والدفع →',
+  immersion_error_no_slot: 'يرجى اختيار موعد', immersion_error_submit: 'خطأ في التسجيل',
+  immersion_done_title: 'تم تأكيد التسجيل!', immersion_done_sub: '{name}، تم تسجيلك بنجاح.', immersion_home_btn: 'العودة للرئيسية',
+  immersion_sessions_unit: 'جلسات', immersion_pkg_savings: 'وفر ₪50', immersion_pkg_unlimited: '∞ غير محدود',
+  immersion_pkg_single_title: 'غمرة واحدة',
+  immersion_pkg_single_desc: 'غمر في حمام مائي بارد بإشراف مدرب معتمد. في بيئة آمنة ومضبوطة، حتى عشر دقائق، تحت إشراف احترافي.',
+  immersion_pkg_5pack_title: 'حزمة 5 غمرات',
+  immersion_pkg_5pack_desc: '5 غمرات بإشراف احترافي. كل جلسة تُحدد بشكل منفصل وفقًا للجدول المتاح.',
+  immersion_pkg_10pack_title: 'حزمة 10 غمرات',
+  immersion_pkg_10pack_desc: '10 غمرات بإشراف احترافي. الحزمة الروتينية الموصى بها للتقدم الحقيقي.',
+  immersion_pkg_monthly_title: 'تصريح شهري',
+  immersion_pkg_monthly_desc: 'وصول مجاني لجميع الغمرات لمدة شهر تقويمي واحد. عدد غير محدود من الجلسات.',
+
+  bsuccess_loading: 'جارٍ تحميل تفاصيل الحجز...', bsuccess_title: 'تم تأكيد الحجز!',
+  bsuccess_paid_sub: 'تم استلام الدفع. تم إرسال رسالة تأكيد إلى بريدك الإلكتروني.',
+  bsuccess_pending_sub: 'تم استلام الحجز. تم إرسال رسالة تأكيد إلى بريدك الإلكتروني.',
+  bsuccess_code_label: 'رمز تأكيد حجزك', bsuccess_code_save: 'احتفظ بهذا الرمز للدخول إلى ورشة العمل',
+  bsuccess_details_title: 'تفاصيل ورشة العمل', bsuccess_workshop_col: 'ورشة عمل', bsuccess_datetime_col: 'التاريخ والوقت',
+  bsuccess_instructor_col: 'المدرب', bsuccess_participants_col: 'المشاركون', bsuccess_total_col: 'المجموع',
+  bsuccess_bring_title: 'ماذا تحضر إلى ورشة العمل؟',
+  bsuccess_bring1: 'ملابس سباحة أو ملابس رياضية ضيقة', bsuccess_bring2: 'منشفة كبيرة ودافئة',
+  bsuccess_bring3: 'ملابس دافئة للتغيير بعد ورشة العمل', bsuccess_bring4: 'مشروب ساخن في ترمس (اختياري)',
+  bsuccess_bring5: 'الوصول قبل 10 دقائق من بدء ورشة العمل',
+  bsuccess_location_title: 'الموقع', bsuccess_address: 'شارع سيريني 52، ريحوفوت',
+  bsuccess_complex: 'مجمع المسبح العلاجي', bsuccess_waze: 'التنقل عبر Waze', bsuccess_gmaps: 'خرائط Google',
+  bsuccess_load_error: 'تعذر تحميل تفاصيل الحجز', bsuccess_check_email: 'تحقق من بريدك الإلكتروني لتأكيد الحجز',
+  bsuccess_book_another: 'احجز ورشة عمل أخرى', bsuccess_home: 'العودة للرئيسية',
+
+  csuccess_paid_title: 'تم استلام الدفع!', csuccess_pending_title: 'تم تسجيل الحجز',
+  csuccess_paid_desc: 'شكرًا! سيُرسل تأكيد إلى بريدك الإلكتروني قريبًا.',
+  csuccess_pending_desc: 'استلمنا تفاصيلك. سنتصل بك للتأكيد النهائي.',
+  csuccess_order_num: 'رقم الطلب', csuccess_home: 'العودة للرئيسية', csuccess_book_more: 'احجز غمرة أخرى',
+
+  checkout_error_load_ws: 'خطأ في تحميل ورشة العمل', checkout_error_load_slot: 'خطأ في تحميل الموعد',
+  checkout_error_draft: 'خطأ في إنشاء الحجز', checkout_error_network: 'خطأ في الشبكة — يرجى المحاولة مرة أخرى',
+  checkout_error_fill: 'يرجى ملء الاسم والهاتف', checkout_error_confirm: 'خطأ في تأكيد الدفع',
+  checkout_error_phone_req: 'خطأ في إرسال الطلب',
+  checkout_callback_by: 'سنعاود الاتصال بك {deadline}', checkout_bit_step2: 'أرسل ₪{amount} إلى',
+
+  contact_name_ph: 'محمد أحمد', contact_message_ph: 'اكتب رسالتك هنا...',
+  contact_phone_label: 'هاتف', contact_address_info: 'سيريني 52، ريحوفوت',
+
+  science_title_line1: 'علم', science_title_line2: 'الغمر في الماء البارد',
 };
 
 const ru: Translations = {
@@ -1272,6 +1458,56 @@ const ru: Translations = {
   journal_stat_avg_temp: 'Средняя температура', journal_stat_total: 'Всего погружений',
   journal_minutes: 'мин', journal_upd_same: 'Как на прошлой неделе', journal_upd_sub: 'Всего минут',
   journal_cur_week: 'Эта неделя', journal_all_time: 'Всё время',
+
+  immersion_hero_title: 'Записаться на погружение', immersion_hero_sub: 'С сертифицированным инструктором · Реховот',
+  immersion_loading_slots: 'Загрузка слотов...', immersion_prev_month: 'Предыдущий месяц', immersion_next_month: 'Следующий месяц',
+  immersion_legend_free: 'Свободно', immersion_legend_selected: 'Выбрано', immersion_legend_none: 'Нет слотов',
+  immersion_slot_free: 'Свободно', immersion_slot_taken: 'Занято', immersion_no_slots_date: 'Нет доступных слотов на эту дату.',
+  immersion_step1: 'Выберите дату', immersion_step2: 'Выберите время', immersion_step3: 'Выберите пакет', immersion_step4: 'Итого и переход к оплате',
+  immersion_summary_title: 'Итого заказа', immersion_summary_date: 'Дата', immersion_summary_time: 'Время',
+  immersion_summary_pkg: 'Пакет', immersion_summary_total: 'Итого к оплате', immersion_proceed_btn: 'Продолжить к деталям и оплате →',
+  immersion_error_no_slot: 'Пожалуйста, выберите время', immersion_error_submit: 'Ошибка регистрации',
+  immersion_done_title: 'Регистрация подтверждена!', immersion_done_sub: '{name}, вы зарегистрированы.', immersion_home_btn: 'На главную',
+  immersion_sessions_unit: 'сеансов', immersion_pkg_savings: 'Экономия ₪50', immersion_pkg_unlimited: '∞ Безлимит',
+  immersion_pkg_single_title: 'Одно погружение',
+  immersion_pkg_single_desc: 'Погружение в ледяную ванну с сертифицированным инструктором. В безопасной обстановке, до десяти минут, под профессиональным наблюдением.',
+  immersion_pkg_5pack_title: 'Пакет 5 погружений',
+  immersion_pkg_5pack_desc: '5 погружений с профессиональным инструктором. Каждое занятие планируется отдельно по доступному расписанию.',
+  immersion_pkg_10pack_title: 'Пакет 10 погружений',
+  immersion_pkg_10pack_desc: '10 погружений с профессиональным инструктором. Рекомендуемый пакет для реального прогресса.',
+  immersion_pkg_monthly_title: 'Месячный абонемент',
+  immersion_pkg_monthly_desc: 'Свободный доступ ко всем погружениям в течение одного календарного месяца. Неограниченное количество сеансов.',
+
+  bsuccess_loading: 'Загрузка данных заказа...', bsuccess_title: 'Бронирование подтверждено!',
+  bsuccess_paid_sub: 'Оплата получена. Подтверждение отправлено на ваш email.',
+  bsuccess_pending_sub: 'Заказ принят. Подтверждение отправлено на ваш email.',
+  bsuccess_code_label: 'Ваш код подтверждения', bsuccess_code_save: 'Сохраните этот код для входа на семинар',
+  bsuccess_details_title: 'Детали семинара', bsuccess_workshop_col: 'Семинар', bsuccess_datetime_col: 'Дата и время',
+  bsuccess_instructor_col: 'Инструктор', bsuccess_participants_col: 'Участники', bsuccess_total_col: 'Итого',
+  bsuccess_bring_title: 'Что взять на семинар?',
+  bsuccess_bring1: 'Купальник или облегающая спортивная одежда', bsuccess_bring2: 'Большое тёплое полотенце',
+  bsuccess_bring3: 'Тёплая одежда для переодевания после семинара', bsuccess_bring4: 'Горячий напиток в термосе (по желанию)',
+  bsuccess_bring5: 'Прийти за 10 минут до начала семинара',
+  bsuccess_location_title: 'Местоположение', bsuccess_address: 'ул. Сирени 52, Реховот',
+  bsuccess_complex: 'Комплекс терапевтического бассейна', bsuccess_waze: 'Навигация через Waze', bsuccess_gmaps: 'Google Maps',
+  bsuccess_load_error: 'Не удалось загрузить данные заказа', bsuccess_check_email: 'Проверьте email для подтверждения заказа',
+  bsuccess_book_another: 'Забронировать ещё один семинар', bsuccess_home: 'На главную',
+
+  csuccess_paid_title: 'Оплата получена!', csuccess_pending_title: 'Заказ зарегистрирован',
+  csuccess_paid_desc: 'Спасибо! Подтверждение будет отправлено на ваш email.',
+  csuccess_pending_desc: 'Мы получили ваши данные. Свяжемся с вами для окончательного подтверждения.',
+  csuccess_order_num: 'Номер заказа', csuccess_home: 'На главную', csuccess_book_more: 'Записаться на ещё одно погружение',
+
+  checkout_error_load_ws: 'Ошибка загрузки семинара', checkout_error_load_slot: 'Ошибка загрузки слота',
+  checkout_error_draft: 'Ошибка создания заказа', checkout_error_network: 'Ошибка сети — попробуйте снова',
+  checkout_error_fill: 'Пожалуйста, заполните имя и телефон', checkout_error_confirm: 'Ошибка подтверждения оплаты',
+  checkout_error_phone_req: 'Ошибка отправки запроса',
+  checkout_callback_by: 'Мы перезвоним вам {deadline}', checkout_bit_step2: 'Отправьте ₪{amount} на номер',
+
+  contact_name_ph: 'Иван Иванов', contact_message_ph: 'Напишите ваше сообщение здесь...',
+  contact_phone_label: 'Телефон', contact_address_info: 'ул. Сирени 52, Реховот',
+
+  science_title_line1: 'Наука о', science_title_line2: 'холодном погружении',
 };
 
 export const translations: Record<Lang, Translations> = { he, en, ar, ru };

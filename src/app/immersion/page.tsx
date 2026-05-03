@@ -7,6 +7,14 @@
 
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { useRouter } from 'next/navigation';
+import { useLanguage } from '@/lib/i18n/LanguageContext';
+
+const LOCALE_MAP: Record<string, string> = {
+  he: 'he-IL',
+  en: 'en-US',
+  ar: 'ar-SA',
+  ru: 'ru-RU',
+};
 
 interface Slot {
   id: string;
@@ -18,54 +26,13 @@ interface Slot {
   notes?: string;
 }
 
-const PACKAGES = [
-  {
-    key: 'single',
-    title: 'טבילה בודדת',
-    price: 80,
-    sessions: 1,
-    badge: '',
-    description: 'טבילה באמבטיית קרח בהדרכת מדריך מוסמך. בסביבה מבוקרת ובטוחה, עד עשר דקות, תוך פיקוח מקצועי.',
-  },
-  {
-    key: '5pack',
-    title: 'חבילת 5 טבילות',
-    price: 350,
-    sessions: 5,
-    badge: 'חיסכון של ₪50',
-    description: '5 טבילות בהדרכה מקצועית. כל טבילה נקבעת בנפרד לפי לוח הזמנים הזמין.',
-  },
-  {
-    key: '10pack',
-    title: 'חבילת 10 טבילות',
-    price: 550,
-    sessions: 10,
-    badge: undefined,
-    description: '10 טבילות בהדרכה מקצועית. חבילת השגרה המומלצת להתקדמות ממשית.',
-  },
-  {
-    key: 'monthly',
-    title: 'חופשי חודשי',
-    price: 600,
-    sessions: 30,
-    badge: '∞ ללא הגבלה',
-    description: 'גישה חופשית לכל הטבילות במשך חודש קלנדרי אחד. ללא הגבלת מספר טבילות.',
-  },
-];
-
-const HE_DAYS = ['א׳', 'ב׳', 'ג׳', 'ד׳', 'ה׳', 'ו׳', 'ש׳'];
-const HE_MONTHS = [
-  'ינואר', 'פברואר', 'מרץ', 'אפריל', 'מאי', 'יוני',
-  'יולי', 'אוגוסט', 'ספטמבר', 'אוקטובר', 'נובמבר', 'דצמבר',
-];
-
 function toDateKey(y: number, m: number, d: number) {
   return `${y}-${String(m + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
 }
 
-function formatDateHe(dateStr: string) {
+function formatDateLocale(dateStr: string, locale: string) {
   const d = new Date(dateStr + 'T00:00:00');
-  return d.toLocaleDateString('he-IL', {
+  return d.toLocaleDateString(locale, {
     weekday: 'long', day: 'numeric', month: 'long', year: 'numeric',
   });
 }
@@ -82,9 +49,15 @@ interface CalendarProps {
   slots: Slot[];
   selectedDate: string;
   onSelectDate: (d: string) => void;
+  locale: string;
+  prevMonthLabel: string;
+  nextMonthLabel: string;
+  legendFree: string;
+  legendSelected: string;
+  legendNone: string;
 }
 
-function Calendar({ slots, selectedDate, onSelectDate }: CalendarProps) {
+function Calendar({ slots, selectedDate, onSelectDate, locale, prevMonthLabel, nextMonthLabel, legendFree, legendSelected, legendNone }: CalendarProps) {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
@@ -93,9 +66,7 @@ function Calendar({ slots, selectedDate, onSelectDate }: CalendarProps) {
 
   const currentYear = today.getFullYear();
   const currentMonth = today.getMonth();
-  const maxYear = currentMonth + 3 >= 12
-    ? currentYear + 1
-    : currentYear;
+  const maxYear = currentMonth + 3 >= 12 ? currentYear + 1 : currentYear;
   const maxMonth = (currentMonth + 3) % 12;
 
   const isBeforeMin = viewYear < currentYear || (viewYear === currentYear && viewMonth <= currentMonth);
@@ -112,6 +83,15 @@ function Calendar({ slots, selectedDate, onSelectDate }: CalendarProps) {
     else setViewMonth(m => m + 1);
   }
 
+  // Localized month+year label
+  const monthLabel = new Date(viewYear, viewMonth, 1)
+    .toLocaleDateString(locale, { month: 'long', year: 'numeric' });
+
+  // Short weekday headers Sun→Sat (Jan 1 2023 = Sunday)
+  const dayHeaders = Array.from({ length: 7 }, (_, i) =>
+    new Date(2023, 0, i + 1).toLocaleDateString(locale, { weekday: 'short' })
+  );
+
   const availableDates = useMemo(() => {
     const s = new Set<string>();
     for (const sl of slots) {
@@ -120,14 +100,11 @@ function Calendar({ slots, selectedDate, onSelectDate }: CalendarProps) {
     return s;
   }, [slots]);
 
-  // Build calendar grid
-  const firstDayOfMonth = new Date(viewYear, viewMonth, 1).getDay(); // 0=Sun
+  const firstDayOfMonth = new Date(viewYear, viewMonth, 1).getDay();
   const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
 
-  // Pad start: Sunday is column 0 in Hebrew convention
   const cells: (number | null)[] = Array(firstDayOfMonth).fill(null);
   for (let d = 1; d <= daysInMonth; d++) cells.push(d);
-  // Pad end to full rows
   while (cells.length % 7 !== 0) cells.push(null);
 
   return (
@@ -138,18 +115,16 @@ function Calendar({ slots, selectedDate, onSelectDate }: CalendarProps) {
           onClick={prevMonth}
           disabled={isBeforeMin}
           className="w-9 h-9 rounded-full flex items-center justify-center text-xl text-navy-800 hover:bg-ice-100 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-          aria-label="חודש קודם"
+          aria-label={prevMonthLabel}
         >
           ›
         </button>
-        <span className="font-black text-navy-900 text-base">
-          {HE_MONTHS[viewMonth]} {viewYear}
-        </span>
+        <span className="font-black text-navy-900 text-base">{monthLabel}</span>
         <button
           onClick={nextMonth}
           disabled={isAfterMax}
           className="w-9 h-9 rounded-full flex items-center justify-center text-xl text-navy-800 hover:bg-ice-100 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-          aria-label="חודש הבא"
+          aria-label={nextMonthLabel}
         >
           ‹
         </button>
@@ -157,7 +132,7 @@ function Calendar({ slots, selectedDate, onSelectDate }: CalendarProps) {
 
       {/* Day name headers */}
       <div className="grid grid-cols-7 mb-1">
-        {HE_DAYS.map(day => (
+        {dayHeaders.map(day => (
           <div key={day} className="text-center text-xs font-bold text-slate-400 py-1">
             {day}
           </div>
@@ -202,15 +177,15 @@ function Calendar({ slots, selectedDate, onSelectDate }: CalendarProps) {
       <div className="flex gap-4 mt-4 text-xs text-slate-500 justify-end flex-wrap">
         <span className="flex items-center gap-1">
           <span className="inline-block w-4 h-4 rounded-md bg-ice-100 border border-ice-300" />
-          פנוי
+          {legendFree}
         </span>
         <span className="flex items-center gap-1">
           <span className="inline-block w-4 h-4 rounded-md bg-navy-800" />
-          נבחר
+          {legendSelected}
         </span>
         <span className="flex items-center gap-1">
           <span className="inline-block w-4 h-4 rounded-md bg-slate-100 border border-slate-200" />
-          אין מועדים
+          {legendNone}
         </span>
       </div>
     </div>
@@ -218,15 +193,51 @@ function Calendar({ slots, selectedDate, onSelectDate }: CalendarProps) {
 }
 
 export default function ImmersionPage() {
+  const { t, lang } = useLanguage();
+  const locale = LOCALE_MAP[lang] ?? 'he-IL';
+
+  const PACKAGES = [
+    {
+      key: 'single',
+      title: t('immersion_pkg_single_title'),
+      price: 80,
+      sessions: 1,
+      badge: '',
+      description: t('immersion_pkg_single_desc'),
+    },
+    {
+      key: '5pack',
+      title: t('immersion_pkg_5pack_title'),
+      price: 350,
+      sessions: 5,
+      badge: t('immersion_pkg_savings'),
+      description: t('immersion_pkg_5pack_desc'),
+    },
+    {
+      key: '10pack',
+      title: t('immersion_pkg_10pack_title'),
+      price: 550,
+      sessions: 10,
+      badge: undefined,
+      description: t('immersion_pkg_10pack_desc'),
+    },
+    {
+      key: 'monthly',
+      title: t('immersion_pkg_monthly_title'),
+      price: 600,
+      sessions: 30,
+      badge: t('immersion_pkg_unlimited'),
+      description: t('immersion_pkg_monthly_desc'),
+    },
+  ];
+
   const [slots, setSlots] = useState<Slot[]>([]);
   const [slotsLoading, setSlotsLoading] = useState(true);
 
-  // Step state
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedSlotId, setSelectedSlotId] = useState('');
   const [selectedPkg, setSelectedPkg] = useState('single');
 
-  // Form
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [submitting, setSubmitting] = useState(false);
@@ -252,7 +263,6 @@ export default function ImmersionPage() {
     [slots, selectedDate],
   );
 
-  // When date changes, reset slot selection
   function handleSelectDate(d: string) {
     setSelectedDate(d);
     setSelectedSlotId('');
@@ -264,7 +274,7 @@ export default function ImmersionPage() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!selectedSlotId) { setError('יש לבחור מועד טבילה'); return; }
+    if (!selectedSlotId) { setError(t('immersion_error_no_slot')); return; }
     setSubmitting(true);
     setError('');
 
@@ -285,19 +295,19 @@ export default function ImmersionPage() {
       localStorage.setItem('visitor_name', name);
       setDone(true);
     } else {
-      setError(data.error ?? 'שגיאה בהרשמה');
+      setError(data.error ?? t('immersion_error_submit'));
     }
   }
 
   // ── Success screen ──────────────────────────────────────────────────────────
   if (done) {
     return (
-      <main className="min-h-screen bg-slate-50 flex items-center justify-center p-6" dir="rtl">
+      <main className="min-h-screen bg-slate-50 flex items-center justify-center p-6">
         <div className="bg-white rounded-3xl shadow-xl p-10 max-w-md w-full text-center">
           <div className="text-6xl mb-4">🧊</div>
-          <h1 className="text-2xl font-black text-navy-900 mb-2">הרשמה התקבלה!</h1>
+          <h1 className="text-2xl font-black text-navy-900 mb-2">{t('immersion_done_title')}</h1>
           <p className="text-slate-600 mb-6">
-            {name}, נרשמת בהצלחה.
+            {t('immersion_done_sub').replace('{name}', name)}
             <br />
             <span className="font-semibold text-ice-700">{pkg.title} – ₪{pkg.price}</span>
           </p>
@@ -305,7 +315,7 @@ export default function ImmersionPage() {
             onClick={() => router.push('/')}
             className="bg-ice-600 hover:bg-ice-700 text-white font-bold px-8 py-3 rounded-2xl transition-colors"
           >
-            חזרה לדף הבית
+            {t('immersion_home_btn')}
           </button>
         </div>
       </main>
@@ -314,13 +324,13 @@ export default function ImmersionPage() {
 
   // ── Main page ───────────────────────────────────────────────────────────────
   return (
-    <main className="min-h-screen bg-gradient-to-b from-navy-900 to-navy-800" dir="rtl">
+    <main className="min-h-screen bg-gradient-to-b from-navy-900 to-navy-800">
 
       {/* Hero */}
       <div className="text-center py-14 px-4">
         <div className="text-5xl mb-4">🧊</div>
-        <h1 className="text-4xl font-black text-white mb-2">קבע מועד לטבילה</h1>
-        <p className="text-ice-300 text-lg">בהדרכת מדריך מוסמך · רחובות</p>
+        <h1 className="text-4xl font-black text-white mb-2">{t('immersion_hero_title')}</h1>
+        <p className="text-ice-300 text-lg">{t('immersion_hero_sub')}</p>
       </div>
 
       <div className="max-w-3xl mx-auto px-4 pb-16 space-y-8">
@@ -329,19 +339,25 @@ export default function ImmersionPage() {
         <section className="bg-white rounded-3xl shadow-xl p-6">
           <div className="flex items-center gap-3 mb-5">
             <StepBadge n={1} />
-            <h2 className="text-xl font-black text-navy-900">בחר תאריך</h2>
+            <h2 className="text-xl font-black text-navy-900">{t('immersion_step1')}</h2>
           </div>
 
           {slotsLoading ? (
             <div className="text-center py-8 text-slate-400">
               <div className="w-8 h-8 border-2 border-ice-500 border-t-transparent rounded-full animate-spin mx-auto mb-2" />
-              טוען מועדים...
+              {t('immersion_loading_slots')}
             </div>
           ) : (
             <Calendar
               slots={slots}
               selectedDate={selectedDate}
               onSelectDate={handleSelectDate}
+              locale={locale}
+              prevMonthLabel={t('immersion_prev_month')}
+              nextMonthLabel={t('immersion_next_month')}
+              legendFree={t('immersion_legend_free')}
+              legendSelected={t('immersion_legend_selected')}
+              legendNone={t('immersion_legend_none')}
             />
           )}
         </section>
@@ -352,15 +368,15 @@ export default function ImmersionPage() {
             <div className="flex items-center gap-3 mb-5">
               <StepBadge n={2} />
               <div>
-                <h2 className="text-xl font-black text-navy-900">בחר שעה</h2>
-                <p className="text-sm text-slate-500 mt-0.5">{formatDateHe(selectedDate)}</p>
+                <h2 className="text-xl font-black text-navy-900">{t('immersion_step2')}</h2>
+                <p className="text-sm text-slate-500 mt-0.5">{formatDateLocale(selectedDate, locale)}</p>
               </div>
             </div>
 
             {slotsForDate.length === 0 ? (
               <div className="text-center py-8 text-slate-400">
                 <div className="text-4xl mb-2">📅</div>
-                <p>אין מועדים זמינים בתאריך זה.</p>
+                <p>{t('immersion_no_slots_date')}</p>
               </div>
             ) : (
               <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3">
@@ -380,9 +396,9 @@ export default function ImmersionPage() {
                     <div className="text-lg font-black">{s.slot_time.slice(0, 5)}</div>
                     <div className="text-xs mt-1 leading-tight font-semibold">
                       {s.available ? (
-                        <span className="text-green-600">פנוי</span>
+                        <span className="text-green-600">{t('immersion_slot_free')}</span>
                       ) : (
-                        <span className="text-red-400">תפוס</span>
+                        <span className="text-red-400">{t('immersion_slot_taken')}</span>
                       )}
                     </div>
                   </button>
@@ -397,7 +413,7 @@ export default function ImmersionPage() {
           <section className="bg-white rounded-3xl shadow-xl p-6">
             <div className="flex items-center gap-3 mb-5">
               <StepBadge n={3} />
-              <h2 className="text-xl font-black text-navy-900">בחר חבילה</h2>
+              <h2 className="text-xl font-black text-navy-900">{t('immersion_step3')}</h2>
             </div>
 
             <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -418,7 +434,7 @@ export default function ImmersionPage() {
                   )}
                   <div className="font-black text-navy-900 text-base mb-1">{p.title}</div>
                   <div className="text-3xl font-black text-ice-600">₪{p.price}</div>
-                  <div className="text-xs text-slate-500 mt-1">{p.sessions} טבילות</div>
+                  <div className="text-xs text-slate-500 mt-1">{p.sessions} {t('immersion_sessions_unit')}</div>
                 </button>
               ))}
             </div>
@@ -434,25 +450,25 @@ export default function ImmersionPage() {
           <section className="bg-white rounded-3xl shadow-xl p-6">
             <div className="flex items-center gap-3 mb-5">
               <StepBadge n={4} />
-              <h2 className="text-xl font-black text-navy-900">סיכום והמשך לתשלום</h2>
+              <h2 className="text-xl font-black text-navy-900">{t('immersion_step4')}</h2>
             </div>
 
             <div className="bg-ice-50 border border-ice-200 rounded-2xl p-4 text-sm space-y-2 mb-5">
-              <div className="font-black text-navy-900 mb-1 text-base">סיכום הזמנה</div>
+              <div className="font-black text-navy-900 mb-1 text-base">{t('immersion_summary_title')}</div>
               <div className="flex justify-between text-slate-700">
-                <span className="font-semibold">תאריך</span>
-                <span>{formatDateHe(selectedDate)}</span>
+                <span className="font-semibold">{t('immersion_summary_date')}</span>
+                <span>{formatDateLocale(selectedDate, locale)}</span>
               </div>
               <div className="flex justify-between text-slate-700">
-                <span className="font-semibold">שעה</span>
+                <span className="font-semibold">{t('immersion_summary_time')}</span>
                 <span>{selectedSlot?.slot_time.slice(0, 5)}</span>
               </div>
               <div className="flex justify-between text-slate-700">
-                <span className="font-semibold">חבילה</span>
+                <span className="font-semibold">{t('immersion_summary_pkg')}</span>
                 <span>{pkg.title}</span>
               </div>
               <div className="border-t border-ice-200 pt-2 flex justify-between font-black text-navy-900 text-base">
-                <span>סה״כ לתשלום</span>
+                <span>{t('immersion_summary_total')}</span>
                 <span>₪{pkg.price}</span>
               </div>
             </div>
@@ -462,7 +478,7 @@ export default function ImmersionPage() {
               className="w-full bg-ice-600 hover:bg-ice-700 text-white font-black
                          text-lg py-4 rounded-2xl transition-all shadow-lg shadow-ice-500/30"
             >
-              המשך לפרטים ותשלום →
+              {t('immersion_proceed_btn')}
             </button>
           </section>
         )}

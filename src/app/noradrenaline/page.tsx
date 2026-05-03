@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 
 export const metadata: Metadata = {
-  title: 'נוראדרנלין וטבילת מי קרח | חוויות שוויץ המדע',
+  title: 'נוראדרנלין וטבילת מי קרח | ICING',
   description: 'הסבר מדעי על נוראדרנלין, מערכת העצבים הסימפתטית וההשפעות הפיזיולוגיות של טבילת מי קרח',
 };
 

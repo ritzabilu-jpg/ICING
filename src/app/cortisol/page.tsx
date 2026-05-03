@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 
 export const metadata: Metadata = {
-  title: 'קורטיזול, סטרס וטבילת מי קרח | חוויות שוויץ המדע',
+  title: 'קורטיזול, סטרס וטבילת מי קרח | ICING',
   description: 'הסבר מדעי על קורטיזול, ציר HPA וההשפעה של טבילת מי קרח מבוקרת על ויסות הסטרס',
 };
 

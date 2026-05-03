@@ -2,8 +2,8 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 
 export const metadata: Metadata = {
-  title: 'תנאי שימוש – חוויות שוויץ המדע',
-  description: 'תנאי השימוש של אתר חוויות שוויץ המדע – הזמנות, ביטולים, אחריות ומדיניות',
+  title: 'תנאי שימוש – ICING',
+  description: 'תנאי השימוש של אתר ICING – הזמנות, ביטולים, אחריות ומדיניות',
 };
 
 export default function TermsPage() {
@@ -18,7 +18,7 @@ export default function TermsPage() {
         <section className="mb-10">
           <h2 className="text-xl font-bold text-navy-900 mb-3">1. ברוכים הבאים</h2>
           <p className="text-slate-600 leading-relaxed">
-            ברוך הבא לאתר האינטרנט של <strong>חוויות בקרח</strong> שבתוך <strong>חוויות שוויץ המדע</strong> (להלן: &quot;האתר&quot;, &quot;אנחנו&quot;, &quot;העסק&quot;),
+            ברוך הבא לאתר האינטרנט של <strong>חוויות בקרח</strong> שבתוך <strong>ICING</strong> (להלן: &quot;האתר&quot;, &quot;אנחנו&quot;, &quot;העסק&quot;),
             הממוקמת ברחוב סירני 52, רחובות, מתחם הבריכה הטיפולית.
           </p>
           <p className="text-slate-600 leading-relaxed mt-3">
@@ -32,7 +32,7 @@ export default function TermsPage() {
           <h2 className="text-xl font-bold text-navy-900 mb-3">2. מהות האתר והשירותים</h2>
           <p className="text-slate-600 leading-relaxed mb-3">
             האתר משמש להצגת מידע על סדנאות אמבטיות קרח מקצועיות ומדעיות, לקבלת בקשות הזמנה ולתיאום טבילות אישיות
-            עם מדריכים מוסמכים CWI. השירותים ניתנים פיזית במתחם חוויות שוויץ המדע ברחובות.
+            עם מדריכים מוסמכים CWI. השירותים ניתנים פיזית במתחם ICING ברחובות.
           </p>
           <ul className="space-y-2 text-slate-600">
             {[
@@ -80,7 +80,7 @@ export default function TermsPage() {
             <div className="bg-slate-50 border border-slate-200 rounded-xl p-4">
               <p className="font-bold text-navy-900 mb-1">📞 תשלום טלפוני</p>
               <p className="text-slate-600 text-sm leading-relaxed">
-                לאחר קבלת פרטי ההזמנה, נציג מטעם חוויות שוויץ המדע יצור קשר טלפוני לאישור ההזמנה ולהשלמת פרטי התשלום.
+                לאחר קבלת פרטי ההזמנה, נציג מטעם ICING יצור קשר טלפוני לאישור ההזמנה ולהשלמת פרטי התשלום.
                 <strong> ההזמנה תחשב מאושרת רק לאחר השלמת התשלום.</strong>
               </p>
             </div>
@@ -118,7 +118,7 @@ export default function TermsPage() {
             </table>
           </div>
           <p className="text-slate-600 leading-relaxed mb-5">
-            חוויות שוויץ המדע שומרת לעצמה את הזכות לעדכן מחירים בכל עת.
+            ICING שומרת לעצמה את הזכות לעדכן מחירים בכל עת.
             המחיר התקף הוא המחיר שאושר בשיחת הטלפון ולפני ביצוע החיוב בפועל.
           </p>
 
@@ -227,7 +227,7 @@ export default function TermsPage() {
 
           <h3 className="font-bold text-navy-900 mt-5 mb-2">6.3 אחריות אישית</h3>
           <p className="text-slate-600 leading-relaxed">
-            ההשתתפות בסדנאות היא <strong>על אחריות המשתתף/ת בלבד</strong>. חוויות שוויץ המדע והמדריכים פועלים לפי
+            ההשתתפות בסדנאות היא <strong>על אחריות המשתתף/ת בלבד</strong>. ICING והמדריכים פועלים לפי
             פרוטוקולי בטיחות מחמירים ומוסמכים, אך אינם אחראים לתוצאות רפואיות הנובעות מהשתתפות בניגוד להוראות
             הרופא האישי או להנחיות שניתנו במהלך הסדנה.
           </p>
@@ -237,13 +237,13 @@ export default function TermsPage() {
         <section className="mb-10">
           <h2 className="text-xl font-bold text-navy-900 mb-3">7. הגבלת אחריות</h2>
           <p className="text-slate-600 leading-relaxed mb-3">
-            חוויות שוויץ המדע תפעל לספק שירותים ברמה מקצועית גבוהה. עם זאת:
+            ICING תפעל לספק שירותים ברמה מקצועית גבוהה. עם זאת:
           </p>
           <ul className="space-y-2 text-slate-600">
             {[
               'תוצאות הסדנה עשויות להשתנות בין משתתף למשתתף ואינן מובטחות',
               'העסק לא יישא באחריות לנזקים עקיפים, תוצאתיים או מיוחדים שאינם נובעים ישירות מרשלנות העסק',
-              'האחריות המרבית של חוויות שוויץ המדע מוגבלת לסכום ששולם בפועל עבור הסדנה הרלוונטית',
+              'האחריות המרבית של ICING מוגבלת לסכום ששולם בפועל עבור הסדנה הרלוונטית',
               'המידע המדעי המוצג באתר (על נוראדרנלין, קורטיזול, מערכת העצבים ועוד) הוא חינוכי ואינפורמטיבי בלבד, ואינו מהווה ייעוץ או המלצה רפואית',
             ].map(item => (
               <li key={item} className="flex items-start gap-2">
@@ -258,8 +258,8 @@ export default function TermsPage() {
         <section className="mb-10">
           <h2 className="text-xl font-bold text-navy-900 mb-3">8. קניין רוחני</h2>
           <p className="text-slate-600 leading-relaxed mb-3">
-            כל התכנים באתר — לרבות טקסטים, עיצובים, לוגואים, תמונות, מידע מדעי, שמות המותג &quot;חוויות שוויץ המדע&quot;
-            ו-&quot;שוויץ המדע&quot; — הם רכוש חוויות שוויץ המדע או ניתנו לשימוש ברישיון כדין.
+            כל התכנים באתר — לרבות טקסטים, עיצובים, לוגואים, תמונות, מידע מדעי, שמות המותג &quot;ICING&quot;
+            ו-&quot;שוויץ המדע&quot; — הם רכוש ICING או ניתנו לשימוש ברישיון כדין.
           </p>
           <p className="text-slate-600 leading-relaxed">
             <strong>אין</strong> להעתיק, לשכפל, להפיץ, לפרסם מחדש, לתרגם או לעשות כל שימוש מסחרי בתכנים אלו
@@ -291,7 +291,7 @@ export default function TermsPage() {
           <h2 className="text-xl font-bold text-navy-900 mb-3">10. קישורים חיצוניים</h2>
           <p className="text-slate-600 leading-relaxed">
             האתר עשוי לכלול קישורים לאתרים חיצוניים (לדוגמה: Waze, Google Maps, רשתות חברתיות).
-            חוויות שוויץ המדע אינה אחראית לתוכן, מדיניות הפרטיות, או שיטות הפעולה של אתרים אלו.
+            ICING אינה אחראית לתוכן, מדיניות הפרטיות, או שיטות הפעולה של אתרים אלו.
           </p>
         </section>
 
@@ -299,7 +299,7 @@ export default function TermsPage() {
         <section className="mb-10">
           <h2 className="text-xl font-bold text-navy-900 mb-3">11. שינויים בתנאי השימוש</h2>
           <p className="text-slate-600 leading-relaxed">
-            חוויות שוויץ המדע שומרת לעצמה את הזכות לעדכן תנאי שימוש אלו בכל עת. השינויים ייכנסו לתוקף עם פרסומם
+            ICING שומרת לעצמה את הזכות לעדכן תנאי שימוש אלו בכל עת. השינויים ייכנסו לתוקף עם פרסומם
             באתר. המשך השימוש באתר לאחר פרסום שינויים מהווה הסכמה לתנאים המעודכנים.
           </p>
         </section>
@@ -334,7 +334,7 @@ export default function TermsPage() {
           </ul>
         </section>
 
-        <p className="text-slate-400 text-sm text-center mb-8">© 2026 חוויות שוויץ המדע. כל הזכויות שמורות.</p>
+        <p className="text-slate-400 text-sm text-center mb-8">© 2026 ICING. כל הזכויות שמורות.</p>
 
         <div className="border-t border-slate-200 pt-6 flex gap-4 text-sm">
           <Link href="/" className="text-ice-600 hover:text-ice-800 font-semibold">← חזרה לדף הבית</Link>
