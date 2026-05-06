@@ -4,7 +4,6 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import SplashScreen from '@/components/SplashScreen';
 import StickyCTA from '@/components/StickyCTA';
-import AppDownloadBanner from '@/components/AppDownloadBanner';
 import { LanguageProvider } from '@/lib/i18n/LanguageContext';
 
 export const metadata: Metadata = {
@@ -113,7 +112,6 @@ export default function RootLayout({
           </main>
           <Footer />
           <StickyCTA />
-          <AppDownloadBanner />
         </LanguageProvider>
       </body>
     </html>

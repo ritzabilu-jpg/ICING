@@ -30,7 +30,6 @@ export default function Header() {
     { href: '/science', label: t('nav_science') },
     { href: '/reviews', label: t('nav_reviews') },
     { href: '/contact', label: t('nav_contact') },
-    { href: '/app', label: t('nav_app'), highlight: true },
   ];
 
   const [menuOpen, setMenuOpen] = useState(false);
@@ -135,9 +134,7 @@ export default function Header() {
               {navLinks.map(link => (
                 <Link key={link.href} href={link.href}
                   className={`font-semibold text-sm xl:text-base transition-colors duration-150
-                    ${'highlight' in link && link.highlight
-                      ? 'text-ice-400 border border-ice-500/40 px-2.5 py-1 rounded-lg hover:bg-ice-500/10'
-                      : pathname === link.href ? 'text-ice-400' : 'text-slate-200 hover:text-ice-400'}`}>
+                    ${pathname === link.href ? 'text-ice-400' : 'text-slate-200 hover:text-ice-400'}`}>
                   {link.label}
                 </Link>
               ))}
@@ -294,9 +291,7 @@ export default function Header() {
               {navLinks.map(link => (
                 <Link key={link.href} href={link.href} onClick={() => setMenuOpen(false)}
                   className={`py-3 px-4 rounded-xl font-semibold transition-colors
-                    ${'highlight' in link && link.highlight
-                      ? 'text-ice-400 border border-ice-500/30 bg-ice-500/10'
-                      : pathname === link.href ? 'bg-ice-500/20 text-ice-400' : 'text-slate-200 hover:bg-navy-700 hover:text-ice-400'}`}>
+                    ${pathname === link.href ? 'bg-ice-500/20 text-ice-400' : 'text-slate-200 hover:bg-navy-700 hover:text-ice-400'}`}>
                   {link.label}
                 </Link>
               ))}
