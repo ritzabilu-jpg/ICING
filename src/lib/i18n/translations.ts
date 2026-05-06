@@ -262,6 +262,17 @@ export type Translations = {
   contact_name_ph: string; contact_message_ph: string; contact_phone_label: string; contact_address_info: string;
   // science title lines
   science_title_line1: string; science_title_line2: string;
+  // App download
+  nav_app: string;
+  app_banner_title: string; app_banner_desc: string;
+  app_banner_android: string; app_banner_ios: string; app_banner_dismiss: string;
+  app_page_title: string; app_page_sub: string;
+  app_feat1_title: string; app_feat1_desc: string;
+  app_feat2_title: string; app_feat2_desc: string;
+  app_feat3_title: string; app_feat3_desc: string;
+  app_android_btn: string; app_ios_btn: string;
+  app_coming_note: string; app_notify_title: string;
+  app_notify_ph: string; app_notify_btn: string; app_notify_sent: string;
 };
 
 const he: Translations = {
@@ -580,6 +591,28 @@ const he: Translations = {
   contact_phone_label: 'טלפון', contact_address_info: 'סירני 52, רחובות',
 
   science_title_line1: 'המדע מאחורי', science_title_line2: 'טבילת מי קרח',
+
+  nav_app: 'הורד אפליקציה',
+  app_banner_title: 'הורד את אפליקציית ICING',
+  app_banner_desc: 'יומן טבילות אישי + סיכום שבועי + הנחות מיוחדות למורידים',
+  app_banner_android: 'הורד לאנדרואיד',
+  app_banner_ios: 'הורד לאייפון',
+  app_banner_dismiss: 'אולי מאוחר יותר',
+  app_page_title: 'אפליקציית ICING',
+  app_page_sub: 'עקוב אחרי המסע הקר שלך. יומן אישי, סיכומים שבועיים, והנחות מיוחדות.',
+  app_feat1_title: 'יומן טבילות אישי',
+  app_feat1_desc: 'תעד כל טבילה — תאריך, טמפרטורה, משך, ותחושות. הנתונים שלך, תמיד אצלך.',
+  app_feat2_title: 'סיכום שבועי חכם',
+  app_feat2_desc: 'קבל סיכום שבועי עם סה"כ דקות טבילה, השוואה לשבועות קודמים, ומגמות התקדמות.',
+  app_feat3_title: 'עדכונים מהמדריכים',
+  app_feat3_desc: 'קבל הודעות ישירות ממדריכי ICING על מפגשים מיוחדים, מבצעים והנחות בלעדיות.',
+  app_android_btn: 'Google Play',
+  app_ios_btn: 'App Store',
+  app_coming_note: 'בקרוב — הירשם לרשימת ההמתנה',
+  app_notify_title: 'עדכן אותי כשהאפליקציה יוצאת',
+  app_notify_ph: 'הכנס את מספר הטלפון שלך',
+  app_notify_btn: 'עדכן אותי',
+  app_notify_sent: 'נרשמת בהצלחה! נעדכן אותך.',
 };
 
 const en: Translations = {
@@ -889,6 +922,28 @@ const en: Translations = {
   contact_phone_label: 'Phone', contact_address_info: '52 Sireni St, Rehovot',
 
   science_title_line1: 'The science behind', science_title_line2: 'cold water immersion',
+
+  nav_app: 'Download App',
+  app_banner_title: 'Download the ICING App',
+  app_banner_desc: 'Personal immersion journal + weekly summary + exclusive discounts',
+  app_banner_android: 'Download for Android',
+  app_banner_ios: 'Download for iPhone',
+  app_banner_dismiss: 'Maybe later',
+  app_page_title: 'ICING App',
+  app_page_sub: 'Track your cold journey. Personal journal, weekly summaries, and exclusive discounts.',
+  app_feat1_title: 'Personal Immersion Journal',
+  app_feat1_desc: 'Log every plunge — date, temperature, duration, and feelings. Your data, always with you.',
+  app_feat2_title: 'Smart Weekly Summary',
+  app_feat2_desc: 'Receive a weekly summary with total immersion minutes, comparison to previous weeks, and progress trends.',
+  app_feat3_title: 'Updates from Instructors',
+  app_feat3_desc: 'Receive direct messages from ICING instructors about special sessions, offers and exclusive discounts.',
+  app_android_btn: 'Google Play',
+  app_ios_btn: 'App Store',
+  app_coming_note: 'Coming soon — join the waitlist',
+  app_notify_title: 'Notify me when the app launches',
+  app_notify_ph: 'Enter your phone number',
+  app_notify_btn: 'Notify me',
+  app_notify_sent: 'Registered! We will update you.',
 };
 
 const ar: Translations = {
@@ -1199,6 +1254,28 @@ const ar: Translations = {
   contact_phone_label: 'هاتف', contact_address_info: 'سيريني 52، ريحوفوت',
 
   science_title_line1: 'علم', science_title_line2: 'الغمر في الماء البارد',
+
+  nav_app: 'حمّل التطبيق',
+  app_banner_title: 'حمّل تطبيق ICING',
+  app_banner_desc: 'يوميات غمر شخصية + ملخص أسبوعي + خصومات حصرية',
+  app_banner_android: 'حمّل لأندرويد',
+  app_banner_ios: 'حمّل لآيفون',
+  app_banner_dismiss: 'ربما لاحقًا',
+  app_page_title: 'تطبيق ICING',
+  app_page_sub: 'تابع رحلتك الباردة. يوميات شخصية، ملخصات أسبوعية، وخصومات حصرية.',
+  app_feat1_title: 'يوميات غمر شخصية',
+  app_feat1_desc: 'سجّل كل جلسة غمر — التاريخ، درجة الحرارة، المدة، والمشاعر. بياناتك دائمًا معك.',
+  app_feat2_title: 'ملخص أسبوعي ذكي',
+  app_feat2_desc: 'احصل على ملخص أسبوعي يشمل مجموع دقائق الغمر ومقارنة بالأسابيع السابقة.',
+  app_feat3_title: 'تحديثات من المدربين',
+  app_feat3_desc: 'احصل على رسائل مباشرة من مدربي ICING حول الجلسات الخاصة والعروض والخصومات الحصرية.',
+  app_android_btn: 'Google Play',
+  app_ios_btn: 'App Store',
+  app_coming_note: 'قريبًا — سجّل في قائمة الانتظار',
+  app_notify_title: 'أبلغني عند إطلاق التطبيق',
+  app_notify_ph: 'أدخل رقم هاتفك',
+  app_notify_btn: 'أبلغني',
+  app_notify_sent: 'تم التسجيل! سنعلمك عند الإطلاق.',
 };
 
 const ru: Translations = {
@@ -1508,6 +1585,28 @@ const ru: Translations = {
   contact_phone_label: 'Телефон', contact_address_info: 'ул. Сирени 52, Реховот',
 
   science_title_line1: 'Наука о', science_title_line2: 'холодном погружении',
+
+  nav_app: 'Скачать приложение',
+  app_banner_title: 'Скачайте приложение ICING',
+  app_banner_desc: 'Личный дневник погружений + еженедельный отчёт + эксклюзивные скидки',
+  app_banner_android: 'Скачать для Android',
+  app_banner_ios: 'Скачать для iPhone',
+  app_banner_dismiss: 'Может быть позже',
+  app_page_title: 'Приложение ICING',
+  app_page_sub: 'Отслеживайте свой холодный путь. Личный дневник, еженедельные отчёты и эксклюзивные скидки.',
+  app_feat1_title: 'Личный дневник погружений',
+  app_feat1_desc: 'Записывайте каждое погружение — дата, температура, продолжительность, ощущения. Ваши данные всегда с вами.',
+  app_feat2_title: 'Умный еженедельный отчёт',
+  app_feat2_desc: 'Получайте еженедельный отчёт с общим временем погружений, сравнением с прошлыми неделями и трендами прогресса.',
+  app_feat3_title: 'Обновления от инструкторов',
+  app_feat3_desc: 'Получайте сообщения от инструкторов ICING о специальных сессиях, акциях и эксклюзивных скидках.',
+  app_android_btn: 'Google Play',
+  app_ios_btn: 'App Store',
+  app_coming_note: 'Скоро — присоединитесь к списку ожидания',
+  app_notify_title: 'Уведомить меня о запуске приложения',
+  app_notify_ph: 'Введите номер телефона',
+  app_notify_btn: 'Уведомить меня',
+  app_notify_sent: 'Зарегистрировано! Мы вас уведомим.',
 };
 
 export const translations: Record<Lang, Translations> = { he, en, ar, ru };
