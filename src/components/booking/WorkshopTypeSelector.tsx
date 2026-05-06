@@ -60,7 +60,7 @@ export default function WorkshopTypeSelector({ onSelect }: WorkshopTypeSelectorP
           <button
             key={t.type}
             onClick={() => t.whatsapp
-              ? window.open('https://wa.me/972524500825', '_blank')
+              ? window.open('https://wa.me/972552482441', '_blank')
               : onSelect(t.type)
             }
             className={`group relative flex flex-col rounded-3xl border-2 p-7 text-right transition-all duration-300

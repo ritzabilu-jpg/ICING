@@ -220,7 +220,7 @@ export default function HomePageContent({ testimonialsSlot }: { testimonialsSlot
                       <span className="text-2xl">📞</span>
                       <span className="font-semibold text-lg">08-9310715</span>
                     </a>
-                    <a href="https://wa.me/972524500825" target="_blank" rel="noopener noreferrer"
+                    <a href="https://wa.me/972552482441" target="_blank" rel="noopener noreferrer"
                        className="flex items-center gap-4 text-slate-300 hover:text-green-400 transition-colors">
                       <img src="/logo-whatsapp.jpg" alt="WhatsApp" width={32} height={32} className="rounded-full object-cover" />
                       <span className="font-semibold text-lg">{t('contact_whatsapp')}</span>

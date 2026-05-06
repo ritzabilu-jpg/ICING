@@ -169,7 +169,7 @@ export default function TermsPage() {
             </table>
           </div>
           <p className="text-slate-600 leading-relaxed mb-4">
-            <strong>ביטולים יש לבצע בכתב בלבד</strong> – באמצעות הודעת WhatsApp למספר 052-4500825 או בדוא&quot;ל,
+            <strong>ביטולים יש לבצע בכתב בלבד</strong> – באמצעות הודעת WhatsApp למספר 055-2482441 או בדוא&quot;ל,
             עם ציון שם מלא ומועד הסדנה.
           </p>
           <div className="bg-ice-50 border border-ice-200 rounded-xl p-4">
@@ -328,8 +328,8 @@ export default function TermsPage() {
             </li>
             <li className="flex items-center gap-3">
               <span className="text-ice-400">💬</span>
-              <a href="https://wa.me/972524500825" target="_blank" rel="noopener noreferrer"
-                className="hover:text-ice-400 transition-colors">WhatsApp: 052-4500825</a>
+              <a href="https://wa.me/972552482441" target="_blank" rel="noopener noreferrer"
+                className="hover:text-ice-400 transition-colors">WhatsApp: 055-2482441</a>
             </li>
           </ul>
         </section>

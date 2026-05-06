@@ -28,7 +28,7 @@ export default function StickyCTA() {
         {t('sticky_book')}
       </Link>
       <a
-        href="https://wa.me/972524500825"
+        href="https://wa.me/972552482441"
         target="_blank"
         rel="noopener noreferrer"
         className="flex-shrink-0 bg-slate-700 text-white px-4 py-3 rounded-xl text-sm font-bold"

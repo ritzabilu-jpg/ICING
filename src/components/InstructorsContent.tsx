@@ -53,7 +53,7 @@ export default function InstructorsContent({ instructors }: { instructors: Instr
 
             <div className="mt-6 pt-5 border-t border-ice-200 text-center flex flex-wrap items-center justify-center gap-3">
               <span className="text-slate-700 text-base font-semibold">{t('instructors_contact_cta')}</span>
-              <a href="https://wa.me/972524500825" target="_blank" rel="noopener noreferrer"
+              <a href="https://wa.me/972552482441" target="_blank" rel="noopener noreferrer"
                 className="inline-flex items-center bg-green-500 hover:bg-green-600 text-white p-2 rounded-xl transition-all"
                 aria-label="WhatsApp">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">

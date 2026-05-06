@@ -40,7 +40,7 @@ export default function Footer() {
                  className="w-10 h-10 overflow-hidden rounded-full hover:scale-110 transition-transform" aria-label="Instagram">
                 <img src="/logo-instagram.jpg" alt="Instagram" className="w-full h-full object-cover" />
               </a>
-              <a href="https://wa.me/972524500825" target="_blank" rel="noopener noreferrer"
+              <a href="https://wa.me/972552482441" target="_blank" rel="noopener noreferrer"
                  className="w-10 h-10 overflow-hidden rounded-full hover:scale-110 transition-transform" aria-label="WhatsApp">
                 <img src="/logo-whatsapp.jpg" alt="WhatsApp" className="w-full h-full object-cover" />
               </a>

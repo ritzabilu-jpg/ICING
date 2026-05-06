@@ -187,7 +187,7 @@ export default function Header() {
               </Link>
 
               {/* WhatsApp icon */}
-              <a href="https://wa.me/972524500825" target="_blank" rel="noopener noreferrer"
+              <a href="https://wa.me/972552482441" target="_blank" rel="noopener noreferrer"
                 aria-label={t('sticky_whatsapp')}
                 className="flex items-center justify-center w-9 h-9 rounded-xl bg-slate-600 hover:bg-slate-500 text-white transition-colors shadow-md shadow-slate-900/40">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" className="w-4 h-4 fill-white">

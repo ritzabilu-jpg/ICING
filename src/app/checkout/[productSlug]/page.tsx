@@ -609,13 +609,13 @@ export default function CheckoutPage() {
                       </div>
                       <div className="flex items-center justify-between bg-slate-50 rounded-lg px-3 py-2">
                         <span className="text-xs text-slate-500">{t('checkout_bit_number_label')}</span>
-                        <span className="font-black text-navy-900 text-lg tracking-wide" dir="ltr">052-4500825</span>
+                        <span className="font-black text-navy-900 text-lg tracking-wide" dir="ltr">055-2482441</span>
                       </div>
                     </div>
                     <div className="bg-blue-100 rounded-xl px-3 py-2 mb-3 text-xs text-blue-900 space-y-1">
                       <p className="font-bold">{t('checkout_bit_steps')}</p>
                       <p>{t('checkout_bit_step1')}</p>
-                      <p>{t('checkout_bit_step2').replace('{amount}', String(total))} <span className="font-bold" dir="ltr">052-4500825</span></p>
+                      <p>{t('checkout_bit_step2').replace('{amount}', String(total))} <span className="font-bold" dir="ltr">055-2482441</span></p>
                       <p>{t('checkout_bit_step3')}</p>
                     </div>
                     {!bitClicked ? (
