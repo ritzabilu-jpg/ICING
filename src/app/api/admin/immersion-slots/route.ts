@@ -14,11 +14,26 @@ export async function GET(req: NextRequest) {
   if (!checkKey(key)) return NextResponse.json({ error: 'לא מורשה' }, { status: 401 });
 
   const supabase = createAdminClient();
-  const { data: slots } = await supabase
+
+  // Try full query with instructor_id; fall back to basic columns if column doesn't exist yet
+  let slots: any[] | null = null;
+  const { data: fullSlots, error: fullErr } = await supabase
     .from('immersion_slots')
     .select('id, slot_date, slot_time, max_participants, notes, created_at, instructor_id, instructor:instructors(name)')
     .order('slot_date', { ascending: true })
     .order('slot_time', { ascending: true });
+
+  if (fullErr) {
+    // Likely instructor_id column doesn't exist yet — fetch without it
+    const { data: basicSlots } = await supabase
+      .from('immersion_slots')
+      .select('id, slot_date, slot_time, max_participants, notes, created_at')
+      .order('slot_date', { ascending: true })
+      .order('slot_time', { ascending: true });
+    slots = basicSlots;
+  } else {
+    slots = fullSlots;
+  }
 
   const { data: bookings } = await supabase
     .from('immersion_bookings')

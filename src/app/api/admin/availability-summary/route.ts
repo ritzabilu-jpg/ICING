@@ -52,13 +52,17 @@ export async function POST(req: NextRequest) {
     supabase.from('instructor_blocked_dates').select('*').in('instructor_id', instructorIds).order('from_date'),
   ]);
 
+  // Tables may not exist yet (migration pending) — treat as empty instead of failing
+  const availabilityRows = slotsRes.error ? [] : (slotsRes.data ?? []);
+  const blockedRows = blockedRes.error ? [] : (blockedRes.data ?? []);
+
   // Build lookup maps O(n) instead of repeated O(n×m) filters
-  const slotsByInstructor: Record<string, typeof slotsRes.data> = {};
-  const blockedByInstructor: Record<string, typeof blockedRes.data> = {};
-  for (const s of slotsRes.data ?? []) {
+  const slotsByInstructor: Record<string, any[]> = {};
+  const blockedByInstructor: Record<string, any[]> = {};
+  for (const s of availabilityRows) {
     (slotsByInstructor[s.instructor_id] ??= []).push(s);
   }
-  for (const b of blockedRes.data ?? []) {
+  for (const b of blockedRows) {
     (blockedByInstructor[b.instructor_id] ??= []).push(b);
   }
 
