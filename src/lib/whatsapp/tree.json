@@ -1,0 +1,2138 @@
+{
+  "name": "ICING â ××××× ××× ×§×¨×",
+  "tree": {
+    "id": "root",
+    "type": "message",
+    "parentId": null,
+    "text": "××¨×××× ××××× ×××¨×××ª ××××××ª ×××× ×ICING ð\n×××× ×©××¨××ª ××¢× ××× ××ª××?",
+    "children": [
+      {
+        "id": "cwi_icing",
+        "type": "options",
+        "parentId": "root",
+        "text": "ICING â ××××× ××× ×§×¨× âï¸",
+        "children": [
+          {
+            "id": "icing_welcome",
+            "type": "message",
+            "parentId": "cwi_icing",
+            "text": "×××, ××× ICING â ×¡×× ×××ª ×××××××ª ×§×¨× ××¨×××××ª (×¡××¨× × 52, ××ª×× ×××¨××× ××××¤××××ª). ð§\n××× ××¤×©×¨ ××¢×××¨ ×× ××××?",
+            "children": [
+              {
+                "id": "opt_register",
+                "type": "options",
+                "parentId": "icing_welcome",
+                "text": "××××¨×©× ×××××× / ×¡×× ×",
+                "children": [
+                  {
+                    "id": "register_type",
+                    "type": "message",
+                    "parentId": "opt_register",
+                    "text": "××¢×××! ×××× ×¡×× ×¡×× × / ××××× ××× ××ª×××× ××?",
+                    "children": [
+                      {
+                        "id": "type_individuals",
+                        "type": "options",
+                        "parentId": "register_type",
+                        "text": "×¡×× ×ª ×××××× ××§×××¦× â 300 âª",
+                        "children": [
+                          {
+                            "id": "individuals_info",
+                            "type": "message",
+                            "parentId": "type_individuals",
+                            "text": "×¡×× ×ª ×××××× ××× ××××× ×¢××¦××ª××ª ××§×××¦× ×§×× × (×¢× 10 ××©×ª×ª×¤××), ×-90 ××§××ª, ×××× ×ª×¨××× × ×©××× ××× ××, ××××× ××××¨××ª ××× ×§×¨×, ×©×ª××× ××× ××¦×××× ×××××¨×ª.\n××××¨: 300 âª ×××©×ª×ª×£.\n\n×¢×××¨ ××× ××©×ª×ª×¤×× ××××¨×©×? (1-10)",
+                            "children": [
+                              {
+                                "id": "individuals_time",
+                                "type": "message",
+                                "parentId": "individuals_info",
+                                "text": "× ×××¨. ×¢××©×× ×××/× × ×§××¢ ×××¢×.\n×××× ××©××¦×ª ××× × ××× ×× ×××ª×¨?",
+                                "children": [
+                                  {
+                                    "id": "ind_morning",
+                                    "type": "options",
+                                    "parentId": "individuals_time",
+                                    "text": "×××§×¨ (08:00â12:00)",
+                                    "children": [
+                                      {
+                                        "id": "ind_morning_day",
+                                        "type": "message",
+                                        "parentId": "ind_morning",
+                                        "text": "×× ×××× ××××¢××£ ×¢×××?",
+                                        "children": [
+                                          {
+                                            "id": "ind_m_weekday",
+                                            "type": "options",
+                                            "parentId": "ind_morning_day",
+                                            "text": "×××¦×¢ ×©×××¢ (×â×)",
+                                            "children": [
+                                              {
+                                                "id": "ind_m_wd_details",
+                                                "type": "message",
+                                                "parentId": "ind_m_weekday",
+                                                "text": "××¢×××. ××©××¨/× ×× ×©× ××× ××××¤×× ×× ×××× ××ª×××× ××¡××¤× ×××©×××ª ××ª×©×××:\n\nâ¢ ×©× ×××\nâ¢ ×××¤××\nâ¢ ×××× (×××¤×¦××× ××)",
+                                                "children": [
+                                                  {
+                                                    "id": "ind_m_wd_end",
+                                                    "type": "end",
+                                                    "parentId": "ind_m_wd_details",
+                                                    "text": "×ª×××! ×§×××× × ××ª ××¤×¨××× ×©×× ð\n× ×¦×× ×©×× × ××¦××¨ ×××ª× ×§×©×¨ ×××§×× ××××©××¨ ×××¢× ××××©×××ª ××ª×©×××.\n\nð ICING â ×¡××¨× × 52, ×¨×××××ª",
+                                                    "children": []
+                                                  }
+                                                ]
+                                              }
+                                            ]
+                                          },
+                                          {
+                                            "id": "ind_m_weekend",
+                                            "type": "options",
+                                            "parentId": "ind_morning_day",
+                                            "text": "×¡××£ ×©×××¢ (×â×©)",
+                                            "children": [
+                                              {
+                                                "id": "ind_m_we_details",
+                                                "type": "message",
+                                                "parentId": "ind_m_weekend",
+                                                "text": "××¢×××. ××©××¨/× ×× ×©× ××× ××××¤×× ×× ×××× ××ª×××× ××¡××¤× ×××©×××ª ××ª×©×××:\n\nâ¢ ×©× ×××\nâ¢ ×××¤××\nâ¢ ×××× (×××¤×¦××× ××)",
+                                                "children": [
+                                                  {
+                                                    "id": "ind_m_we_end",
+                                                    "type": "end",
+                                                    "parentId": "ind_m_we_details",
+                                                    "text": "×ª×××! ×§×××× × ××ª ××¤×¨××× ×©×× ð\n× ×¦×× ×©×× × ××¦××¨ ×××ª× ×§×©×¨ ×××§×× ××××©××¨ ×××¢× ××××©×××ª ××ª×©×××.\n\nð ICING â ×¡××¨× × 52, ×¨×××××ª",
+                                                    "children": []
+                                                  }
+                                                ]
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "id": "ind_noon",
+                                    "type": "options",
+                                    "parentId": "individuals_time",
+                                    "text": "×¦××¨××× (12:00â16:00)",
+                                    "children": [
+                                      {
+                                        "id": "ind_noon_day",
+                                        "type": "message",
+                                        "parentId": "ind_noon",
+                                        "text": "×× ×××× ××××¢××£ ×¢×××?",
+                                        "children": [
+                                          {
+                                            "id": "ind_n_weekday",
+                                            "type": "options",
+                                            "parentId": "ind_noon_day",
+                                            "text": "×××¦×¢ ×©×××¢ (×â×)",
+                                            "children": [
+                                              {
+                                                "id": "ind_n_wd_details",
+                                                "type": "message",
+                                                "parentId": "ind_n_weekday",
+                                                "text": "××¢×××. ××©××¨/× ×× ×©× ××× ××××¤×× ×× ×××× ××ª×××× ××¡××¤× ×××©×××ª ××ª×©×××:\n\nâ¢ ×©× ×××\nâ¢ ×××¤××\nâ¢ ×××× (×××¤×¦××× ××)",
+                                                "children": [
+                                                  {
+                                                    "id": "ind_n_wd_end",
+                                                    "type": "end",
+                                                    "parentId": "ind_n_wd_details",
+                                                    "text": "×ª×××! ×§×××× × ××ª ××¤×¨××× ×©×× ð\n× ×¦×× ×©×× × ××¦××¨ ×××ª× ×§×©×¨ ×××§××.\n\nð ICING â ×¡××¨× × 52, ×¨×××××ª",
+                                                    "children": []
+                                                  }
+                                                ]
+                                              }
+                                            ]
+                                          },
+                                          {
+                                            "id": "ind_n_weekend",
+                                            "type": "options",
+                                            "parentId": "ind_noon_day",
+                                            "text": "×¡××£ ×©×××¢ (×â×©)",
+                                            "children": [
+                                              {
+                                                "id": "ind_n_we_details",
+                                                "type": "message",
+                                                "parentId": "ind_n_weekend",
+                                                "text": "××¢×××. ××©××¨/× ×× ×©× ××× ××××¤×× ×× ×××× ××ª×××× ××¡××¤× ×××©×××ª ××ª×©×××:\n\nâ¢ ×©× ×××\nâ¢ ×××¤××\nâ¢ ×××× (×××¤×¦××× ××)",
+                                                "children": [
+                                                  {
+                                                    "id": "ind_n_we_end",
+                                                    "type": "end",
+                                                    "parentId": "ind_n_we_details",
+                                                    "text": "×ª×××! ×§×××× × ××ª ××¤×¨××× ×©×× ð\n× ×¦×× ×©×× × ××¦××¨ ×××ª× ×§×©×¨ ×××§××.\n\nð ICING â ×¡××¨× × 52, ×¨×××××ª",
+                                                    "children": []
+                                                  }
+                                                ]
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "id": "ind_evening",
+                                    "type": "options",
+                                    "parentId": "individuals_time",
+                                    "text": "×¢×¨× (16:00â21:00)",
+                                    "children": [
+                                      {
+                                        "id": "ind_eve_day",
+                                        "type": "message",
+                                        "parentId": "ind_evening",
+                                        "text": "×× ×××× ××××¢××£ ×¢×××?",
+                                        "children": [
+                                          {
+                                            "id": "ind_e_weekday",
+                                            "type": "options",
+                                            "parentId": "ind_eve_day",
+                                            "text": "×××¦×¢ ×©×××¢ (×â×)",
+                                            "children": [
+                                              {
+                                                "id": "ind_e_wd_details",
+                                                "type": "message",
+                                                "parentId": "ind_e_weekday",
+                                                "text": "××¢×××. ××©××¨/× ×× ×©× ××× ××××¤×× ×× ×××× ××ª×××× ××¡××¤× ×××©×××ª ××ª×©×××:\n\nâ¢ ×©× ×××\nâ¢ ×××¤××\nâ¢ ×××× (×××¤×¦××× ××)",
+                                                "children": [
+                                                  {
+                                                    "id": "ind_e_wd_end",
+                                                    "type": "end",
+                                                    "parentId": "ind_e_wd_details",
+                                                    "text": "×ª×××! ×§×××× × ××ª ××¤×¨××× ×©×× ð\n× ×¦×× ×©×× × ××¦××¨ ×××ª× ×§×©×¨ ×××§××.\n\nð ICING â ×¡××¨× × 52, ×¨×××××ª",
+                                                    "children": []
+                                                  }
+                                                ]
+                                              }
+                                            ]
+                                          },
+                                          {
+                                            "id": "ind_e_weekend",
+                                            "type": "options",
+                                            "parentId": "ind_eve_day",
+                                            "text": "×¡××£ ×©×××¢ (×â×©)",
+                                            "children": [
+                                              {
+                                                "id": "ind_e_we_details",
+                                                "type": "message",
+                                                "parentId": "ind_e_weekend",
+                                                "text": "××¢×××. ××©××¨/× ×× ×©× ××× ××××¤×× ×× ×××× ××ª×××× ××¡××¤× ×××©×××ª ××ª×©×××:\n\nâ¢ ×©× ×××\nâ¢ ×××¤××\nâ¢ ×××× (×××¤×¦××× ××)",
+                                                "children": [
+                                                  {
+                                                    "id": "ind_e_we_end",
+                                                    "type": "end",
+                                                    "parentId": "ind_e_we_details",
+                                                    "text": "×ª×××! ×§×××× × ××ª ××¤×¨××× ×©×× ð\n× ×¦×× ×©×× × ××¦××¨ ×××ª× ×§×©×¨ ×××§××.\n\nð ICING â ×¡××¨× × 52, ×¨×××××ª",
+                                                    "children": []
+                                                  }
+                                                ]
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "id": "type_couples",
+                        "type": "options",
+                        "parentId": "register_type",
+                        "text": "×¡×× ×ª ×××××ª â 800 âª",
+                        "children": [
+                          {
+                            "id": "couples_info",
+                            "type": "message",
+                            "parentId": "type_couples",
+                            "text": "××¡×× ×ª ×××××ª ××× ××××× ××× ×××××ª ×××××§×ª ×××× ××× ××××, ×-90 ××§××ª, ×××× ×ª×¨××× × ×©××× ××©××ª×£, ××××× ××ª×××× ×××××ª ××××××¨× ×××©××ª.\n×××××¨ ××××: 800 âª.\n\n×× ×¡×× ××××?",
+                            "children": [
+                              {
+                                "id": "couple_romantic",
+                                "type": "options",
+                                "parentId": "couples_info",
+                                "text": "××× ×¨××× ××",
+                                "children": [
+                                  {
+                                    "id": "couple_r_time",
+                                    "type": "message",
+                                    "parentId": "couple_romantic",
+                                    "text": "××ª× × ×× ××× ×××××¢?",
+                                    "children": [
+                                      {
+                                        "id": "couple_r_morning",
+                                        "type": "options",
+                                        "parentId": "couple_r_time",
+                                        "text": "×××§×¨ (×â×)",
+                                        "children": [
+                                          {
+                                            "id": "couple_r_m_details",
+                                            "type": "message",
+                                            "parentId": "couple_r_morning",
+                                            "text": "×©× ××× ×©× ××××××, ×××¤×× ×(×××¤×¦××× ××) ××××:",
+                                            "children": [
+                                              {
+                                                "id": "couple_r_m_end",
+                                                "type": "end",
+                                                "parentId": "couple_r_m_details",
+                                                "text": "×ª×××! ð ×§×××× × ××ª ××¤×¨××× ×©×××.\n× ×¦×× ××¦××¨ ×§×©×¨ ××ª×××× ××ª×©×××.\nð ICING â ×¡××¨× × 52, ×¨×××××ª",
+                                                "children": []
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      },
+                                      {
+                                        "id": "couple_r_evening",
+                                        "type": "options",
+                                        "parentId": "couple_r_time",
+                                        "text": "×¢×¨× (×â×)",
+                                        "children": [
+                                          {
+                                            "id": "couple_r_e_details",
+                                            "type": "message",
+                                            "parentId": "couple_r_evening",
+                                            "text": "×©× ××× ×©× ××××××, ×××¤×× ×(×××¤×¦××× ××) ××××:",
+                                            "children": [
+                                              {
+                                                "id": "couple_r_e_end",
+                                                "type": "end",
+                                                "parentId": "couple_r_e_details",
+                                                "text": "×ª×××! ð ×§×××× × ××ª ××¤×¨××× ×©×××.\n× ×¦×× ××¦××¨ ×§×©×¨ ××ª×××× ××ª×©×××.\nð ICING â ×¡××¨× × 52, ×¨×××××ª",
+                                                "children": []
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      },
+                                      {
+                                        "id": "couple_r_weekend",
+                                        "type": "options",
+                                        "parentId": "couple_r_time",
+                                        "text": "×¡××£ ×©×××¢",
+                                        "children": [
+                                          {
+                                            "id": "couple_r_w_details",
+                                            "type": "message",
+                                            "parentId": "couple_r_weekend",
+                                            "text": "×©× ××× ×©× ××××××, ×××¤×× ×(×××¤×¦××× ××) ××××:",
+                                            "children": [
+                                              {
+                                                "id": "couple_r_w_end",
+                                                "type": "end",
+                                                "parentId": "couple_r_w_details",
+                                                "text": "×ª×××! ð ×§×××× × ××ª ××¤×¨××× ×©×××.\n× ×¦×× ××¦××¨ ×§×©×¨ ××ª×××× ××ª×©×××.\nð ICING â ×¡××¨× × 52, ×¨×××××ª",
+                                                "children": []
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                ]
+                              },
+                              {
+                                "id": "couple_friends",
+                                "type": "options",
+                                "parentId": "couples_info",
+                                "text": "×××¨×× / ××©×¤××",
+                                "children": [
+                                  {
+                                    "id": "couple_f_time",
+                                    "type": "message",
+                                    "parentId": "couple_friends",
+                                    "text": "××ª× × ×× ××× ×××××¢?",
+                                    "children": [
+                                      {
+                                        "id": "couple_f_morning",
+                                        "type": "options",
+                                        "parentId": "couple_f_time",
+                                        "text": "×××§×¨ (×â×)",
+                                        "children": [
+                                          {
+                                            "id": "couple_f_m_details",
+                                            "type": "message",
+                                            "parentId": "couple_f_morning",
+                                            "text": "×©× ××× ×©× ××××××, ×××¤×× ×(×××¤×¦××× ××) ××××:",
+                                            "children": [
+                                              {
+                                                "id": "couple_f_m_end",
+                                                "type": "end",
+                                                "parentId": "couple_f_m_details",
+                                                "text": "×ª×××! ×§×××× × ××ª ××¤×¨××× ×©×××.\n× ×¦×× ××¦××¨ ×§×©×¨ ××ª×××× ××ª×©×××.\nð ICING â ×¡××¨× × 52, ×¨×××××ª",
+                                                "children": []
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      },
+                                      {
+                                        "id": "couple_f_evening",
+                                        "type": "options",
+                                        "parentId": "couple_f_time",
+                                        "text": "×¢×¨× (×â×)",
+                                        "children": [
+                                          {
+                                            "id": "couple_f_e_details",
+                                            "type": "message",
+                                            "parentId": "couple_f_evening",
+                                            "text": "×©× ××× ×©× ××××××, ×××¤×× ×(×××¤×¦××× ××) ××××:",
+                                            "children": [
+                                              {
+                                                "id": "couple_f_e_end",
+                                                "type": "end",
+                                                "parentId": "couple_f_e_details",
+                                                "text": "×ª×××! ×§×××× × ××ª ××¤×¨××× ×©×××.\n× ×¦×× ××¦××¨ ×§×©×¨ ××ª×××× ××ª×©×××.\nð ICING â ×¡××¨× × 52, ×¨×××××ª",
+                                                "children": []
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      },
+                                      {
+                                        "id": "couple_f_weekend",
+                                        "type": "options",
+                                        "parentId": "couple_f_time",
+                                        "text": "×¡××£ ×©×××¢",
+                                        "children": [
+                                          {
+                                            "id": "couple_f_w_details",
+                                            "type": "message",
+                                            "parentId": "couple_f_weekend",
+                                            "text": "×©× ××× ×©× ××××××, ×××¤×× ×(×××¤×¦××× ××) ××××:",
+                                            "children": [
+                                              {
+                                                "id": "couple_f_w_end",
+                                                "type": "end",
+                                                "parentId": "couple_f_w_details",
+                                                "text": "×ª×××! ×§×××× × ××ª ××¤×¨××× ×©×××.\n× ×¦×× ××¦××¨ ×§×©×¨ ××ª×××× ××ª×©×××.\nð ICING â ×¡××¨× × 52, ×¨×××××ª",
+                                                "children": []
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                ]
+                              },
+                              {
+                                "id": "couple_other",
+                                "type": "options",
+                                "parentId": "couples_info",
+                                "text": "×××¨",
+                                "children": [
+                                  {
+                                    "id": "couple_o_time",
+                                    "type": "message",
+                                    "parentId": "couple_other",
+                                    "text": "××ª× × ×× ××× ×××××¢?",
+                                    "children": [
+                                      {
+                                        "id": "couple_o_morning",
+                                        "type": "options",
+                                        "parentId": "couple_o_time",
+                                        "text": "×××§×¨ (×â×)",
+                                        "children": [
+                                          {
+                                            "id": "couple_o_m_details",
+                                            "type": "message",
+                                            "parentId": "couple_o_morning",
+                                            "text": "×©× ××× ×©× ××××××, ×××¤×× ×(×××¤×¦××× ××) ××××:",
+                                            "children": [
+                                              {
+                                                "id": "couple_o_m_end",
+                                                "type": "end",
+                                                "parentId": "couple_o_m_details",
+                                                "text": "×ª×××! ×§×××× × ××ª ××¤×¨××× ×©×××.\n× ×¦×× ××¦××¨ ×§×©×¨ ××ª×××× ××ª×©×××.\nð ICING â ×¡××¨× × 52, ×¨×××××ª",
+                                                "children": []
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      },
+                                      {
+                                        "id": "couple_o_weekend",
+                                        "type": "options",
+                                        "parentId": "couple_o_time",
+                                        "text": "×¡××£ ×©×××¢",
+                                        "children": [
+                                          {
+                                            "id": "couple_o_w_details",
+                                            "type": "message",
+                                            "parentId": "couple_o_weekend",
+                                            "text": "×©× ××× ×©× ××××××, ×××¤×× ×(×××¤×¦××× ××) ××××:",
+                                            "children": [
+                                              {
+                                                "id": "couple_o_w_end",
+                                                "type": "end",
+                                                "parentId": "couple_o_w_details",
+                                                "text": "×ª×××! ×§×××× × ××ª ××¤×¨××× ×©×××.\n× ×¦×× ××¦××¨ ×§×©×¨ ××ª×××× ××ª×©×××.\nð ICING â ×¡××¨× × 52, ×¨×××××ª",
+                                                "children": []
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "id": "type_personal",
+                        "type": "options",
+                        "parentId": "register_type",
+                        "text": "×¡×× × ×××©××ª 1:1 â 550 âª",
+                        "children": [
+                          {
+                            "id": "personal_info",
+                            "type": "message",
+                            "parentId": "type_personal",
+                            "text": "×¡×× × ×××©××ª ××× ×¢× ××× â 90 ××§××ª ×¢× ×××¨×× ×¦×××, ×ª××× ××ª ×××ª×××ª ×××©××ª, ×ª×¨××× × ×©××× ×××××× ××××, ×¢× ××××× ××¤× ××¦××¨× ×× ×××¨× ××¡×× ×.\n××××¨: 550 âª.\n\n×× ××××¨× ××¢××§×¨××ª ×©×× ××¡×× ×?",
+                            "children": [
+                              {
+                                "id": "personal_goal_mental",
+                                "type": "options",
+                                "parentId": "personal_info",
+                                "text": "×××¡× ×× ××× / ××ª××××××ª ×¢× ×¡××¨×¡",
+                                "children": [
+                                  {
+                                    "id": "personal_g1_time",
+                                    "type": "message",
+                                    "parentId": "personal_goal_mental",
+                                    "text": "××ª× × ×× ×× ×××××¢?",
+                                    "children": [
+                                      {
+                                        "id": "p_g1_morning",
+                                        "type": "options",
+                                        "parentId": "personal_g1_time",
+                                        "text": "×××§×¨",
+                                        "children": [
+                                          {
+                                            "id": "p_g1_m_det",
+                                            "type": "message",
+                                            "parentId": "p_g1_morning",
+                                            "text": "×©× ×××, ×××¤××, ×××:",
+                                            "children": [
+                                              {
+                                                "id": "p_g1_m_end",
+                                                "type": "end",
+                                                "parentId": "p_g1_m_det",
+                                                "text": "×ª×××! ×§×××× × ××ª ××¤×¨××× ×©×× ð\n×××¨×× ××¦××¨ ×××ª× ×§×©×¨ ××ª××××.\nð ICING â ×¡××¨× × 52, ×¨×××××ª",
+                                                "children": []
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      },
+                                      {
+                                        "id": "p_g1_noon",
+                                        "type": "options",
+                                        "parentId": "personal_g1_time",
+                                        "text": "×¦××¨×××",
+                                        "children": [
+                                          {
+                                            "id": "p_g1_n_det",
+                                            "type": "message",
+                                            "parentId": "p_g1_noon",
+                                            "text": "×©× ×××, ×××¤××, ×××:",
+                                            "children": [
+                                              {
+                                                "id": "p_g1_n_end",
+                                                "type": "end",
+                                                "parentId": "p_g1_n_det",
+                                                "text": "×ª×××! ×§×××× × ××ª ××¤×¨××× ×©×× ð\n×××¨×× ××¦××¨ ×××ª× ×§×©×¨ ××ª××××.\nð ICING â ×¡××¨× × 52, ×¨×××××ª",
+                                                "children": []
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      },
+                                      {
+                                        "id": "p_g1_eve",
+                                        "type": "options",
+                                        "parentId": "personal_g1_time",
+                                        "text": "×¢×¨×",
+                                        "children": [
+                                          {
+                                            "id": "p_g1_e_det",
+                                            "type": "message",
+                                            "parentId": "p_g1_eve",
+                                            "text": "×©× ×××, ×××¤××, ×××:",
+                                            "children": [
+                                              {
+                                                "id": "p_g1_e_end",
+                                                "type": "end",
+                                                "parentId": "p_g1_e_det",
+                                                "text": "×ª×××! ×§×××× × ××ª ××¤×¨××× ×©×× ð\n×××¨×× ××¦××¨ ×××ª× ×§×©×¨ ××ª××××.\nð ICING â ×¡××¨× × 52, ×¨×××××ª",
+                                                "children": []
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      },
+                                      {
+                                        "id": "p_g1_week",
+                                        "type": "options",
+                                        "parentId": "personal_g1_time",
+                                        "text": "×¡××£ ×©×××¢",
+                                        "children": [
+                                          {
+                                            "id": "p_g1_w_det",
+                                            "type": "message",
+                                            "parentId": "p_g1_week",
+                                            "text": "×©× ×××, ×××¤××, ×××:",
+                                            "children": [
+                                              {
+                                                "id": "p_g1_w_end",
+                                                "type": "end",
+                                                "parentId": "p_g1_w_det",
+                                                "text": "×ª×××! ×§×××× × ××ª ××¤×¨××× ×©×× ð\n×××¨×× ××¦××¨ ×××ª× ×§×©×¨ ××ª××××.\nð ICING â ×¡××¨× × 52, ×¨×××××ª",
+                                                "children": []
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                ]
+                              },
+                              {
+                                "id": "personal_goal_perf",
+                                "type": "options",
+                                "parentId": "personal_info",
+                                "text": "×©××¤××¨ ×××¦××¢×× (×¡×¤××¨× / ×¢××××)",
+                                "children": [
+                                  {
+                                    "id": "personal_g2_time",
+                                    "type": "message",
+                                    "parentId": "personal_goal_perf",
+                                    "text": "××ª× × ×× ×× ×××××¢?",
+                                    "children": [
+                                      {
+                                        "id": "p_g2_morning",
+                                        "type": "options",
+                                        "parentId": "personal_g2_time",
+                                        "text": "×××§×¨",
+                                        "children": [
+                                          {
+                                            "id": "p_g2_m_det",
+                                            "type": "message",
+                                            "parentId": "p_g2_morning",
+                                            "text": "×©× ×××, ×××¤××, ×××:",
+                                            "children": [
+                                              {
+                                                "id": "p_g2_m_end",
+                                                "type": "end",
+                                                "parentId": "p_g2_m_det",
+                                                "text": "×ª×××! ×§×××× × ××ª ××¤×¨××× ×©×× ð\n×××¨×× ××¦××¨ ×××ª× ×§×©×¨ ××ª××××.\nð ICING â ×¡××¨× × 52, ×¨×××××ª",
+                                                "children": []
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      },
+                                      {
+                                        "id": "p_g2_eve",
+                                        "type": "options",
+                                        "parentId": "personal_g2_time",
+                                        "text": "×¢×¨×",
+                                        "children": [
+                                          {
+                                            "id": "p_g2_e_det",
+                                            "type": "message",
+                                            "parentId": "p_g2_eve",
+                                            "text": "×©× ×××, ×××¤××, ×××:",
+                                            "children": [
+                                              {
+                                                "id": "p_g2_e_end",
+                                                "type": "end",
+                                                "parentId": "p_g2_e_det",
+                                                "text": "×ª×××! ×§×××× × ××ª ××¤×¨××× ×©×× ð\n×××¨×× ××¦××¨ ×××ª× ×§×©×¨ ××ª××××.\nð ICING â ×¡××¨× × 52, ×¨×××××ª",
+                                                "children": []
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      },
+                                      {
+                                        "id": "p_g2_week",
+                                        "type": "options",
+                                        "parentId": "personal_g2_time",
+                                        "text": "×¡××£ ×©×××¢",
+                                        "children": [
+                                          {
+                                            "id": "p_g2_w_det",
+                                            "type": "message",
+                                            "parentId": "p_g2_week",
+                                            "text": "×©× ×××, ×××¤××, ×××:",
+                                            "children": [
+                                              {
+                                                "id": "p_g2_w_end",
+                                                "type": "end",
+                                                "parentId": "p_g2_w_det",
+                                                "text": "×ª×××! ×§×××× × ××ª ××¤×¨××× ×©×× ð\n×××¨×× ××¦××¨ ×××ª× ×§×©×¨ ××ª××××.\nð ICING â ×¡××¨× × 52, ×¨×××××ª",
+                                                "children": []
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                ]
+                              },
+                              {
+                                "id": "personal_goal_curious",
+                                "type": "options",
+                                "parentId": "personal_info",
+                                "text": "×¡×§×¨× ××ª / ××××× ×××©××ª",
+                                "children": [
+                                  {
+                                    "id": "personal_g3_time",
+                                    "type": "message",
+                                    "parentId": "personal_goal_curious",
+                                    "text": "××ª× × ×× ×× ×××××¢?",
+                                    "children": [
+                                      {
+                                        "id": "p_g3_morning",
+                                        "type": "options",
+                                        "parentId": "personal_g3_time",
+                                        "text": "×××§×¨",
+                                        "children": [
+                                          {
+                                            "id": "p_g3_m_det",
+                                            "type": "message",
+                                            "parentId": "p_g3_morning",
+                                            "text": "×©× ×××, ×××¤××, ×××:",
+                                            "children": [
+                                              {
+                                                "id": "p_g3_m_end",
+                                                "type": "end",
+                                                "parentId": "p_g3_m_det",
+                                                "text": "×ª×××! ×§×××× × ××ª ××¤×¨××× ×©×× ð\n×××¨×× ××¦××¨ ×××ª× ×§×©×¨ ××ª××××.\nð ICING â ×¡××¨× × 52, ×¨×××××ª",
+                                                "children": []
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      },
+                                      {
+                                        "id": "p_g3_eve",
+                                        "type": "options",
+                                        "parentId": "personal_g3_time",
+                                        "text": "×¢×¨×",
+                                        "children": [
+                                          {
+                                            "id": "p_g3_e_det",
+                                            "type": "message",
+                                            "parentId": "p_g3_eve",
+                                            "text": "×©× ×××, ×××¤××, ×××:",
+                                            "children": [
+                                              {
+                                                "id": "p_g3_e_end",
+                                                "type": "end",
+                                                "parentId": "p_g3_e_det",
+                                                "text": "×ª×××! ×§×××× × ××ª ××¤×¨××× ×©×× ð\n×××¨×× ××¦××¨ ×××ª× ×§×©×¨ ××ª××××.\nð ICING â ×¡××¨× × 52, ×¨×××××ª",
+                                                "children": []
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      },
+                                      {
+                                        "id": "p_g3_week",
+                                        "type": "options",
+                                        "parentId": "personal_g3_time",
+                                        "text": "×¡××£ ×©×××¢",
+                                        "children": [
+                                          {
+                                            "id": "p_g3_w_det",
+                                            "type": "message",
+                                            "parentId": "p_g3_week",
+                                            "text": "×©× ×××, ×××¤××, ×××:",
+                                            "children": [
+                                              {
+                                                "id": "p_g3_w_end",
+                                                "type": "end",
+                                                "parentId": "p_g3_w_det",
+                                                "text": "×ª×××! ×§×××× × ××ª ××¤×¨××× ×©×× ð\n×××¨×× ××¦××¨ ×××ª× ×§×©×¨ ××ª××××.\nð ICING â ×¡××¨× × 52, ×¨×××××ª",
+                                                "children": []
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                ]
+                              },
+                              {
+                                "id": "personal_goal_other",
+                                "type": "options",
+                                "parentId": "personal_info",
+                                "text": "×××¨ â ×××ª×× ×××¤×©×",
+                                "children": [
+                                  {
+                                    "id": "personal_g4_time",
+                                    "type": "message",
+                                    "parentId": "personal_goal_other",
+                                    "text": "××ª× × ×× ×× ×××××¢?",
+                                    "children": [
+                                      {
+                                        "id": "p_g4_morning",
+                                        "type": "options",
+                                        "parentId": "personal_g4_time",
+                                        "text": "×××§×¨",
+                                        "children": [
+                                          {
+                                            "id": "p_g4_m_det",
+                                            "type": "message",
+                                            "parentId": "p_g4_morning",
+                                            "text": "×©× ×××, ×××¤××, ×××:",
+                                            "children": [
+                                              {
+                                                "id": "p_g4_m_end",
+                                                "type": "end",
+                                                "parentId": "p_g4_m_det",
+                                                "text": "×ª×××! ×§×××× × ××ª ××¤×¨××× ×©×× ð\n×××¨×× ××¦××¨ ×××ª× ×§×©×¨ ××ª××××.\nð ICING â ×¡××¨× × 52, ×¨×××××ª",
+                                                "children": []
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      },
+                                      {
+                                        "id": "p_g4_eve",
+                                        "type": "options",
+                                        "parentId": "personal_g4_time",
+                                        "text": "×¢×¨×",
+                                        "children": [
+                                          {
+                                            "id": "p_g4_e_det",
+                                            "type": "message",
+                                            "parentId": "p_g4_eve",
+                                            "text": "×©× ×××, ×××¤××, ×××:",
+                                            "children": [
+                                              {
+                                                "id": "p_g4_e_end",
+                                                "type": "end",
+                                                "parentId": "p_g4_e_det",
+                                                "text": "×ª×××! ×§×××× × ××ª ××¤×¨××× ×©×× ð\n×××¨×× ××¦××¨ ×××ª× ×§×©×¨ ××ª××××.\nð ICING â ×¡××¨× × 52, ×¨×××××ª",
+                                                "children": []
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      },
+                                      {
+                                        "id": "p_g4_week",
+                                        "type": "options",
+                                        "parentId": "personal_g4_time",
+                                        "text": "×¡××£ ×©×××¢",
+                                        "children": [
+                                          {
+                                            "id": "p_g4_w_det",
+                                            "type": "message",
+                                            "parentId": "p_g4_week",
+                                            "text": "×©× ×××, ×××¤××, ×××:",
+                                            "children": [
+                                              {
+                                                "id": "p_g4_w_end",
+                                                "type": "end",
+                                                "parentId": "p_g4_w_det",
+                                                "text": "×ª×××! ×§×××× × ××ª ××¤×¨××× ×©×× ð\n×××¨×× ××¦××¨ ×××ª× ×§×©×¨ ××ª××××.\nð ICING â ×¡××¨× × 52, ×¨×××××ª",
+                                                "children": []
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "id": "type_groups",
+                        "type": "options",
+                        "parentId": "register_type",
+                        "text": "×¡×× ×ª ×§×××¦××ª / ××¨××× ××",
+                        "children": [
+                          {
+                            "id": "groups_info",
+                            "type": "message",
+                            "parentId": "type_groups",
+                            "text": "×¡×× ×ª ×§×××¦××ª ××××¢××ª ××¦×××ª× ×¢××××, ××¨××× ××, ×§×××¦××ª ×¡×¤××¨× ××¢××.\n××©×: ×-90 ××§××ª ×× ××¤× ×ª××××, ××××¨ ×××ª×× ××××× ××§×××¦× ×××¦×¨××× ×©×××.\n\n×¢× ×××× ×¡×× ×§×××¦× ×××××¨?",
+                            "children": [
+                              {
+                                "id": "grp_type_tech",
+                                "type": "options",
+                                "parentId": "groups_info",
+                                "text": "×¦×××ª ×××××§ / ××©×¨×",
+                                "children": [
+                                  {
+                                    "id": "grp_tech_size",
+                                    "type": "message",
+                                    "parentId": "grp_type_tech",
+                                    "text": "××× ××©×ª×ª×¤×× ××¢×¨×?",
+                                    "children": [
+                                      {
+                                        "id": "grp_t_5",
+                                        "type": "options",
+                                        "parentId": "grp_tech_size",
+                                        "text": "5â10",
+                                        "children": [
+                                          {
+                                            "id": "grp_t_5_loc",
+                                            "type": "message",
+                                            "parentId": "grp_t_5",
+                                            "text": "××× ××¡×× × ××¦×× × ××¨×××××ª ×× ××¦×××?",
+                                            "children": [
+                                              {
+                                                "id": "grp_t_5_us",
+                                                "type": "options",
+                                                "parentId": "grp_t_5_loc",
+                                                "text": "××¦×× × â ×¨×××××ª, ×¡××¨× × 52",
+                                                "children": [
+                                                  {
+                                                    "id": "grp_t_5_us_det",
+                                                    "type": "message",
+                                                    "parentId": "grp_t_5_us",
+                                                    "text": "×©× ×××© ×§×©×¨, ×××¤××, ×©× ×××¨××× (×× ××©):",
+                                                    "children": [
+                                                      {
+                                                        "id": "grp_t_5_us_end",
+                                                        "type": "end",
+                                                        "parentId": "grp_t_5_us_det",
+                                                        "text": "×ª×××! ð¢ ×§×××× × ××ª ××¤×¨××× ×©×××.\n× ××× ××¦×¢×ª ××××¨ ×××ª×××ª ×× ×¦××¨ ×§×©×¨ ×××§××.\nð ICING â ×¡××¨× × 52, ×¨×××××ª",
+                                                        "children": []
+                                                      }
+                                                    ]
+                                                  }
+                                                ]
+                                              },
+                                              {
+                                                "id": "grp_t_5_them",
+                                                "type": "options",
+                                                "parentId": "grp_t_5_loc",
+                                                "text": "××¦×× × ×××¨××× / ××××ª / ×××ª×¨ ×××¦×× ×",
+                                                "children": [
+                                                  {
+                                                    "id": "grp_t_5_them_det",
+                                                    "type": "message",
+                                                    "parentId": "grp_t_5_them",
+                                                    "text": "×©× ×××© ×§×©×¨, ×××¤××, ×©× ×××¨××× ××××§××:",
+                                                    "children": [
+                                                      {
+                                                        "id": "grp_t_5_them_end",
+                                                        "type": "end",
+                                                        "parentId": "grp_t_5_them_det",
+                                                        "text": "×ª×××! ð¢ ×§×××× × ××ª ××¤×¨××× ×©×××.\n× ××× ××¦×¢×ª ××××¨ ×××ª×××ª ×× ×¦××¨ ×§×©×¨ ×××§××.",
+                                                        "children": []
+                                                      }
+                                                    ]
+                                                  }
+                                                ]
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      },
+                                      {
+                                        "id": "grp_t_11",
+                                        "type": "options",
+                                        "parentId": "grp_tech_size",
+                                        "text": "11â20",
+                                        "children": [
+                                          {
+                                            "id": "grp_t_11_det",
+                                            "type": "message",
+                                            "parentId": "grp_t_11",
+                                            "text": "×©× ×××© ×§×©×¨, ×××¤××, ×©× ×××¨×××:",
+                                            "children": [
+                                              {
+                                                "id": "grp_t_11_end",
+                                                "type": "end",
+                                                "parentId": "grp_t_11_det",
+                                                "text": "×ª×××! ð¢ ×§×××× × ××ª ××¤×¨××× ×©×××.\n× ××× ××¦×¢×ª ××××¨ ×××ª×××ª ×× ×¦××¨ ×§×©×¨ ×××§××.\nð ICING â ×¡××¨× × 52, ×¨×××××ª",
+                                                "children": []
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      },
+                                      {
+                                        "id": "grp_t_20",
+                                        "type": "options",
+                                        "parentId": "grp_tech_size",
+                                        "text": "20+",
+                                        "children": [
+                                          {
+                                            "id": "grp_t_20_det",
+                                            "type": "message",
+                                            "parentId": "grp_t_20",
+                                            "text": "×©× ×××© ×§×©×¨, ×××¤××, ×©× ×××¨×××:",
+                                            "children": [
+                                              {
+                                                "id": "grp_t_20_end",
+                                                "type": "end",
+                                                "parentId": "grp_t_20_det",
+                                                "text": "×ª×××! ð¢ ×§×××× × ××ª ××¤×¨××× ×©×××.\n× ××× ××¦×¢×ª ××××¨ ×××ª×××ª ×× ×¦××¨ ×§×©×¨ ×××§××.\nð ICING â ×¡××¨× × 52, ×¨×××××ª",
+                                                "children": []
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                ]
+                              },
+                              {
+                                "id": "grp_type_sales",
+                                "type": "options",
+                                "parentId": "groups_info",
+                                "text": "×¦×××ª ××××¨××ª / ×©××¨××ª",
+                                "children": [
+                                  {
+                                    "id": "grp_sales_size",
+                                    "type": "message",
+                                    "parentId": "grp_type_sales",
+                                    "text": "××× ××©×ª×ª×¤×× ××¢×¨×?",
+                                    "children": [
+                                      {
+                                        "id": "grp_s_5",
+                                        "type": "options",
+                                        "parentId": "grp_sales_size",
+                                        "text": "5â10",
+                                        "children": [
+                                          {
+                                            "id": "grp_s_5_det",
+                                            "type": "message",
+                                            "parentId": "grp_s_5",
+                                            "text": "×©× ×××© ×§×©×¨, ×××¤××, ×©× ×××¨×××:",
+                                            "children": [
+                                              {
+                                                "id": "grp_s_5_end",
+                                                "type": "end",
+                                                "parentId": "grp_s_5_det",
+                                                "text": "×ª×××! ×§×××× ×. × ××× ××¦×¢×ª ××××¨ ×××ª×××ª ×× ×¦××¨ ×§×©×¨ ×××§××.",
+                                                "children": []
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      },
+                                      {
+                                        "id": "grp_s_11",
+                                        "type": "options",
+                                        "parentId": "grp_sales_size",
+                                        "text": "11â20",
+                                        "children": [
+                                          {
+                                            "id": "grp_s_11_det",
+                                            "type": "message",
+                                            "parentId": "grp_s_11",
+                                            "text": "×©× ×××© ×§×©×¨, ×××¤××, ×©× ×××¨×××:",
+                                            "children": [
+                                              {
+                                                "id": "grp_s_11_end",
+                                                "type": "end",
+                                                "parentId": "grp_s_11_det",
+                                                "text": "×ª×××! ×§×××× ×. × ××× ××¦×¢×ª ××××¨ ×××ª×××ª ×× ×¦××¨ ×§×©×¨ ×××§××.",
+                                                "children": []
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      },
+                                      {
+                                        "id": "grp_s_20",
+                                        "type": "options",
+                                        "parentId": "grp_sales_size",
+                                        "text": "20+",
+                                        "children": [
+                                          {
+                                            "id": "grp_s_20_det",
+                                            "type": "message",
+                                            "parentId": "grp_s_20",
+                                            "text": "×©× ×××© ×§×©×¨, ×××¤××, ×©× ×××¨×××:",
+                                            "children": [
+                                              {
+                                                "id": "grp_s_20_end",
+                                                "type": "end",
+                                                "parentId": "grp_s_20_det",
+                                                "text": "×ª×××! ×§×××× ×. × ××× ××¦×¢×ª ××××¨ ×××ª×××ª ×× ×¦××¨ ×§×©×¨ ×××§××.",
+                                                "children": []
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                ]
+                              },
+                              {
+                                "id": "grp_type_sport",
+                                "type": "options",
+                                "parentId": "groups_info",
+                                "text": "×§×××¦×ª ×¡×¤××¨×",
+                                "children": [
+                                  {
+                                    "id": "grp_sport_size",
+                                    "type": "message",
+                                    "parentId": "grp_type_sport",
+                                    "text": "××× ××©×ª×ª×¤×× ××¢×¨×?",
+                                    "children": [
+                                      {
+                                        "id": "grp_sp_5",
+                                        "type": "options",
+                                        "parentId": "grp_sport_size",
+                                        "text": "5â10",
+                                        "children": [
+                                          {
+                                            "id": "grp_sp_5_det",
+                                            "type": "message",
+                                            "parentId": "grp_sp_5",
+                                            "text": "×©× ×××© ×§×©×¨, ×××¤××, ×©× ××§×××¦×:",
+                                            "children": [
+                                              {
+                                                "id": "grp_sp_5_end",
+                                                "type": "end",
+                                                "parentId": "grp_sp_5_det",
+                                                "text": "×ª×××! ×§×××× ×. × ××× ××¦×¢×ª ××××¨ ×××ª×××ª ×× ×¦××¨ ×§×©×¨ ×××§××. ð",
+                                                "children": []
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      },
+                                      {
+                                        "id": "grp_sp_11",
+                                        "type": "options",
+                                        "parentId": "grp_sport_size",
+                                        "text": "11â20",
+                                        "children": [
+                                          {
+                                            "id": "grp_sp_11_det",
+                                            "type": "message",
+                                            "parentId": "grp_sp_11",
+                                            "text": "×©× ×××© ×§×©×¨, ×××¤××, ×©× ××§×××¦×:",
+                                            "children": [
+                                              {
+                                                "id": "grp_sp_11_end",
+                                                "type": "end",
+                                                "parentId": "grp_sp_11_det",
+                                                "text": "×ª×××! ×§×××× ×. × ××× ××¦×¢×ª ××××¨ ×××ª×××ª ×× ×¦××¨ ×§×©×¨ ×××§××. ð",
+                                                "children": []
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      },
+                                      {
+                                        "id": "grp_sp_20",
+                                        "type": "options",
+                                        "parentId": "grp_sport_size",
+                                        "text": "20+",
+                                        "children": [
+                                          {
+                                            "id": "grp_sp_20_det",
+                                            "type": "message",
+                                            "parentId": "grp_sp_20",
+                                            "text": "×©× ×××© ×§×©×¨, ×××¤××, ×©× ××§×××¦×:",
+                                            "children": [
+                                              {
+                                                "id": "grp_sp_20_end",
+                                                "type": "end",
+                                                "parentId": "grp_sp_20_det",
+                                                "text": "×ª×××! ×§×××× ×. × ××× ××¦×¢×ª ××××¨ ×××ª×××ª ×× ×¦××¨ ×§×©×¨ ×××§××. ð",
+                                                "children": []
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                ]
+                              },
+                              {
+                                "id": "grp_type_private",
+                                "type": "options",
+                                "parentId": "groups_info",
+                                "text": "××××¨× ×¤×¨×××ª",
+                                "children": [
+                                  {
+                                    "id": "grp_prv_size",
+                                    "type": "message",
+                                    "parentId": "grp_type_private",
+                                    "text": "××× ××©×ª×ª×¤×× ××¢×¨×?",
+                                    "children": [
+                                      {
+                                        "id": "grp_prv_5",
+                                        "type": "options",
+                                        "parentId": "grp_prv_size",
+                                        "text": "5â10",
+                                        "children": [
+                                          {
+                                            "id": "grp_prv_5_det",
+                                            "type": "message",
+                                            "parentId": "grp_prv_5",
+                                            "text": "×©× ×××© ×§×©×¨ ××××¤××:",
+                                            "children": [
+                                              {
+                                                "id": "grp_prv_5_end",
+                                                "type": "end",
+                                                "parentId": "grp_prv_5_det",
+                                                "text": "×ª×××! ×§×××× ×. × ×¦××¨ ×§×©×¨ ××ª×××× ×××××¨ ×××ª××.",
+                                                "children": []
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      },
+                                      {
+                                        "id": "grp_prv_11",
+                                        "type": "options",
+                                        "parentId": "grp_prv_size",
+                                        "text": "11â20",
+                                        "children": [
+                                          {
+                                            "id": "grp_prv_11_det",
+                                            "type": "message",
+                                            "parentId": "grp_prv_11",
+                                            "text": "×©× ×××© ×§×©×¨ ××××¤××:",
+                                            "children": [
+                                              {
+                                                "id": "grp_prv_11_end",
+                                                "type": "end",
+                                                "parentId": "grp_prv_11_det",
+                                                "text": "×ª×××! ×§×××× ×. × ×¦××¨ ×§×©×¨ ××ª×××× ×××××¨ ×××ª××.",
+                                                "children": []
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      },
+                                      {
+                                        "id": "grp_prv_20",
+                                        "type": "options",
+                                        "parentId": "grp_prv_size",
+                                        "text": "20+",
+                                        "children": [
+                                          {
+                                            "id": "grp_prv_20_det",
+                                            "type": "message",
+                                            "parentId": "grp_prv_20",
+                                            "text": "×©× ×××© ×§×©×¨ ××××¤××:",
+                                            "children": [
+                                              {
+                                                "id": "grp_prv_20_end",
+                                                "type": "end",
+                                                "parentId": "grp_prv_20_det",
+                                                "text": "×ª×××! ×§×××× ×. × ×¦××¨ ×§×©×¨ ××ª×××× ×××××¨ ×××ª××.",
+                                                "children": []
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                ]
+                              },
+                              {
+                                "id": "grp_type_other",
+                                "type": "options",
+                                "parentId": "groups_info",
+                                "text": "×××¨",
+                                "children": [
+                                  {
+                                    "id": "grp_oth_size",
+                                    "type": "message",
+                                    "parentId": "grp_type_other",
+                                    "text": "××× ××©×ª×ª×¤×× ××¢×¨×?",
+                                    "children": [
+                                      {
+                                        "id": "grp_oth_5",
+                                        "type": "options",
+                                        "parentId": "grp_oth_size",
+                                        "text": "5â10",
+                                        "children": [
+                                          {
+                                            "id": "grp_oth_5_det",
+                                            "type": "message",
+                                            "parentId": "grp_oth_5",
+                                            "text": "×©× ×××© ×§×©×¨, ×××¤××, ×¤××¨×× ×§×¦×¨:",
+                                            "children": [
+                                              {
+                                                "id": "grp_oth_5_end",
+                                                "type": "end",
+                                                "parentId": "grp_oth_5_det",
+                                                "text": "×ª×××! ×§×××× ×. × ×¦××¨ ×§×©×¨ ××ª×××× ×××××¨ ×××ª××.",
+                                                "children": []
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      },
+                                      {
+                                        "id": "grp_oth_20",
+                                        "type": "options",
+                                        "parentId": "grp_oth_size",
+                                        "text": "20+",
+                                        "children": [
+                                          {
+                                            "id": "grp_oth_20_det",
+                                            "type": "message",
+                                            "parentId": "grp_oth_20",
+                                            "text": "×©× ×××© ×§×©×¨, ×××¤××, ×¤××¨×× ×§×¦×¨:",
+                                            "children": [
+                                              {
+                                                "id": "grp_oth_20_end",
+                                                "type": "end",
+                                                "parentId": "grp_oth_20_det",
+                                                "text": "×ª×××! ×§×××× ×. × ×¦××¨ ×§×©×¨ ××ª×××× ×××××¨ ×××ª××.",
+                                                "children": []
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "opt_info",
+                "type": "options",
+                "parentId": "icing_welcome",
+                "text": "××§×× ××××¢ ×¢× ××¡×× ×××ª",
+                "children": [
+                  {
+                    "id": "info_menu",
+                    "type": "message",
+                    "parentId": "opt_info",
+                    "text": "×××× ××××¢ ×ª×¨×¦×/×?",
+                    "children": [
+                      {
+                        "id": "info_individuals",
+                        "type": "options",
+                        "parentId": "info_menu",
+                        "text": "×× ×× ×¡×× ×ª ××××××?",
+                        "children": [
+                          {
+                            "id": "info_ind_text",
+                            "type": "message",
+                            "parentId": "info_individuals",
+                            "text": "×¡×× ×ª ××××××:\nâ¢ ××©×: ×-90 ××§××ª\nâ¢ × ×©××××ª ××××¨×××ª, ××× × ×× ××××ª ×××××× ×××× ×§×¨×× (10â12 ××¢×××ª)\nâ¢ ×¢× 10 ××©×ª×ª×¤×× ××§×××¦×\nâ¢ ××××¨: 300 âª ×××©×ª×ª×£\n\n×¨××¦× ×©××¢×××¨ ×× ××××¨×©× ×¢××©××?",
+                            "children": [
+                              {
+                                "id": "info_ind_yes",
+                                "type": "options",
+                                "parentId": "info_ind_text",
+                                "text": "××, ××××¨×©×",
+                                "children": [
+                                  {
+                                    "id": "info_ind_yes_redir",
+                                    "type": "message",
+                                    "parentId": "info_ind_yes",
+                                    "text": "××¢×××! ×××× ×¡×× ×¡×× × / ××××× ××× ××ª×××× ××?\n(×××¨/× ×¡×× ×ª ×××××× ××§×××¦× â 300 âª ×× ××©××)",
+                                    "children": []
+                                  }
+                                ]
+                              },
+                              {
+                                "id": "info_ind_no",
+                                "type": "options",
+                                "parentId": "info_ind_text",
+                                "text": "××, ×ª×××",
+                                "children": [
+                                  {
+                                    "id": "info_ind_no_end",
+                                    "type": "end",
+                                    "parentId": "info_ind_no",
+                                    "text": "××¡××¨ ××××¨! ×× ×ª×¦××¨×/× ××¢×ª×× â ××× × ××× ð§\nICING â ×¡××¨× × 52, ×¨×××××ª | 08-9310715",
+                                    "children": []
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "id": "info_couples",
+                        "type": "options",
+                        "parentId": "info_menu",
+                        "text": "×× ×× ×¡×× ×ª ×××××ª?",
+                        "children": [
+                          {
+                            "id": "info_cpl_text",
+                            "type": "message",
+                            "parentId": "info_couples",
+                            "text": "×¡×× ×ª ×××××ª:\nâ¢ ××©×: ×-90 ××§××ª\nâ¢ ××××× ××× ×××××ª ×××× ××× ××××\nâ¢ ×ª×¨××× × ×©××× ××©××ª×£ ×××××× ××ª×××× ×××××ª\nâ¢ ××××¨: 800 âª ××××\n\n×¨××¦× ×©××¢×××¨ ×× ××××¨×©× ×¢××©××?",
+                            "children": [
+                              {
+                                "id": "info_cpl_yes",
+                                "type": "options",
+                                "parentId": "info_cpl_text",
+                                "text": "××, ××××¨×©×",
+                                "children": [
+                                  {
+                                    "id": "info_cpl_yes_redir",
+                                    "type": "message",
+                                    "parentId": "info_cpl_yes",
+                                    "text": "××¢×××! ×××¨/× ×¡×× ×ª ×××××ª ××ª×¤×¨×× ×××¨×©×× ×× ××©××.",
+                                    "children": []
+                                  }
+                                ]
+                              },
+                              {
+                                "id": "info_cpl_no",
+                                "type": "options",
+                                "parentId": "info_cpl_text",
+                                "text": "××, ×ª×××",
+                                "children": [
+                                  {
+                                    "id": "info_cpl_no_end",
+                                    "type": "end",
+                                    "parentId": "info_cpl_no",
+                                    "text": "××¡××¨ ××××¨! ××× × ××× ð§",
+                                    "children": []
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "id": "info_personal",
+                        "type": "options",
+                        "parentId": "info_menu",
+                        "text": "×× ×× ×¡×× × ×××©××ª?",
+                        "children": [
+                          {
+                            "id": "info_per_text",
+                            "type": "message",
+                            "parentId": "info_personal",
+                            "text": "×¡×× × ×××©××ª 1:1:\nâ¢ ××©×: ×-90 ××§××ª ×¢× ×××¨×× ×¦×××\nâ¢ ×ª××× ××ª ×××ª×××ª ×××©××ª\nâ¢ ×ª×¨××× × ×©××× ×××××× ××××\nâ¢ ××××× ×× ×××¨× ××¡×× × ××¤× ××¦××¨×\nâ¢ ××××¨: 550 âª\n\n×¨××¦× ×©××¢×××¨ ×× ××××¨×©× ×¢××©××?",
+                            "children": [
+                              {
+                                "id": "info_per_yes",
+                                "type": "options",
+                                "parentId": "info_per_text",
+                                "text": "××, ××××¨×©×",
+                                "children": [
+                                  {
+                                    "id": "info_per_yes_redir",
+                                    "type": "message",
+                                    "parentId": "info_per_yes",
+                                    "text": "××¢×××! ×××¨/× ×¡×× × ×××©××ª 1:1 ××ª×¤×¨×× ×× ××©××.",
+                                    "children": []
+                                  }
+                                ]
+                              },
+                              {
+                                "id": "info_per_no",
+                                "type": "options",
+                                "parentId": "info_per_text",
+                                "text": "××, ×ª×××",
+                                "children": [
+                                  {
+                                    "id": "info_per_no_end",
+                                    "type": "end",
+                                    "parentId": "info_per_no",
+                                    "text": "××¡××¨ ××××¨! ××× × ××× ð§",
+                                    "children": []
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "id": "info_groups",
+                        "type": "options",
+                        "parentId": "info_menu",
+                        "text": "×× ×× ×¡×× ×ª ×§×××¦××ª?",
+                        "children": [
+                          {
+                            "id": "info_grp_text",
+                            "type": "message",
+                            "parentId": "info_groups",
+                            "text": "×¡×× ×ª ×§×××¦××ª:\nâ¢ ××××¢××ª ××¦×××ª× ×¢××××, ××¨××× ××, ×§×××¦××ª ×¡×¤××¨× ××¢××\nâ¢ ××©×: ×-90 ××§××ª ×× ××¤× ×ª××××\nâ¢ ××××¨ ×××ª×× ××××× ××§×××¦×\nâ¢ ××× ×××× 5 ××©×ª×ª×¤××\n\n×¨××¦× ×©××¢×××¨ ×× ××××¨×©× ×¢××©××?",
+                            "children": [
+                              {
+                                "id": "info_grp_yes",
+                                "type": "options",
+                                "parentId": "info_grp_text",
+                                "text": "××, ××××¨×©×",
+                                "children": [
+                                  {
+                                    "id": "info_grp_yes_redir",
+                                    "type": "message",
+                                    "parentId": "info_grp_yes",
+                                    "text": "××¢×××! ×××¨/× ×¡×× ×ª ×§×××¦××ª ××ª×¤×¨×× ×× ××©××.",
+                                    "children": []
+                                  }
+                                ]
+                              },
+                              {
+                                "id": "info_grp_no",
+                                "type": "options",
+                                "parentId": "info_grp_text",
+                                "text": "××, ×ª×××",
+                                "children": [
+                                  {
+                                    "id": "info_grp_no_end",
+                                    "type": "end",
+                                    "parentId": "info_grp_no",
+                                    "text": "××¡××¨ ××××¨! ××× × ××× ð§",
+                                    "children": []
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "id": "info_contraindications",
+                        "type": "options",
+                        "parentId": "info_menu",
+                        "text": "××ª×××××ª × ×× / ××× ×× ××ª×××?",
+                        "children": [
+                          {
+                            "id": "info_contra_text",
+                            "type": "message",
+                            "parentId": "info_contraindications",
+                            "text": "×××××¥ ××××× ×¢ ××××¢× ××¡×× × ×××¦××× ×××××:\n\nâ ×××××ª ×× ×× ××××× ××ª\nâ ×××¥ ×× ×××× ×©××× × ××××¤×\nâ ××¨×××\nâ ×ª×¡××× ×ª ×¨××× ×\nâ ×¤×¦×¢×× ×¤×ª×××× ×××××¨× ××××××\n\n×× ××××/×? ××¤×©×¨ ×××ª×× ×× × ×××, ×× ×××ª×§×©×¨ ×-08-9310715.",
+                            "children": [
+                              {
+                                "id": "contra_register",
+                                "type": "options",
+                                "parentId": "info_contra_text",
+                                "text": "×××¨×©×× ××× ×××ª",
+                                "children": [
+                                  {
+                                    "id": "contra_reg_msg",
+                                    "type": "message",
+                                    "parentId": "contra_register",
+                                    "text": "××¢×××! ×××× ×¡×× ×¡×× × / ××××× ××× ××ª×××× ××?",
+                                    "children": []
+                                  }
+                                ]
+                              },
+                              {
+                                "id": "contra_medical",
+                                "type": "options",
+                                "parentId": "info_contra_text",
+                                "text": "××©×××ª ××ª××× ×¨×¤××××ª",
+                                "children": [
+                                  {
+                                    "id": "contra_med_msg",
+                                    "type": "message",
+                                    "parentId": "contra_medical",
+                                    "text": "×××¨××××ª ×©×× ××× ××©××× ×× ×. ××¢×××¨ ×××ª× ××× ×©××××ª ×§×¦×¨××ª.\n\n××× ××© ×× ××××ª ×× ×××××× ×ª ×× ××¢×× ×××××ª ×× ××××× ×ª?",
+                                    "children": [
+                                      {
+                                        "id": "med_heart_no",
+                                        "type": "options",
+                                        "parentId": "contra_med_msg",
+                                        "text": "××",
+                                        "children": [
+                                          {
+                                            "id": "med_bp_q",
+                                            "type": "message",
+                                            "parentId": "med_heart_no",
+                                            "text": "××× ×××¥ ××× ×©×× ×××× ××× ××××× ××××¤××?",
+                                            "children": [
+                                              {
+                                                "id": "med_bp_no",
+                                                "type": "options",
+                                                "parentId": "med_bp_q",
+                                                "text": "××",
+                                                "children": [
+                                                  {
+                                                    "id": "med_preg_q",
+                                                    "type": "message",
+                                                    "parentId": "med_bp_no",
+                                                    "text": "××× ××ª ×××¨×××?",
+                                                    "children": [
+                                                      {
+                                                        "id": "med_preg_no",
+                                                        "type": "options",
+                                                        "parentId": "med_preg_q",
+                                                        "text": "××",
+                                                        "children": [
+                                                          {
+                                                            "id": "med_raynaud_q",
+                                                            "type": "message",
+                                                            "parentId": "med_preg_no",
+                                                            "text": "××× ××© ×× ×ª×¡××× ×ª ×¨××× ×?",
+                                                            "children": [
+                                                              {
+                                                                "id": "med_r_no",
+                                                                "type": "options",
+                                                                "parentId": "med_raynaud_q",
+                                                                "text": "××",
+                                                                "children": [
+                                                                  {
+                                                                    "id": "med_wounds_q",
+                                                                    "type": "message",
+                                                                    "parentId": "med_r_no",
+                                                                    "text": "××× ××© ×¤×¦×¢×× ×¤×ª×××× ×××××¨× ××××××?",
+                                                                    "children": [
+                                                                      {
+                                                                        "id": "med_w_no",
+                                                                        "type": "options",
+                                                                        "parentId": "med_wounds_q",
+                                                                        "text": "××",
+                                                                        "children": [
+                                                                          {
+                                                                            "id": "med_all_clear",
+                                                                            "type": "message",
+                                                                            "parentId": "med_w_no",
+                                                                            "text": "× ×©××¢ ×©××× ×× ××¢× ×¨×¤××××ª ××××××ª, ×× ×× ×× ×××××£ ×××¢××¥ ×¨×¤××× ×××©× â\n××¤×©×¨ ××××©×× ×××¨×©×× ××¡×× ×. ×××××¨ ×¡×× ×¡×× ×?",
+                                                                            "children": [
+                                                                              {
+                                                                                "id": "med_clear_ind",
+                                                                                "type": "options",
+                                                                                "parentId": "med_all_clear",
+                                                                                "text": "×¡×× ×ª ××××××",
+                                                                                "children": []
+                                                                              },
+                                                                              {
+                                                                                "id": "med_clear_cpl",
+                                                                                "type": "options",
+                                                                                "parentId": "med_all_clear",
+                                                                                "text": "×¡×× ×ª ×××××ª",
+                                                                                "children": []
+                                                                              },
+                                                                              {
+                                                                                "id": "med_clear_per",
+                                                                                "type": "options",
+                                                                                "parentId": "med_all_clear",
+                                                                                "text": "×¡×× × ×××©××ª",
+                                                                                "children": []
+                                                                              },
+                                                                              {
+                                                                                "id": "med_clear_grp",
+                                                                                "type": "options",
+                                                                                "parentId": "med_all_clear",
+                                                                                "text": "×¡×× ×ª ×§×××¦××ª",
+                                                                                "children": []
+                                                                              }
+                                                                            ]
+                                                                          }
+                                                                        ]
+                                                                      },
+                                                                      {
+                                                                        "id": "med_w_yes",
+                                                                        "type": "options",
+                                                                        "parentId": "med_wounds_q",
+                                                                        "text": "××",
+                                                                        "children": [
+                                                                          {
+                                                                            "id": "med_w_yes_msg",
+                                                                            "type": "message",
+                                                                            "parentId": "med_w_yes",
+                                                                            "text": "×××× ×××¦× ×©×××××ª, × ××××¥ ×××ª×××¢×¥ ×××ª× × ×××¤×× ××ª ××¤× × ×××¢×, ××××× ×× ×¢× ×¨××¤×/×.\n××¤×©×¨ ×××©×××¨ ×©× ××××¤×× ××××¨×× ×××¡×× ×××××¨ ××××?\n\nâ¢ ×©× ×××\nâ¢ ×××¤××",
+                                                                            "children": [
+                                                                              {
+                                                                                "id": "med_w_yes_end",
+                                                                                "type": "end",
+                                                                                "parentId": "med_w_yes_msg",
+                                                                                "text": "×ª×××! ×§×××× ×. ×××¨×× ×××¡×× ×××××¨ ×××× ×××§×× ð",
+                                                                                "children": []
+                                                                              }
+                                                                            ]
+                                                                          }
+                                                                        ]
+                                                                      }
+                                                                    ]
+                                                                  }
+                                                                ]
+                                                              },
+                                                              {
+                                                                "id": "med_r_yes",
+                                                                "type": "options",
+                                                                "parentId": "med_raynaud_q",
+                                                                "text": "××",
+                                                                "children": [
+                                                                  {
+                                                                    "id": "med_r_yes_msg",
+                                                                    "type": "message",
+                                                                    "parentId": "med_r_yes",
+                                                                    "text": "×××× ×××¦× ×©×××××ª, × ××××¥ ×××ª×××¢×¥ ×××ª× × ×××¤×× ××ª ××¤× × ×××¢×.\n××¤×©×¨ ×××©×××¨ ×©× ××××¤××?\n\nâ¢ ×©× ×××\nâ¢ ×××¤××",
+                                                                    "children": [
+                                                                      {
+                                                                        "id": "med_r_yes_end",
+                                                                        "type": "end",
+                                                                        "parentId": "med_r_yes_msg",
+                                                                        "text": "×ª×××! ×××¨×× ×××¡×× ×××××¨ ×××× ×××§×× ð",
+                                                                        "children": []
+                                                                      }
+                                                                    ]
+                                                                  }
+                                                                ]
+                                                              }
+                                                            ]
+                                                          }
+                                                        ]
+                                                      },
+                                                      {
+                                                        "id": "med_preg_yes",
+                                                        "type": "options",
+                                                        "parentId": "med_preg_q",
+                                                        "text": "××",
+                                                        "children": [
+                                                          {
+                                                            "id": "med_preg_yes_msg",
+                                                            "type": "message",
+                                                            "parentId": "med_preg_yes",
+                                                            "text": "×××× ×××¦× ×©×××××ª, × ××××¥ ×××ª×××¢×¥ ×¢× ×¨××¤×/× ××¤× × ×××¢×.\n××¤×©×¨ ×××©×××¨ ×©× ××××¤××?\n\nâ¢ ×©× ×××\nâ¢ ×××¤××",
+                                                            "children": [
+                                                              {
+                                                                "id": "med_preg_yes_end",
+                                                                "type": "end",
+                                                                "parentId": "med_preg_yes_msg",
+                                                                "text": "×ª×××! ×××¨×× ×××¡×× ×××××¨ ×××× ×××§×× ð",
+                                                                "children": []
+                                                              }
+                                                            ]
+                                                          }
+                                                        ]
+                                                      }
+                                                    ]
+                                                  }
+                                                ]
+                                              },
+                                              {
+                                                "id": "med_bp_yes",
+                                                "type": "options",
+                                                "parentId": "med_bp_q",
+                                                "text": "××",
+                                                "children": [
+                                                  {
+                                                    "id": "med_bp_yes_msg",
+                                                    "type": "message",
+                                                    "parentId": "med_bp_yes",
+                                                    "text": "×××× ×××¦× ×©×××××ª, × ××××¥ ×××ª×××¢×¥ ×¢× ×¨××¤×/× ××¤× × ×××¢×.\n××¤×©×¨ ×××©×××¨ ×©× ××××¤××?\n\nâ¢ ×©× ×××\nâ¢ ×××¤××",
+                                                    "children": [
+                                                      {
+                                                        "id": "med_bp_yes_end",
+                                                        "type": "end",
+                                                        "parentId": "med_bp_yes_msg",
+                                                        "text": "×ª×××! ×××¨×× ×××¡×× ×××××¨ ×××× ×××§×× ð",
+                                                        "children": []
+                                                      }
+                                                    ]
+                                                  }
+                                                ]
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      },
+                                      {
+                                        "id": "med_heart_yes",
+                                        "type": "options",
+                                        "parentId": "contra_med_msg",
+                                        "text": "××",
+                                        "children": [
+                                          {
+                                            "id": "med_heart_yes_msg",
+                                            "type": "message",
+                                            "parentId": "med_heart_yes",
+                                            "text": "×××× ×××¦× ×©×××××ª, × ××××¥ ×××× ×××ª×××¢×¥ ×¢× ×¨××¤×/× ××¤× × ×××¢×.\n××¤×©×¨ ×××©×××¨ ×©× ××××¤×× ××××¨×× ×××¡×× ×××××¨ ××××?\n\nâ¢ ×©× ×××\nâ¢ ×××¤××",
+                                            "children": [
+                                              {
+                                                "id": "med_heart_yes_end",
+                                                "type": "end",
+                                                "parentId": "med_heart_yes_msg",
+                                                "text": "×ª×××! ×××¨×× ×××¡×× ×××××¨ ×××× ×××§×× ð",
+                                                "children": []
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "opt_medical",
+                "type": "options",
+                "parentId": "icing_welcome",
+                "text": "××××§×ª ××ª××× ×¨×¤××××ª",
+                "children": [
+                  {
+                    "id": "medical_intro",
+                    "type": "message",
+                    "parentId": "opt_medical",
+                    "text": "×××¨××××ª ×©×× ××× ××©××× ×× ×. ××¢×××¨ ×××ª× ××× ×©××××ª ×§×¦×¨××ª, ×××¡××£ × ××××¨ ××××¦× ×× ××¤×©×¨ ×××××¢ ××¡×× ×, ×× ×©×¦×¨×× ×©××× ×¢× ×××¨××.\n\n××× ××© ×× ××××ª ×× ×××××× ×ª ×× ××¢×× ×××××ª ×× ××××× ×ª?",
+                    "children": [
+                      {
+                        "id": "main_med_no1",
+                        "type": "options",
+                        "parentId": "medical_intro",
+                        "text": "××",
+                        "children": [
+                          {
+                            "id": "main_med_q2",
+                            "type": "message",
+                            "parentId": "main_med_no1",
+                            "text": "××× ×××¥ ××× ×©×× ×××× ××× ××××× ××××¤××?",
+                            "children": [
+                              {
+                                "id": "main_med_no2",
+                                "type": "options",
+                                "parentId": "main_med_q2",
+                                "text": "××",
+                                "children": [
+                                  {
+                                    "id": "main_med_q3",
+                                    "type": "message",
+                                    "parentId": "main_med_no2",
+                                    "text": "××× ××ª ×××¨×××?",
+                                    "children": [
+                                      {
+                                        "id": "main_med_no3",
+                                        "type": "options",
+                                        "parentId": "main_med_q3",
+                                        "text": "××",
+                                        "children": [
+                                          {
+                                            "id": "main_med_q4",
+                                            "type": "message",
+                                            "parentId": "main_med_no3",
+                                            "text": "××× ××© ×× ×ª×¡××× ×ª ×¨××× ×?",
+                                            "children": [
+                                              {
+                                                "id": "main_med_no4",
+                                                "type": "options",
+                                                "parentId": "main_med_q4",
+                                                "text": "××",
+                                                "children": [
+                                                  {
+                                                    "id": "main_med_q5",
+                                                    "type": "message",
+                                                    "parentId": "main_med_no4",
+                                                    "text": "××× ××© ×¤×¦×¢×× ×¤×ª×××× ×××××¨× ××××××?",
+                                                    "children": [
+                                                      {
+                                                        "id": "main_med_no5",
+                                                        "type": "options",
+                                                        "parentId": "main_med_q5",
+                                                        "text": "××",
+                                                        "children": [
+                                                          {
+                                                            "id": "main_med_clear",
+                                                            "type": "message",
+                                                            "parentId": "main_med_no5",
+                                                            "text": "× ×©××¢ ×©××× ×× ××¢× ×¨×¤××××ª ××××××ª, ×× ×× ×× ×××××£ ×××¢××¥ ×¨×¤××× ×××©× â\n××¤×©×¨ ××××©×× ×××¨×©××. ×××××¨ ×¡×× ×¡×× ×?",
+                                                            "children": [
+                                                              {
+                                                                "id": "main_med_c_ind",
+                                                                "type": "options",
+                                                                "parentId": "main_med_clear",
+                                                                "text": "×¡×× ×ª ××××××",
+                                                                "children": []
+                                                              },
+                                                              {
+                                                                "id": "main_med_c_cpl",
+                                                                "type": "options",
+                                                                "parentId": "main_med_clear",
+                                                                "text": "×¡×× ×ª ×××××ª",
+                                                                "children": []
+                                                              },
+                                                              {
+                                                                "id": "main_med_c_per",
+                                                                "type": "options",
+                                                                "parentId": "main_med_clear",
+                                                                "text": "×¡×× × ×××©××ª",
+                                                                "children": []
+                                                              },
+                                                              {
+                                                                "id": "main_med_c_grp",
+                                                                "type": "options",
+                                                                "parentId": "main_med_clear",
+                                                                "text": "×¡×× ×ª ×§×××¦××ª",
+                                                                "children": []
+                                                              }
+                                                            ]
+                                                          }
+                                                        ]
+                                                      },
+                                                      {
+                                                        "id": "main_med_yes5",
+                                                        "type": "options",
+                                                        "parentId": "main_med_q5",
+                                                        "text": "××",
+                                                        "children": [
+                                                          {
+                                                            "id": "main_med_y5_msg",
+                                                            "type": "message",
+                                                            "parentId": "main_med_yes5",
+                                                            "text": "×××× ×××¦× ×©×××××ª, × ××××¥ ×××ª×××¢×¥ ×××ª× × ××¤× × ×××¢×.\n××©××¨/× ×©× ××××¤××:\n\nâ¢ ×©× ×××\nâ¢ ×××¤××",
+                                                            "children": [
+                                                              {
+                                                                "id": "main_med_y5_end",
+                                                                "type": "end",
+                                                                "parentId": "main_med_y5_msg",
+                                                                "text": "×ª×××! ×××¨×× ×××¡×× ×××××¨ ×××× ×××§×× ð",
+                                                                "children": []
+                                                              }
+                                                            ]
+                                                          }
+                                                        ]
+                                                      }
+                                                    ]
+                                                  }
+                                                ]
+                                              },
+                                              {
+                                                "id": "main_med_yes4",
+                                                "type": "options",
+                                                "parentId": "main_med_q4",
+                                                "text": "××",
+                                                "children": [
+                                                  {
+                                                    "id": "main_med_y4_msg",
+                                                    "type": "message",
+                                                    "parentId": "main_med_yes4",
+                                                    "text": "× ××××¥ ×××ª×××¢×¥ ×××ª× × ××¤× × ×××¢×.\n××©××¨/× ×©× ××××¤××:\n\nâ¢ ×©× ×××\nâ¢ ×××¤××",
+                                                    "children": [
+                                                      {
+                                                        "id": "main_med_y4_end",
+                                                        "type": "end",
+                                                        "parentId": "main_med_y4_msg",
+                                                        "text": "×ª×××! ×××¨×× ×××¡×× ×××××¨ ×××× ×××§×× ð",
+                                                        "children": []
+                                                      }
+                                                    ]
+                                                  }
+                                                ]
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      },
+                                      {
+                                        "id": "main_med_yes3",
+                                        "type": "options",
+                                        "parentId": "main_med_q3",
+                                        "text": "××",
+                                        "children": [
+                                          {
+                                            "id": "main_med_y3_msg",
+                                            "type": "message",
+                                            "parentId": "main_med_yes3",
+                                            "text": "× ××××¥ ×××ª×××¢×¥ ×¢× ×¨××¤×/× ××¤× × ×××¢×.\n××©××¨/× ×©× ××××¤××:\n\nâ¢ ×©× ×××\nâ¢ ×××¤××",
+                                            "children": [
+                                              {
+                                                "id": "main_med_y3_end",
+                                                "type": "end",
+                                                "parentId": "main_med_y3_msg",
+                                                "text": "×ª×××! ×××¨×× ×××¡×× ×××××¨ ×××× ×××§×× ð",
+                                                "children": []
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                ]
+                              },
+                              {
+                                "id": "main_med_yes2",
+                                "type": "options",
+                                "parentId": "main_med_q2",
+                                "text": "××",
+                                "children": [
+                                  {
+                                    "id": "main_med_y2_msg",
+                                    "type": "message",
+                                    "parentId": "main_med_yes2",
+                                    "text": "× ××××¥ ×××ª×××¢×¥ ×¢× ×¨××¤×/× ××¤× × ×××¢×.\n××©××¨/× ×©× ××××¤××:\n\nâ¢ ×©× ×××\nâ¢ ×××¤××",
+                                    "children": [
+                                      {
+                                        "id": "main_med_y2_end",
+                                        "type": "end",
+                                        "parentId": "main_med_y2_msg",
+                                        "text": "×ª×××! ×××¨×× ×××¡×× ×××××¨ ×××× ×××§×× ð",
+                                        "children": []
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "id": "main_med_yes1",
+                        "type": "options",
+                        "parentId": "medical_intro",
+                        "text": "××",
+                        "children": [
+                          {
+                            "id": "main_med_y1_msg",
+                            "type": "message",
+                            "parentId": "main_med_yes1",
+                            "text": "×××× ×××¦× ×©×××××ª, × ××××¥ ×××× ×××ª×××¢×¥ ×¢× ×¨××¤×/× ××¤× × ×××¢×.\n××©××¨/× ×©× ××××¤×× ××××¨×× ×××¡×× ×××××¨ ××××:\n\nâ¢ ×©× ×××\nâ¢ ×××¤××",
+                            "children": [
+                              {
+                                "id": "main_med_y1_end",
+                                "type": "end",
+                                "parentId": "main_med_y1_msg",
+                                "text": "×ª×××! ×××¨×× ×××¡×× ×××××¨ ×××× ×××§×× ð",
+                                "children": []
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "opt_agent",
+                "type": "options",
+                "parentId": "icing_welcome",
+                "text": "×××¨× ×××ª× â × ×¦××",
+                "children": [
+                  {
+                    "id": "agent_choice",
+                    "type": "message",
+                    "parentId": "opt_agent",
+                    "text": "××× ×ª×, ××ª/× ××¢×××£/× ××××¨ ×¢× × ×¦××.\n×× ×××¨× ×× ××× ××?",
+                    "children": [
+                      {
+                        "id": "agent_phone",
+                        "type": "options",
+                        "parentId": "agent_choice",
+                        "text": "×©××× ×××¤×× ××ª",
+                        "children": [
+                          {
+                            "id": "agent_phone_q",
+                            "type": "message",
+                            "parentId": "agent_phone",
+                            "text": "×× ××©× ×©×× ××× ××¡×¤×¨ ××××¤×× ××××¨×?",
+                            "children": [
+                              {
+                                "id": "agent_phone_end",
+                                "type": "end",
+                                "parentId": "agent_phone_q",
+                                "text": "×ª×××! × ××××¨ ×××× ×××§×× ×××¤×©×¨× ××©×¢××ª ××¤×¢××××ª ð\nICING â 08-9310715",
+                                "children": []
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "id": "agent_whatsapp",
+                        "type": "options",
+                        "parentId": "agent_choice",
+                        "text": "××××¢×ª ×××××¡××¤",
+                        "children": [
+                          {
+                            "id": "agent_wa_msg",
+                            "type": "agent",
+                            "parentId": "agent_whatsapp",
+                            "text": "××ª××/× ×× × ××§×¦×¨× ××× × ××× ××¢×××¨, ×× ×¦×× ×××©×× ×××× ð¬",
+                            "children": []
+                          }
+                        ]
+                      },
+                      {
+                        "id": "agent_email",
+                        "type": "options",
+                        "parentId": "agent_choice",
+                        "text": "××××",
+                        "children": [
+                          {
+                            "id": "agent_email_q",
+                            "type": "message",
+                            "parentId": "agent_email",
+                            "text": "×× ××ª×××ª ××××× ×××× ××©××× ×¤××¨××?",
+                            "children": [
+                              {
+                                "id": "agent_email_end",
+                                "type": "end",
+                                "parentId": "agent_email_q",
+                                "text": "×ª×××! × ×©×× ×××× ×××× ×¢× ×× ××¤×¨××× ××§×¨×× ð§\nICING â info@icing.co.il",
+                                "children": []
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "cwi_pool",
+        "type": "options",
+        "parentId": "root",
+        "text": "×××¨××× ××××¤××××ª ð",
+        "children": [
+          {
+            "id": "pool_msg",
+            "type": "agent",
+            "parentId": "cwi_pool",
+            "text": "×ª××× ×©×¤× ××ª ×××¨××× ××××¤××××ª ×©× CWI! ð\n× ×¦×× ×©×× × ××¦××¨ ×××ª× ×§×©×¨ ×××§×× ××× ×©×××, ××¨×©×× ×× ××××¢ × ××¡×£.\n\n× ××ª× ×× ×××¦××¨ ×§×©×¨ ××©××¨: 08-9310715",
+            "children": []
+          }
+        ]
+      }
+    ]
+  }
+}
