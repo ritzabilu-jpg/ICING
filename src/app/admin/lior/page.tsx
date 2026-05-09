@@ -108,6 +108,8 @@ function AdminContent() {
 
   // ── Immersion slots ──
   const [slots, setSlots]           = useState<ImmersionSlot[]>([]);
+  const [summaryEditRow, setSummaryEditRow] = useState<Record<string, string>>({});
+  const [summaryLoading, setSummaryLoading] = useState<Record<string, boolean>>({});
   const [loadingS, setLoadingS]     = useState(false);
   const [errorS, setErrorS]         = useState('');
   const [fromDate, setFromDate]     = useState('');
@@ -907,7 +909,109 @@ function AdminContent() {
               <p>אין מועדים. הוסף מועד ראשון למעלה.</p>
             </div>
           ) : (
-            slots.map(s => (
+            <>
+            {/* ── Summary table ── */}
+            {(() => {
+              const groups: Record<string, { date: string; instructorId: string | null; instructorName: string; fromTime: string; toTime: string; count: number }> = {};
+              for (const s of slots) {
+                const k = `${s.slot_date}__${s.instructor_id ?? 'none'}`;
+                if (!groups[k]) groups[k] = { date: s.slot_date, instructorId: s.instructor_id ?? null, instructorName: s.instructor_name ?? 'ללא מדריך', fromTime: s.slot_time.slice(0,5), toTime: s.slot_time.slice(0,5), count: 0 };
+                const t = s.slot_time.slice(0,5);
+                if (t < groups[k].fromTime) groups[k].fromTime = t;
+                if (t > groups[k].toTime) groups[k].toTime = t;
+                groups[k].count++;
+              }
+              const rows = Object.entries(groups).sort(([a],[b]) => a.localeCompare(b));
+
+              async function saveSummaryRow(rowKey: string, date: string, oldInstructorId: string | null) {
+                const newId = summaryEditRow[rowKey];
+                if (newId === undefined) return;
+                setSummaryLoading(p => ({ ...p, [rowKey]: true }));
+                await fetch(`/api/admin/immersion-slots?key=${encodeURIComponent(key)}`, {
+                  method: 'PATCH',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ action: 'update_instructor', slot_date: date, old_instructor_id: oldInstructorId, new_instructor_id: newId || null }),
+                });
+                setSummaryLoading(p => ({ ...p, [rowKey]: false }));
+                setSummaryEditRow(p => { const n = { ...p }; delete n[rowKey]; return n; });
+                loadSlots();
+              }
+
+              return (
+                <div className="bg-white rounded-3xl border-2 border-ice-100 shadow-sm overflow-hidden mb-4">
+                  <div className="px-6 py-4 border-b border-slate-100 bg-ice-50">
+                    <h2 className="text-base font-black text-navy-900">📋 סיכום מועדים לפי תאריך ומדריך</h2>
+                  </div>
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-sm" dir="rtl">
+                      <thead>
+                        <tr className="border-b border-slate-100 bg-slate-50 text-slate-600 font-semibold">
+                          <th className="text-right px-4 py-3">תאריך</th>
+                          <th className="text-right px-4 py-3">מדריך</th>
+                          <th className="text-right px-4 py-3">משעה</th>
+                          <th className="text-right px-4 py-3">עד שעה</th>
+                          <th className="text-right px-4 py-3">מועדים</th>
+                          <th className="text-right px-4 py-3">עריכה</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {rows.map(([rowKey, g]) => {
+                          const isEditing = rowKey in summaryEditRow;
+                          const isSaving = summaryLoading[rowKey];
+                          return (
+                            <tr key={rowKey} className="border-b border-slate-50 hover:bg-slate-50">
+                              <td className="px-4 py-3 font-semibold text-navy-900">
+                                {new Date(g.date + 'T00:00:00').toLocaleDateString('he-IL', { weekday: 'long', day: 'numeric', month: 'long' })}
+                              </td>
+                              <td className="px-4 py-3">
+                                {isEditing ? (
+                                  <select
+                                    value={summaryEditRow[rowKey] ?? g.instructorId ?? ''}
+                                    onChange={e => setSummaryEditRow(p => ({ ...p, [rowKey]: e.target.value }))}
+                                    className="border border-slate-300 rounded-lg px-2 py-1 text-sm focus:outline-none focus:border-ice-500"
+                                  >
+                                    <option value="">ללא מדריך</option>
+                                    {dbInstructors.map(i => <option key={i.id} value={i.id}>{i.name}</option>)}
+                                  </select>
+                                ) : (
+                                  <span className="text-slate-700">{g.instructorName}</span>
+                                )}
+                              </td>
+                              <td className="px-4 py-3 font-mono text-slate-600">{g.fromTime}</td>
+                              <td className="px-4 py-3 font-mono text-slate-600">{g.toTime}</td>
+                              <td className="px-4 py-3 text-slate-500">{g.count}</td>
+                              <td className="px-4 py-3">
+                                {isEditing ? (
+                                  <div className="flex gap-2">
+                                    <button
+                                      onClick={() => saveSummaryRow(rowKey, g.date, g.instructorId)}
+                                      disabled={isSaving}
+                                      className="text-xs font-bold px-3 py-1 bg-ice-500 text-white rounded-lg hover:bg-ice-600 disabled:opacity-50"
+                                    >{isSaving ? '...' : 'שמור'}</button>
+                                    <button
+                                      onClick={() => setSummaryEditRow(p => { const n = { ...p }; delete n[rowKey]; return n; })}
+                                      className="text-xs font-semibold px-3 py-1 border border-slate-300 rounded-lg hover:bg-slate-100"
+                                    >ביטול</button>
+                                  </div>
+                                ) : (
+                                  <button
+                                    onClick={() => setSummaryEditRow(p => ({ ...p, [rowKey]: g.instructorId ?? '' }))}
+                                    className="text-xs font-semibold px-3 py-1 border border-ice-300 text-ice-700 rounded-lg hover:bg-ice-50"
+                                  >ערוך</button>
+                                )}
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              );
+            })()}
+
+            {/* ── Individual slots ── */}
+            {slots.map(s => (
               <div key={s.id} className="bg-white rounded-3xl border-2 border-ice-100 shadow-sm overflow-hidden">
                 <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-ice-50">
                   <div>
@@ -1015,7 +1119,8 @@ function AdminContent() {
                   </div>
                 )}
               </div>
-            ))
+            ))}
+            </>
           )}
         </div>
       )}

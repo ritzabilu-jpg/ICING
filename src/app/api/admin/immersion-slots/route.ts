@@ -199,11 +199,28 @@ export async function PATCH(req: NextRequest) {
   if (!checkKey(key)) return NextResponse.json({ error: 'לא מורשה' }, { status: 401 });
 
   const body = await req.json() as {
+    action?: string;
+    slot_date?: string;
+    old_instructor_id?: string | null;
+    new_instructor_id?: string | null;
     resolved: { existingId: string; keepExisting: boolean; newSlot?: Record<string, unknown> }[];
     clean: Record<string, unknown>[];
   };
 
   const supabase = createAdminClient();
+
+  // update_instructor: change instructor for all slots on a given date
+  if (body.action === 'update_instructor') {
+    const { slot_date, old_instructor_id, new_instructor_id } = body;
+    if (!slot_date) return NextResponse.json({ error: 'חסר תאריך' }, { status: 400 });
+    let q = supabase.from('immersion_slots').update({ instructor_id: new_instructor_id ?? null }).eq('slot_date', slot_date);
+    if (old_instructor_id) q = (q as any).eq('instructor_id', old_instructor_id);
+    else q = (q as any).is('instructor_id', null);
+    const { error } = await q;
+    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ success: true });
+  }
+
   let count = 0;
 
   // Process resolved conflicts
