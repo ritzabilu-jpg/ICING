@@ -209,15 +209,38 @@ export async function PATCH(req: NextRequest) {
 
   const supabase = createAdminClient();
 
-  // update_instructor: change instructor for all slots on a given date
-  if (body.action === 'update_instructor') {
+  // update_row: update instructor + optionally trim time range for all slots on a date
+  if (body.action === 'update_instructor' || body.action === 'update_row') {
     const { slot_date, old_instructor_id, new_instructor_id } = body;
+    const new_from = (body as any).new_from_time as string | undefined;
+    const new_to   = (body as any).new_to_time   as string | undefined;
     if (!slot_date) return NextResponse.json({ error: 'חסר תאריך' }, { status: 400 });
+
+    // 1. Update instructor
     let q = supabase.from('immersion_slots').update({ instructor_id: new_instructor_id ?? null }).eq('slot_date', slot_date);
     if (old_instructor_id) q = (q as any).eq('instructor_id', old_instructor_id);
     else q = (q as any).is('instructor_id', null);
-    const { error } = await q;
-    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    const { error: e1 } = await q;
+    if (e1) return NextResponse.json({ error: e1.message }, { status: 500 });
+
+    // 2. Trim slots before new from_time
+    if (new_from) {
+      const fromFull = new_from.length === 5 ? new_from + ':00' : new_from;
+      let dq = supabase.from('immersion_slots').delete().eq('slot_date', slot_date).lt('slot_time', fromFull);
+      if (new_instructor_id) dq = (dq as any).eq('instructor_id', new_instructor_id);
+      else dq = (dq as any).is('instructor_id', null);
+      await dq;
+    }
+
+    // 3. Trim slots after new to_time
+    if (new_to) {
+      const toFull = new_to.length === 5 ? new_to + ':00' : new_to;
+      let dq = supabase.from('immersion_slots').delete().eq('slot_date', slot_date).gt('slot_time', toFull);
+      if (new_instructor_id) dq = (dq as any).eq('instructor_id', new_instructor_id);
+      else dq = (dq as any).is('instructor_id', null);
+      await dq;
+    }
+
     return NextResponse.json({ success: true });
   }
 

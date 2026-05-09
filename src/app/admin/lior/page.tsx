@@ -108,7 +108,7 @@ function AdminContent() {
 
   // ── Immersion slots ──
   const [slots, setSlots]           = useState<ImmersionSlot[]>([]);
-  const [summaryEditRow, setSummaryEditRow] = useState<Record<string, string>>({});
+  const [summaryEditRow, setSummaryEditRow] = useState<Record<string, { instructorId: string; fromTime: string; toTime: string }>>({});
   const [summaryLoading, setSummaryLoading] = useState<Record<string, boolean>>({});
   const [loadingS, setLoadingS]     = useState(false);
   const [errorS, setErrorS]         = useState('');
@@ -923,14 +923,22 @@ function AdminContent() {
               }
               const rows = Object.entries(groups).sort(([a],[b]) => a.localeCompare(b));
 
-              async function saveSummaryRow(rowKey: string, date: string, oldInstructorId: string | null) {
-                const newId = summaryEditRow[rowKey];
-                if (newId === undefined) return;
+              async function saveSummaryRow(rowKey: string, date: string, oldInstructorId: string | null, origFrom: string, origTo: string) {
+                const edit = summaryEditRow[rowKey];
+                if (!edit) return;
                 setSummaryLoading(p => ({ ...p, [rowKey]: true }));
+                const payload: Record<string, unknown> = {
+                  action: 'update_row',
+                  slot_date: date,
+                  old_instructor_id: oldInstructorId,
+                  new_instructor_id: edit.instructorId || null,
+                };
+                if (edit.fromTime !== origFrom) payload.new_from_time = edit.fromTime;
+                if (edit.toTime   !== origTo)   payload.new_to_time   = edit.toTime;
                 await fetch(`/api/admin/immersion-slots?key=${encodeURIComponent(key)}`, {
                   method: 'PATCH',
                   headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({ action: 'update_instructor', slot_date: date, old_instructor_id: oldInstructorId, new_instructor_id: newId || null }),
+                  body: JSON.stringify(payload),
                 });
                 setSummaryLoading(p => ({ ...p, [rowKey]: false }));
                 setSummaryEditRow(p => { const n = { ...p }; delete n[rowKey]; return n; });
@@ -958,6 +966,7 @@ function AdminContent() {
                         {rows.map(([rowKey, g]) => {
                           const isEditing = rowKey in summaryEditRow;
                           const isSaving = summaryLoading[rowKey];
+                          const edit = summaryEditRow[rowKey];
                           return (
                             <tr key={rowKey} className="border-b border-slate-50 hover:bg-slate-50">
                               <td className="px-4 py-3 font-semibold text-navy-900">
@@ -966,8 +975,8 @@ function AdminContent() {
                               <td className="px-4 py-3">
                                 {isEditing ? (
                                   <select
-                                    value={summaryEditRow[rowKey] ?? g.instructorId ?? ''}
-                                    onChange={e => setSummaryEditRow(p => ({ ...p, [rowKey]: e.target.value }))}
+                                    value={edit?.instructorId ?? g.instructorId ?? ''}
+                                    onChange={e => setSummaryEditRow(p => ({ ...p, [rowKey]: { ...p[rowKey], instructorId: e.target.value } }))}
                                     className="border border-slate-300 rounded-lg px-2 py-1 text-sm focus:outline-none focus:border-ice-500"
                                   >
                                     <option value="">ללא מדריך</option>
@@ -977,14 +986,26 @@ function AdminContent() {
                                   <span className="text-slate-700">{g.instructorName}</span>
                                 )}
                               </td>
-                              <td className="px-4 py-3 font-mono text-slate-600">{g.fromTime}</td>
-                              <td className="px-4 py-3 font-mono text-slate-600">{g.toTime}</td>
+                              <td className="px-4 py-3 font-mono text-slate-600">
+                                {isEditing ? (
+                                  <input type="time" value={edit?.fromTime ?? g.fromTime}
+                                    onChange={e => setSummaryEditRow(p => ({ ...p, [rowKey]: { ...p[rowKey], fromTime: e.target.value } }))}
+                                    className="border border-slate-300 rounded-lg px-2 py-1 text-sm focus:outline-none focus:border-ice-500 w-28" />
+                                ) : g.fromTime}
+                              </td>
+                              <td className="px-4 py-3 font-mono text-slate-600">
+                                {isEditing ? (
+                                  <input type="time" value={edit?.toTime ?? g.toTime}
+                                    onChange={e => setSummaryEditRow(p => ({ ...p, [rowKey]: { ...p[rowKey], toTime: e.target.value } }))}
+                                    className="border border-slate-300 rounded-lg px-2 py-1 text-sm focus:outline-none focus:border-ice-500 w-28" />
+                                ) : g.toTime}
+                              </td>
                               <td className="px-4 py-3 text-slate-500">{g.count}</td>
                               <td className="px-4 py-3">
                                 {isEditing ? (
                                   <div className="flex gap-2">
                                     <button
-                                      onClick={() => saveSummaryRow(rowKey, g.date, g.instructorId)}
+                                      onClick={() => saveSummaryRow(rowKey, g.date, g.instructorId, g.fromTime, g.toTime)}
                                       disabled={isSaving}
                                       className="text-xs font-bold px-3 py-1 bg-ice-500 text-white rounded-lg hover:bg-ice-600 disabled:opacity-50"
                                     >{isSaving ? '...' : 'שמור'}</button>
@@ -995,7 +1016,7 @@ function AdminContent() {
                                   </div>
                                 ) : (
                                   <button
-                                    onClick={() => setSummaryEditRow(p => ({ ...p, [rowKey]: g.instructorId ?? '' }))}
+                                    onClick={() => setSummaryEditRow(p => ({ ...p, [rowKey]: { instructorId: g.instructorId ?? '', fromTime: g.fromTime, toTime: g.toTime } }))}
                                     className="text-xs font-semibold px-3 py-1 border border-ice-300 text-ice-700 rounded-lg hover:bg-ice-50"
                                   >ערוך</button>
                                 )}
