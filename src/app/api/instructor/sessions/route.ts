@@ -23,12 +23,13 @@ export async function GET(req: NextRequest) {
     .order('slot_date', { ascending: false })
     .order('slot_time', { ascending: true });
 
-  // Fetch workshops for this instructor
+  // Fetch workshops for this instructor from instructor_workshops table
   const { data: workshops } = await supabase
-    .from('workshops')
+    .from('instructor_workshops')
     .select('*')
-    .eq('instructor_id', instructor.id)
-    .order('date_time', { ascending: false });
+    .eq('instructor_name', instructor.name)
+    .order('workshop_date', { ascending: false })
+    .order('workshop_time', { ascending: true });
 
   // Count immersion bookings per slot
   const { data: slotBookings } = await supabase.from('immersion_bookings').select('slot_id');
@@ -49,18 +50,17 @@ export async function GET(req: NextRequest) {
   }));
 
   const workshopItems = (workshops || []).map(w => {
-    const dt = new Date(w.date_time);
     return {
       id: w.id,
       kind: 'workshop' as const,
-      date: dt.toISOString().split('T')[0],
-      time: dt.toTimeString().slice(0, 5),
+      date: w.workshop_date,
+      time: w.workshop_time?.slice(0, 5),
       location: '',
-      notes: w.description || '',
-      title: w.title,
-      max_participants: w.capacity,
-      participant_count: w.seats_taken || 0,
-      status: (w.status || 'confirmed') as 'confirmed' | 'pending' | 'cancelled',
+      notes: w.notes || '',
+      title: `סדנה ${w.workshop_date}`,
+      max_participants: w.max_participants || 10,
+      participant_count: 0,
+      status: (w.status || 'pending') as 'confirmed' | 'pending' | 'cancelled',
       instructor_role: 'workshop_facilitator' as const,
     };
   });
