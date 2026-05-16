@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
-import Image from 'next/image';
+
 import { useLanguage } from '@/lib/i18n/LanguageContext';
 
 // ── Types ──────────────────────────────────────────────────────────────────
@@ -42,7 +42,6 @@ interface CheckoutState {
 }
 
 const STORAGE_KEY = 'ck_v1';
-const ADMIN_PHONE = '089310715';
 
 const INITIAL_STATE: CheckoutState = {
   step: 1,
@@ -82,7 +81,7 @@ export default function CheckoutPage() {
   const [phoneSubmitting, setPhoneSubmitting] = useState(false);
   const [phoneSubmitted, setPhoneSubmitted] = useState(false);
   const [callbackDeadlineStr, setCallbackDeadlineStr] = useState('');
-  const [bitClicked, setBitClicked] = useState(false);
+
 
   // Auto-advance if stuck at step 2 (OTP/registration removed)
   useEffect(() => {
@@ -284,32 +283,6 @@ export default function CheckoutPage() {
     setLoading(false);
   }
 
-  async function confirmPayment(method: 'credit' | 'bit' | 'paybox' | 'phone') {
-    if (!state.bookingId || !state.sessionToken) return;
-    setLoading(true);
-    setMsg('');
-    try {
-      const res = await fetch('/api/checkout/confirm', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          booking_id: state.bookingId,
-          session_token: state.sessionToken,
-          payment_method: method,
-        }),
-      });
-      const d = await res.json();
-      if (res.ok) {
-        try { localStorage.removeItem(STORAGE_KEY); } catch { /* ignore */ }
-        save({ paymentMethod: method, confirmationCode: d.confirmation_code, step: 6, paymentConfirmed: true });
-      } else {
-        setMsg(d.error ?? t('checkout_error_confirm'));
-      }
-    } catch {
-      setMsg(t('checkout_error_network'));
-    }
-    setLoading(false);
-  }
 
   function computeDeadlineStr(): string {
     const now = new Date();
@@ -318,7 +291,7 @@ export default function CheckoutPage() {
     const isWeekend = day === 5 || day === 6 || (day === 4 && hour >= 12);
     const hebrewDays = ['ראשון', 'שני', 'שלישי', 'רביעי', 'חמישי', 'שישי', 'שבת'];
     if (isWeekend) {
-      const daysToSun = day === 0 ? 7 : (7 - day);
+      const daysToSun = (day as number) === 0 ? 7 : (7 - day);
       const sun = new Date(now);
       sun.setDate(now.getDate() + daysToSun);
       return `ביום ${hebrewDays[0]} ${String(sun.getDate()).padStart(2,'0')}/${String(sun.getMonth()+1).padStart(2,'0')} עד שעה 18:00`;
@@ -363,24 +336,6 @@ export default function CheckoutPage() {
     setPhoneSubmitting(false);
   }
 
-  function goToTranzila() {
-    if (!product || !state.bookingId) return;
-    confirmPayment('credit').then(() => {
-      const supplier = process.env.NEXT_PUBLIC_TRANZILA_SUPPLIER ?? 'icing';
-      const qp = new URLSearchParams({
-        sum: String(product.price * state.participants),
-        currency: '1',
-        lang: 'heb',
-        tranmode: 'A',
-        email: state.email,
-        contact: state.name,
-        pdesc: product.title,
-        success_url_address: `${window.location.origin}/checkout/success?bookingId=${state.bookingId}&paid=true`,
-        fail_url_address: `${window.location.origin}/checkout/failed?bookingId=${state.bookingId}`,
-      });
-      window.location.href = `https://direct.tranzila.com/${supplier}/iframenew.php?${qp}`;
-    });
-  }
 
   const total = product ? product.price * state.participants : 0;
 
@@ -534,7 +489,7 @@ export default function CheckoutPage() {
           )}
           {state.step === 5 && product && (
             <div>
-              <h2 className="text-2xl font-black text-navy-900 mb-1">{stepTitles[5]}</h2>
+              <h2 className="text-2xl font-black text-navy-900 mb-1">השארת פרטים</h2>
 
               {/* Summary bar */}
               <div className="bg-ice-50 border border-ice-200 rounded-xl px-4 py-2 mb-4 flex justify-between items-center">
@@ -544,157 +499,7 @@ export default function CheckoutPage() {
 
               <div className="space-y-3">
 
-                {/* Credit card */}
-                {state.paymentMethod !== 'credit' ? (
-                  <button
-                    onClick={() => save({ paymentMethod: 'credit' })}
-                    className="w-full border-2 border-slate-200 hover:border-slate-400 rounded-2xl p-4 flex items-center justify-between transition-colors"
-                  >
-                    <div>
-                      <div className="font-black text-navy-900">{t('checkout_credit')}</div>
-                      <div className="text-xs text-slate-500">{t('checkout_credit_secured')}</div>
-                    </div>
-                    <span className="text-ice-600 text-lg">›</span>
-                  </button>
-                ) : (
-                  <div className="border-2 border-orange-300 bg-orange-50 rounded-2xl p-4">
-                    <div className="font-black text-navy-900 mb-3">{t('checkout_credit')}</div>
-                    <div className="bg-white border border-orange-200 rounded-xl px-4 py-3 mb-3 text-sm">
-                      <p className="text-slate-700">{t('checkout_unavailable')}</p>
-                    </div>
-                    <button
-                      onClick={submitPhoneRequest}
-                      disabled={phoneSubmitting || !state.name || !state.phone}
-                      className="w-full bg-green-600 hover:bg-green-700 disabled:opacity-50 text-white font-black py-3 rounded-xl text-sm transition-colors"
-                    >
-                      {phoneSubmitting ? t('health_saving') : t('checkout_reserve')}
-                    </button>
-                    <button
-                      onClick={() => save({ paymentMethod: '' })}
-                      className="w-full text-slate-400 hover:text-slate-600 text-xs mt-2"
-                    >
-                      {t('checkout_back_payment')}
-                    </button>
-                  </div>
-                )}
-
-                {/* Bit – ACTIVE */}
-                {state.paymentMethod !== 'bit' ? (
-                  <button
-                    onClick={() => save({ paymentMethod: 'bit' })}
-                    className="w-full border-2 border-slate-200 hover:border-blue-400 rounded-2xl p-4 flex items-center justify-between transition-colors"
-                  >
-                    <div className="flex items-center gap-3">
-                      <Image src="/Bit logo ביט.png" alt="Bit" width={40} height={24} className="object-contain" unoptimized />
-                      <div className="text-right">
-                        <div className="font-black text-navy-900">Bit</div>
-                        <div className="text-xs text-slate-500">{t('checkout_bit_quick')}</div>
-                      </div>
-                    </div>
-                    <span className="text-ice-600 text-lg">›</span>
-                  </button>
-                ) : (
-                  <div className="border-2 border-blue-400 bg-blue-50 rounded-2xl p-4">
-                    <div className="flex items-center gap-2 mb-3">
-                      <Image src="/Bit logo ביט.png" alt="Bit" width={40} height={24} className="object-contain" unoptimized />
-                      <div>
-                        <div className="font-black text-navy-900">{t('checkout_bit_title')}</div>
-                        <div className="text-xs text-slate-500">{t('checkout_bit_direct')}</div>
-                      </div>
-                    </div>
-                      <div className="bg-white border border-blue-200 rounded-xl px-4 py-3 mb-3">
-                      <div className="text-center mb-2">
-                        <div className="text-xs text-slate-500 mb-0.5">{t('checkout_amount')}</div>
-                        <div className="text-3xl font-black text-blue-700">₪{total}</div>
-                      </div>
-                      <div className="flex items-center justify-between bg-slate-50 rounded-lg px-3 py-2">
-                        <span className="text-xs text-slate-500">{t('checkout_bit_number_label')}</span>
-                        <span className="font-black text-navy-900 text-lg tracking-wide" dir="ltr">055-2482441</span>
-                      </div>
-                    </div>
-                    <div className="bg-blue-100 rounded-xl px-3 py-2 mb-3 text-xs text-blue-900 space-y-1">
-                      <p className="font-bold">{t('checkout_bit_steps')}</p>
-                      <p>{t('checkout_bit_step1')}</p>
-                      <p>{t('checkout_bit_step2').replace('{amount}', String(total))} <span className="font-bold" dir="ltr">055-2482441</span></p>
-                      <p>{t('checkout_bit_step3')}</p>
-                    </div>
-                    {!bitClicked ? (
-                      <button
-                        onClick={() => setBitClicked(true)}
-                        className="w-full bg-blue-600 hover:bg-blue-700 text-white font-black text-center py-3 rounded-xl text-sm transition-colors mb-2"
-                      >
-                        {t('checkout_bit_opened')}
-                      </button>
-                    ) : (
-                      <div className="space-y-2">
-                        <div className="bg-amber-50 border border-amber-200 rounded-xl px-3 py-2 text-xs text-amber-800 text-center">
-                          {t('checkout_bit_wait')}
-                        </div>
-                        <button
-                          onClick={() => confirmPayment('bit')}
-                          disabled={loading}
-                          className="w-full bg-green-600 hover:bg-green-700 disabled:opacity-50 text-white font-black py-3 rounded-xl text-sm transition-colors"
-                        >
-                          {loading ? t('health_saving') : t('checkout_bit_paid')}
-                        </button>
-                        <button
-                          onClick={() => setBitClicked(false)}
-                          className="w-full text-blue-600 text-xs"
-                        >
-                          {t('checkout_bit_not_yet')}
-                        </button>
-                      </div>
-                    )}
-                    <button
-                      onClick={() => { save({ paymentMethod: '' }); setBitClicked(false); }}
-                      className="w-full text-slate-400 hover:text-slate-600 text-xs mt-2"
-                    >
-                      {t('checkout_back_payment')}
-                    </button>
-                  </div>
-                )}
-
-                {/* Paybox */}
-                {state.paymentMethod !== 'paybox' ? (
-                  <button
-                    onClick={() => save({ paymentMethod: 'paybox' })}
-                    className="w-full border-2 border-slate-200 hover:border-slate-400 rounded-2xl p-4 flex items-center justify-between transition-colors"
-                  >
-                    <div className="flex items-center gap-3">
-                      <Image src="/PAYBOX LOGO פייבוקס.jpg" alt="Paybox" width={50} height={24} className="object-contain" unoptimized />
-                      <div>
-                        <div className="font-black text-navy-900">Paybox</div>
-                        <div className="text-xs text-slate-500">{t('checkout_paybox_digital')}</div>
-                      </div>
-                    </div>
-                    <span className="text-ice-600 text-lg">›</span>
-                  </button>
-                ) : (
-                  <div className="border-2 border-orange-300 bg-orange-50 rounded-2xl p-4">
-                    <div className="flex items-center gap-2 mb-3">
-                      <Image src="/PAYBOX LOGO פייבוקס.jpg" alt="Paybox" width={50} height={24} className="object-contain" unoptimized />
-                      <div className="font-black text-navy-900">Paybox</div>
-                    </div>
-                    <div className="bg-white border border-orange-200 rounded-xl px-4 py-3 mb-3 text-sm">
-                      <p className="text-slate-700">{t('checkout_unavailable')}</p>
-                    </div>
-                    <button
-                      onClick={submitPhoneRequest}
-                      disabled={phoneSubmitting || !state.name || !state.phone}
-                      className="w-full bg-green-600 hover:bg-green-700 disabled:opacity-50 text-white font-black py-3 rounded-xl text-sm transition-colors"
-                    >
-                      {phoneSubmitting ? t('health_saving') : t('checkout_reserve')}
-                    </button>
-                    <button
-                      onClick={() => save({ paymentMethod: '' })}
-                      className="w-full text-slate-400 hover:text-slate-600 text-xs mt-2"
-                    >
-                      {t('checkout_back_payment')}
-                    </button>
-                  </div>
-                )}
-
-                {/* Phone callback – ACTIVE */}
+                {/* Phone callback */}
                 <div className="border-2 border-ice-400 bg-ice-50 rounded-2xl p-4">
                   <div className="flex items-center gap-2 mb-3">
                     <span className="text-lg">📞</span>
