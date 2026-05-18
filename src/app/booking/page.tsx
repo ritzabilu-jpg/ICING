@@ -24,7 +24,7 @@ function BookingContent() {
   const [step, setStep] = useState<BookingStep>(initialType ? 2 : 1);
   const [selectedType, setSelectedType] = useState<WorkshopType | null>(initialType);
 
-  const isOneOnOne = selectedType === 'one-on-one';
+  const isOneOnOne = selectedType === 'one-on-one' || selectedType === 'couple';
 
   function resetMode() {
     setMode(null);
@@ -111,7 +111,10 @@ function BookingContent() {
       )}
 
       {step === 2 && isOneOnOne && (
-        <OneOnOneContactForm onBack={() => { setSelectedType(null); setStep(1); }} />
+        <OneOnOneContactForm
+          type={selectedType as 'one-on-one' | 'couple'}
+          onBack={() => { setSelectedType(null); setStep(1); }}
+        />
       )}
 
       {step === 2 && selectedType && !isOneOnOne && (

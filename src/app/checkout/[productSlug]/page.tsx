@@ -499,6 +499,22 @@ export default function CheckoutPage() {
 
               <div className="space-y-3">
 
+                {/* WhatsApp CTA */}
+                <a
+                  href={`https://wa.me/972552482441?text=${encodeURIComponent('שלום, אני מעוניין/ת להירשם ל' + (product?.title ?? 'פעילות'))}`}
+                  target="_blank" rel="noopener noreferrer"
+                  className="w-full flex items-center justify-center gap-2 bg-green-500 hover:bg-green-600
+                             text-white font-bold py-4 rounded-2xl transition-colors"
+                >
+                  💬 תיאום מיידי בוואטסאפ
+                </a>
+
+                <div className="flex items-center gap-3">
+                  <div className="flex-1 h-px bg-slate-200" />
+                  <span className="text-xs text-slate-400">או השאירו פרטים לחיזרה טלפונית</span>
+                  <div className="flex-1 h-px bg-slate-200" />
+                </div>
+
                 {/* Phone callback */}
                 <div className="border-2 border-ice-400 bg-ice-50 rounded-2xl p-4">
                   <div className="flex items-center gap-2 mb-3">
@@ -514,6 +530,13 @@ export default function CheckoutPage() {
                       <div className="text-3xl mb-2">✅</div>
                       <p className="font-bold text-green-800 text-sm">{t('checkout_phone_sent')}</p>
                       <p className="text-green-700 text-xs mt-1">{t('checkout_callback_by').replace('{deadline}', callbackDeadlineStr)}</p>
+                      <a
+                        href={`https://wa.me/972552482441?text=${encodeURIComponent('שלום, הרגע השארתי פרטים ל' + (product?.title ?? 'פעילות'))}`}
+                        target="_blank" rel="noopener noreferrer"
+                        className="mt-3 inline-flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white font-bold px-5 py-2 rounded-xl text-sm transition-colors"
+                      >
+                        💬 המשך בוואטסאפ
+                      </a>
                     </div>
                   ) : (
                     <div className="space-y-2">
