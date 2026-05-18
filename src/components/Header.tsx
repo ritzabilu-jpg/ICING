@@ -179,7 +179,7 @@ export default function Header() {
                            hover:scale-105 shadow-lg shadow-ice-500/30">
                 🧊 {t('nav_book_immersion')}
               </Link>
-              <Link href="/booking"
+              <Link href="/booking?w=1"
                 className="hidden md:inline-flex items-center gap-1 bg-navy-700 hover:bg-navy-600
                            text-white font-bold px-4 py-2 rounded-xl text-sm transition-all
                            hover:scale-105 border border-navy-500">
@@ -265,7 +265,7 @@ export default function Header() {
               </div>
 
               {/* Mobile CTA */}
-              <Link href="/booking"
+              <Link href="/booking?w=1"
                 className="lg:hidden bg-orange-500 hover:bg-orange-600 text-white font-black px-4 py-2 rounded-xl text-sm transition-colors shadow-lg shadow-orange-500/30">
                 {t('nav_book_now')}
               </Link>
@@ -316,7 +316,7 @@ export default function Header() {
                 className="mt-3 w-full text-center bg-ice-500 hover:bg-ice-600 text-white font-bold py-3 rounded-xl transition-all">
                 🧊 {t('nav_book_immersion')}
               </Link>
-              <Link href="/booking" onClick={() => setMenuOpen(false)}
+              <Link href="/booking?w=1" onClick={() => setMenuOpen(false)}
                 className="w-full text-center bg-navy-700 hover:bg-navy-600 text-white font-bold py-3 rounded-xl transition-all border border-navy-500">
                 🏔️ {t('nav_book_workshop')}
               </Link>

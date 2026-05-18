@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, Suspense } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useLanguage } from '@/lib/i18n/LanguageContext';
 import type { Workshop, WorkshopType } from '@/types';
@@ -25,6 +25,15 @@ function BookingContent() {
   const [selectedType, setSelectedType] = useState<WorkshopType | null>(initialType);
 
   const isOneOnOne = selectedType === 'one-on-one' || selectedType === 'couple';
+
+  // Reset to workshops step 1 when navigating via header "קבע סדנה" (?w=1)
+  useEffect(() => {
+    if (searchParams.get('w') === '1') {
+      setMode('workshops');
+      setStep(1);
+      setSelectedType(null);
+    }
+  }, [searchParams]);
 
   function resetMode() {
     setMode(null);
