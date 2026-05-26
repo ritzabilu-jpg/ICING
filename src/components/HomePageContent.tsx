@@ -136,7 +136,7 @@ export default function HomePageContent({ testimonialsSlot }: { testimonialsSlot
           <div className="pb-16 px-6 max-w-7xl mx-auto">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 items-stretch">
               {[...workshopTypes].sort((a, b) => {
-                const order = ['couple', 'one-on-one', 'individual', 'team'];
+                const order = ['individual', 'couple', 'one-on-one', 'team'];
                 return order.indexOf(a.type) - order.indexOf(b.type);
               }).map(w => (
                 <WorkshopCard key={w.type} {...w} />
