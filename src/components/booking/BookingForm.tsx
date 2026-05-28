@@ -112,7 +112,7 @@ export default function BookingForm({ workshop, onBack }: BookingFormProps) {
 
       // Redirect to payment page
       const dateStr = new Date(workshop.date_time).toLocaleDateString('he-IL', {
-        day: '2-digit', month: '2-digit', year: 'numeric',
+        day: '2-digit', month: '2-digit', year: '2-digit',
       });
       const params = new URLSearchParams({
         bookingId: result.booking.id,

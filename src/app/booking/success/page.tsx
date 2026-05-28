@@ -52,7 +52,7 @@ function SuccessContent() {
 
   const formatDateTime = (isoString: string) =>
     new Date(isoString).toLocaleString(locale, {
-      weekday: 'long', year: 'numeric', month: 'long',
+      weekday: 'long', year: '2-digit', month: 'long',
       day: 'numeric', hour: '2-digit', minute: '2-digit',
     });
 
