@@ -531,7 +531,7 @@ const he: Translations = {
   journal_minutes: "דק'", journal_upd_same: 'כמו שבוע שעבר', journal_upd_sub: 'סה"כ דקות טבילה',
   journal_cur_week: 'שבוע נוכחי', journal_all_time: 'כל הזמן',
 
-  immersion_hero_title: 'קבע מועד לטבילה', immersion_hero_sub: 'בהדרכת מדריך מוסמך · רחובות',
+  immersion_hero_title: 'קבע מועד לטבילה', immersion_hero_sub: '',
   immersion_loading_slots: 'טוען מועדים...', immersion_prev_month: 'חודש קודם', immersion_next_month: 'חודש הבא',
   immersion_legend_free: 'פנוי', immersion_legend_selected: 'נבחר', immersion_legend_none: 'אין מועדים',
   immersion_slot_free: 'פנוי', immersion_slot_taken: 'תפוס', immersion_no_slots_date: 'אין מועדים זמינים בתאריך זה.',
@@ -840,7 +840,7 @@ const en: Translations = {
   journal_minutes: 'min', journal_upd_same: 'Same as last week', journal_upd_sub: 'Total immersion minutes',
   journal_cur_week: 'This week', journal_all_time: 'All time',
 
-  immersion_hero_title: 'Schedule a Plunge', immersion_hero_sub: 'With a certified instructor · Rehovot',
+  immersion_hero_title: 'Schedule a Plunge', immersion_hero_sub: '',
   immersion_loading_slots: 'Loading slots...', immersion_prev_month: 'Previous month', immersion_next_month: 'Next month',
   immersion_legend_free: 'Available', immersion_legend_selected: 'Selected', immersion_legend_none: 'No slots',
   immersion_slot_free: 'Free', immersion_slot_taken: 'Full', immersion_no_slots_date: 'No available slots on this date.',
@@ -1150,7 +1150,7 @@ const ar: Translations = {
   journal_minutes: 'دقيقة', journal_upd_same: 'كما الأسبوع الماضي', journal_upd_sub: 'إجمالي دقائق الغمر',
   journal_cur_week: 'هذا الأسبوع', journal_all_time: 'كل الوقت',
 
-  immersion_hero_title: 'احجز موعدًا للغمر', immersion_hero_sub: 'مع مدرب معتمد · ريحوفوت',
+  immersion_hero_title: 'احجز موعدًا للغمر', immersion_hero_sub: '',
   immersion_loading_slots: 'جارٍ تحميل المواعيد...', immersion_prev_month: 'الشهر السابق', immersion_next_month: 'الشهر التالي',
   immersion_legend_free: 'متاح', immersion_legend_selected: 'محدد', immersion_legend_none: 'لا مواعيد',
   immersion_slot_free: 'متاح', immersion_slot_taken: 'محجوز', immersion_no_slots_date: 'لا توجد مواعيد متاحة في هذا التاريخ.',
@@ -1459,7 +1459,7 @@ const ru: Translations = {
   journal_minutes: 'мин', journal_upd_same: 'Как на прошлой неделе', journal_upd_sub: 'Всего минут',
   journal_cur_week: 'Эта неделя', journal_all_time: 'Всё время',
 
-  immersion_hero_title: 'Записаться на погружение', immersion_hero_sub: 'С сертифицированным инструктором · Реховот',
+  immersion_hero_title: 'Записаться на погружение', immersion_hero_sub: '',
   immersion_loading_slots: 'Загрузка слотов...', immersion_prev_month: 'Предыдущий месяц', immersion_next_month: 'Следующий месяц',
   immersion_legend_free: 'Свободно', immersion_legend_selected: 'Выбрано', immersion_legend_none: 'Нет слотов',
   immersion_slot_free: 'Свободно', immersion_slot_taken: 'Занято', immersion_no_slots_date: 'Нет доступных слотов на эту дату.',
