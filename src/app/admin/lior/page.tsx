@@ -817,7 +817,14 @@ function AdminContent() {
                 {!showRepeatWeekly ? (
                   <button type="button"
                     disabled={!fromDate || !fromTime || !toTime}
-                    onClick={() => { setShowRepeatWeekly(true); setRepeatWeeklyMsg(''); }}
+                    onClick={() => {
+                      setShowRepeatWeekly(true); setRepeatWeeklyMsg('');
+                      if (fromDate && (!repeatWeeklyUntil || repeatWeeklyUntil < fromDate)) {
+                        const d = new Date(fromDate + 'T12:00:00');
+                        const endNext = new Date(d.getFullYear(), d.getMonth() + 2, 0);
+                        setRepeatWeeklyUntil(`${endNext.getFullYear()}-${String(endNext.getMonth()+1).padStart(2,'0')}-${String(endNext.getDate()).padStart(2,'0')}`);
+                      }
+                    }}
                     className="w-full border-2 border-ice-300 text-ice-700 hover:bg-ice-50 font-bold py-2 rounded-xl transition-colors disabled:opacity-40 text-sm">
                     🔁 שכפל כל שבוע
                   </button>
@@ -1777,7 +1784,14 @@ function AdminContent() {
                   {!showRepeatWeeklyW ? (
                     <button type="button"
                       disabled={!wDate || !wTime || !wInstructor}
-                      onClick={() => { setShowRepeatWeeklyW(true); setRepeatWeeklyMsgW(''); }}
+                      onClick={() => {
+                        setShowRepeatWeeklyW(true); setRepeatWeeklyMsgW('');
+                        if (wDate && (!repeatWeeklyUntilW || repeatWeeklyUntilW < wDate)) {
+                          const d = new Date(wDate + 'T12:00:00');
+                          const endNext = new Date(d.getFullYear(), d.getMonth() + 2, 0);
+                          setRepeatWeeklyUntilW(`${endNext.getFullYear()}-${String(endNext.getMonth()+1).padStart(2,'0')}-${String(endNext.getDate()).padStart(2,'0')}`);
+                        }
+                      }}
                       className="w-full border-2 border-ice-300 text-ice-700 hover:bg-ice-50 font-bold py-2 rounded-xl transition-colors disabled:opacity-40 text-sm">
                       🔁 שכפל כל שבוע
                     </button>
