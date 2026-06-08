@@ -32,6 +32,7 @@ export const metadata: Metadata = {
     },
   },
   robots: { index: true, follow: true },
+  verification: { google: 'O5iJ1SMb-LdS8lXRwCvTVvC5zPhszM5dg7XqxAFPLUU' },
   appleWebApp: {
     capable: true,
     statusBarStyle: 'black-translucent',
