@@ -70,6 +70,7 @@ export default function RootLayout({
   return (
     <html lang="he" dir="rtl">
       <head>
+        <meta name="google-site-verification" content="O5iJ1SMb-LdS8lXRwCvTVvC5zPhszM5dg7XqxAFPLUU" />
         <link rel="icon" href="/favicon.ico" sizes="any" />
         <link rel="apple-touch-icon" href="/icing-logo-clean.png" />
         <script
