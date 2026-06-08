@@ -21,7 +21,16 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: 'ICING' }],
   manifest: '/manifest.json',
-  alternates: { canonical: 'https://www.icing.co.il' },
+  alternates: {
+    canonical: 'https://icing.co.il/',
+    languages: {
+      'he-IL': 'https://icing.co.il/he/',
+      'en-IL': 'https://icing.co.il/en/',
+      'ar-IL': 'https://icing.co.il/ar/',
+      'ru-IL': 'https://icing.co.il/ru/',
+      'x-default': 'https://icing.co.il/',
+    },
+  },
   robots: { index: true, follow: true },
   appleWebApp: {
     capable: true,
