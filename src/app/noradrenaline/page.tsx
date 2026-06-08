@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import AuthorSignature from '@/components/AuthorSignature';
+import AccordionSection from '@/components/AccordionSection';
 
 export const metadata: Metadata = {
   title: 'נוראדרנלין וטבילת מי קרח | ICING',
@@ -145,32 +146,32 @@ export default function NoradrenalinePage() {
       </section>
 
       {/* Articles */}
-      <section className="py-16 px-6 bg-navy-900" id="articles">
-        <div className="max-w-3xl mx-auto">
-          <h2 className="text-2xl font-black text-white mb-2">מאמרים מדעיים</h2>
-          <p className="text-slate-400 text-sm mb-8">מחקרים peer-reviewed בנושא נוראדרנלין וטבילת מי קרח</p>
-          <div className="space-y-4">
-            {articles.map(a => (
-              <a
-                key={a.num}
-                href={a.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex gap-4 bg-navy-800 hover:bg-navy-700 border border-navy-700 hover:border-ice-500/50
-                           rounded-2xl p-5 transition-all group"
-              >
-                <span className="text-ice-400 font-black text-lg flex-shrink-0 w-6">{a.num}.</span>
-                <div>
-                  <p className="text-white font-semibold text-sm leading-snug group-hover:text-ice-300 transition-colors">
-                    {a.title}
-                  </p>
-                  <p className="text-slate-400 text-xs mt-1">{a.journal}</p>
-                </div>
-                <span className="text-slate-500 group-hover:text-ice-400 mr-auto flex-shrink-0 transition-colors">↗</span>
-              </a>
-            ))}
+      <section className="bg-navy-900" id="articles">
+        <AccordionSection title="המאמרים הרפואיים שעליהם התבסס המאמר הזה" dark fadeColor="#0f172a">
+          <div className="max-w-3xl mx-auto px-6 pb-16">
+            <div className="space-y-4">
+              {articles.map(a => (
+                <a
+                  key={a.num}
+                  href={a.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex gap-4 bg-navy-800 hover:bg-navy-700 border border-navy-700 hover:border-ice-500/50
+                             rounded-2xl p-5 transition-all group"
+                >
+                  <span className="text-ice-400 font-black text-lg flex-shrink-0 w-6">{a.num}.</span>
+                  <div>
+                    <p className="text-white font-semibold text-sm leading-snug group-hover:text-ice-300 transition-colors">
+                      {a.title}
+                    </p>
+                    <p className="text-slate-400 text-xs mt-1">{a.journal}</p>
+                  </div>
+                  <span className="text-slate-500 group-hover:text-ice-400 mr-auto flex-shrink-0 transition-colors">↗</span>
+                </a>
+              ))}
+            </div>
           </div>
-        </div>
+        </AccordionSection>
       </section>
 
       {/* Author */}
