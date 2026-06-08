@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import AuthorSignature from '@/components/AuthorSignature';
 
 export const metadata: Metadata = {
   title: 'נוראדרנלין וטבילת מי קרח | ICING',
@@ -170,6 +171,11 @@ export default function NoradrenalinePage() {
             ))}
           </div>
         </div>
+      </section>
+
+      {/* Author */}
+      <section className="px-6">
+        <AuthorSignature />
       </section>
 
       {/* CTA */}

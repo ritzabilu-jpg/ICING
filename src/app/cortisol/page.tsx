@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import AuthorSignature from '@/components/AuthorSignature';
 
 export const metadata: Metadata = {
   title: 'קורטיזול, סטרס וטבילת מי קרח | ICING',
@@ -196,6 +197,11 @@ export default function CortisolPage() {
             ))}
           </div>
         </div>
+      </section>
+
+      {/* Author */}
+      <section className="px-6">
+        <AuthorSignature />
       </section>
 
       {/* CTA */}

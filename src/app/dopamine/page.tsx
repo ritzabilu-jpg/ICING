@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import AuthorSignature from '@/components/AuthorSignature';
 
 export const metadata: Metadata = {
   title: 'דופמין, מוטיבציה וטבילות קרח | ICING',
@@ -228,6 +229,11 @@ export default function DopaminePage() {
             ))}
           </div>
         </div>
+      </section>
+
+      {/* Author */}
+      <section className="px-6">
+        <AuthorSignature />
       </section>
 
       {/* CTA */}
