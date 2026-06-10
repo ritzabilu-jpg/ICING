@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from 'next';
+import Script from 'next/script';
 import './globals.css';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -71,6 +72,13 @@ export default function RootLayout({
     <html lang="he" dir="rtl">
       <head>
         <meta name="google-site-verification" content="O5iJ1SMb-LdS8lXRwCvTVvC5zPhszM5dg7XqxAFPLUU" />
+        <Script src="https://www.googletagmanager.com/gtag/js?id=G-G88F7020YX" strategy="afterInteractive" />
+        <Script id="gtag-init" strategy="afterInteractive">{`
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-G88F7020YX');
+        `}</Script>
         <link rel="icon" href="/favicon.ico" sizes="any" />
         <link rel="apple-touch-icon" href="/icing-logo-clean.png" />
         <script
