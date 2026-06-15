@@ -30,6 +30,7 @@ export default function Header() {
     { href: '/science', label: t('nav_science') },
     { href: '/reviews', label: t('nav_reviews') },
     { href: '/contact', label: t('nav_contact') },
+    { href: '/icing-faq.html', label: t('nav_faq') },
   ];
 
   const [menuOpen, setMenuOpen] = useState(false);

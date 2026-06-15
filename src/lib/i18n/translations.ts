@@ -9,7 +9,7 @@ export const LANGS: { code: Lang; label: string; flag: string; dir: 'rtl' | 'ltr
 export type Translations = {
   // Nav
   nav_home: string; nav_booking: string; nav_instructors: string;
-  nav_science: string; nav_reviews: string; nav_contact: string;
+  nav_science: string; nav_reviews: string; nav_contact: string; nav_faq: string;
   nav_login: string; nav_logout: string; nav_myarea: string;
   nav_book_immersion: string; nav_book_workshop: string; nav_book_now: string;
   nav_admin: string; nav_instructor_role: string; nav_sessions_left: string;
@@ -266,7 +266,7 @@ export type Translations = {
 
 const he: Translations = {
   nav_home: 'בית', nav_booking: 'הזמנת מקום', nav_instructors: 'המדריכים שלנו',
-  nav_science: 'המדע', nav_reviews: 'חוות דעת', nav_contact: 'צור קשר',
+  nav_science: 'המדע', nav_reviews: 'חוות דעת', nav_contact: 'צור קשר', nav_faq: 'שאלות ותשובות',
   nav_login: 'כניסה', nav_logout: 'יציאה', nav_myarea: 'האזור האישי שלי',
   nav_book_immersion: 'קבע טבילה', nav_book_workshop: 'קבע סדנה', nav_book_now: 'הזמן עכשיו',
   nav_admin: 'מנהל', nav_instructor_role: 'מדריך', nav_sessions_left: 'נשארו {n}',
@@ -584,7 +584,7 @@ const he: Translations = {
 
 const en: Translations = {
   nav_home: 'Home', nav_booking: 'Book a Session', nav_instructors: 'Our Instructors',
-  nav_science: 'Science', nav_reviews: 'Reviews', nav_contact: 'Contact',
+  nav_science: 'Science', nav_reviews: 'Reviews', nav_contact: 'Contact', nav_faq: 'FAQ',
   nav_login: 'Login', nav_logout: 'Logout', nav_myarea: 'My Dashboard',
   nav_book_immersion: 'Book Immersion', nav_book_workshop: 'Book Workshop', nav_book_now: 'Book Now',
   nav_admin: 'Admin', nav_instructor_role: 'Instructor', nav_sessions_left: '{n} left',
@@ -893,7 +893,7 @@ const en: Translations = {
 
 const ar: Translations = {
   nav_home: 'الرئيسية', nav_booking: 'احجز مكانًا', nav_instructors: 'مدربونا',
-  nav_science: 'العلم', nav_reviews: 'آراء العملاء', nav_contact: 'تواصل معنا',
+  nav_science: 'العلم', nav_reviews: 'آراء العملاء', nav_contact: 'تواصل معنا', nav_faq: 'أسئلة وأجوبة',
   nav_login: 'دخول', nav_logout: 'خروج', nav_myarea: 'لوحتي الشخصية',
   nav_book_immersion: 'احجز غطسًا', nav_book_workshop: 'احجز ورشة', nav_book_now: 'احجز الآن',
   nav_admin: 'مدير', nav_instructor_role: 'مدرب', nav_sessions_left: 'تبقّى {n}',
@@ -1203,7 +1203,7 @@ const ar: Translations = {
 
 const ru: Translations = {
   nav_home: 'Главная', nav_booking: 'Забронировать', nav_instructors: 'Наши инструкторы',
-  nav_science: 'Наука', nav_reviews: 'Отзывы', nav_contact: 'Контакты',
+  nav_science: 'Наука', nav_reviews: 'Отзывы', nav_contact: 'Контакты', nav_faq: 'Вопросы и ответы',
   nav_login: 'Войти', nav_logout: 'Выйти', nav_myarea: 'Мой кабинет',
   nav_book_immersion: 'Забронировать погружение', nav_book_workshop: 'Забронировать воркшоп', nav_book_now: 'Забронировать',
   nav_admin: 'Админ', nav_instructor_role: 'Инструктор', nav_sessions_left: 'осталось {n}',
