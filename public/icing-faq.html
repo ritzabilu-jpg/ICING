@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>שאלות ותשובות על אמבטיות קרח | ICING.CO.IL</title>
+  <meta name="description" content="כל מה שרצית לדעת על אמבטיות קרח: זמן שהייה, התוויות נגד, שילוב עם אימונים ובטיחות." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700&family=Rubik:wght@400;600;700;900&display=swap" rel="stylesheet" />
+  <style>
+    /* ─── Design tokens ─────────────────────────────────────── */
+    :root {
+      --primary:        #006d8f;
+      --primary-dark:   #005570;
+      --accent:         #0099c6;
+      --accent-light:   #e0f5fb;
+
+      /* Spacing (4px base) */
+      --space-1:  4px;
+      --space-2:  8px;
+      --space-3:  12px;
+      --space-4:  16px;
+      --space-5:  20px;
+      --space-6:  24px;
+      --space-8:  32px;
+      --space-10: 40px;
+      --space-12: 48px;
+      --space-16: 64px;
+      --space-20: 80px;
+      --space-24: 96px;
+
+      /* Radii */
+      --radius-sm: 6px;
+      --radius-md: 12px;
+      --radius-lg: 20px;
+      --radius-xl: 32px;
+
+      /* Fluid type */
+      --text-sm:   clamp(0.8rem,  1.5vw, 0.875rem);
+      --text-base: clamp(1rem,    2vw,   1.0625rem);
+      --text-lg:   clamp(1.125rem,2vw,   1.25rem);
+      --text-xl:   clamp(1.25rem, 2.5vw, 1.5rem);
+      --text-2xl:  clamp(1.5rem,  3vw,   2rem);
+      --text-3xl:  clamp(2rem,    4vw,   3rem);
+      --text-hero: clamp(2.5rem,  6vw,   5rem);
+
+      /* Light theme */
+      --bg:        #f4f8fb;
+      --bg-card:   #ffffff;
+      --bg-header: rgba(255,255,255,0.92);
+      --text:      #0f1f2e;
+      --text-muted:#4a6070;
+      --border:    #d0e4ee;
+      --callout-bg:#e8f6fb;
+      --callout-border: var(--accent);
+      --shadow-card: 0 2px 16px oklch(0.55 0.08 220 / 0.10);
+      --shadow-hover: 0 8px 32px oklch(0.45 0.10 220 / 0.18);
+    }
+
+    [data-theme="dark"] {
+      --bg:        #0a1520;
+      --bg-card:   #0f2030;
+      --bg-header: rgba(10,21,32,0.95);
+      --text:      #ddeef8;
+      --text-muted:#6ea8c8;
+      --border:    #1c3a50;
+      --callout-bg:#0d2a3c;
+      --callout-border: var(--accent);
+      --accent-light: #0d2a3c;
+      --shadow-card: 0 2px 16px oklch(0.1 0.05 220 / 0.4);
+      --shadow-hover: 0 8px 32px oklch(0.1 0.07 220 / 0.6);
+    }
+
+    /* ─── Reset ─────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Heebo', system-ui, sans-serif;
+      font-size: var(--text-base);
+      line-height: 1.7;
+      background: var(--bg);
+      color: var(--text);
+      transition: background 0.3s, color 0.3s;
+    }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    ul { list-style: none; }
+    button { cursor: pointer; border: none; background: none; font-family: inherit; }
+
+    /* ─── Skip link ──────────────────────────────────────────── */
+    .skip-link {
+      position: absolute;
+      top: -100%;
+      right: 0;
+      background: var(--primary);
+      color: #fff;
+      padding: var(--space-3) var(--space-6);
+      border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+      font-weight: 700;
+      z-index: 9999;
+      transition: top 0.2s;
+    }
+    .skip-link:focus { top: 0; }
+
+    /* ─── Header ─────────────────────────────────────────────── */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--bg-header);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: var(--space-3) var(--space-6);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-4);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      text-decoration: none;
+    }
+    .logo-icon {
+      width: 40px;
+      height: 40px;
+      flex-shrink: 0;
+    }
+    .logo-text {
+      font-family: 'Rubik', sans-serif;
+      font-weight: 900;
+      font-size: var(--text-lg);
+      color: var(--primary);
+      letter-spacing: 0.04em;
+      line-height: 1;
+    }
+    .logo-sub {
+      display: block;
+      font-size: var(--text-sm);
+      font-weight: 400;
+      color: var(--text-muted);
+      letter-spacing: 0.01em;
+    }
+
+    .theme-toggle {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg-card);
+      border: 1.5px solid var(--border);
+      color: var(--text);
+      transition: background 0.2s, border-color 0.2s, transform 0.2s;
+      flex-shrink: 0;
+    }
+    .theme-toggle:hover { background: var(--accent-light); border-color: var(--accent); transform: rotate(20deg); }
+    .theme-toggle svg { width: 22px; height: 22px; }
+
+    /* ─── Hero ───────────────────────────────────────────────── */
+    .hero {
+      position: relative;
+      min-height: min(540px, 70vh);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      text-align: center;
+    }
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background-image: url('https://user-gen-media-assets.s3.amazonaws.com/gpt4o_images/4e6dfdcc-ebcc-40b6-b15d-29a3bf67847d.png');
+      background-size: cover;
+      background-position: center;
+      filter: brightness(0.55);
+    }
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        to bottom,
+        oklch(0.15 0.07 222 / 0.4) 0%,
+        oklch(0.10 0.09 222 / 0.82) 100%
+      );
+    }
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      padding: var(--space-16) var(--space-6);
+      max-width: 720px;
+      margin: 0 auto;
+    }
+    .hero-tag {
+      display: inline-block;
+      background: oklch(0.55 0.14 222 / 0.55);
+      border: 1px solid oklch(0.75 0.12 200 / 0.5);
+      color: #c8edfa;
+      font-size: var(--text-sm);
+      font-weight: 600;
+      padding: var(--space-1) var(--space-4);
+      border-radius: 999px;
+      margin-bottom: var(--space-4);
+      backdrop-filter: blur(6px);
+      letter-spacing: 0.08em;
+    }
+    .hero h1 {
+      font-family: 'Rubik', sans-serif;
+      font-size: var(--text-hero);
+      font-weight: 900;
+      color: #fff;
+      line-height: 1.1;
+      margin-bottom: var(--space-4);
+    }
+    .hero h1 em {
+      font-style: normal;
+      color: var(--accent);
+    }
+    .hero-sub {
+      font-size: var(--text-lg);
+      color: #b8dff0;
+      font-weight: 300;
+      max-width: 520px;
+      margin: 0 auto var(--space-8);
+    }
+    .hero-arrow {
+      animation: bounce 2s ease-in-out infinite;
+      color: #7ecfee;
+      display: inline-block;
+    }
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(10px); }
+    }
+
+    /* ─── Quick nav ──────────────────────────────────────────── */
+    .quick-nav {
+      background: var(--bg-card);
+      border-bottom: 1px solid var(--border);
+      padding: var(--space-3) var(--space-4);
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    .quick-nav::-webkit-scrollbar { height: 4px; }
+    .quick-nav::-webkit-scrollbar-track { background: var(--bg); }
+    .quick-nav::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+    .quick-nav-inner {
+      display: flex;
+      gap: var(--space-3);
+      min-width: max-content;
+      padding: 0 var(--space-2);
+    }
+    .quick-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      padding: var(--space-2) var(--space-4);
+      border-radius: 999px;
+      background: var(--bg);
+      border: 1.5px solid var(--border);
+      color: var(--text);
+      font-size: var(--text-sm);
+      font-weight: 500;
+      white-space: nowrap;
+      text-decoration: none;
+      transition: background 0.18s, border-color 0.18s, color 0.18s;
+    }
+    .quick-pill:hover {
+      background: var(--accent-light);
+      border-color: var(--accent);
+      color: var(--primary);
+      text-decoration: none;
+    }
+    .pill-num {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: #fff;
+      font-size: 0.7rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    /* ─── Main content ───────────────────────────────────────── */
+    main {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: var(--space-12) var(--space-4);
+    }
+    .section-label {
+      font-size: var(--text-sm);
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: var(--space-2);
+    }
+    .section-title {
+      font-family: 'Rubik', sans-serif;
+      font-size: var(--text-3xl);
+      font-weight: 900;
+      color: var(--primary);
+      margin-bottom: var(--space-8);
+      line-height: 1.2;
+    }
+
+    /* ─── Q&A list ───────────────────────────────────────────── */
+    .qa-list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+
+    .qa-card {
+      background: var(--bg-card);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-card);
+      overflow: hidden;
+      transition: box-shadow 0.25s, border-color 0.25s;
+    }
+    .qa-card:hover { box-shadow: var(--shadow-hover); }
+    .qa-card.open  { border-color: var(--accent); }
+
+    .qa-header {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: var(--space-4);
+      padding: var(--space-5) var(--space-6);
+      text-align: right;
+      background: none;
+      color: var(--text);
+      font-family: inherit;
+      transition: background 0.18s;
+    }
+    .qa-header:hover  { background: var(--accent-light); }
+    .qa-header:focus-visible {
+      outline: 3px solid var(--accent);
+      outline-offset: -3px;
+      border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    }
+
+    .qa-badge {
+      width: 44px;
+      height: 44px;
+      flex-shrink: 0;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+      color: #fff;
+      font-family: 'Rubik', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .qa-question {
+      flex: 1;
+      font-family: 'Rubik', sans-serif;
+      font-size: var(--text-xl);
+      font-weight: 700;
+      line-height: 1.3;
+      text-align: right;
+    }
+
+    .qa-chevron {
+      flex-shrink: 0;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--bg);
+      border: 1.5px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s, transform 0.35s ease;
+    }
+    .qa-card.open .qa-chevron { transform: rotate(180deg); background: var(--accent-light); }
+    .qa-chevron svg { width: 18px; height: 18px; color: var(--text-muted); }
+
+    .qa-body {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .qa-card.open .qa-body { max-height: 1000px; }
+
+    .qa-inner {
+      padding: 0 var(--space-6) var(--space-6);
+      padding-right: calc(var(--space-6) + 44px + var(--space-4));
+    }
+    .qa-inner p { margin-bottom: var(--space-4); color: var(--text); }
+    .qa-inner p:last-of-type { margin-bottom: 0; }
+    .qa-inner strong { color: var(--primary); font-weight: 700; }
+
+    .qa-list-items {
+      margin: var(--space-4) 0;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+    }
+    .qa-list-items li {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-3);
+      color: var(--text);
+    }
+    .qa-list-items li::before {
+      content: '';
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+      margin-top: 0.55em;
+      flex-shrink: 0;
+    }
+
+    /* Callout */
+    .callout {
+      margin-top: var(--space-5);
+      padding: var(--space-4) var(--space-5);
+      background: var(--callout-bg);
+      border-right: 4px solid var(--callout-border);
+      border-radius: var(--radius-md);
+      font-size: var(--text-base);
+      color: var(--text);
+      line-height: 1.65;
+    }
+
+    /* Source pill */
+    .qa-source {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      margin-top: var(--space-5);
+      padding: var(--space-1) var(--space-4);
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      font-size: var(--text-sm);
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+    .qa-source svg { width: 14px; height: 14px; flex-shrink: 0; }
+
+    /* ─── Scroll reveal ──────────────────────────────────────── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(22px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: none;
+    }
+
+    /* ─── CTA block ──────────────────────────────────────────── */
+    .cta-block {
+      margin-top: var(--space-16);
+      padding: var(--space-10) var(--space-8);
+      background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 50%, var(--accent) 100%);
+      border-radius: var(--radius-xl);
+      text-align: center;
+      color: #fff;
+    }
+    .cta-block h2 {
+      font-family: 'Rubik', sans-serif;
+      font-size: var(--text-2xl);
+      font-weight: 900;
+      margin-bottom: var(--space-3);
+    }
+    .cta-block p {
+      font-size: var(--text-lg);
+      color: #b8e8f8;
+      margin-bottom: var(--space-8);
+      max-width: 480px;
+      margin-inline: auto;
+    }
+    .cta-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      padding: var(--space-4) var(--space-8);
+      background: #fff;
+      color: var(--primary-dark);
+      font-family: 'Rubik', sans-serif;
+      font-weight: 700;
+      font-size: var(--text-base);
+      border-radius: 999px;
+      text-decoration: none;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 4px 16px oklch(0.1 0.08 220 / 0.3);
+    }
+    .cta-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px oklch(0.1 0.08 220 / 0.45);
+      text-decoration: none;
+    }
+    .cta-btn svg { width: 18px; height: 18px; }
+
+    /* ─── Footer ─────────────────────────────────────────────── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: var(--space-8) var(--space-6);
+      text-align: center;
+      color: var(--text-muted);
+      font-size: var(--text-sm);
+    }
+    footer p + p { margin-top: var(--space-2); }
+    .footer-disclaimer {
+      max-width: 600px;
+      margin: var(--space-3) auto 0;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      opacity: 0.75;
+      line-height: 1.55;
+    }
+
+    /* ─── Responsive ─────────────────────────────────────────── */
+    @media (max-width: 600px) {
+      .qa-inner {
+        padding-right: var(--space-6);
+      }
+      .qa-question { font-size: var(--text-lg); }
+      .cta-block { padding: var(--space-8) var(--space-4); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Skip link -->
+  <a href="#main-content" class="skip-link">דלג לתוכן הראשי</a>
+
+  <!-- ─── Header ─────────────────────────────────────────────── -->
+  <header>
+    <a href="https://icing.co.il" class="logo" aria-label="ICING.CO.IL — דף הבית">
+      <!-- Geometric snowflake / crystal mark -->
+      <svg class="logo-icon" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+        <circle cx="20" cy="20" r="19" fill="url(#lgrad)" opacity="0.12"/>
+        <line x1="20" y1="4"  x2="20" y2="36" stroke="url(#lgrad)" stroke-width="2.4" stroke-linecap="round"/>
+        <line x1="4"  y1="20" x2="36" y2="20" stroke="url(#lgrad)" stroke-width="2.4" stroke-linecap="round"/>
+        <line x1="8"  y1="8"  x2="32" y2="32" stroke="url(#lgrad)" stroke-width="2.4" stroke-linecap="round"/>
+        <line x1="32" y1="8"  x2="8"  y2="32" stroke="url(#lgrad)" stroke-width="2.4" stroke-linecap="round"/>
+        <!-- Arm tips -->
+        <polyline points="20,4 17,8 20,4 23,8" stroke="url(#lgrad)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        <polyline points="20,36 17,32 20,36 23,32" stroke="url(#lgrad)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        <polyline points="4,20 8,17 4,20 8,23" stroke="url(#lgrad)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        <polyline points="36,20 32,17 36,20 32,23" stroke="url(#lgrad)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        <circle cx="20" cy="20" r="3.5" fill="url(#lgrad)"/>
+        <defs>
+          <linearGradient id="lgrad" x1="4" y1="4" x2="36" y2="36" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#006d8f"/>
+            <stop offset="100%" stop-color="#0099c6"/>
+          </linearGradient>
+        </defs>
+      </svg>
+      <span class="logo-text">ICING.CO.IL<span class="logo-sub">טיפול בטבילות קרח</span></span>
+    </a>
+
+    <button class="theme-toggle" id="themeToggle" aria-label="החלפת מצב תאורה">
+      <!-- Moon (default) -->
+      <svg id="iconMoon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M21 12.79A9 9 0 1111.21 3a7 7 0 009.79 9.79z"/>
+      </svg>
+      <!-- Sun (hidden until dark mode) -->
+      <svg id="iconSun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none" aria-hidden="true">
+        <circle cx="12" cy="12" r="5"/>
+        <line x1="12" y1="1"  x2="12" y2="3"/>
+        <line x1="12" y1="21" x2="12" y2="23"/>
+        <line x1="4.22"  y1="4.22"  x2="5.64"  y2="5.64"/>
+        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+        <line x1="1"  y1="12" x2="3"  y2="12"/>
+        <line x1="21" y1="12" x2="23" y2="12"/>
+        <line x1="4.22"  y1="19.78" x2="5.64"  y2="18.36"/>
+        <line x1="18.36" y1="5.64"  x2="19.78" y2="4.22"/>
+      </svg>
+    </button>
+  </header>
+
+  <!-- ─── Hero ───────────────────────────────────────────────── -->
+  <section class="hero" aria-label="כותרת ראשית">
+    <div class="hero-bg" role="img" aria-label="אמבטיית קרח עם קוביות קרח ומים כחולים"></div>
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <span class="hero-tag">שאלות ותשובות</span>
+      <h1>כל מה שרצית לדעת על <em>אמבטיות קרח</em></h1>
+      <p class="hero-sub">תשובות מבוססות-מחקר לשאלות הנפוצות ביותר על טיפול בטבילות מים קרים</p>
+      <a href="#qa-section" class="hero-arrow" aria-label="גלול לשאלות ותשובות">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="6 9 12 15 18 9"/>
+        </svg>
+      </a>
+    </div>
+  </section>
+
+  <!-- ─── Quick nav ─────────────────────────────────────────── -->
+  <nav class="quick-nav" aria-label="ניווט מהיר לשאלות">
+    <div class="quick-nav-inner">
+      <a href="#q1" class="quick-pill"><span class="pill-num">1</span>כמה זמן לשהות?</a>
+      <a href="#q2" class="quick-pill"><span class="pill-num">2</span>למי זה לא מתאים?</a>
+      <a href="#q3" class="quick-pill"><span class="pill-num">3</span>שילוב עם ריצה</a>
+      <a href="#q4" class="quick-pill"><span class="pill-num">4</span>קרח לפציעה מול פרוטוקול</a>
+      <a href="#q5" class="quick-pill"><span class="pill-num">5</span>האם זה מסוכן?</a>
+    </div>
+  </nav>
+
+  <!-- ─── Main ──────────────────────────────────────────────── -->
+  <main id="main-content">
+    <p class="section-label">FAQ</p>
+    <h2 class="section-title" id="qa-section">שאלות ותשובות על אמבטיות קרח</h2>
+
+    <div class="qa-list" role="list">
+
+      <!-- Q1 — open by default -->
+      <article class="qa-card open" id="q1" role="listitem">
+        <button
+          class="qa-header"
+          aria-expanded="true"
+          aria-controls="q1-body"
+          onclick="toggleCard(this)"
+          onkeydown="handleKey(event,this)"
+        >
+          <span class="qa-badge" aria-hidden="true">01</span>
+          <span class="qa-question">כמה זמן לשהות באמבטיית קרח?</span>
+          <span class="qa-chevron" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          </span>
+        </button>
+        <div class="qa-body" id="q1-body" role="region" aria-labelledby="q1">
+          <div class="qa-inner">
+            <p>
+              הזמן האופטימלי לשהייה באמבטיית קרח הוא <strong>5–10 דקות בטמפרטורה של 10–15°C</strong>.
+              למתחילים, מומלץ להתחיל ב-<strong>2–3 דקות</strong> ולהגביר בהדרגה לאורך שבועות.
+            </p>
+            <p>
+              מחקרים מראים שסך-הכל <strong>כ-11 דקות שבועיות</strong> מספיקות להפעלה משמעותית של שומן חום (BAT)
+              ולשיפור המטבוליזם. <strong>אין לחרוג מ-15–20 דקות</strong> בכל כניסה — ריבוי חשיפה אינו מוסיף יתרון
+              ואף עלול לגרום לצינון-יתר.
+            </p>
+            <div class="callout" role="note">
+              💡 <strong>"מינון" טוב:</strong> 2–3 כניסות בשבוע של 5–8 דקות כל אחת,
+              בסמוך לאחר אימון אינטנסיבי — לשיקום, הפחתת כאב שרירים וחידוש ריכוז.
+            </div>
+            <span class="qa-source">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/>
+              </svg>
+              BJSM 2022 · Harvard Health · Wired 2026
+            </span>
+          </div>
+        </div>
+      </article>
+
+      <!-- Q2 -->
+      <article class="qa-card reveal" id="q2" role="listitem">
+        <button
+          class="qa-header"
+          aria-expanded="false"
+          aria-controls="q2-body"
+          onclick="toggleCard(this)"
+          onkeydown="handleKey(event,this)"
+        >
+          <span class="qa-badge" aria-hidden="true">02</span>
+          <span class="qa-question">למי אמבטיית קרח לא מתאימה?</span>
+          <span class="qa-chevron" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          </span>
+        </button>
+        <div class="qa-body" id="q2-body" role="region" aria-labelledby="q2">
+          <div class="qa-inner">
+            <p>
+              לרוב הבריאים — טבילות קרח <strong>בטוחות ומועילות</strong>. עם זאת, ישנן קבוצות סיכון שצריכות
+              להיוועץ ברופא לפני כניסה ראשונה, או להימנע לחלוטין:
+            </p>
+            <ul class="qa-list-items" role="list">
+              <li role="listitem">מחלת לב כלילית, אוטם שריר הלב בעבר, אי-ספיקת לב</li>
+              <li role="listitem">הפרעות קצב לב (כולל פרפור פרוזדורים)</li>
+              <li role="listitem">לחץ דם גבוה שאינו מאוזן תרופתית</li>
+              <li role="listitem">מחלת כלי דם פריפריים, תסמונת ריינו</li>
+              <li role="listitem">אלרגיה לקור (Cold Urticaria)</li>
+              <li role="listitem">סוכרת עם נוירופתיה מתקדמת בגפיים</li>
+              <li role="listitem">הריון</li>
+            </ul>
+            <div class="callout" role="note">
+              ⚕️ אם אתה נוטל תרופות לב, לחץ דם או קרישיות — <strong>התייעץ עם הרופא המטפל</strong> לפני
+              שתתחיל בפרוטוקול טבילות.
+            </div>
+            <span class="qa-source">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/>
+              </svg>
+              BHF · Harvard Health 2025 · Ubié Health 2026
+            </span>
+          </div>
+        </div>
+      </article>
+
+      <!-- Q3 -->
+      <article class="qa-card reveal" id="q3" role="listitem">
+        <button
+          class="qa-header"
+          aria-expanded="false"
+          aria-controls="q3-body"
+          onclick="toggleCard(this)"
+          onkeydown="handleKey(event,this)"
+        >
+          <span class="qa-badge" aria-hidden="true">03</span>
+          <span class="qa-question">איך לשלב חשיפה לקור עם אימוני ריצה?</span>
+          <span class="qa-chevron" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          </span>
+        </button>
+        <div class="qa-body" id="q3-body" role="region" aria-labelledby="q3">
+          <div class="qa-inner">
+            <p>
+              <strong>אחרי ריצות ארוכות ואינטרוולים עצימים:</strong> כנסו לאמבטיית קרח תוך <strong>30–60 דקות
+              מסיום הריצה</strong>, בטמפרטורה של 10–15°C למשך 8–12 דקות. זה מקצר את זמן ההתאוששות,
+              מפחית נוקשות שרירים ומאיץ חזרה לאימון הבא.
+            </p>
+            <p>
+              <strong>אחרי אימון כוח ועיצוב שרירים:</strong> <em>אין להיכנס מיד לאמבטיית קרח</em> — המתינו
+              לפחות <strong>6–8 שעות</strong>. חשיפה מיידית לקור לאחר אימון כוח עלולה לבלום את תהליך
+              ההיפרטרופיה (גדילת שרירים) על ידי עיכוב mTOR ואיתות אנבולי.
+            </p>
+            <div class="callout" role="note">
+              🏃 <strong>פרוטוקול מומלץ לרצים:</strong><br/>
+              ריצה קשה ← 5 דקות הליכה להתאוששות ← אמבט קרח 10 דקות ← חימום הדרגתי בשמיכה
+            </div>
+            <span class="qa-source">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/>
+              </svg>
+              Brooks Running · VikaSati 2026 · Hot Tubs Oxfordshire 2025
+            </span>
+          </div>
+        </div>
+      </article>
+
+      <!-- Q4 -->
+      <article class="qa-card reveal" id="q4" role="listitem">
+        <button
+          class="qa-header"
+          aria-expanded="false"
+          aria-controls="q4-body"
+          onclick="toggleCard(this)"
+          onkeydown="handleKey(event,this)"
+        >
+          <span class="qa-badge" aria-hidden="true">04</span>
+          <span class="qa-question">מה ההבדל בין קרח אחרי פציעה לבין חשיפה לקור פרוטוקולית?</span>
+          <span class="qa-chevron" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          </span>
+        </button>
+        <div class="qa-body" id="q4-body" role="region" aria-labelledby="q4">
+          <div class="qa-inner">
+            <p>
+              <strong>קרח מקומי לפציעה חריפה</strong> (Icing): שקית קרח עם מגן עור, 10–20 דקות כמה פעמים
+              ביום, ב<strong>-48–72 השעות הראשונות בלבד</strong> לאחר פציעה. מטרה: הפחתת נפיחות מקומית
+              ועיכוב תגובה דלקתית חריפה בלבד.
+            </p>
+            <p>
+              <strong>פרוטוקול גוף-שלם (Cold Water Immersion):</strong> פועל על מנגנונים סיסטמיים שונים לחלוטין —
+              שחרור <strong>נוראפינפרין</strong> (עלייה של עד 300%), הפעלת <strong>דופמין</strong>, גיוס
+              <strong>שומן חום</strong>, ניהול דלקת כרונית ורגולציה של מערכת החיסון.
+            </p>
+            <div class="callout" role="note">
+              ⚠️ <strong>חשוב:</strong> אמבטיית קרח גוף-שלם <strong>אינה מומלצת</strong> בשלב החריף של פציעה
+              פעילה — היא עלולה להסוות כאב ולגרום לנזק נוסף.
+            </div>
+            <span class="qa-source">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/>
+              </svg>
+              Hopkins Medicine · AM Health Performance · Wikipedia — Cryotherapy
+            </span>
+          </div>
+        </div>
+      </article>
+
+      <!-- Q5 -->
+      <article class="qa-card reveal" id="q5" role="listitem">
+        <button
+          class="qa-header"
+          aria-expanded="false"
+          aria-controls="q5-body"
+          onclick="toggleCard(this)"
+          onkeydown="handleKey(event,this)"
+        >
+          <span class="qa-badge" aria-hidden="true">05</span>
+          <span class="qa-question">האם זה לא מסוכן? מה לגבי התקפי לב?</span>
+          <span class="qa-chevron" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          </span>
+        </button>
+        <div class="qa-body" id="q5-body" role="region" aria-labelledby="q5">
+          <div class="qa-inner">
+            <p>
+              לאנשים <strong>בריאים ללא מחלות לב</strong> — כן, זה בטוח כשמבוצע נכון.
+              הסיכון העיקרי הוא <strong>"Cold Shock Response"</strong> ב<strong>-1–2 הדקות הראשונות</strong>:
+              היפרוונטילציה, עלייה בדופק וכיווץ כלי דם. תגובה זו פוחתת ככל שהגוף מתרגל.
+            </p>
+            <p>
+              אנשים עם <strong>מחלת לב סמויה, פלאק עורקי או לחץ דם גבוה</strong>: העלייה החדה בלחץ הדם
+              ובדופק עלולה לאתגר את הלב. לכן <strong>סינון רפואי לפני תחילת פרוטוקול</strong> הוא קריטי.
+            </p>
+            <ul class="qa-list-items" role="list">
+              <li role="listitem"><strong>לא לבד</strong> — תמיד עם אדם נוסף בסביבה</li>
+              <li role="listitem"><strong>כנסו לאט</strong> — רגליים ראשון, לא להשליך את הגוף בבת אחת</li>
+              <li role="listitem"><strong>נשמו לאט ועמוק</strong> בדקות הראשונות — זה מרגיע את Cold Shock</li>
+              <li role="listitem"><strong>אל תשקעו את הפנים</strong> — סכנת בלע מים בזמן Cold Shock</li>
+            </ul>
+            <div class="callout" role="note">
+              🔒 ב-ICING.CO.IL כל טבילה מתבצעת <strong>בהדרכת מדריך מוסמך</strong> עם ציוד חירום זמין
+              ותהליך כניסה מבוקר. הבטיחות שלך — הדאגה שלנו.
+            </div>
+            <span class="qa-source">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/>
+              </svg>
+              Harvard Health 2025 · AHA · BJSM 2022 · UVM Health
+            </span>
+          </div>
+        </div>
+      </article>
+
+    </div><!-- /.qa-list -->
+
+    <!-- ─── CTA ───────────────────────────────────────────────── -->
+    <div class="cta-block">
+      <h2>מוכן להתנסות?</h2>
+      <p>הצטרף לאלפים שכבר גילו את כוח הקור — בליווי מקצועי ובטוח בחולון</p>
+      <a href="https://icing.co.il" class="cta-btn">
+        לקביעת מועד טבילה
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <line x1="5" y1="12" x2="19" y2="12"/>
+          <polyline points="12 5 19 12 12 19"/>
+        </svg>
+      </a>
+    </div>
+  </main>
+
+  <!-- ─── Footer ─────────────────────────────────────────────── -->
+  <footer>
+    <p>© 2025–2026 ICING.CO.IL — כל הזכויות שמורות</p>
+    <p>סירני 52, חולון | 08-9310715</p>
+    <p class="footer-disclaimer">
+      המידע בדף זה הוא לצורכי מידע כללי בלבד ואינו מהווה ייעוץ רפואי.
+      יש להתייעץ עם רופא לפני תחילת פרוטוקול טבילות קרח, במיוחד בנוכחות מצבים רפואיים.
+    </p>
+  </footer>
+
+  <!-- ─── JavaScript ────────────────────────────────────────── -->
+  <script>
+    /* ── Dark mode ─────────────────────────────────────────── */
+    const html        = document.documentElement;
+    const toggleBtn   = document.getElementById('themeToggle');
+    const iconMoon    = document.getElementById('iconMoon');
+    const iconSun     = document.getElementById('iconSun');
+
+    function applyTheme(theme) {
+      html.setAttribute('data-theme', theme);
+      if (theme === 'dark') {
+        iconMoon.style.display = 'none';
+        iconSun.style.display  = '';
+      } else {
+        iconMoon.style.display = '';
+        iconSun.style.display  = 'none';
+      }
+      localStorage.setItem('icing-theme', theme);
+    }
+
+    (function initTheme() {
+      const saved = localStorage.getItem('icing-theme');
+      if (saved) {
+        applyTheme(saved);
+      } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        applyTheme('dark');
+      }
+    })();
+
+    toggleBtn.addEventListener('click', () => {
+      const current = html.getAttribute('data-theme') || 'light';
+      applyTheme(current === 'dark' ? 'light' : 'dark');
+    });
+
+    /* ── Accordion ─────────────────────────────────────────── */
+    function toggleCard(headerBtn) {
+      const card = headerBtn.closest('.qa-card');
+      const isOpen = card.classList.contains('open');
+      card.classList.toggle('open', !isOpen);
+      headerBtn.setAttribute('aria-expanded', String(!isOpen));
+    }
+
+    function handleKey(e, btn) {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        toggleCard(btn);
+      }
+    }
+
+    /* ── Scroll reveal ─────────────────────────────────────── */
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.1, rootMargin: '0px 0px -40px 0px' }
+    );
+
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+  </script>
+
+</body>
+</html>
