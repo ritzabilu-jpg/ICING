@@ -30,7 +30,7 @@ interface InstructorInfo {
   name: string;
 }
 
-type Tab = 'future' | 'past' | 'schedule' | 'clients' | 'journal' | 'payments';
+type Tab = 'future' | 'past' | 'schedule' | 'clients' | 'journal' | 'payments' | 'health-consent';
 
 interface SlotParticipant {
   booking_id: string;
@@ -314,6 +314,7 @@ export default function InstructorDashboard() {
     { key: 'journal', label: '📖 יומן טבילות' },
     { key: 'payments', label: '💳 תשלומים' },
     { key: 'future', label: 'זמינות שבועית ↗', href: '/instructor/availability' },
+    { key: 'health-consent', label: '📋 שאלוני בריאות', href: '/admin/health-consent?key=lior2026' },
   ];
 
   function sessionHref(s: Session) {

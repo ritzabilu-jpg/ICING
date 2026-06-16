@@ -697,10 +697,16 @@ function AdminContent() {
 
       <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
         <h1 className="text-3xl font-black text-navy-900">לוח אדמין</h1>
-        <a href="/instructor/dashboard"
-          className="inline-flex items-center gap-2 bg-[#0f2942] hover:bg-[#1a3a5c] text-white font-bold px-5 py-2.5 rounded-xl text-sm transition-colors">
-          🏊 דשבורד מדריך שלי
-        </a>
+        <div className="flex gap-2 flex-wrap">
+          <a href={`/admin/health-consent?key=${encodeURIComponent(key)}`}
+            className="inline-flex items-center gap-2 bg-teal-600 hover:bg-teal-700 text-white font-bold px-5 py-2.5 rounded-xl text-sm transition-colors">
+            📋 שאלוני בריאות
+          </a>
+          <a href="/instructor/dashboard"
+            className="inline-flex items-center gap-2 bg-[#0f2942] hover:bg-[#1a3a5c] text-white font-bold px-5 py-2.5 rounded-xl text-sm transition-colors">
+            🏊 דשבורד מדריך שלי
+          </a>
+        </div>
       </div>
 
       {/* Tabs */}
