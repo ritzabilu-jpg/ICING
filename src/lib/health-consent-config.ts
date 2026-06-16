@@ -17,7 +17,7 @@ export const ICING_BUSINESS = {
   fullName: 'ICING Cold Water Immersion',
   email: 'info@icing.co.il',
   phone: '08-9310715',
-  address: 'סירני 52, חולון',
+  address: 'סירני 52, רחובות',
   website: 'https://icing.co.il',
 } as const;
 

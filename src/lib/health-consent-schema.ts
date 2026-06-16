@@ -4,7 +4,7 @@
 // ─────────────────────────────────────────────────────────────────────────────
 
 import { z } from 'zod';
-import { HEALTH_QUESTIONS, ACKNOWLEDGMENTS, detectBlockingAnswers } from './health-consent-config';
+import { HEALTH_QUESTIONS, detectBlockingAnswers } from './health-consent-config';
 
 // ── Per-question answer schema ────────────────────────────────────────────────
 const healthAnswerSchema = z.object({
@@ -24,39 +24,30 @@ const answersShape = Object.fromEntries(
 export const healthConsentSchema = z.object({
 
   // Personal information
-  fullName:       z.string().min(2, 'שם מלא נדרש (לפחות 2 תווים)'),
-  idNumber:       z.string().optional(),
-  birthDate:      z.string().min(1, 'תאריך לידה נדרש'),
-  phone:          z.string().regex(/^0[0-9]{8,9}$/, 'מספר טלפון לא תקין (דוגמה: 0521234567)'),
-  email:          z.string().email('כתובת דוא"ל לא תקינה'),
-  emergencyName:  z.string().min(2, 'שם איש קשר לחירום נדרש'),
-  emergencyPhone: z.string().regex(/^0[0-9]{8,9}$/, 'מספר טלפון איש קשר לא תקין'),
-  isOver18:       z.boolean().refine(v => v, { message: 'נדרש אישור — המשתתף/ת מעל גיל 18' }),
+  fullName:  z.string().min(2, 'שם מלא נדרש (לפחות 2 תווים)'),
+  idNumber:  z.string().optional(),
+  birthDate: z.string().min(1, 'תאריך לידה נדרש'),
+  phone:     z.string().regex(/^0[0-9]{8,9}$/, 'מספר טלפון לא תקין (דוגמה: 0521234567)'),
+  email:     z.string().email('כתובת דוא"ל לא תקינה').optional().or(z.literal('')),
 
   // Health answers (dynamic from HEALTH_QUESTIONS)
   answers: z.object(answersShape),
 
-  // 7 required acknowledgments
-  acknowledgments: z
-    .array(z.boolean())
-    .length(ACKNOWLEDGMENTS.length, 'יש לאשר את כל ההצהרות')
-    .refine(arr => arr.every(Boolean), { message: 'יש לאשר את כל ההצהרות' }),
+  // Single combined acknowledgment
+  acknowledgments: z.boolean().refine(v => v, { message: 'יש לאשר את ההצהרות' }),
 
   // Privacy consent
   privacyConsent: z.boolean().refine(v => v, { message: 'נדרשת הסכמה להודעת הפרטיות' }),
 
   // Typed signature
   signatureName: z.string().min(2, 'נדרשת הקלדת שם לצורך חתימה'),
-  signatureDate:  z.string(),
-
-  // Pre-submit opportunity to ask questions
-  preSubmitConfirmation: z.boolean().refine(v => v, { message: 'נדרש אישור' }),
+  signatureDate: z.string(),
 
   // Optional metadata (hidden fields)
-  sessionDate:  z.string().optional(),
-  coachName:    z.string().optional(),
-  branch:       z.string().optional(),
-  leadSource:   z.string().optional(),
+  sessionDate: z.string().optional(),
+  coachName:   z.string().optional(),
+  branch:      z.string().optional(),
+  leadSource:  z.string().optional(),
 });
 
 export type HealthConsentFormData = z.infer<typeof healthConsentSchema>;
@@ -65,26 +56,22 @@ export type HealthConsentFormData = z.infer<typeof healthConsentSchema>;
 export function getDefaultValues(): HealthConsentFormData {
   const today = new Date().toISOString().split('T')[0];
   return {
-    fullName: '',
-    idNumber: '',
-    birthDate: '',
-    phone: '',
-    email: '',
-    emergencyName: '',
-    emergencyPhone: '',
-    isOver18: false,
+    fullName:        '',
+    idNumber:        '',
+    birthDate:       '',
+    phone:           '',
+    email:           '',
     answers: Object.fromEntries(
       HEALTH_QUESTIONS.map(q => [q.id, { answer: '', detail: '' }])
-    ) as HealthConsentFormData['answers'],
-    acknowledgments: new Array(ACKNOWLEDGMENTS.length).fill(false),
-    privacyConsent: false,
-    signatureName: '',
-    signatureDate: today,
-    preSubmitConfirmation: false,
-    sessionDate: '',
-    coachName: '',
-    branch: '',
-    leadSource: '',
+    ) as unknown as HealthConsentFormData['answers'],
+    acknowledgments: false,
+    privacyConsent:  false,
+    signatureName:   '',
+    signatureDate:   today,
+    sessionDate:     '',
+    coachName:       '',
+    branch:          '',
+    leadSource:      '',
   };
 }
 
@@ -98,20 +85,17 @@ export function buildSubmissionPayload(data: HealthConsentFormData) {
   );
 
   return {
-    full_name:              data.fullName,
-    id_number:              data.idNumber || null,
-    birth_date:             data.birthDate,
-    phone:                  data.phone,
-    email:                  data.email,
-    emergency_contact_name: data.emergencyName,
-    emergency_contact_phone: data.emergencyPhone,
-    is_over_18:             data.isOver18,
+    full_name:        data.fullName,
+    id_number:        data.idNumber || null,
+    birth_date:       data.birthDate,
+    phone:            data.phone,
+    email:            data.email || null,
     health_answers: HEALTH_QUESTIONS.map(q => ({
-      id:     q.id,
-      num:    q.num,
-      text:   q.text,
-      answer: answers[q.id]?.answer || 'no',
-      detail: answers[q.id]?.detail || '',
+      id:          q.id,
+      num:         q.num,
+      text:        q.text,
+      answer:      answers[q.id]?.answer || 'no',
+      detail:      answers[q.id]?.detail || '',
       is_blocking: q.isBlocking,
     })),
     was_blocked:      wasBlocked,
@@ -120,7 +104,6 @@ export function buildSubmissionPayload(data: HealthConsentFormData) {
     privacy_consent:  data.privacyConsent,
     signature_name:   data.signatureName,
     signature_date:   data.signatureDate,
-    pre_submit_confirmation: data.preSubmitConfirmation,
     session_date:     data.sessionDate || null,
     coach_name:       data.coachName   || null,
     branch:           data.branch      || null,

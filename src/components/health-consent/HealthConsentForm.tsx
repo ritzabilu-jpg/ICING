@@ -5,7 +5,6 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
   HEALTH_QUESTIONS,
-  ACKNOWLEDGMENTS,
   ICING_BUSINESS,
   detectBlockingAnswers,
 } from '@/lib/health-consent-config';
@@ -151,24 +150,6 @@ export default function HealthConsentForm() {
         </p>
       </div>
 
-      {/* ── Section 2: Safety notice ──────────────────────────────────────── */}
-      <div className="bg-amber-50 border-2 border-amber-300 rounded-2xl p-5">
-        <h2 className="font-black text-amber-900 text-base mb-3 flex items-center gap-2">
-          <span>⚠</span> הודעת בטיחות חשובה — נא לקרוא בעיון לפני מילוי הטופס
-        </h2>
-        <ul className="space-y-1.5 text-sm text-amber-800 list-none">
-          {[
-            'טבילה במים קרים עלולה לגרום לעומס לבבי-נשימתי חריף, לרבות עלייה חדה בקצב הלב ובלחץ הדם.',
-            'השתתפות אסורה או מחייבת אישור רפואי מוקדם במצבים: מחלת לב, הפרעת קצב, לחץ דם לא מאוזן, אי ספיקת לב, רגישות לקור, הריון, ומצבים נוספים המפורטים בשאלון.',
-            'בכל מקרה של כאב בחזה, קוצר נשימה חמור, עילפון, בלבול, דפיקות לב חריגות, נימול קיצוני, או כל מצוקה חריגה — יש להפסיק מיידית ולדווח לצוות.',
-          ].map((txt, i) => (
-            <li key={i} className="flex gap-2">
-              <span className="text-amber-600 mt-0.5 flex-shrink-0">•</span>
-              <span>{txt}</span>
-            </li>
-          ))}
-        </ul>
-      </div>
 
       {/* ── FORM ───────────────────────────────────────────────────────────── */}
       <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-6">
@@ -223,7 +204,7 @@ export default function HealthConsentForm() {
               />
             </Field>
 
-            <Field label='דוא"ל' required error={errors.email?.message}>
+            <Field label='דוא"ל (אופציונלי)' error={errors.email?.message}>
               <input
                 {...register('email')}
                 type="email"
@@ -234,43 +215,6 @@ export default function HealthConsentForm() {
               />
             </Field>
 
-            <div /> {/* grid spacer */}
-
-            <Field label="שם איש/ת קשר לחירום" required error={errors.emergencyName?.message}>
-              <input
-                {...register('emergencyName')}
-                type="text"
-                className={inputCls}
-                placeholder="שם מלא"
-              />
-            </Field>
-
-            <Field label="טלפון איש/ת קשר לחירום" required error={errors.emergencyPhone?.message}>
-              <input
-                {...register('emergencyPhone')}
-                type="tel"
-                className={inputCls}
-                placeholder="0521234567"
-                inputMode="tel"
-                dir="ltr"
-              />
-            </Field>
-          </div>
-
-          {/* Age confirmation */}
-          <div className="mt-5 pt-4 border-t border-slate-100">
-            <label className="flex items-start gap-3 cursor-pointer select-none">
-              <input
-                {...register('isOver18')}
-                type="checkbox"
-                className="mt-0.5 w-5 h-5 rounded border-slate-300 accent-teal-600 flex-shrink-0"
-              />
-              <span className="text-sm text-slate-700 font-medium">
-                <span className="text-red-500 ml-1">*</span>
-                אני מאשר/ת כי גילי 18 שנים ומעלה
-              </span>
-            </label>
-            {errors.isOver18 && <p className={`${errCls} mt-1`}>{errors.isOver18.message}</p>}
           </div>
         </fieldset>
 
@@ -408,23 +352,37 @@ export default function HealthConsentForm() {
             <h2 className="text-lg font-black text-slate-800">הצהרות חובה</h2>
           </div>
 
-          <div className="space-y-4">
-            {ACKNOWLEDGMENTS.map((text, i) => (
-              <label key={i} className="flex items-start gap-3 cursor-pointer select-none group">
-                <input
-                  {...register(`acknowledgments.${i}` as any)}
-                  type="checkbox"
-                  className="mt-0.5 w-5 h-5 rounded border-slate-300 accent-teal-600 flex-shrink-0"
-                />
-                <span className="text-sm text-slate-700 leading-relaxed group-hover:text-slate-900">
-                  <span className="text-red-500 ml-1">*</span>{text}
-                </span>
-              </label>
+          <ul className="space-y-2 text-sm text-slate-700 mb-5 list-none">
+            {[
+              'כל המידע שמסרתי בטופס זה נכון, מלא ומעודכן לפי מיטב ידיעתי.',
+              'ידוע לי כי טבילה במי קרח כרוכה בחשיפה לקור קיצוני ובתגובות גופניות מיידיות, ואינה מתאימה לכל אדם.',
+              'ידוע לי כי שאלון זה אינו מחליף ייעוץ רפואי, בדיקה רפואית או אבחון רפואי.',
+              'ידוע לי כי ICING רשאית, לפי שיקול דעתה, למנוע השתתפות, להפסיק השתתפות, או לדרוש אישור רפואי כתנאי לטבילה.',
+              'אני מתחייב/ת לדווח מיידית לצוות על כל תחושת מצוקה, כאב בחזה, קוצר נשימה, סחרחורת, בלבול, דפיקות לב או כל תסמין חריג.',
+              'ידוע לי כי האחריות למסירת מידע רפואי נכון ומלא חלה עליי.',
+              'אני מסכים/ה לפעול בהתאם לכל הנחיות הבטיחות, הכניסה, היציאה וההשגחה של צוות ICING.',
+            ].map((txt, i) => (
+              <li key={i} className="flex gap-2 leading-relaxed">
+                <span className="text-teal-600 flex-shrink-0 font-bold mt-0.5">✓</span>
+                <span>{txt}</span>
+              </li>
             ))}
-          </div>
+          </ul>
 
-          {(errors.acknowledgments as any)?.message && (
-            <p className={`${errCls} mt-3`}>{(errors.acknowledgments as any).message}</p>
+          <label className="flex items-start gap-3 cursor-pointer select-none">
+            <input
+              {...register('acknowledgments')}
+              type="checkbox"
+              className="mt-0.5 w-5 h-5 rounded border-slate-300 accent-teal-600 flex-shrink-0"
+            />
+            <span className="text-sm text-slate-800 font-semibold leading-relaxed">
+              <span className="text-red-500 ml-1">*</span>
+              קראתי את כל ההצהרות לעיל ואני מאשר/ת את נכונותן.
+            </span>
+          </label>
+
+          {errors.acknowledgments?.message && (
+            <p className={`${errCls} mt-3`}>{errors.acknowledgments.message}</p>
           )}
         </fieldset>
 
@@ -449,8 +407,8 @@ export default function HealthConsentForm() {
               {' '}· {ICING_BUSINESS.phone}.
             </p>
             <p>
-              <strong className="text-slate-800">מסירה לצדדים שלישיים:</strong> המידע יועבר רק לגורמים
-              המורשים, ולספקי שירות הנדרשים לצורך הפעלה, ביטחון, ציות לדין, וניהול המערכת.
+              <strong className="text-slate-800">מסירה לצדדים שלישיים:</strong> המידע לא מועבר לגורם שלישי כלשהו.
+              השימוש במידע מוגבל לצורכי ICING בלבד — בדיקת התאמה, ניהול בטיחות ותיעוד פנימי.
             </p>
             <p>
               <strong className="text-slate-800">השלכות אי-מסירה:</strong> מסירת המידע נדרשת לשם הערכת
@@ -529,21 +487,6 @@ export default function HealthConsentForm() {
 
         {/* ── Pre-submit confirmation + submit ──────────────────────────────── */}
         <div className={cardCls}>
-          <label className="flex items-start gap-3 cursor-pointer select-none mb-5">
-            <input
-              {...register('preSubmitConfirmation')}
-              type="checkbox"
-              className="mt-0.5 w-5 h-5 rounded border-slate-300 accent-teal-600 flex-shrink-0"
-            />
-            <span className="text-sm text-slate-700 font-medium">
-              <span className="text-red-500 ml-1">*</span>
-              אני מאשר/ת שלפני מילוי הטופס קיבלתי הזדמנות לשאול שאלות ולקבל הבהרות.
-            </span>
-          </label>
-          {errors.preSubmitConfirmation && (
-            <p className={`${errCls} mb-3`}>{errors.preSubmitConfirmation.message}</p>
-          )}
-
           {submitState === 'error' && (
             <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-xl text-sm text-red-700">
               אירעה שגיאה בשליחה. נא לנסות שוב או לפנות לצוות.
