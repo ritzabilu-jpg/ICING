@@ -223,7 +223,7 @@ export default function HealthConsentForm() {
               />
             </Field>
 
-            <Field label="דוא\"ל" required error={errors.email?.message}>
+            <Field label='דוא"ל' required error={errors.email?.message}>
               <input
                 {...register('email')}
                 type="email"
