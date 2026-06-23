@@ -70,9 +70,40 @@ const findings = [
   },
 ];
 
+
+// ── Article Schema (GEO — helps ChatGPT/Perplexity cite this page) ─────────────
+const articleSchema = {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "דופמין, מוטיבציה וטבילות קרח",
+  "description": "מה המדע באמת אומר על דופמין, מוטיבציה וטבילה במי קרח",
+  "url": "https://icing.co.il/dopamine",
+  "inLanguage": "he",
+  "author": {
+    "@type": "Organization",
+    "name": "ICING",
+    "url": "https://icing.co.il"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "ICING — אמבטיות קרח",
+    "url": "https://icing.co.il"
+  },
+  "about": "dopamine, motivation, cold water immersion",
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "ICING",
+    "url": "https://icing.co.il"
+  }
+};
 export default function DopaminePage() {
   return (
-    <main className="min-h-screen bg-white" dir="rtl">
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
+      />
+      <main className="min-h-screen bg-white" dir="rtl">
 
       {/* Hero */}
       <section className="bg-gradient-to-b from-navy-900 to-navy-800 text-white py-20 px-6">
@@ -205,7 +236,11 @@ export default function DopaminePage() {
           </div>
 
         </div>
+      </section>      {/* Author */}
+      <section className="px-6">
+        <AuthorSignature />
       </section>
+
 
       {/* Articles */}
       <section className="bg-navy-900" id="articles">
@@ -232,10 +267,6 @@ export default function DopaminePage() {
         </AccordionSection>
       </section>
 
-      {/* Author */}
-      <section className="px-6">
-        <AuthorSignature />
-      </section>
 
       {/* CTA */}
       <section className="py-16 px-6 bg-ice-600 text-white text-center">
@@ -258,5 +289,6 @@ export default function DopaminePage() {
       </section>
 
     </main>
+    </>
   );
 }

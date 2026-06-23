@@ -77,9 +77,40 @@ const findings = [
   },
 ];
 
+
+// ── Article Schema (GEO — helps ChatGPT/Perplexity cite this page) ─────────────
+const articleSchema = {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "מערכת חיסון ודלקת — טבילת מי קרח",
+  "description": "כיצד טבילה במי קרח משפיעה על מערכת החיסון, מדדי דלקת ותהליך ההתאוששות",
+  "url": "https://icing.co.il/inflammation",
+  "inLanguage": "he",
+  "author": {
+    "@type": "Organization",
+    "name": "ICING",
+    "url": "https://icing.co.il"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "ICING — אמבטיות קרח",
+    "url": "https://icing.co.il"
+  },
+  "about": "inflammation, immune system, recovery, cold water immersion",
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "ICING",
+    "url": "https://icing.co.il"
+  }
+};
 export default function InflammationPage() {
   return (
-    <main className="min-h-screen bg-white" dir="rtl">
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
+      />
+      <main className="min-h-screen bg-white" dir="rtl">
 
       {/* Hero */}
       <section className="bg-gradient-to-b from-navy-900 to-navy-800 text-white py-20 px-6">
@@ -240,7 +271,11 @@ export default function InflammationPage() {
           </div>
 
         </div>
+      </section>      {/* Author */}
+      <section className="px-6">
+        <AuthorSignature />
       </section>
+
 
       {/* Articles */}
       <section className="bg-navy-900" id="articles">
@@ -267,10 +302,6 @@ export default function InflammationPage() {
         </AccordionSection>
       </section>
 
-      {/* Author */}
-      <section className="px-6">
-        <AuthorSignature />
-      </section>
 
       {/* CTA */}
       <section className="py-16 px-6 bg-ice-600 text-white text-center">
@@ -293,5 +324,6 @@ export default function InflammationPage() {
       </section>
 
     </main>
+    </>
   );
 }
