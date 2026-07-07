@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
 
     // Basic presence check
-    if (!body.full_name || !body.phone || !body.email) {
+    if (!body.full_name || !body.phone) {
       return NextResponse.json({ error: 'שדות חובה חסרים' }, { status: 400 });
     }
 
