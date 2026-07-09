@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useLanguage } from '@/lib/i18n/LanguageContext';
+import WhatsAppLink from '@/components/WhatsAppLink';
 
 export default function StickyCTA() {
   const { t } = useLanguage();
@@ -27,14 +28,13 @@ export default function StickyCTA() {
       >
         {t('sticky_book')}
       </Link>
-      <a
+      <WhatsAppLink
         href="https://wa.me/972552482441"
-        target="_blank"
-        rel="noopener noreferrer"
+        source="כפתור סטיקי תחתון"
         className="flex-shrink-0 bg-slate-700 text-white px-4 py-3 rounded-xl text-sm font-bold"
       >
         💬 {t('sticky_whatsapp')}
-      </a>
+      </WhatsAppLink>
     </div>
   );
 }

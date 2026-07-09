@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { ReactNode } from 'react';
 import { useLanguage } from '@/lib/i18n/LanguageContext';
 import WorkshopCard from './WorkshopCard';
+import WhatsAppLink from '@/components/WhatsAppLink';
 import AccordionSection from './AccordionSection';
 
 export default function HomePageContent({ testimonialsSlot }: { testimonialsSlot: ReactNode }) {
@@ -220,11 +221,11 @@ export default function HomePageContent({ testimonialsSlot }: { testimonialsSlot
                       <span className="text-2xl">📞</span>
                       <span className="font-semibold text-lg">08-9310715</span>
                     </a>
-                    <a href="https://wa.me/972552482441" target="_blank" rel="noopener noreferrer"
+                    <WhatsAppLink href="https://wa.me/972552482441" source="דף בית – אנצור קשר"
                        className="flex items-center gap-4 text-slate-300 hover:text-green-400 transition-colors">
                       <img src="/logo-whatsapp.jpg" alt="WhatsApp" width={32} height={32} className="rounded-full object-cover" />
                       <span className="font-semibold text-lg">{t('contact_whatsapp')}</span>
-                    </a>
+                    </WhatsAppLink>
                     <Link href="/contact" className="flex items-center gap-4 text-slate-300 hover:text-ice-400 transition-colors">
                       <span className="text-2xl">✉️</span>
                       <span className="text-sm underline">{t('contact_send_msg')}</span>

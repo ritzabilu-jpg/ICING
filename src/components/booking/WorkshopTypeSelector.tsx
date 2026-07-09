@@ -1,6 +1,7 @@
 'use client';
 
 import type { WorkshopType } from '@/types';
+import { trackWhatsApp } from '@/lib/trackWhatsApp';
 
 interface WorkshopTypeSelectorProps {
   onSelect: (type: WorkshopType) => void;
@@ -59,10 +60,14 @@ export default function WorkshopTypeSelector({ onSelect }: WorkshopTypeSelectorP
         {types.map(t => (
           <button
             key={t.type}
-            onClick={() => t.whatsapp
-              ? window.open('https://wa.me/972552482441', '_blank')
-              : onSelect(t.type)
-            }
+            onClick={() => {
+              if (t.whatsapp) {
+                trackWhatsApp('בחירת סדנה – ' + t.title);
+                window.open('https://wa.me/972552482441', '_blank');
+              } else {
+                onSelect(t.type);
+              }
+            }}
             className={`group relative flex flex-col rounded-3xl border-2 p-7 text-right transition-all duration-300
                          hover:shadow-xl hover:-translate-y-1 focus:outline-none focus:ring-4
                          focus:ring-ice-400 active:scale-95

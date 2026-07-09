@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import WhatsAppLink from '@/components/WhatsAppLink';
 
 export const metadata: Metadata = {
   title: 'תנאי שימוש – ICING',
@@ -300,8 +301,8 @@ export default function PrivacyPage() {
             </li>
             <li className="flex items-center gap-3">
               <span className="text-ice-400">💬</span>
-              <a href="https://wa.me/972552482441" target="_blank" rel="noopener noreferrer"
-                className="hover:text-ice-400 transition-colors">WhatsApp: 052‑4500825</a>
+              <WhatsAppLink href="https://wa.me/972552482441" source="דף מדיניות פרטיות"
+                className="hover:text-ice-400 transition-colors">WhatsApp: 052‑4500825</WhatsAppLink>
             </li>
           </ul>
         </section>

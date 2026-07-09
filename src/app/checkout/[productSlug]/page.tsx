@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 
 import { useLanguage } from '@/lib/i18n/LanguageContext';
+import WhatsAppLink from '@/components/WhatsAppLink';
 
 // ── Types ──────────────────────────────────────────────────────────────────
 
@@ -500,14 +501,15 @@ export default function CheckoutPage() {
               <div className="space-y-3">
 
                 {/* WhatsApp CTA */}
-                <a
+                <WhatsAppLink
                   href={`https://wa.me/972552482441?text=${encodeURIComponent('שלום, אני מעוניין/ת להירשם ל' + (product?.title ?? 'פעילות'))}`}
-                  target="_blank" rel="noopener noreferrer"
+                  source="Checkout – תיאום מיידי"
+                  extras={{ extra: product?.title }}
                   className="w-full flex items-center justify-center gap-2 bg-green-500 hover:bg-green-600
                              text-white font-bold py-4 rounded-2xl transition-colors"
                 >
                   💬 תיאום מיידי בוואטסאפ
-                </a>
+                </WhatsAppLink>
 
                 <div className="flex items-center gap-3">
                   <div className="flex-1 h-px bg-slate-200" />
@@ -530,13 +532,14 @@ export default function CheckoutPage() {
                       <div className="text-3xl mb-2">✅</div>
                       <p className="font-bold text-green-800 text-sm">{t('checkout_phone_sent')}</p>
                       <p className="text-green-700 text-xs mt-1">{t('checkout_callback_by').replace('{deadline}', callbackDeadlineStr)}</p>
-                      <a
+                      <WhatsAppLink
                         href={`https://wa.me/972552482441?text=${encodeURIComponent('שלום, הרגע השארתי פרטים ל' + (product?.title ?? 'פעילות'))}`}
-                        target="_blank" rel="noopener noreferrer"
+                        source="Checkout – אחרי השארת פרטים"
+                        extras={{ extra: product?.title }}
                         className="mt-3 inline-flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white font-bold px-5 py-2 rounded-xl text-sm transition-colors"
                       >
                         💬 המשך בוואטסאפ
-                      </a>
+                      </WhatsAppLink>
                     </div>
                   ) : (
                     <div className="space-y-2">

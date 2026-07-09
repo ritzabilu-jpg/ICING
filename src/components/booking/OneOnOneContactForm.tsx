@@ -1,6 +1,8 @@
 'use client';
 
 import { useState } from 'react';
+import { trackWhatsApp } from '@/lib/trackWhatsApp';
+import WhatsAppLink from '@/components/WhatsAppLink';
 
 const WHATSAPP_NUMBER = '972552482441';
 
@@ -33,6 +35,7 @@ export default function OneOnOneContactForm({ onBack, type = 'one-on-one' }: Pro
 
   function openWhatsApp() {
     const text = encodeURIComponent(cfg.waText + (name ? ` - ${name}` : ''));
+    trackWhatsApp('סדנה אישית – תיאום מיידי', { name: name || undefined, phone: phone || undefined, extra: cfg.title });
     window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${text}`, '_blank');
   }
 
@@ -57,13 +60,14 @@ export default function OneOnOneContactForm({ onBack, type = 'one-on-one' }: Pro
         <div className="text-6xl mb-6">✅</div>
         <h2 className="text-2xl font-black text-navy-900 mb-3">תודה!</h2>
         <p className="text-slate-500 mb-6">קיבלנו את פרטיכם ונצור קשר בהקדם לתיאום המועד.</p>
-        <a
+        <WhatsAppLink
           href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(cfg.waText)}`}
-          target="_blank" rel="noopener noreferrer"
+          source="סדנה אישית – אחרי השארת פרטים"
+          extras={{ extra: cfg.title }}
           className="inline-flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white font-bold px-6 py-3 rounded-2xl mb-4 transition-colors"
         >
           💬 המשך בוואטסאפ
-        </a>
+        </WhatsAppLink>
         <br />
         <button onClick={onBack} className="btn-primary mt-3">
           חזרה לסוגי הסדנאות

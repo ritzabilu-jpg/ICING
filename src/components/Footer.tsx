@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useLanguage } from '@/lib/i18n/LanguageContext';
+import WhatsAppLink from '@/components/WhatsAppLink';
 
 export default function Footer() {
   const { t } = useLanguage();
@@ -40,10 +41,10 @@ export default function Footer() {
                  className="w-10 h-10 overflow-hidden rounded-full hover:scale-110 transition-transform" aria-label="Instagram">
                 <img src="/logo-instagram.jpg" alt="Instagram" className="w-full h-full object-cover" />
               </a>
-              <a href="https://wa.me/972552482441" target="_blank" rel="noopener noreferrer"
+              <WhatsAppLink href="https://wa.me/972552482441" source="Footer"
                  className="w-10 h-10 overflow-hidden rounded-full hover:scale-110 transition-transform" aria-label="WhatsApp">
                 <img src="/logo-whatsapp.jpg" alt="WhatsApp" className="w-full h-full object-cover" />
-              </a>
+              </WhatsAppLink>
             </div>
           </div>
 
